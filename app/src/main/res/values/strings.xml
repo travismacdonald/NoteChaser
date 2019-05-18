@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Note Chaser</string>
     <string name="pitchText" />
+    <string name="randomToneButtonText">Start</string>
 </resources>
