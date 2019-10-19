@@ -2,7 +2,6 @@ package com.example.notechaser.activities.eartraining;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,7 +45,7 @@ public class EarTrainingActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_ear_training);
 
         pitchText = findViewById(R.id.pitchText);
 
