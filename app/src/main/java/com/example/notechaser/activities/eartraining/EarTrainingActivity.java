@@ -1,4 +1,4 @@
-package com.example.notechaser;
+package com.example.notechaser.activities.eartraining;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.notechaser.R;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -20,7 +22,7 @@ import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.util.PitchConverter;
 
-public class MainActivity extends AppCompatActivity
+public class EarTrainingActivity extends AppCompatActivity
     implements MidiDriver.OnMidiStartListener {
 
     TextView pitchText;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     // TarsosDSP
     public AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
     public MidiDriver midi;
-    public int plugin = 52;
+    public int plugin = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
