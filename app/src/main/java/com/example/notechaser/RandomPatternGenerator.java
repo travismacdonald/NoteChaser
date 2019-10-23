@@ -10,6 +10,11 @@ import java.util.Random;
 
 public class RandomPatternGenerator {
 
+    /**
+     * For storing in memory.
+     */
+    private String name;
+
     private Random mRandom;
 
     private List<PhraseTemplate> mPhraseTemplates;
@@ -20,7 +25,8 @@ public class RandomPatternGenerator {
 
     private int mUpperBound;
 
-    private int mOverallSpaceRequired;
+    // Max space is worst case
+    private int mMaxSpaceRequired;
 
     public RandomPatternGenerator() {
         this(-1, -1);
@@ -54,32 +60,32 @@ public class RandomPatternGenerator {
 
     public void addPhraseTemplate(List<PhraseTemplate> toAdd) {
         mPhraseTemplates.addAll(toAdd);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public void addPhraseTemplate(PhraseTemplate toAdd) {
         mPhraseTemplates.add(toAdd);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public void removePhraseTemplate(PhraseTemplate toRemove) {
         mPhraseTemplates.remove(toRemove);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public void addMode(List<Mode> modes) {
         mModes.addAll(modes);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public void addMode(Mode mode) {
         mModes.add(mode);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public void removeMode(Mode mode) {
         mModes.remove(mode);
-        mOverallSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateOverallSpaceNeeded();
     }
 
     public int getLowerBound() {
@@ -99,7 +105,7 @@ public class RandomPatternGenerator {
     }
 
     public boolean hasSufficientSpace() {
-        return (mUpperBound - mLowerBound) >= mOverallSpaceRequired;
+        return (mUpperBound - mLowerBound) >= mMaxSpaceRequired;
     }
 
     private int calculateOverallSpaceNeeded() {
