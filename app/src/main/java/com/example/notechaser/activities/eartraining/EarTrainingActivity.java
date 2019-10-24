@@ -6,10 +6,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.keyfinder.MajorMode;
+import com.example.keyfinder.MelodicMinorMode;
+import com.example.keyfinder.Note;
+import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.R;
+import com.example.notechaser.models.MidiPlayer.MidiPlayer;
+import com.example.notechaser.models.MidiPlayer.MidiPlayerImpl;
+import com.example.notechaser.models.PatternEngine.PatternEngine;
+import com.example.notechaser.models.PatternEngine.PatternEngineImpl;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import be.tarsos.dsp.AudioDispatcher;
@@ -21,164 +31,54 @@ import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.util.PitchConverter;
 
-public class EarTrainingActivity extends AppCompatActivity
-    implements MidiDriver.OnMidiStartListener {
+public class EarTrainingActivity extends AppCompatActivity {
 
-    TextView pitchText;
+    MidiPlayer mMidiPlayer;
 
-    public Random rng = new Random();
-    public int curSoundNoteIx;
-    public int prevSoundNoteIx;
-    public int curHeardNoteIx;
-    public long curHeardNoteIxRegistered;
+    PatternEngine mPatternEngine;
 
-    Button randomNoteButton;
+    PhraseTemplate template;
 
-    public int MIDI_STOP  = 0X80;
-    public int MIDI_START = 0X90;
+    PhraseTemplate otherTemplate;
 
-    // TarsosDSP
-    public AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
-    public MidiDriver midi;
-    public int plugin = 1;
+    List<Note> toPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ear_training);
 
-        pitchText = findViewById(R.id.pitchText);
+        mMidiPlayer = new MidiPlayerImpl();
+        mPatternEngine = new PatternEngineImpl();
 
-        // TarsosDSP
-        PitchDetectionHandler pdh = new PitchDetectionHandler() {
-            @Override
-            public void handlePitch(PitchDetectionResult res, AudioEvent e){
-                final float pitchInHz = res.getPitch();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        processPitch(pitchInHz);
-                    }
-                });
-            }
-        };
-        // More TarsosDSP
-        AudioProcessor pitchProcessor = new PitchProcessor(
-                PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, pdh);
-        dispatcher.addAudioProcessor(pitchProcessor);
+        mPatternEngine.setBounds(36, 60);
 
-        Thread audioThread = new Thread(dispatcher, "Audio Thread");
-        audioThread.start();
+        mPatternEngine.addMode(new MajorMode(0));
+        mPatternEngine.addMode(new MajorMode(1));
 
-        // Construct Midi Driver.
-        midi = new MidiDriver();
-        midi.setOnMidiStartListener(this);
+        template = new PhraseTemplate();
+        template.addDegree(0);
+        template.addDegree(2);
+        template.addDegree(3);
+        template.addDegree(4);
 
-        randomNoteButton = findViewById(R.id.randomToneButton);
-    }
+        otherTemplate = new PhraseTemplate();
+        otherTemplate.addDegree(0);
+        otherTemplate.addDegree(1);
+        otherTemplate.addDegree(2);
+        otherTemplate.addDegree(4);
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        if (midi != null)
-            midi.start();
-    }
+        mPatternEngine.addPhraseTemplate(template);
+        mPatternEngine.addPhraseTemplate(otherTemplate);
 
-    /**
-     * Converts pitch (hertz) to note index.
-     * @param       pitchInHz double;
-     * @return      int; ix of note.
-     */
-    public int convertPitchToIx(double pitchInHz) {
-        // No note is heard.
-        if (pitchInHz == -1) {
-            return -1;
-        }
-        return PitchConverter.hertzToMidiKey(pitchInHz);
-    }
-
-    public void processPitch(float pitchInHz) {
-        int curIx = convertPitchToIx((double) pitchInHz);
-        pitchText.setText("" + (int) pitchInHz);
-
-        // If detected pitch matches the tone being produced.
-        if (curIx == curSoundNoteIx) {
-            // If pitch is just being heard.
-            if (curIx != curHeardNoteIx) {
-                curHeardNoteIx = curIx;
-                // Time stamp.
-                curHeardNoteIxRegistered = System.currentTimeMillis();
-            }
-            else {
-                // If it has been heard long enough.
-                if (System.currentTimeMillis() - curHeardNoteIxRegistered > 150) {
-                    randomNoteButton.performClick();
-                }
-            }
-        }
+        mMidiPlayer.setPlugin(0);
+        mMidiPlayer.start();
 
     }
 
-    /**
-     * https://github.com/billthefarmer/mididriver/blob/master/app/src/main/java/org/billthefarmer/miditest/MainActivity.java
-     *
-     * Listener for sending initial midi messages when the Sonivox
-     * synthesizer has been started, such as program change.
-     */
-    @Override
-    public void onMidiStart() {
-        sendMidiSetup();
+    public void playPattern(View view) {
+        mPatternEngine.generatePattern();
+        mMidiPlayer.playPattern(mPatternEngine.getCurPattern().getNotes());
     }
 
-    /**
-     * https://github.com/billthefarmer/mididriver/blob/master/app/src/main/java/org/billthefarmer/miditest/MainActivity.java
-     *
-     * Initial setup data for midi.
-     */
-    protected void sendMidiSetup() {
-        byte msg[] = new byte[2];
-        msg[0] = (byte) 0XC0;    // 0XC0 == PROGRAM CHANGE
-        msg[1] = (byte) plugin;
-        midi.write(msg);
-    }
-
-    /**
-     * https://github.com/billthefarmer/mididriver/blob/master/app/src/main/java/org/billthefarmer/miditest/MainActivity.java
-     *
-     * Send data that is to be synthesized by midi driver.
-     * @param       event int; type of event.
-     * @param       midiKey int; index of note (uses octaves).
-     * @param       volume int; volume of note.
-     */
-    protected void sendMidiNote(int event, int midiKey, int volume) {
-        byte msg[] = new byte[3];
-        msg[0] = (byte) event;
-        msg[1] = (byte) midiKey;
-        msg[2] = (byte) volume;
-        midi.write(msg);
-    }
-
-    /**
-     * Sends multiple messages to be synthesized by midi driver.
-     * Each note is given specifically.
-     * @param       event int; type of event.
-     * @param       midiKeys int[]; indexes of notes (uses octaves).
-     * @param       volume int; volume of notes.
-     */
-    protected void sendMidiChord(int event, int[] midiKeys, int volume) {
-        for (int key : midiKeys) {
-            sendMidiNote(event, key, volume);
-        }
-    }
-
-    private int getRandomNoteIx(Random rng) {
-        return rng.nextInt(24) + 48;
-    }
-
-    public void generateRandomTone(View view) {
-        sendMidiNote(0x80, curSoundNoteIx, 0);
-        curSoundNoteIx = getRandomNoteIx(rng);
-        sendMidiNote(0x90, curSoundNoteIx, 63);
-    }
 }

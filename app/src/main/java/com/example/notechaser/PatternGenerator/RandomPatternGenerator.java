@@ -1,7 +1,6 @@
 package com.example.notechaser.PatternGenerator;
 
 import com.example.keyfinder.Mode;
-import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 
