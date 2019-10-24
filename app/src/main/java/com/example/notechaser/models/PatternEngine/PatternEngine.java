@@ -9,11 +9,18 @@ import java.util.List;
 
 public interface PatternEngine {
 
-    boolean isSufficientSpace(int lowerBound, int upperBound);
+    // See if pattern has enough space to generate at least one pattern
+    boolean hasSufficientSpace();
 
-    Pattern generatePattern();
+    // only return pattern, doesn't generate new one
+    Pattern getCurPattern();
 
+    // Generate and return random pattern
+    void generatePattern();
+
+    // Check if user answer is same as notes played
     boolean isAnswerCorrect(List<Note> answer);
+
 
     void addPhraseTemplate(PhraseTemplate toAdd);
 
@@ -22,6 +29,8 @@ public interface PatternEngine {
     void setLowerBound(int lowerBound);
 
     void setUpperBound(int upperBound);
+
+    void setBounds(int lowerBound, int upperBound);
 
     void addMode(Mode mode);
 

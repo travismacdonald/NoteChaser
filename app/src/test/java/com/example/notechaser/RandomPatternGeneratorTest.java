@@ -5,6 +5,7 @@ import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
+import com.example.notechaser.PatternGenerator.RandomPatternGenerator;
 
 import org.junit.Test;
 

@@ -1,6 +1,7 @@
-package com.example.notechaser;
+package com.example.notechaser.PatternGenerator;
 
 import com.example.keyfinder.Mode;
+import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 
@@ -60,32 +61,32 @@ public class RandomPatternGenerator {
 
     public void addPhraseTemplate(List<PhraseTemplate> toAdd) {
         mPhraseTemplates.addAll(toAdd);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public void addPhraseTemplate(PhraseTemplate toAdd) {
         mPhraseTemplates.add(toAdd);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public void removePhraseTemplate(PhraseTemplate toRemove) {
         mPhraseTemplates.remove(toRemove);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public void addMode(List<Mode> modes) {
         mModes.addAll(modes);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public void addMode(Mode mode) {
         mModes.add(mode);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public void removeMode(Mode mode) {
         mModes.remove(mode);
-        mMaxSpaceRequired = calculateOverallSpaceNeeded();
+        mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 
     public int getLowerBound() {
@@ -108,7 +109,7 @@ public class RandomPatternGenerator {
         return (mUpperBound - mLowerBound) >= mMaxSpaceRequired;
     }
 
-    private int calculateOverallSpaceNeeded() {
+    private int calculateMaxSpaceRequired() {
         int maxSpace = -1;
         // Todo: better solution than brute force
         for (PhraseTemplate phraseTemplate : mPhraseTemplates) {
@@ -121,4 +122,5 @@ public class RandomPatternGenerator {
         }
         return maxSpace;
     }
+
 }
