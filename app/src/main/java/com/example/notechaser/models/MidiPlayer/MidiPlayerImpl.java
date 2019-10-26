@@ -20,7 +20,7 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private static final int DEFAULT_VOLUME = 65;
 
-    private static final int NOTE_PLAYBACK_DURATION_MILLIS = 250;
+    private static final int NOTE_PLAYBACK_DURATION_MILLIS = 500;
 
     private Thread mPlaybackThread;
 
