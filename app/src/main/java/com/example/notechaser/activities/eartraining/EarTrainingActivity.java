@@ -3,11 +3,8 @@ package com.example.notechaser.activities.eartraining;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.keyfinder.MajorMode;
-import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.R;
@@ -16,20 +13,7 @@ import com.example.notechaser.models.MidiPlayer.MidiPlayerImpl;
 import com.example.notechaser.models.PatternEngine.PatternEngine;
 import com.example.notechaser.models.PatternEngine.PatternEngineImpl;
 
-import org.billthefarmer.mididriver.MidiDriver;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.android.AudioDispatcherFactory;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchProcessor;
-import be.tarsos.dsp.util.PitchConverter;
 
 public class EarTrainingActivity extends AppCompatActivity {
 
@@ -79,6 +63,10 @@ public class EarTrainingActivity extends AppCompatActivity {
     public void playPattern(View view) {
         mPatternEngine.generatePattern();
         mMidiPlayer.playPattern(mPatternEngine.getCurPattern().getNotes());
+    }
+
+    public void stopPattern(View view) {
+        mMidiPlayer.stopCurPlayback();
     }
 
 }

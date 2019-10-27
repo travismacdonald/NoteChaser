@@ -12,6 +12,8 @@ public interface MidiPlayer {
 
     void playPattern(List<Note> toPlay);
 
+    void stopCurPlayback();
+
     void playChord(List<Note> toPlay);
 
     int getPlugin();

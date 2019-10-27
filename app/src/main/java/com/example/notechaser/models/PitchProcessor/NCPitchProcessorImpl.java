@@ -94,6 +94,6 @@ public class NCPitchProcessorImpl implements NCPitchProcessor, NCPitchProcessorO
 
     @Override
     public void handlePitchResult(int pitch) {
-        
+
     }
 }
