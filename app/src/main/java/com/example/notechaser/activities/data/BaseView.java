@@ -1,4 +1,4 @@
-package com.example.notechaser;
+package com.example.notechaser.activities.data;
 
 public interface BaseView<T> {
 

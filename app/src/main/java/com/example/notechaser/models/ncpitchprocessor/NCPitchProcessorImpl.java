@@ -1,8 +1,6 @@
-package com.example.notechaser.models.PitchProcessor;
+package com.example.notechaser.models.ncpitchprocessor;
 
 import android.support.v7.app.AppCompatActivity;
-
-import com.example.keyfinder.MusicTheory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,7 @@ import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.util.PitchConverter;
 
-public class NCPitchProcessorImpl implements NCPitchProcessor, NCPitchProcessorObserver {
+public class NCPitchProcessorImpl implements NCPitchProcessor {
 
     private static final int SAMPLE_RATE = 22050;
 
@@ -90,10 +88,5 @@ public class NCPitchProcessorImpl implements NCPitchProcessor, NCPitchProcessorO
             return -1;
         }
         return PitchConverter.hertzToMidiKey(pitchInHz);
-    }
-
-    @Override
-    public void handlePitchResult(int pitch) {
-
     }
 }

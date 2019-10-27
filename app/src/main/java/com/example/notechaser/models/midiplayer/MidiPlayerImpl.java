@@ -1,4 +1,4 @@
-package com.example.notechaser.models.MidiPlayer;
+package com.example.notechaser.models.midiplayer;
 
 import android.util.Log;
 

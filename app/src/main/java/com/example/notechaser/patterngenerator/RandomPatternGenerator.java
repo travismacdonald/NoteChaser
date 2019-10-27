@@ -1,4 +1,4 @@
-package com.example.notechaser.PatternGenerator;
+package com.example.notechaser.patterngenerator;
 
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.Pattern;
@@ -13,7 +13,7 @@ public class RandomPatternGenerator {
     /**
      * For storing in memory.
      */
-    private String name;
+    private String mName;
 
     private Random mRandom;
 
@@ -42,11 +42,11 @@ public class RandomPatternGenerator {
 
     public Pattern generatePattern() {
         if (hasSufficientSpace()) {
-            // pick random template
+            // pick mRandom template
             PhraseTemplate phraseTemplate = mPhraseTemplates.get(mRandom.nextInt(mPhraseTemplates.size()));
-            // pick random mode
+            // pick mRandom mode
             Mode mode = mModes.get(mRandom.nextInt(mModes.size()));
-            // pick random key
+            // pick mRandom key
             // one of the ugliest lines of code ive seen
             int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - Pattern.calculateMinSpaceRequired(phraseTemplate, mode) + 1) + mLowerBound;
             // return that shit
@@ -74,7 +74,7 @@ public class RandomPatternGenerator {
     }
 
     public void addMode(List<Mode> modes) {
-        mModes.addAll(modes);
+        this.mModes.addAll(modes);
         mMaxSpaceRequired = calculateMaxSpaceRequired();
     }
 

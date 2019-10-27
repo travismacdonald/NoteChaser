@@ -1,4 +1,4 @@
-package com.example.notechaser.models.PitchProcessor;
+package com.example.notechaser.models.ncpitchprocessor;
 
 public interface NCPitchProcessor {
 

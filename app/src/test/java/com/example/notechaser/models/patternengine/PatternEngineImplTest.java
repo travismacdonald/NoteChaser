@@ -1,4 +1,4 @@
-package com.example.notechaser.models.PatternEngine;
+package com.example.notechaser.models.patternengine;
 
 import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.Note;

@@ -1,10 +1,10 @@
-package com.example.notechaser.models.PatternEngine;
+package com.example.notechaser.models.patternengine;
 
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.PatternGenerator.RandomPatternGenerator;
+import com.example.notechaser.patterngenerator.RandomPatternGenerator;
 
 import java.util.List;
 

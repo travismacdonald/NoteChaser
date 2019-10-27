@@ -8,10 +8,10 @@ import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.R;
-import com.example.notechaser.models.MidiPlayer.MidiPlayer;
-import com.example.notechaser.models.MidiPlayer.MidiPlayerImpl;
-import com.example.notechaser.models.PatternEngine.PatternEngine;
-import com.example.notechaser.models.PatternEngine.PatternEngineImpl;
+import com.example.notechaser.models.midiplayer.MidiPlayer;
+import com.example.notechaser.models.midiplayer.MidiPlayerImpl;
+import com.example.notechaser.models.patternengine.PatternEngine;
+import com.example.notechaser.models.patternengine.PatternEngineImpl;
 
 import java.util.List;
 
