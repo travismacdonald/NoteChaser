@@ -1,5 +1,8 @@
 package com.example.notechaser.activities.eartraining;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +13,10 @@ import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.R;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
 import com.example.notechaser.models.midiplayer.MidiPlayerImpl;
+import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
+import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorImpl;
+import com.example.notechaser.models.notefilter.NoteFilter;
+import com.example.notechaser.models.notefilter.NoteFilterImpl;
 import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.patternengine.PatternEngineImpl;
 
@@ -17,46 +24,43 @@ import java.util.List;
 
 public class EarTrainingActivity extends AppCompatActivity {
 
-    MidiPlayer mMidiPlayer;
+    private EarTrainingPresenter mEarTrainingPresenter; // todo : this can stay right here; good kitty
 
-    PatternEngine mPatternEngine;
+    MidiPlayer mMidiPlayer; //todo gotto go
 
-    PhraseTemplate template;
+    PatternEngine mPatternEngine; // todo gtfo
 
-    PhraseTemplate otherTemplate;
+    PhraseTemplate template; // todo fuck out of here
 
-    List<Note> toPlay;
+    PhraseTemplate otherTemplate; // todo you too bitch
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ear_training);
+        setContentView(R.layout.ear_training_activity);
 
-        mMidiPlayer = new MidiPlayerImpl();
-        mPatternEngine = new PatternEngineImpl();
+        EarTrainingFragment earTrainingFragment =
+                (EarTrainingFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
 
-        mPatternEngine.setBounds(36, 60);
+        if (earTrainingFragment == null) {
+            earTrainingFragment = EarTrainingFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.contentFrame, earTrainingFragment);
+            transaction.commit();
+        }
 
-        mPatternEngine.addMode(new MajorMode(0));
-        mPatternEngine.addMode(new MajorMode(1));
+        //view, pattern engine, midiplayer, processor, filter
+        PatternEngine patternEngine = new PatternEngineImpl();
+        MidiPlayer midiPlayer = new MidiPlayerImpl();
+        NCPitchProcessor pitchProcessor = new NCPitchProcessorImpl(this);
+        NoteFilter noteFilter = new NoteFilterImpl();
 
-        template = new PhraseTemplate();
-        template.addDegree(0);
-        template.addDegree(2);
-        template.addDegree(3);
-        template.addDegree(4);
-
-        otherTemplate = new PhraseTemplate();
-        otherTemplate.addDegree(0);
-        otherTemplate.addDegree(1);
-        otherTemplate.addDegree(2);
-        otherTemplate.addDegree(4);
-
-        mPatternEngine.addPhraseTemplate(template);
-        mPatternEngine.addPhraseTemplate(otherTemplate);
-
-        mMidiPlayer.setPlugin(0);
-        mMidiPlayer.start();
+        mEarTrainingPresenter = new EarTrainingPresenter(
+                earTrainingFragment,
+                patternEngine,
+                midiPlayer,
+                pitchProcessor,
+                noteFilter);
 
     }
 

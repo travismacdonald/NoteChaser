@@ -1,7 +1,5 @@
 package com.example.notechaser.models.midiplayer;
 
-import android.util.Log;
-
 import com.example.keyfinder.Note;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -117,13 +115,11 @@ public class MidiPlayerImpl implements MidiPlayer {
     }
 
     private void startNotePlayback(Note toStart) {
-        Log.d("test", "called from inside start note playback");
         sendMessage(START, toStart.getIx(), mVolume);
         mActiveNotes.add(toStart);
     }
 
     private void stopNotePlayback(Note toStop) {
-        Log.d("test", "called from inside stop note playback");
         sendMessage(STOP, toStop.getIx(), VOLUME_OFF);
         mActiveNotes.remove(toStop);
     }

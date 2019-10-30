@@ -17,31 +17,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/randomToneButton"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="playPattern"
-        android:text="@string/randomToneButtonText"
         android:padding="15dp"
+        android:text="@string/randomToneButtonText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/stopButton"/>
+        app:layout_constraintEnd_toStartOf="@id/stop_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="stopPattern"
-        android:text="stop"
         android:padding="15dp"
+        android:text="stop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/randomToneButton"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/play_button" />
 
 </android.support.constraint.ConstraintLayout>

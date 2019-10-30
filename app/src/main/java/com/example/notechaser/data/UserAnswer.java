@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.data;
+package com.example.notechaser.data;
 
 import com.example.keyfinder.Note;
 

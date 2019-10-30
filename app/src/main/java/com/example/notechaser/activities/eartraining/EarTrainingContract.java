@@ -1,18 +1,22 @@
 package com.example.notechaser.activities.eartraining;
 
-import com.example.keyfinder.Note;
-import com.example.notechaser.activities.data.BasePresenter;
-import com.example.notechaser.activities.data.BaseView;
+import com.example.notechaser.data.BasePresenter;
+import com.example.notechaser.data.BaseView;
 
 public class EarTrainingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showNoteHeard(Note note);
+        void showNoteHeard();
+
+        // Reset after answer correct or incorrect
+        void showNoNotesHeard();
+
+        void showAnswerResult(boolean answerIsCorrect);
 
         void showListening();
 
-        void showPlayingPattern();
+        void showPatternIsPlaying();
 
         void showInactive();
 
@@ -20,7 +24,12 @@ public class EarTrainingContract {
 
     interface Presenter extends BasePresenter {
 
+        void setLowerBound(int lowerBound);
 
+        void setUpperBound(int upperBound);
+
+        // Todo: method is only for testing; delete when not needed
+        void playRandomPattern();
 
     }
 
