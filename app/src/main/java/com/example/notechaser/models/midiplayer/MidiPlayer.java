@@ -20,6 +20,8 @@ public interface MidiPlayer {
     // Notify observer when pattern has finished playing
     void playPattern(Pattern toPlay, PatternPlayerObserver observer);
 
+    void playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay);
+
     void stopCurPlayback();
 
     void playChord(List<Note> toPlay);

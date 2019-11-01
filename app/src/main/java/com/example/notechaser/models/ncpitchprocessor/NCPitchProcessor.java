@@ -10,4 +10,6 @@ public interface NCPitchProcessor {
 
     void removePitchObserver(NCPitchProcessorObserver observer);
 
+    boolean isRunning();
+
 }

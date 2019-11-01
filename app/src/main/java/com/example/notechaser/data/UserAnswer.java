@@ -31,7 +31,7 @@ public class UserAnswer {
         if (mAnswer.size() > mExpectedSize) {
             mAnswer.remove(0); // dequeue
         }
-        Log.d("debug", toString());
+        Log.d("debug", toAdd.toString());
     }
 
     public void clearAnswer() {

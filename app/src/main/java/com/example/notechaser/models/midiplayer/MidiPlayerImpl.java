@@ -102,6 +102,41 @@ public class MidiPlayerImpl implements MidiPlayer {
     }
 
     @Override
+    public void playPattern(final Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
+        playPattern(toPlay.getNotes(), observer, startDelay);
+    }
+
+    public void playPattern(final List<Note> toPlay, PatternPlayerObserver observer, int startDelay) {
+        Runnable curPattern = () -> {
+            try {
+                Thread.sleep(startDelay);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            for (Note curNote : toPlay) {
+                startNotePlayback(curNote);
+                try {
+                    Thread.sleep(NOTE_PLAYBACK_DURATION_MILLIS);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                if (!mInterruptPlayback) {
+                    stopNotePlayback(curNote);
+                }
+                else {
+                    mInterruptPlayback = false;
+                    break;
+                }
+            }
+            if (observer != null) {
+                observer.handlePatternFinished();
+            }
+        };
+        mPlaybackThread = new Thread(curPattern);
+        mPlaybackThread.start();
+    }
+
+    @Override
     public void stopCurPlayback() {
         mInterruptPlayback = true;
         for (Note toStop : mActiveNotes) {

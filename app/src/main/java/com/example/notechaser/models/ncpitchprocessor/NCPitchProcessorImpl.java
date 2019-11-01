@@ -83,6 +83,11 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         mPitchObservers.remove(observer);
     }
 
+    @Override
+    public boolean isRunning() {
+        return mDispatcher == null;
+    }
+
     private int convertPitchToIx(double pitchInHz) {
         if (pitchInHz == -1) {
             return -1;

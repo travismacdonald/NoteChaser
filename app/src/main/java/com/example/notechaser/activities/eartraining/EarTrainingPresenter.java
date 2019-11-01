@@ -21,6 +21,9 @@ public class EarTrainingPresenter
     enum State {
         INACTIVE, PLAYING_PATTERN, LISTENING
     }
+
+    private final static int PLAY_PATTERN_AGAIN = 3000;
+
     private EarTrainingContract.View mView;
 
     private PatternEngine mPatternEngine;
@@ -39,6 +42,12 @@ public class EarTrainingPresenter
 
     private Note mLastNoteAdded;
 
+    // the initial time stamp that no note was heard
+    private long mNullInitHeard;
+
+
+    private boolean mLastNoteWasNull;
+
     // Todo: These are test variables; delete when no longer needed
 
     public EarTrainingPresenter(EarTrainingContract.View view,
@@ -51,11 +60,12 @@ public class EarTrainingPresenter
         mMidiPlayer = midiPlayer;
         mPitchProcessor = pitchProcessor;
         mNoteFilter = noteFilter;
+        mNullInitHeard = -1;
 
         mState = State.INACTIVE;
         mUserAnswer = null;
-//        mCurPattern = null;
         mLastNoteAdded = null;
+        mLastNoteWasNull = false;
 
         mView.setPresenter(this);
         mPitchProcessor.addPitchObserver(this);
@@ -101,11 +111,14 @@ public class EarTrainingPresenter
 
     // Run single exercise
     private void _startEarTrainingExercise() {
+        if (mPitchProcessor.isRunning()) {
+            mPitchProcessor.stop();
+        }
         mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
         mState = State.PLAYING_PATTERN;
 //        Runnable exerciseRunnable = () -> {
-            mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this);
+        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, 150);
 //        };
 //        Thread mExerciseThread = new Thread(exerciseRunnable);
 //        mExerciseThread.start();
@@ -126,10 +139,19 @@ public class EarTrainingPresenter
                 // Null isn't really added,
                 // but it means there was space in between the last heard note.
                 // This is in place to avoid repeatedly adding the same note
-                mLastNoteAdded = null;
+                if (!mLastNoteWasNull) {
+                    mLastNoteWasNull = true;
+                    mNullInitHeard = System.currentTimeMillis();
+                    mLastNoteAdded = null;
+                }
+                else if (System.currentTimeMillis() - mNullInitHeard > PLAY_PATTERN_AGAIN) {
+                    _startEarTrainingExercise();
+                }
+
             }
             else {
                 curNote = new Note(pitchIx);
+                mLastNoteWasNull = false;
 
                 /* Add note */
                 if (mNoteFilter.isNoteValid(curNote) && !curNote.equals(mLastNoteAdded)) {
@@ -139,12 +161,9 @@ public class EarTrainingPresenter
 
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
-                        Log.d("debug", "user: " + mUserAnswer.toString());
-                        Log.d("debug", "actu: " + mPatternEngine.getCurPattern().toString());
                         boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
 //                        mView.showAnswerResult(answerCorrect);
                         if (answerCorrect) {
-                            mPitchProcessor.stop();
                             mView.showAnswerCorrect();
                             startEarTrainingExercise();
                         }
@@ -164,7 +183,6 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePatternFinished() {
-        Log.d("debug", "handle pitch result");
         mState = State.LISTENING;
         mPitchProcessor.start();
     }
