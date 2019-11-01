@@ -6,7 +6,7 @@ import com.example.keyfinder.Note;
 
 public class NoteFilterImpl implements NoteFilter {
 
-    private static final int FILTER_LEN_MILLIS = 300;
+    private static final int FILTER_LEN_MILLIS = 250;
 
     private Note mPrevNote;
 

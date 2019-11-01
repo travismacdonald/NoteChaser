@@ -3,6 +3,7 @@ package com.example.notechaser.activities.eartraining;
 import android.util.Log;
 
 import com.example.keyfinder.MajorMode;
+import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.data.UserAnswer;
@@ -22,7 +23,7 @@ public class EarTrainingPresenter
         INACTIVE, PLAYING_PATTERN, LISTENING
     }
 
-    private final static int PLAY_PATTERN_AGAIN = 3000;
+    private final static int PLAY_PATTERN_AGAIN = 1500;
 
     private EarTrainingContract.View mView;
 
@@ -193,6 +194,7 @@ public class EarTrainingPresenter
 
         mPatternEngine.addMode(new MajorMode(0));
         mPatternEngine.addMode(new MajorMode(1));
+        mPatternEngine.addMode(new MelodicMinorMode(3));
 
 
         PhraseTemplate template = new PhraseTemplate();
@@ -207,8 +209,16 @@ public class EarTrainingPresenter
         otherTemplate.addDegree(2);
         otherTemplate.addDegree(4);
 
+        PhraseTemplate otherOtherTemplate = new PhraseTemplate();
+        otherOtherTemplate.addDegree(6);
+        otherOtherTemplate.addDegree(0);
+        otherOtherTemplate.addDegree(2);
+        otherOtherTemplate.addDegree(4);
+        otherOtherTemplate.addDegree(3);
+
         mPatternEngine.addPhraseTemplate(template);
         mPatternEngine.addPhraseTemplate(otherTemplate);
+        mPatternEngine.addPhraseTemplate(otherOtherTemplate);
 
     }
 
