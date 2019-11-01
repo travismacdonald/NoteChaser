@@ -7,12 +7,16 @@ public class EarTrainingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showNoteHeard();
+        void showNumNotesHeard(int curCount, int totalCount);
 
-        // Reset after answer correct or incorrect
-        void showNoNotesHeard();
+//        // Reset after answer correct or incorrect
+//        void showNoNotesHeard(int totalNotes);
 
         void showAnswerResult(boolean answerIsCorrect);
+
+        void showAnswerCorrect();
+
+        void showAnswerIncorrect();
 
         void showListening();
 
@@ -30,6 +34,10 @@ public class EarTrainingContract {
 
         // Todo: method is only for testing; delete when not needed
         void playRandomPattern();
+
+        void startEarTrainingExercise();
+
+        void stopEarTrainingExercise();
 
     }
 

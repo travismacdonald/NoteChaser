@@ -1,27 +1,37 @@
 package com.example.notechaser.data;
 
+import android.util.Log;
+
 import com.example.keyfinder.Note;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserAnswer {
 
     private List<Note> mAnswer;
 
-    public UserAnswer() {
-        mAnswer = null;
+    private int mExpectedSize;
+
+    public UserAnswer(int expectedSize) {
+        mAnswer = new LinkedList<>();
+        mExpectedSize = expectedSize;
     }
 
     public List<Note> getAnswer() {
         return mAnswer;
     }
 
-    public int getAnswerSize() {
+    public int getExpectedSize() {
         return mAnswer.size();
     }
 
     public void addNote(Note toAdd) {
-        mAnswer.add(toAdd);
+        mAnswer.add(toAdd); // queue
+        if (mAnswer.size() > mExpectedSize) {
+            mAnswer.remove(0); // dequeue
+        }
+        Log.d("debug", toString());
     }
 
     public void clearAnswer() {
@@ -32,4 +42,12 @@ public class UserAnswer {
         return mAnswer.size();
     }
 
+    @Override
+    public String toString() {
+        String toReturn = "";
+        for (Note note : mAnswer) {
+            toReturn += note.toString() + " ";
+        }
+        return toReturn;
+    }
 }

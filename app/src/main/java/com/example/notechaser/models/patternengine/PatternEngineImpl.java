@@ -10,8 +10,9 @@ import java.util.List;
 
 public class PatternEngineImpl implements PatternEngine {
 
-    // Todo: probably make this abstract eventually
+    // Todo: make this abstract: RPG can then hold any kind of random pattern generator
     private RandomPatternGenerator mRandomPatternGenerator;
+
     private Pattern mCurPattern;
 
     public PatternEngineImpl() {
@@ -25,8 +26,9 @@ public class PatternEngineImpl implements PatternEngine {
     }
 
     @Override
-    public void generatePattern() {
+    public Pattern generatePattern() {
         mCurPattern = mRandomPatternGenerator.generatePattern();
+        return mCurPattern;
     }
 
     @Override

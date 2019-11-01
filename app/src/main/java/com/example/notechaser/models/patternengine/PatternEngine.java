@@ -16,7 +16,7 @@ public interface PatternEngine {
     Pattern getCurPattern();
 
     // Generate and return random pattern
-    void generatePattern();
+    Pattern generatePattern();
 
     // Check if user answer is same as notes played
     boolean isAnswerCorrect(List<Note> answer);

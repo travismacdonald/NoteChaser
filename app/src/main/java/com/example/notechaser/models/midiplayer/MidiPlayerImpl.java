@@ -1,6 +1,7 @@
 package com.example.notechaser.models.midiplayer;
 
 import com.example.keyfinder.Note;
+import com.example.keyfinder.eartraining.Pattern;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 public class MidiPlayerImpl implements MidiPlayer {
+
+    /* Some Midi Constants */
 
     private static final int START = 0X90;
 
@@ -21,6 +24,7 @@ public class MidiPlayerImpl implements MidiPlayer {
     private static final int DEFAULT_VOLUME = 65;
 
     private static final int NOTE_PLAYBACK_DURATION_MILLIS = 500;
+
 
     private Thread mPlaybackThread;
 
@@ -57,7 +61,7 @@ public class MidiPlayerImpl implements MidiPlayer {
     }
 
     @Override
-    public void playPattern(final List<Note> toPlay) {
+    public void playPattern(final List<Note> toPlay, PatternPlayerObserver observer) {
         Runnable curPattern = () -> {
             for (Note curNote : toPlay) {
                 startNotePlayback(curNote);
@@ -74,10 +78,27 @@ public class MidiPlayerImpl implements MidiPlayer {
                     break;
                 }
             }
+            if (observer != null) {
+                observer.handlePatternFinished();
+            }
         };
         mPlaybackThread = new Thread(curPattern);
         mPlaybackThread.start();
+    }
 
+    @Override
+    public void playPattern(final List<Note> toPlay) {
+        playPattern(toPlay, null);
+    }
+
+    @Override
+    public void playPattern(final Pattern toPlay) {
+        playPattern(toPlay.getNotes(), null);
+    }
+
+    @Override
+    public void playPattern(final Pattern toPlay, PatternPlayerObserver observer) {
+        playPattern(toPlay.getNotes(), observer);
     }
 
     @Override

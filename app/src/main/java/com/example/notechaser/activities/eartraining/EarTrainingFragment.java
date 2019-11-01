@@ -3,12 +3,26 @@ package com.example.notechaser.activities.eartraining;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.notechaser.R;
+
+// TODO
+/*
+ * Steps for implemented ear training exercise:
+ * X 1) change play button to start/stop button
+ *   2) add text view which shows the number of notes heard
+ *   3) when notes reached: if correct -> play new pattern; else repeat
+ *   4) if notes haven't been heard for x amount of time, reset
+ *
+ *   a) add upper and lower bound edit texts
+ */
 
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
 
@@ -18,7 +32,10 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
 
     private Button mPlayButton;
 
+    // todo: probably delete soon
     private Button mStopButton;
+
+    private TextView mNotesHeardTv;
 
     public EarTrainingFragment() {
         // Required empty public constructor
@@ -55,18 +72,31 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     }
 
     @Override
-    public void showNoteHeard() {
-
+    public void showNumNotesHeard(int curCount, int answerCount) {
+//        String numHeard = mNotesHeardTv.getText().toString();
+        mNotesHeardTv.setText(curCount + "/" + answerCount);
     }
 
-    @Override
-    public void showNoNotesHeard() {
-
-    }
+//    @Override
+//    public void showNoNotesHeard(int totalNotes) {
+//        mNotesHeardTv.setText(0 + "/" + totalNotes);
+//    }
 
     @Override
     public void showAnswerResult(boolean answerIsCorrect) {
 
+    }
+
+    @Override
+    public void showAnswerCorrect() {
+        Log.d("debug", "correct");
+        Toast.makeText(mRoot.getContext(), "correct", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAnswerIncorrect() {
+        Log.d("debug", "not correct bitch");
+        Toast.makeText(mRoot.getContext(), "incorrect", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -91,10 +121,17 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
 
     private void setupView() {
         mPlayButton = mRoot.findViewById(R.id.play_button);
-        mStopButton = mRoot.findViewById(R.id.stop_button);
-
         mPlayButton.setOnClickListener(v -> {
-            mPresenter.playRandomPattern();
+//            mPresenter.playRandomPattern();
+            mPresenter.startEarTrainingExercise();
+            if (mPlayButton.getText().toString().equals("Start")) {
+                mPlayButton.setText("Stop");
+            }
+            else {
+                mPlayButton.setText("Start");
+            }
         });
+
+        mNotesHeardTv = mRoot.findViewById(R.id.notes_heard_tv);
     }
 }
