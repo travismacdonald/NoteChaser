@@ -17,6 +17,7 @@ import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
+    public static final int PATTERN_START_DELAY = 150;
     // for debugging
     private long mLastTimeAround = -1;
 
@@ -121,12 +122,15 @@ public class EarTrainingPresenter
         mState = State.PLAYING_PATTERN;
         mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, 150);
+        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, PATTERN_START_DELAY);
     }
 
     @Override
     public void stopEarTrainingExercise() {
         mState = State.INACTIVE;
+        if (mPitchProcessor.isRunning()) {
+            mPitchProcessor.stop();
+        }
     }
 
     @Override

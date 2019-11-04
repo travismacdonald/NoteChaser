@@ -77,7 +77,7 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         }
         mDispatcher.stop();
         mIsRunning = false;
-        mDispatcher = null;
+//        mDispatcher = null;
     }
 
     @Override

@@ -122,13 +122,13 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     private void setupView() {
         mPlayButton = mRoot.findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(v -> {
-//            mPresenter.playRandomPattern();
-            mPresenter.startEarTrainingExercise();
             if (mPlayButton.getText().toString().equals("Start")) {
                 mPlayButton.setText("Stop");
+                mPresenter.startEarTrainingExercise();
             }
             else {
                 mPlayButton.setText("Start");
+                mPresenter.stopEarTrainingExercise();
             }
         });
 
