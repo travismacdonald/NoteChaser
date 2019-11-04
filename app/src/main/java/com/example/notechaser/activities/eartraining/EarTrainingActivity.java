@@ -19,6 +19,8 @@ import com.example.notechaser.models.notefilter.NoteFilter;
 import com.example.notechaser.models.notefilter.NoteFilterImpl;
 import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.patternengine.PatternEngineImpl;
+import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
+import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayerImpl;
 
 import java.util.List;
 
@@ -49,9 +51,9 @@ public class EarTrainingActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        //view, pattern engine, midiplayer, processor, filter
         PatternEngine patternEngine = new PatternEngineImpl();
         MidiPlayer midiPlayer = new MidiPlayerImpl();
+        SoundPoolPlayer soundPoolPlayer = new SoundPoolPlayerImpl(this);
         NCPitchProcessor pitchProcessor = new NCPitchProcessorImpl(this);
         NoteFilter noteFilter = new NoteFilterImpl();
 
@@ -59,6 +61,7 @@ public class EarTrainingActivity extends AppCompatActivity {
                 earTrainingFragment,
                 patternEngine,
                 midiPlayer,
+                soundPoolPlayer,
                 pitchProcessor,
                 noteFilter);
 

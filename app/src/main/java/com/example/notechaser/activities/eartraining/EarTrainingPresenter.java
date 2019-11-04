@@ -13,25 +13,30 @@ import com.example.notechaser.models.notefilter.NoteFilter;
 import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
+import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
-    public static final int PATTERN_START_DELAY = 150;
     // for debugging
     private long mLastTimeAround = -1;
 
-    enum State {
-        INACTIVE, PLAYING_PATTERN, LISTENING
-    }
+    public static final int PATTERN_START_DELAY = 1000;
 
     private final static int PLAY_PATTERN_AGAIN = 1500;
+
+    enum State {
+        INACTIVE, PLAYING_PATTERN, LISTENING
+
+    }
 
     private EarTrainingContract.View mView;
 
     private PatternEngine mPatternEngine;
 
     private MidiPlayer mMidiPlayer;
+
+    private SoundPoolPlayer mSoundPoolPlayer;
 
     private NCPitchProcessor mPitchProcessor;
 
@@ -56,11 +61,13 @@ public class EarTrainingPresenter
     public EarTrainingPresenter(EarTrainingContract.View view,
                                 PatternEngine patternEngine,
                                 MidiPlayer midiPlayer,
+                                SoundPoolPlayer soundPoolPlayer,
                                 NCPitchProcessor pitchProcessor,
                                 NoteFilter noteFilter) {
         mView = view;
         mPatternEngine = patternEngine;
         mMidiPlayer = midiPlayer;
+        mSoundPoolPlayer = soundPoolPlayer;
         mPitchProcessor = pitchProcessor;
         mNoteFilter = noteFilter;
         mNullInitHeard = -1;
@@ -176,6 +183,7 @@ public class EarTrainingPresenter
                         boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
+                            mSoundPoolPlayer.playAnswerCorrect();
                             startEarTrainingExercise();
                         }
                     }
