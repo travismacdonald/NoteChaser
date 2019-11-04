@@ -17,7 +17,8 @@ import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
-
+    // for debugging
+    private long mLastTimeAround = -1;
 
     enum State {
         INACTIVE, PLAYING_PATTERN, LISTENING
@@ -104,25 +105,23 @@ public class EarTrainingPresenter
 
     @Override
     public void startEarTrainingExercise() {
-
+//        mState = State.PLAYING_PATTERN;
         mPatternEngine.generatePattern();
-        // something about start ear training exercise
-        _startEarTrainingExercise();
+        resumeEarTrainingExercise();
     }
 
     // Run single exercise
-    private void _startEarTrainingExercise() {
-        if (mPitchProcessor.isRunning()) {
-            mPitchProcessor.stop();
+    private void resumeEarTrainingExercise() {
+//        if (mPitchProcessor.isRunning()) {
+//            mPitchProcessor.stop();
+//        }
+        if (!mPitchProcessor.isRunning()) {
+            mPitchProcessor.start();
         }
+        mState = State.PLAYING_PATTERN;
         mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
-        mState = State.PLAYING_PATTERN;
-//        Runnable exerciseRunnable = () -> {
         mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, 150);
-//        };
-//        Thread mExerciseThread = new Thread(exerciseRunnable);
-//        mExerciseThread.start();
     }
 
     @Override
@@ -132,8 +131,16 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePitchResult(int pitchIx) {
+        if (mLastTimeAround == -1) {
+            mLastTimeAround = System.currentTimeMillis();
+        }
+        else {
+            Log.d("debuggy", "" + (System.currentTimeMillis() - mLastTimeAround));
+            mLastTimeAround = System.currentTimeMillis();
+        }
         if (mState == State.LISTENING) {
-//            Log.d("debug", "handle pitch result");
+//            Log.d("debuggy", "pitch = " + pitchIx);
+
             /* Determine Note */
             final Note curNote;
             if (pitchIx == -1) {
@@ -145,10 +152,10 @@ public class EarTrainingPresenter
                     mNullInitHeard = System.currentTimeMillis();
                     mLastNoteAdded = null;
                 }
+                // Repeats pattern for user
                 else if (System.currentTimeMillis() - mNullInitHeard > PLAY_PATTERN_AGAIN) {
-                    _startEarTrainingExercise();
+                    resumeEarTrainingExercise();
                 }
-
             }
             else {
                 curNote = new Note(pitchIx);
@@ -163,29 +170,24 @@ public class EarTrainingPresenter
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
                         boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
-//                        mView.showAnswerResult(answerCorrect);
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
                             startEarTrainingExercise();
                         }
-                        else {
-//                            mView.showAnswerIncorrect();
-//                            _startEarTrainingExercise();
-                        }
                     }
                 }
             }
-
         }
         else {
-            Log.d("debug", "you got some shit going down");
+//            Log.d("debuggy", "Playing pattern");
         }
     }
 
     @Override
     public void handlePatternFinished() {
         mState = State.LISTENING;
-        mPitchProcessor.start();
+        mNullInitHeard = System.currentTimeMillis();
+//        mPitchProcessor.start();
     }
 
     private void setupTest() {

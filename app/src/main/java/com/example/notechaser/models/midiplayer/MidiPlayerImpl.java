@@ -82,7 +82,7 @@ public class MidiPlayerImpl implements MidiPlayer {
                 observer.handlePatternFinished();
             }
         };
-        mPlaybackThread = new Thread(curPattern);
+        mPlaybackThread = new Thread(curPattern, "Playback Thread");
         mPlaybackThread.start();
     }
 
@@ -125,14 +125,14 @@ public class MidiPlayerImpl implements MidiPlayer {
                 }
                 else {
                     mInterruptPlayback = false;
-                    break;
+                    return;
                 }
             }
             if (observer != null) {
                 observer.handlePatternFinished();
             }
         };
-        mPlaybackThread = new Thread(curPattern);
+        mPlaybackThread = new Thread(curPattern, "Playback thread");
         mPlaybackThread.start();
     }
 

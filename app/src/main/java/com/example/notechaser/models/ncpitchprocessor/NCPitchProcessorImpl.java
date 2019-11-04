@@ -22,6 +22,8 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
 
     private AudioDispatcher mDispatcher;
 
+    private boolean mIsRunning;
+
     /**
      * Context needed for processor to run on UI thread.
      * There may be a better way to do this.
@@ -35,14 +37,18 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
 
         mPitchObservers = new ArrayList<>();
         mDispatcher = null;
+        mIsRunning = false;
     }
 
     @Override
     public void start() {
         PitchDetectionHandler handler = (result, event) -> {
+            mIsRunning = true;
             final float pitchInHz = result.getPitch();
             mActivity.runOnUiThread(() -> {
+//            Runnable runnable = () -> {
                 int pitchAsInt = convertPitchToIx(pitchInHz);
+
                 for (NCPitchProcessorObserver observer : mPitchObservers) {
                     observer.handlePitchResult(pitchAsInt);
                 }
@@ -70,6 +76,7 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
             return;
         }
         mDispatcher.stop();
+        mIsRunning = false;
         mDispatcher = null;
     }
 
@@ -85,7 +92,7 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
 
     @Override
     public boolean isRunning() {
-        return mDispatcher == null;
+        return mIsRunning;
     }
 
     private int convertPitchToIx(double pitchInHz) {
