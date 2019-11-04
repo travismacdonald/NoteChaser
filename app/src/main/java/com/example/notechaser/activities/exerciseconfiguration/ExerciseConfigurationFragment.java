@@ -9,22 +9,25 @@ import android.view.ViewGroup;
 
 import com.example.notechaser.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ExerciseConfigurationFragment extends Fragment {
 
+    private View mRoot;
 
     public ExerciseConfigurationFragment() {
         // Required empty public constructor
     }
 
+    public ExerciseConfigurationFragment newInstance() {
+        return new ExerciseConfigurationFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.exercise_configuration_fragment, container, false);
+        mRoot = inflater.inflate(R.layout.exercise_configuration_fragment, container, false);
+        return mRoot;
     }
 
 }
