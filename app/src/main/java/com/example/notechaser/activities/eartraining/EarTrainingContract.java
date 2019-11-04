@@ -9,9 +9,6 @@ public class EarTrainingContract {
 
         void showNumNotesHeard(int curCount, int totalCount);
 
-//        // Reset after answer correct or incorrect
-//        void showNoNotesHeard(int totalNotes);
-
         void showAnswerResult(boolean answerIsCorrect);
 
         void showAnswerCorrect();
