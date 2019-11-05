@@ -3,7 +3,6 @@ package com.example.notechaser.activities.eartraining;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,29 +12,15 @@ import android.widget.Toast;
 
 import com.example.notechaser.R;
 
-// TODO
-/*
- * Steps for implemented ear training exercise:
- * X 1) change play button to start/stop button
- *   2) add text view which shows the number of notes heard
- *   3) when notes reached: if correct -> play new pattern; else repeat
- *   4) if notes haven't been heard for x amount of time, reset
- *
- *   a) add upper and lower bound edit texts
- */
-
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
 
     private EarTrainingContract.Presenter mPresenter;
 
     private View mRoot;
 
-    private Button mPlayButton;
+    private Button mToggleButton;
 
-    // todo: probably delete soon
-    private Button mStopButton;
-
-    private TextView mNotesHeardTv;
+    private TextView mNoteCountTv;
 
     public EarTrainingFragment() {
         // Required empty public constructor
@@ -50,53 +35,33 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRoot = inflater.inflate(R.layout.ear_training_fragment, container, false);
-
-        // Todo: do shit
         setupView();
-
         return mRoot;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         mPresenter.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         mPresenter.stop();
     }
 
     @Override
     public void showNumNotesHeard(int curCount, int answerCount) {
-//        String numHeard = mNotesHeardTv.getText().toString();
-        mNotesHeardTv.setText(curCount + "/" + answerCount);
+//        String numHeard = mNoteCountTv.getText().toString();
+        mNoteCountTv.setText(curCount + "/" + answerCount);
     }
 
-//    @Override
-//    public void showNoNotesHeard(int totalNotes) {
-//        mNotesHeardTv.setText(0 + "/" + totalNotes);
-//    }
-
-    @Override
-    public void showAnswerResult(boolean answerIsCorrect) {
-
-    }
 
     @Override
     public void showAnswerCorrect() {
-        Log.d("debug", "correct");
+        // this is fine for now
         Toast.makeText(mRoot.getContext(), "correct", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showAnswerIncorrect() {
-        Log.d("debug", "not correct bitch");
-        Toast.makeText(mRoot.getContext(), "incorrect", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -120,18 +85,18 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     }
 
     private void setupView() {
-        mPlayButton = mRoot.findViewById(R.id.play_button);
-        mPlayButton.setOnClickListener(v -> {
-            if (mPlayButton.getText().toString().equals("Start")) {
-                mPlayButton.setText("Stop");
+        mToggleButton = mRoot.findViewById(R.id.play_button);
+        mToggleButton.setOnClickListener(v -> {
+            if (mToggleButton.getText().toString().equals("Start")) {
+                mToggleButton.setText("Stop");
                 mPresenter.startEarTrainingExercise();
             }
             else {
-                mPlayButton.setText("Start");
+                mToggleButton.setText("Start");
                 mPresenter.stopEarTrainingExercise();
             }
         });
 
-        mNotesHeardTv = mRoot.findViewById(R.id.notes_heard_tv);
+        mNoteCountTv = mRoot.findViewById(R.id.notes_heard_tv);
     }
 }

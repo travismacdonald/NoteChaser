@@ -55,7 +55,7 @@ public class EarTrainingPresenter
     private long mNullInitHeard;
 
 
-    private boolean mLastNoteWasNull;
+    private boolean mLastNoteIsNull;
 
     // Todo: These are test variables; delete when no longer needed
 
@@ -74,9 +74,9 @@ public class EarTrainingPresenter
         mNullInitHeard = -1;
 
         mState = State.INACTIVE;
-        mUserAnswer = null;
+        mUserAnswer = new UserAnswer();
         mLastNoteAdded = null;
-        mLastNoteWasNull = false;
+        mLastNoteIsNull = false;
 
         mView.setPresenter(this);
         mPitchProcessor.addPitchObserver(this);
@@ -92,6 +92,7 @@ public class EarTrainingPresenter
 
     @Override
     public void stop() {
+        stopEarTrainingExercise();
         mMidiPlayer.stop();
     }
 
@@ -105,13 +106,6 @@ public class EarTrainingPresenter
         mPatternEngine.setUpperBound(upperBound);
     }
 
-    // Todo: only for testing, should be made private later or something
-    @Override
-    public void playRandomPattern() {
-        mPatternEngine.generatePattern();
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this);
-    }
-
     @Override
     public void startEarTrainingExercise(int delay) {
         mPatternEngine.generatePattern();
@@ -120,9 +114,6 @@ public class EarTrainingPresenter
 
     @Override
     public void startEarTrainingExercise() {
-//        mState = State.PLAYING_PATTERN;
-//        mPatternEngine.generatePattern();
-//        resumeEarTrainingExercise();
         startEarTrainingExercise(0);
     }
 
@@ -136,7 +127,10 @@ public class EarTrainingPresenter
             mPitchProcessor.start();
         }
         mState = State.PLAYING_PATTERN;
-        mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
+        // Todo: make sure the change to UserAnswer works correctly
+//        mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
+        mUserAnswer.clear();
+        mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
         mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay);
     }
@@ -144,7 +138,6 @@ public class EarTrainingPresenter
     @Override
     public void stopEarTrainingExercise() {
         mState = State.INACTIVE;
-        Log.d("debuggy", "ear training presenter stop called");
         if (mMidiPlayer.playbackIsActive()) {
             mMidiPlayer.stopCurPlayback();
         }
@@ -159,20 +152,17 @@ public class EarTrainingPresenter
             mLastTimeAround = System.currentTimeMillis();
         }
         else {
-            Log.d("debuggy", "" + (System.currentTimeMillis() - mLastTimeAround));
             mLastTimeAround = System.currentTimeMillis();
         }
         if (mState == State.LISTENING) {
-//            Log.d("debuggy", "pitch = " + pitchIx);
-
             /* Determine Note */
             final Note curNote;
             if (pitchIx == -1) {
                 // Null isn't really added,
                 // but it means there was space in between the last heard note.
                 // This is in place to avoid repeatedly adding the same note
-                if (!mLastNoteWasNull) {
-                    mLastNoteWasNull = true;
+                if (!mLastNoteIsNull) {
+                    mLastNoteIsNull = true;
                     mNullInitHeard = System.currentTimeMillis();
                     mLastNoteAdded = null;
                 }
@@ -183,7 +173,7 @@ public class EarTrainingPresenter
             }
             else {
                 curNote = new Note(pitchIx);
-                mLastNoteWasNull = false;
+                mLastNoteIsNull = false;
 
                 /* Add note */
                 if (mNoteFilter.isNoteValid(curNote) && !curNote.equals(mLastNoteAdded)) {
@@ -203,26 +193,28 @@ public class EarTrainingPresenter
                 }
             }
         }
-        else {
-//            Log.d("debuggy", "Playing pattern");
-        }
     }
 
     @Override
     public void handlePatternFinished() {
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
-//        mPitchProcessor.start();
     }
 
     private void setupTest() {
 
         mPatternEngine.setBounds(40, 76); // low e to high e
 
-        mPatternEngine.addMode(new MajorMode(0));
-        mPatternEngine.addMode(new MajorMode(1));
-        mPatternEngine.addMode(new MelodicMinorMode(3));
-        mPatternEngine.addMode(new HarmonicMinorMode(0));
+
+        for (int i = 0; i < 7; i++) {
+            mPatternEngine.addMode(new MajorMode(i));
+            mPatternEngine.addMode(new MelodicMinorMode(i));
+            mPatternEngine.addMode(new HarmonicMinorMode(i));
+        }
+//        mPatternEngine.addMode(new MajorMode(0));
+//        mPatternEngine.addMode(new MajorMode(1));
+//        mPatternEngine.addMode(new MelodicMinorMode(3));
+//        mPatternEngine.addMode(new HarmonicMinorMode(0));
 
         PhraseTemplate template = new PhraseTemplate();
         template.addDegree(0);
@@ -238,13 +230,13 @@ public class EarTrainingPresenter
 
         PhraseTemplate fullScale = new PhraseTemplate();
         fullScale.addDegree(0);
-        fullScale.addDegree(1);
-        fullScale.addDegree(2);
-        fullScale.addDegree(3);
-        fullScale.addDegree(4);
-        fullScale.addDegree(5);
-        fullScale.addDegree(6);
-        fullScale.addDegree(7);
+//        fullScale.addDegree(1);
+//        fullScale.addDegree(2);
+//        fullScale.addDegree(3);
+//        fullScale.addDegree(4);
+//        fullScale.addDegree(5);
+//        fullScale.addDegree(6);
+//        fullScale.addDegree(7);
 
 //        mPatternEngine.addPhraseTemplate(template);
 //        mPatternEngine.addPhraseTemplate(otherTemplate);

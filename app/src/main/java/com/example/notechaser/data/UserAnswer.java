@@ -11,6 +11,10 @@ public class UserAnswer {
 
     private int mExpectedSize;
 
+    public UserAnswer() {
+        this(-1);
+    }
+
     public UserAnswer(int expectedSize) {
         mAnswer = new LinkedList<>();
         mExpectedSize = expectedSize;
@@ -24,10 +28,14 @@ public class UserAnswer {
         return mAnswer.size();
     }
 
+    public void setExpectedSize(int size) {
+        mExpectedSize = size;
+    }
+
     public void addNote(Note toAdd) {
-        mAnswer.add(toAdd); // queue
+        this.queue(toAdd);
         if (mAnswer.size() > mExpectedSize) {
-            mAnswer.remove(0); // dequeue
+            this.dequeue();
         }
     }
 
@@ -37,6 +45,14 @@ public class UserAnswer {
 
     public int size() {
         return mAnswer.size();
+    }
+
+    private void queue(Note toAdd) {
+        mAnswer.add(toAdd);
+    }
+
+    private void dequeue() {
+        mAnswer.remove(0);
     }
 
     @Override

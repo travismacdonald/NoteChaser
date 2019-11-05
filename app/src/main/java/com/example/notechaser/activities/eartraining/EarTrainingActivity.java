@@ -1,15 +1,9 @@
 package com.example.notechaser.activities.eartraining;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
-import com.example.keyfinder.MajorMode;
-import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.R;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
 import com.example.notechaser.models.midiplayer.MidiPlayerImpl;
@@ -22,19 +16,10 @@ import com.example.notechaser.models.patternengine.PatternEngineImpl;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayerImpl;
 
-import java.util.List;
 
 public class EarTrainingActivity extends AppCompatActivity {
 
-    private EarTrainingPresenter mEarTrainingPresenter; // todo : this can stay right here; good kitty
-
-    MidiPlayer mMidiPlayer; //todo gotto go
-
-    PatternEngine mPatternEngine; // todo gtfo
-
-    PhraseTemplate template; // todo fuck out of here
-
-    PhraseTemplate otherTemplate; // todo you too bitch
+    private EarTrainingPresenter mEarTrainingPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +51,5 @@ public class EarTrainingActivity extends AppCompatActivity {
                 noteFilter);
 
     }
-
-//    public void playPattern(View view) {
-//        mPatternEngine.generatePattern();
-//        mMidiPlayer.playPattern(mPatternEngine.getCurPattern());
-//    }
-
-//    public void stopPattern(View view) {
-//        mMidiPlayer.stopCurPlayback();
-//    }
 
 }

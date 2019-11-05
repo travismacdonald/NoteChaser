@@ -45,8 +45,8 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         PitchDetectionHandler handler = (result, event) -> {
             mIsRunning = true;
             final float pitchInHz = result.getPitch();
+            // Todo: move to thread; move off of main UI thread
             mActivity.runOnUiThread(() -> {
-//            Runnable runnable = () -> {
                 int pitchAsInt = convertPitchToIx(pitchInHz);
 
                 for (NCPitchProcessorObserver observer : mPitchObservers) {
@@ -77,7 +77,6 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         }
         mDispatcher.stop();
         mIsRunning = false;
-//        mDispatcher = null;
     }
 
     @Override

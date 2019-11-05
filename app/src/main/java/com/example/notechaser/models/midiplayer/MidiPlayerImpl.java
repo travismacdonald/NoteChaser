@@ -106,6 +106,7 @@ public class MidiPlayerImpl implements MidiPlayer {
     public void stopCurPlayback() {
         mCurrentPattern.setCanInterrupt(true);
         mCurrentPattern = null;
+
         // Todo: concurrent modification error happening here
         for (Note toStop : mActiveNotes) {
             stopNotePlayback(toStop);

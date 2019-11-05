@@ -9,11 +9,7 @@ public class EarTrainingContract {
 
         void showNumNotesHeard(int curCount, int totalCount);
 
-        void showAnswerResult(boolean answerIsCorrect);
-
         void showAnswerCorrect();
-
-        void showAnswerIncorrect();
 
         void showListening();
 
@@ -29,8 +25,6 @@ public class EarTrainingContract {
 
         void setUpperBound(int upperBound);
 
-        // Todo: method is only for testing; delete when not needed
-        void playRandomPattern();
 
         void startEarTrainingExercise();
 
