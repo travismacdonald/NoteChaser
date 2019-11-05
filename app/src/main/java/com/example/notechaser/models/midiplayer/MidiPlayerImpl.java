@@ -36,7 +36,7 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private Set<Note> mActiveNotes;
 
-    private boolean mInterruptPlayback;
+    private Pattern mCurrentPattern;
 
     public MidiPlayerImpl() {
         mMidiDriver = new MidiDriver();
@@ -44,8 +44,8 @@ public class MidiPlayerImpl implements MidiPlayer {
         mPlugin = -1;
         mPlaybackThread = null;
         mActiveNotes = null;
-        mInterruptPlayback = false;
         mActiveNotes = new HashSet<>();
+        mCurrentPattern = null;
     }
 
     @Override
@@ -61,71 +61,37 @@ public class MidiPlayerImpl implements MidiPlayer {
     }
 
     @Override
-    public void playPattern(final List<Note> toPlay, PatternPlayerObserver observer) {
-        Runnable curPattern = () -> {
-            for (Note curNote : toPlay) {
-                startNotePlayback(curNote);
-                try {
-                    Thread.sleep(NOTE_PLAYBACK_DURATION_MILLIS);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                if (!mInterruptPlayback) {
-                    stopNotePlayback(curNote);
-                }
-                else {
-                    mInterruptPlayback = false;
-                    break;
-                }
-            }
-            if (observer != null) {
-                observer.handlePatternFinished();
-            }
-        };
-        mPlaybackThread = new Thread(curPattern, "Playback Thread");
-        mPlaybackThread.start();
+    public void playPattern(Pattern toPlay) {
+        playPattern(toPlay, null, 0);
     }
 
     @Override
-    public void playPattern(final List<Note> toPlay) {
-        playPattern(toPlay, null);
+    public void playPattern(Pattern toPlay, PatternPlayerObserver observer) {
+        playPattern(toPlay, observer, 0);
     }
 
     @Override
-    public void playPattern(final Pattern toPlay) {
-        playPattern(toPlay.getNotes(), null);
-    }
-
-    @Override
-    public void playPattern(final Pattern toPlay, PatternPlayerObserver observer) {
-        playPattern(toPlay.getNotes(), observer);
-    }
-
-    @Override
-    public void playPattern(final Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
-        playPattern(toPlay.getNotes(), observer, startDelay);
-    }
-
-    public void playPattern(final List<Note> toPlay, PatternPlayerObserver observer, int startDelay) {
+    public void playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
+        mCurrentPattern = toPlay;
         Runnable curPattern = () -> {
             try {
                 Thread.sleep(startDelay);
             } catch (Exception e) {
                 System.out.println(e);
             }
-            for (Note curNote : toPlay) {
+            for (Note curNote : toPlay.getNotes()) {
                 startNotePlayback(curNote);
                 try {
                     Thread.sleep(NOTE_PLAYBACK_DURATION_MILLIS);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                if (!mInterruptPlayback) {
-                    stopNotePlayback(curNote);
+                if (toPlay.canInterrupt()) {
+                    toPlay.setCanInterrupt(false);
+                    return;
                 }
                 else {
-                    mInterruptPlayback = false;
-                    return;
+                    stopNotePlayback(curNote);
                 }
             }
             if (observer != null) {
@@ -138,7 +104,9 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     @Override
     public void stopCurPlayback() {
-        mInterruptPlayback = true;
+        mCurrentPattern.setCanInterrupt(true);
+        mCurrentPattern = null;
+        // Todo: concurrent modification error happening here
         for (Note toStop : mActiveNotes) {
             stopNotePlayback(toStop);
         }
@@ -195,7 +163,8 @@ public class MidiPlayerImpl implements MidiPlayer {
         mMidiDriver.write(message);
     }
 
-    private boolean isPlaybackActive() {
+    @Override
+    public boolean playbackIsActive() {
         return !mActiveNotes.isEmpty();
     }
 }

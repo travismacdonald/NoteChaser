@@ -34,6 +34,8 @@ public class EarTrainingContract {
 
         void startEarTrainingExercise();
 
+        void startEarTrainingExercise(int delay);
+
         void stopEarTrainingExercise();
 
     }

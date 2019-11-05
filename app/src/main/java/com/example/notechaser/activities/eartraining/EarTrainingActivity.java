@@ -67,13 +67,13 @@ public class EarTrainingActivity extends AppCompatActivity {
 
     }
 
-    public void playPattern(View view) {
-        mPatternEngine.generatePattern();
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern().getNotes());
-    }
+//    public void playPattern(View view) {
+//        mPatternEngine.generatePattern();
+//        mMidiPlayer.playPattern(mPatternEngine.getCurPattern());
+//    }
 
-    public void stopPattern(View view) {
-        mMidiPlayer.stopCurPlayback();
-    }
+//    public void stopPattern(View view) {
+//        mMidiPlayer.stopCurPlayback();
+//    }
 
 }

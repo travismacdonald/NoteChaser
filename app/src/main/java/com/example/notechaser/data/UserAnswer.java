@@ -1,7 +1,5 @@
 package com.example.notechaser.data;
 
-import android.util.Log;
-
 import com.example.keyfinder.Note;
 
 import java.util.LinkedList;
@@ -31,10 +29,9 @@ public class UserAnswer {
         if (mAnswer.size() > mExpectedSize) {
             mAnswer.remove(0); // dequeue
         }
-        Log.d("debug", toAdd.toString());
     }
 
-    public void clearAnswer() {
+    public void clear() {
         mAnswer.clear();
     }
 

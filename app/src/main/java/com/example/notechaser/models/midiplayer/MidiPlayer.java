@@ -11,9 +11,9 @@ public interface MidiPlayer {
 
     void stop();
 
-    void playPattern(List<Note> toPlay);
+//    void playPattern(List<Note> toPlay);
 
-    void playPattern(List<Note> toPlay, PatternPlayerObserver observer);
+//    void playPattern(List<Note> toPlay, PatternPlayerObserver observer);
 
     void playPattern(Pattern toPlay);
 
@@ -21,6 +21,8 @@ public interface MidiPlayer {
     void playPattern(Pattern toPlay, PatternPlayerObserver observer);
 
     void playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay);
+
+    boolean playbackIsActive();
 
     void stopCurPlayback();
 

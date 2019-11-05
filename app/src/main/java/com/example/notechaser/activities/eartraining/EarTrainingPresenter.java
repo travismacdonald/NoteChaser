@@ -2,6 +2,7 @@ package com.example.notechaser.activities.eartraining;
 
 import android.util.Log;
 
+import com.example.keyfinder.HarmonicMinorMode;
 import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
@@ -23,7 +24,7 @@ public class EarTrainingPresenter
 
     public static final int PATTERN_START_DELAY = 1000;
 
-    private final static int PLAY_PATTERN_AGAIN = 1500;
+    private final static int PLAY_PATTERN_AGAIN = 1750;
 
     enum State {
         INACTIVE, PLAYING_PATTERN, LISTENING
@@ -108,33 +109,45 @@ public class EarTrainingPresenter
     @Override
     public void playRandomPattern() {
         mPatternEngine.generatePattern();
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern().getNotes(), this);
+        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this);
+    }
+
+    @Override
+    public void startEarTrainingExercise(int delay) {
+        mPatternEngine.generatePattern();
+        resumeEarTrainingExercise(delay);
     }
 
     @Override
     public void startEarTrainingExercise() {
 //        mState = State.PLAYING_PATTERN;
-        mPatternEngine.generatePattern();
-        resumeEarTrainingExercise();
+//        mPatternEngine.generatePattern();
+//        resumeEarTrainingExercise();
+        startEarTrainingExercise(0);
+    }
+
+    private void resumeEarTrainingExercise() {
+        resumeEarTrainingExercise(0);
     }
 
     // Run single exercise
-    private void resumeEarTrainingExercise() {
-//        if (mPitchProcessor.isRunning()) {
-//            mPitchProcessor.stop();
-//        }
+    private void resumeEarTrainingExercise(int delay) {
         if (!mPitchProcessor.isRunning()) {
             mPitchProcessor.start();
         }
         mState = State.PLAYING_PATTERN;
         mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, PATTERN_START_DELAY);
+        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay);
     }
 
     @Override
     public void stopEarTrainingExercise() {
         mState = State.INACTIVE;
+        Log.d("debuggy", "ear training presenter stop called");
+        if (mMidiPlayer.playbackIsActive()) {
+            mMidiPlayer.stopCurPlayback();
+        }
         if (mPitchProcessor.isRunning()) {
             mPitchProcessor.stop();
         }
@@ -184,7 +197,7 @@ public class EarTrainingPresenter
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
                             mSoundPoolPlayer.playAnswerCorrect();
-                            startEarTrainingExercise();
+                            startEarTrainingExercise(PATTERN_START_DELAY);
                         }
                     }
                 }
@@ -209,7 +222,7 @@ public class EarTrainingPresenter
         mPatternEngine.addMode(new MajorMode(0));
         mPatternEngine.addMode(new MajorMode(1));
         mPatternEngine.addMode(new MelodicMinorMode(3));
-
+        mPatternEngine.addMode(new HarmonicMinorMode(0));
 
         PhraseTemplate template = new PhraseTemplate();
         template.addDegree(0);
@@ -223,16 +236,19 @@ public class EarTrainingPresenter
         otherTemplate.addDegree(2);
         otherTemplate.addDegree(4);
 
-        PhraseTemplate otherOtherTemplate = new PhraseTemplate();
-        otherOtherTemplate.addDegree(6);
-        otherOtherTemplate.addDegree(0);
-        otherOtherTemplate.addDegree(2);
-        otherOtherTemplate.addDegree(4);
-        otherOtherTemplate.addDegree(3);
+        PhraseTemplate fullScale = new PhraseTemplate();
+        fullScale.addDegree(0);
+        fullScale.addDegree(1);
+        fullScale.addDegree(2);
+        fullScale.addDegree(3);
+        fullScale.addDegree(4);
+        fullScale.addDegree(5);
+        fullScale.addDegree(6);
+        fullScale.addDegree(7);
 
-        mPatternEngine.addPhraseTemplate(template);
-        mPatternEngine.addPhraseTemplate(otherTemplate);
-        mPatternEngine.addPhraseTemplate(otherOtherTemplate);
+//        mPatternEngine.addPhraseTemplate(template);
+//        mPatternEngine.addPhraseTemplate(otherTemplate);
+        mPatternEngine.addPhraseTemplate(fullScale);
 
     }
 
