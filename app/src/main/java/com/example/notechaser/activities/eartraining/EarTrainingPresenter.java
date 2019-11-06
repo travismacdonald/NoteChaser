@@ -148,6 +148,7 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePitchResult(int pitchIx) {
+        Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
         if (mLastTimeAround == -1) {
             mLastTimeAround = System.currentTimeMillis();
         }
@@ -197,6 +198,7 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePatternFinished() {
+
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
     }
@@ -230,13 +232,13 @@ public class EarTrainingPresenter
 
         PhraseTemplate fullScale = new PhraseTemplate();
         fullScale.addDegree(0);
-//        fullScale.addDegree(1);
-//        fullScale.addDegree(2);
-//        fullScale.addDegree(3);
-//        fullScale.addDegree(4);
-//        fullScale.addDegree(5);
-//        fullScale.addDegree(6);
-//        fullScale.addDegree(7);
+        fullScale.addDegree(1);
+        fullScale.addDegree(2);
+        fullScale.addDegree(3);
+        fullScale.addDegree(4);
+        fullScale.addDegree(5);
+        fullScale.addDegree(6);
+        fullScale.addDegree(7);
 
 //        mPatternEngine.addPhraseTemplate(template);
 //        mPatternEngine.addPhraseTemplate(otherTemplate);

@@ -23,7 +23,9 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private static final int DEFAULT_VOLUME = 65;
 
-    private static final int NOTE_PLAYBACK_DURATION_MILLIS = 500;
+    private static final int NOTE_DURATION = 500;
+
+    private static final int REVERB_DURATION = 850;
 
 
     private Thread mPlaybackThread;
@@ -82,7 +84,7 @@ public class MidiPlayerImpl implements MidiPlayer {
             for (Note curNote : toPlay.getNotes()) {
                 startNotePlayback(curNote);
                 try {
-                    Thread.sleep(NOTE_PLAYBACK_DURATION_MILLIS);
+                    Thread.sleep(NOTE_DURATION);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -95,6 +97,12 @@ public class MidiPlayerImpl implements MidiPlayer {
                 }
             }
             if (observer != null) {
+                // Added sleep here so the pitch processor doesn't pick up the reverb from the last note
+                try {
+                    Thread.sleep(REVERB_DURATION);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
                 observer.handlePatternFinished();
             }
         };
