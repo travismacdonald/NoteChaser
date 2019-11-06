@@ -8,6 +8,7 @@ import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.data.UserAnswer;
+import com.example.notechaser.models.answerchecker.AnswerChecker;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
 import com.example.notechaser.models.midiplayer.PatternPlayerObserver;
 import com.example.notechaser.models.notefilter.NoteFilter;
@@ -35,6 +36,8 @@ public class EarTrainingPresenter
 
     private PatternEngine mPatternEngine;
 
+    private AnswerChecker mChecker;
+
     private MidiPlayer mMidiPlayer;
 
     private SoundPoolPlayer mSoundPoolPlayer;
@@ -47,13 +50,10 @@ public class EarTrainingPresenter
 
     private UserAnswer mUserAnswer;
 
-//    private Pattern mCurPattern;
-
     private Note mLastNoteAdded;
 
     // the initial time stamp that no note was heard
     private long mNullInitHeard;
-
 
     private boolean mLastNoteIsNull;
 
@@ -61,12 +61,14 @@ public class EarTrainingPresenter
 
     public EarTrainingPresenter(EarTrainingContract.View view,
                                 PatternEngine patternEngine,
+                                AnswerChecker checker,
                                 MidiPlayer midiPlayer,
                                 SoundPoolPlayer soundPoolPlayer,
                                 NCPitchProcessor pitchProcessor,
                                 NoteFilter noteFilter) {
         mView = view;
         mPatternEngine = patternEngine;
+        mChecker = checker;
         mMidiPlayer = midiPlayer;
         mSoundPoolPlayer = soundPoolPlayer;
         mPitchProcessor = pitchProcessor;
@@ -148,7 +150,7 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePitchResult(int pitchIx) {
-        Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
+//        Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
         if (mLastTimeAround == -1) {
             mLastTimeAround = System.currentTimeMillis();
         }
@@ -184,7 +186,9 @@ public class EarTrainingPresenter
 
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
-                        boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
+                        final boolean answerCorrect =
+                                mChecker.isCorrectAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+//                        boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
                             mSoundPoolPlayer.playAnswerCorrect();
@@ -232,13 +236,13 @@ public class EarTrainingPresenter
 
         PhraseTemplate fullScale = new PhraseTemplate();
         fullScale.addDegree(0);
-        fullScale.addDegree(1);
+//        fullScale.addDegree(1);
         fullScale.addDegree(2);
-        fullScale.addDegree(3);
+//        fullScale.addDegree(3);
         fullScale.addDegree(4);
-        fullScale.addDegree(5);
+//        fullScale.addDegree(5);
         fullScale.addDegree(6);
-        fullScale.addDegree(7);
+//        fullScale.addDegree(7);
 
 //        mPatternEngine.addPhraseTemplate(template);
 //        mPatternEngine.addPhraseTemplate(otherTemplate);

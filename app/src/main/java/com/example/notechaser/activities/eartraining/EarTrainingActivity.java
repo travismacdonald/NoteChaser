@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.notechaser.R;
+import com.example.notechaser.models.answerchecker.AnswerChecker;
+import com.example.notechaser.models.answerchecker.AnswerCheckerImpl;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
 import com.example.notechaser.models.midiplayer.MidiPlayerImpl;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
@@ -37,6 +39,7 @@ public class EarTrainingActivity extends AppCompatActivity {
         }
 
         PatternEngine patternEngine = new PatternEngineImpl();
+        AnswerChecker checker = new AnswerCheckerImpl();
         MidiPlayer midiPlayer = new MidiPlayerImpl();
         SoundPoolPlayer soundPoolPlayer = new SoundPoolPlayerImpl(this);
         NCPitchProcessor pitchProcessor = new NCPitchProcessorImpl(this);
@@ -45,6 +48,7 @@ public class EarTrainingActivity extends AppCompatActivity {
         mEarTrainingPresenter = new EarTrainingPresenter(
                 earTrainingFragment,
                 patternEngine,
+                checker,
                 midiPlayer,
                 soundPoolPlayer,
                 pitchProcessor,
