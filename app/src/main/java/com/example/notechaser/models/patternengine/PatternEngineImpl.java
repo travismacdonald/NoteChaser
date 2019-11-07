@@ -36,10 +36,10 @@ public class PatternEngineImpl implements PatternEngine {
         return mCurPattern;
     }
 
-    @Override
-    public boolean isAnswerCorrect(List<Note> answer) {
-        return mCurPattern.getNotes().equals(answer);
-    }
+//    @Override
+//    public boolean isAnswerCorrect(List<Note> answer) {
+//        return mCurPattern.getNotes().equals(answer);
+//    }
 
     @Override
     public void addPhraseTemplate(PhraseTemplate toAdd) {

@@ -18,8 +18,8 @@ public interface PatternEngine {
     // Generate and return random pattern
     Pattern generatePattern();
 
-    // Check if user answer is same as notes played
-    boolean isAnswerCorrect(List<Note> answer);
+//    // Check if user answer is same as notes played
+//    boolean isAnswerCorrect(List<Note> answer);
 
 
     void addPhraseTemplate(PhraseTemplate toAdd);

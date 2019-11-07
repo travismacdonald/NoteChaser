@@ -187,7 +187,7 @@ public class EarTrainingPresenter
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
                         final boolean answerCorrect =
-                                mChecker.isCorrectAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+                                mChecker.sameNotesAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
 //                        boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
