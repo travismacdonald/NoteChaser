@@ -53,7 +53,6 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
 
     @Override
     public void showNumNotesHeard(int curCount, int answerCount) {
-//        String numHeard = mNoteCountTv.getText().toString();
         mNoteCountTv.setText(curCount + "/" + answerCount);
     }
 

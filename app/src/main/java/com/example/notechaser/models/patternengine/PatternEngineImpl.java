@@ -1,12 +1,10 @@
 package com.example.notechaser.models.patternengine;
 
 import com.example.keyfinder.Mode;
-import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.patterngenerator.RandomPatternGenerator;
 
-import java.util.List;
 
 public class PatternEngineImpl implements PatternEngine {
 
@@ -35,11 +33,6 @@ public class PatternEngineImpl implements PatternEngine {
     public Pattern getCurPattern() {
         return mCurPattern;
     }
-
-//    @Override
-//    public boolean isAnswerCorrect(List<Note> answer) {
-//        return mCurPattern.getNotes().equals(answer);
-//    }
 
     @Override
     public void addPhraseTemplate(PhraseTemplate toAdd) {

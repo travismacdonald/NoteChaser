@@ -20,7 +20,6 @@ public class ExerciseConfigurationPresenter {
                                           ) {
         mView = view;
 
-
     }
 
 }

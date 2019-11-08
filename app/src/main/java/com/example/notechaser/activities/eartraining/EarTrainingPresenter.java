@@ -129,8 +129,6 @@ public class EarTrainingPresenter
             mPitchProcessor.start();
         }
         mState = State.PLAYING_PATTERN;
-        // Todo: make sure the change to UserAnswer works correctly
-//        mUserAnswer = new UserAnswer(mPatternEngine.getCurPattern().size());
         mUserAnswer.clear();
         mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
@@ -150,7 +148,7 @@ public class EarTrainingPresenter
 
     @Override
     public void handlePitchResult(int pitchIx) {
-//        Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
+        Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
         if (mLastTimeAround == -1) {
             mLastTimeAround = System.currentTimeMillis();
         }
@@ -187,8 +185,7 @@ public class EarTrainingPresenter
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
                         final boolean answerCorrect =
-                                mChecker.sameNotesAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
-//                        boolean answerCorrect = mPatternEngine.isAnswerCorrect(mUserAnswer.getAnswer());
+                                mChecker.samePatternAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
                             mSoundPoolPlayer.playAnswerCorrect();
@@ -207,10 +204,10 @@ public class EarTrainingPresenter
         mNullInitHeard = System.currentTimeMillis();
     }
 
+
+
     private void setupTest() {
-
         mPatternEngine.setBounds(40, 76); // low e to high e
-
 
         for (int i = 0; i < 7; i++) {
             mPatternEngine.addMode(new MajorMode(i));
@@ -247,7 +244,6 @@ public class EarTrainingPresenter
 //        mPatternEngine.addPhraseTemplate(template);
 //        mPatternEngine.addPhraseTemplate(otherTemplate);
         mPatternEngine.addPhraseTemplate(fullScale);
-
     }
 
 }

@@ -6,8 +6,6 @@ import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.MusicTheory;
 
 
-// Todo: harmonic minor
-
 public class ModeCollection {
 
     private final MajorMode[] mMajorModes;

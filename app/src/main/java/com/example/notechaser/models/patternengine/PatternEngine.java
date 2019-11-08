@@ -5,7 +5,6 @@ import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 
-import java.util.List;
 
 public interface PatternEngine {
 
@@ -17,10 +16,6 @@ public interface PatternEngine {
 
     // Generate and return random pattern
     Pattern generatePattern();
-
-//    // Check if user answer is same as notes played
-//    boolean isAnswerCorrect(List<Note> answer);
-
 
     void addPhraseTemplate(PhraseTemplate toAdd);
 
