@@ -3,29 +3,49 @@ package com.example.notechaser.models.patternengine;
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.patterngenerator.RandomPatternGenerator;
+import com.example.notechaser.data.NCIntervalTemplate;
+import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
+import com.example.notechaser.patterngenerator.TemplatePatternGenerator;
 
 
 public class PatternEngineImpl implements PatternEngine {
 
+    private enum Type {
+        PHRASE, INTERVAL
+    }
+
     // Todo: make this abstract: RPG can then hold any kind of random pattern generator
-    private RandomPatternGenerator mRandomPatternGenerator;
+    private TemplatePatternGenerator mTemplatePatternGenerator;
+
+    private IntervalPatternGenerator mIntervalPatternGenerator;
 
     private Pattern mCurPattern;
 
+    private Type mType;
+
     public PatternEngineImpl() {
-        mRandomPatternGenerator = new RandomPatternGenerator();
+        // Todo: clean this up
+        mType = Type.INTERVAL;
+        mTemplatePatternGenerator = new TemplatePatternGenerator();
+        mIntervalPatternGenerator = new IntervalPatternGenerator();
         mCurPattern = null;
     }
 
     @Override
     public boolean hasSufficientSpace() {
-        return mRandomPatternGenerator.hasSufficientSpace();
+        if (mType == Type.INTERVAL) {
+            return mIntervalPatternGenerator.hasSufficientSpace();
+        }
+        return mTemplatePatternGenerator.hasSufficientSpace();
     }
 
     @Override
     public Pattern generatePattern() {
-        mCurPattern = mRandomPatternGenerator.generatePattern();
+        if (mType == Type.INTERVAL) {
+            mCurPattern = mIntervalPatternGenerator.generatePattern();
+            return mCurPattern;
+        }
+        mCurPattern = mTemplatePatternGenerator.generatePattern();
         return mCurPattern;
     }
 
@@ -35,38 +55,48 @@ public class PatternEngineImpl implements PatternEngine {
     }
 
     @Override
+    public void addIntervalTemplate(NCIntervalTemplate toAdd) {
+        mIntervalPatternGenerator.addIntervalTemplate(toAdd);
+    }
+
+    @Override
     public void addPhraseTemplate(PhraseTemplate toAdd) {
-        mRandomPatternGenerator.addPhraseTemplate(toAdd);
+        mTemplatePatternGenerator.addPhraseTemplate(toAdd);
     }
 
     @Override
     public void removePhraseTemplate(PhraseTemplate toRemove) {
-        mRandomPatternGenerator.removePhraseTemplate(toRemove);
+        mTemplatePatternGenerator.removePhraseTemplate(toRemove);
     }
 
     @Override
     public void setLowerBound(int lowerBound) {
-        mRandomPatternGenerator.setLowerBound(lowerBound);
+        mIntervalPatternGenerator.setLowerBound(lowerBound);
+        mTemplatePatternGenerator.setLowerBound(lowerBound);
     }
 
     @Override
     public void setUpperBound(int upperBound) {
-        mRandomPatternGenerator.setUpperBound(upperBound);
+        mIntervalPatternGenerator.setUpperBound(upperBound);
+        mTemplatePatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
     public void setBounds(int lowerBound, int upperBound) {
-        mRandomPatternGenerator.setLowerBound(lowerBound);
-        mRandomPatternGenerator.setUpperBound(upperBound);
+        mIntervalPatternGenerator.setUpperBound(upperBound);
+        mIntervalPatternGenerator.setLowerBound(lowerBound);
+
+        mTemplatePatternGenerator.setLowerBound(lowerBound);
+        mTemplatePatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
     public void addMode(Mode mode) {
-        mRandomPatternGenerator.addMode(mode);
+        mTemplatePatternGenerator.addMode(mode);
     }
 
     @Override
     public void removeMode(Mode mode) {
-        mRandomPatternGenerator.removeMode(mode);
+        mTemplatePatternGenerator.removeMode(mode);
     }
 }

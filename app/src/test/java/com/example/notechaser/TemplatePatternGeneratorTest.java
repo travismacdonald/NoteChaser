@@ -5,13 +5,13 @@ import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.patterngenerator.RandomPatternGenerator;
+import com.example.notechaser.patterngenerator.TemplatePatternGenerator;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RandomPatternGeneratorTest {
+public class TemplatePatternGeneratorTest {
 
     @Test
     public void poorExampleOfTest() {
@@ -24,7 +24,7 @@ public class RandomPatternGeneratorTest {
 
     @Test
     public void testRandomGeneration() {
-        RandomPatternGenerator rpg = new RandomPatternGenerator();
+        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addPhraseTemplate(pt_1_3_5());
@@ -34,7 +34,7 @@ public class RandomPatternGeneratorTest {
 
     @Test
     public void testRandomGeneration_2() {
-        RandomPatternGenerator rpg = new RandomPatternGenerator();
+        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MelodicMinorMode(2));
@@ -45,7 +45,7 @@ public class RandomPatternGeneratorTest {
 
     @Test
     public void testRandomGeneration_3() {
-        RandomPatternGenerator rpg = new RandomPatternGenerator();
+        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));
@@ -57,7 +57,7 @@ public class RandomPatternGeneratorTest {
 
     @Test
     public void testRandomGeneration_4() {
-        RandomPatternGenerator rpg = new RandomPatternGenerator();
+        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));
@@ -72,7 +72,7 @@ public class RandomPatternGeneratorTest {
 
     @Test
     public void testRandomGeneration_5() {
-        RandomPatternGenerator rpg = new RandomPatternGenerator();
+        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));

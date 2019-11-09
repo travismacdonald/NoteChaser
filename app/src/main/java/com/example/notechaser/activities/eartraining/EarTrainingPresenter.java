@@ -7,6 +7,7 @@ import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.PhraseTemplate;
+import com.example.notechaser.data.NCIntervalTemplate;
 import com.example.notechaser.data.UserAnswer;
 import com.example.notechaser.models.answerchecker.AnswerChecker;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
@@ -16,6 +17,7 @@ import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
+import com.example.notechaser.patterngenerator.IntervalPatternBank;
 
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
@@ -209,6 +211,15 @@ public class EarTrainingPresenter
     private void setupTest() {
         mPatternEngine.setBounds(40, 76); // low e to high e
 
+        NCIntervalTemplate template = new NCIntervalTemplate(IntervalPatternBank.SINGLE);
+
+        mPatternEngine.addIntervalTemplate(template);
+
+
+        // PHRASE TEMPLATE SETUP
+        /*
+        mPatternEngine.setBounds(40, 76); // low e to high e
+
         for (int i = 0; i < 7; i++) {
             mPatternEngine.addMode(new MajorMode(i));
             mPatternEngine.addMode(new MelodicMinorMode(i));
@@ -244,6 +255,7 @@ public class EarTrainingPresenter
 //        mPatternEngine.addPhraseTemplate(template);
 //        mPatternEngine.addPhraseTemplate(otherTemplate);
         mPatternEngine.addPhraseTemplate(fullScale);
+        */
     }
 
 }

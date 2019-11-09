@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RandomPatternGenerator {
+public class TemplatePatternGenerator {
 
     /**
      * For storing in memory.
@@ -28,11 +28,11 @@ public class RandomPatternGenerator {
     // Max space is worst case
     private int mMaxSpaceRequired;
 
-    public RandomPatternGenerator() {
+    public TemplatePatternGenerator() {
         this(-1, -1);
     }
 
-    public RandomPatternGenerator(int lowerBound, int upperBound) {
+    public TemplatePatternGenerator(int lowerBound, int upperBound) {
         mPhraseTemplates = new ArrayList<>();
         mModes = new ArrayList<>();
         mLowerBound = lowerBound;
@@ -53,7 +53,6 @@ public class RandomPatternGenerator {
             return Pattern.generatePattern(phraseTemplate, mode, keyIx);
         }
         else {
-            // what the fuck dude
             return null;
         }
     }
