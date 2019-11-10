@@ -15,12 +15,14 @@ public interface MidiPlayer {
 
 //    void playPattern(List<Note> toPlay, PatternPlayerObserver observer);
 
-    void playPattern(Pattern toPlay);
+    void playCadence();
+
+    Thread playPattern(Pattern toPlay);
 
     // Notify observer when pattern has finished playing
-    void playPattern(Pattern toPlay, PatternPlayerObserver observer);
+    Thread playPattern(Pattern toPlay, PatternPlayerObserver observer);
 
-    void playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay);
+    Thread playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay);
 
     boolean playbackIsActive();
 

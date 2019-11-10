@@ -2,6 +2,7 @@ package com.example.notechaser.models.patternengine;
 
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.Note;
+import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
 import com.example.notechaser.data.NCIntervalTemplate;
@@ -18,7 +19,7 @@ public interface PatternEngine {
     // Generate and return random pattern
     Pattern generatePattern();
 
-    void addIntervalTemplate(NCIntervalTemplate toAdd);
+    void addIntervalTemplate(IntervalTemplate toAdd);
 
     void addPhraseTemplate(PhraseTemplate toAdd);
 

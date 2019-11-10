@@ -13,6 +13,13 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     /* Some Midi Constants */
 
+    private static final int[][] sCadence = {
+            { 36 },
+            { 41 },
+            { 43 },
+            { 36 }
+    };
+
     private static final int START = 0X90;
 
     private static final int STOP = 0X80;
@@ -26,8 +33,10 @@ public class MidiPlayerImpl implements MidiPlayer {
     private static final int NOTE_DURATION = 500;
 
     private static final int REVERB_DURATION = 850;
-    
-    private Thread mPlaybackThread;
+
+    private Thread mCadenceThread;
+
+    private Thread mPatternThread;
 
     private MidiDriver mMidiDriver;
 
@@ -43,7 +52,8 @@ public class MidiPlayerImpl implements MidiPlayer {
         mMidiDriver = new MidiDriver();
         mVolume = DEFAULT_VOLUME;
         mPlugin = -1;
-        mPlaybackThread = null;
+        mCadenceThread = null;
+        mPatternThread = null;
         mActiveNotes = null;
         mActiveNotes = new HashSet<>();
         mCurrentPattern = null;
@@ -62,17 +72,22 @@ public class MidiPlayerImpl implements MidiPlayer {
     }
 
     @Override
-    public void playPattern(Pattern toPlay) {
-        playPattern(toPlay, null, 0);
+    public void playCadence() {
+        // blah
     }
 
     @Override
-    public void playPattern(Pattern toPlay, PatternPlayerObserver observer) {
-        playPattern(toPlay, observer, 0);
+    public Thread playPattern(Pattern toPlay) {
+        return playPattern(toPlay, null, 0);
     }
 
     @Override
-    public void playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
+    public Thread playPattern(Pattern toPlay, PatternPlayerObserver observer) {
+        return playPattern(toPlay, observer, 0);
+    }
+
+    @Override
+    public Thread playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
         mCurrentPattern = toPlay;
         Runnable curPattern = () -> {
             try {
@@ -105,8 +120,9 @@ public class MidiPlayerImpl implements MidiPlayer {
                 observer.handlePatternFinished();
             }
         };
-        mPlaybackThread = new Thread(curPattern, "Playback thread");
-        mPlaybackThread.start();
+        mPatternThread = new Thread(curPattern, "Playback thread");
+        mPatternThread.start();
+        return mPatternThread;
     }
 
     @Override

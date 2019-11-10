@@ -2,12 +2,9 @@ package com.example.notechaser.activities.eartraining;
 
 import android.util.Log;
 
-import com.example.keyfinder.HarmonicMinorMode;
-import com.example.keyfinder.MajorMode;
-import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.data.NCIntervalTemplate;
+import com.example.keyfinder.eartraining.IntervalBank;
+import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.notechaser.data.UserAnswer;
 import com.example.notechaser.models.answerchecker.AnswerChecker;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
@@ -17,7 +14,7 @@ import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
-import com.example.notechaser.patterngenerator.IntervalPatternBank;
+
 
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
@@ -134,7 +131,8 @@ public class EarTrainingPresenter
         mUserAnswer.clear();
         mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
-        mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay);
+        final Thread thread = mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay);
+
     }
 
     @Override
@@ -211,7 +209,7 @@ public class EarTrainingPresenter
     private void setupTest() {
         mPatternEngine.setBounds(40, 76); // low e to high e
 
-        NCIntervalTemplate template = new NCIntervalTemplate(IntervalPatternBank.SINGLE);
+        IntervalTemplate template = new IntervalTemplate(IntervalBank.MAJOR_TRIAD);
 
         mPatternEngine.addIntervalTemplate(template);
 

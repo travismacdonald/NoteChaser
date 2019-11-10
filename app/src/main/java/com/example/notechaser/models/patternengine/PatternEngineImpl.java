@@ -1,9 +1,9 @@
 package com.example.notechaser.models.patternengine;
 
 import com.example.keyfinder.Mode;
+import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.data.NCIntervalTemplate;
 import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
 import com.example.notechaser.patterngenerator.TemplatePatternGenerator;
 
@@ -55,7 +55,7 @@ public class PatternEngineImpl implements PatternEngine {
     }
 
     @Override
-    public void addIntervalTemplate(NCIntervalTemplate toAdd) {
+    public void addIntervalTemplate(IntervalTemplate toAdd) {
         mIntervalPatternGenerator.addIntervalTemplate(toAdd);
     }
 
