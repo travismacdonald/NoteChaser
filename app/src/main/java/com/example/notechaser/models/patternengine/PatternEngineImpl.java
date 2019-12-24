@@ -3,9 +3,9 @@ package com.example.notechaser.models.patternengine;
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.PhraseTemplate;
+import com.example.keyfinder.eartraining.AbstractTemplate;
 import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
-import com.example.notechaser.patterngenerator.TemplatePatternGenerator;
+import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
 
 
 public class PatternEngineImpl implements PatternEngine {
@@ -15,7 +15,7 @@ public class PatternEngineImpl implements PatternEngine {
     }
 
     // Todo: make this abstract: RPG can then hold any kind of random pattern generator
-    private TemplatePatternGenerator mTemplatePatternGenerator;
+    private AbstractPatternGenerator mAbstractPatternGenerator;
 
     private IntervalPatternGenerator mIntervalPatternGenerator;
 
@@ -26,7 +26,7 @@ public class PatternEngineImpl implements PatternEngine {
     public PatternEngineImpl() {
         // Todo: clean this up
         mType = Type.INTERVAL;
-        mTemplatePatternGenerator = new TemplatePatternGenerator();
+        mAbstractPatternGenerator = new AbstractPatternGenerator();
         mIntervalPatternGenerator = new IntervalPatternGenerator();
         mCurPattern = null;
     }
@@ -36,7 +36,7 @@ public class PatternEngineImpl implements PatternEngine {
         if (mType == Type.INTERVAL) {
             return mIntervalPatternGenerator.hasSufficientSpace();
         }
-        return mTemplatePatternGenerator.hasSufficientSpace();
+        return mAbstractPatternGenerator.hasSufficientSpace();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PatternEngineImpl implements PatternEngine {
             mCurPattern = mIntervalPatternGenerator.generatePattern();
             return mCurPattern;
         }
-        mCurPattern = mTemplatePatternGenerator.generatePattern();
+        mCurPattern = mAbstractPatternGenerator.generatePattern();
         return mCurPattern;
     }
 
@@ -60,25 +60,25 @@ public class PatternEngineImpl implements PatternEngine {
     }
 
     @Override
-    public void addPhraseTemplate(PhraseTemplate toAdd) {
-        mTemplatePatternGenerator.addPhraseTemplate(toAdd);
+    public void addAbstractTemplate(AbstractTemplate toAdd) {
+        mAbstractPatternGenerator.addAbstractTemplate(toAdd);
     }
 
     @Override
-    public void removePhraseTemplate(PhraseTemplate toRemove) {
-        mTemplatePatternGenerator.removePhraseTemplate(toRemove);
+    public void removeAbstractTemplate(AbstractTemplate toRemove) {
+        mAbstractPatternGenerator.removeAbstractTemplate(toRemove);
     }
 
     @Override
     public void setLowerBound(int lowerBound) {
         mIntervalPatternGenerator.setLowerBound(lowerBound);
-        mTemplatePatternGenerator.setLowerBound(lowerBound);
+        mAbstractPatternGenerator.setLowerBound(lowerBound);
     }
 
     @Override
     public void setUpperBound(int upperBound) {
         mIntervalPatternGenerator.setUpperBound(upperBound);
-        mTemplatePatternGenerator.setUpperBound(upperBound);
+        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
@@ -86,17 +86,17 @@ public class PatternEngineImpl implements PatternEngine {
         mIntervalPatternGenerator.setUpperBound(upperBound);
         mIntervalPatternGenerator.setLowerBound(lowerBound);
 
-        mTemplatePatternGenerator.setLowerBound(lowerBound);
-        mTemplatePatternGenerator.setUpperBound(upperBound);
+        mAbstractPatternGenerator.setLowerBound(lowerBound);
+        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
     public void addMode(Mode mode) {
-        mTemplatePatternGenerator.addMode(mode);
+        mAbstractPatternGenerator.addMode(mode);
     }
 
     @Override
     public void removeMode(Mode mode) {
-        mTemplatePatternGenerator.removeMode(mode);
+        mAbstractPatternGenerator.removeMode(mode);
     }
 }

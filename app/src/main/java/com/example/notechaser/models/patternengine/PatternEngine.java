@@ -4,8 +4,7 @@ import com.example.keyfinder.Mode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.data.NCIntervalTemplate;
+import com.example.keyfinder.eartraining.AbstractTemplate;
 
 
 public interface PatternEngine {
@@ -21,9 +20,9 @@ public interface PatternEngine {
 
     void addIntervalTemplate(IntervalTemplate toAdd);
 
-    void addPhraseTemplate(PhraseTemplate toAdd);
+    void addAbstractTemplate(AbstractTemplate toAdd);
 
-    void removePhraseTemplate(PhraseTemplate toRemove);
+    void removeAbstractTemplate(AbstractTemplate toRemove);
 
     void setLowerBound(int lowerBound);
 

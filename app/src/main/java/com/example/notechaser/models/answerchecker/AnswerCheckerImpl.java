@@ -11,18 +11,35 @@ import java.util.List;
 
 // Todo: overloads could be better
 
+/**
+ * Class that compares user answers with generated answers.
+ * Methods contain different criteria for determining whether or not answers are valid.
+ */
 public class AnswerCheckerImpl implements AnswerChecker {
 
+    // *****************
+    // INTERFACE METHODS
+    // *****************
+
+    /**
+     * Checks if patterns are the same; order matters. Must be same octave.
+     */
     @Override
     public boolean samePatternSameOctave(Pattern expected, UserAnswer actual) {
         return expected.getNotes().equals(actual.getAnswer());
     }
 
+    /**
+     * Checks if patterns are the same; order matters. Can be any octave.
+     */
     @Override
     public boolean samePatternAnyOctave(Pattern expected, UserAnswer actual) {
         return sameNotesAnyOctave(expected.getNotes(), actual.getAnswer());
     }
 
+    /**
+     * Checks if notes are the same; order doesn't matter. Must be same octave.
+     */
     @Override
     public boolean sameNotesSameOctave(Pattern expected, UserAnswer actual) {
         List<Note> lhs = new ArrayList<>(expected.getNotes());
@@ -32,6 +49,9 @@ public class AnswerCheckerImpl implements AnswerChecker {
         return sameNotesSameOctave(lhs, rhs);
     }
 
+    /**
+     * Checks if notes are the same; order doesn't matter. Can be any octave.
+     */
     @Override
     public boolean sameNotesAnyOctave(Pattern expected, UserAnswer actual) {
         List<Note> lhs = new ArrayList<>(expected.getNotes());
@@ -41,16 +61,26 @@ public class AnswerCheckerImpl implements AnswerChecker {
         return sameNotesAnyOctave(lhs, rhs);
     }
 
+    // ***************
+    // PRIVATE METHODS
+    // ***************
+
+    /**
+     * Checks if notes are the same; order doesn't matter. Must be same octave.
+     */
     private boolean sameNotesSameOctave(List<Note> expected, List<Note> actual) {
         return expected.equals(actual);
     }
 
+    /**
+     * Checks if notes are the same; order doesn't matter. Can be any octave.
+     */
     private boolean sameNotesAnyOctave(List<Note> expected, List<Note> actual) {
         if (expected.size() != actual.size()) {
             return false;
         }
         // Same root
-        else if (!areSameKey(expected, actual)) {
+        else if (!haveSameStartingNote(expected, actual)) {
             return false;
         }
         else {
@@ -65,7 +95,10 @@ public class AnswerCheckerImpl implements AnswerChecker {
         }
     }
 
-    private boolean areSameKey(List<Note> lhs, List<Note> rhs) {
+    /**
+     * Checks if two answers contain the same starting note. Can be any octave.
+     */
+    private boolean haveSameStartingNote(List<Note> lhs, List<Note> rhs) {
         return ((lhs.get(0).getIx() % MusicTheory.TOTAL_NOTES) ==
                 (rhs.get(0).getIx() % MusicTheory.TOTAL_NOTES));
     }

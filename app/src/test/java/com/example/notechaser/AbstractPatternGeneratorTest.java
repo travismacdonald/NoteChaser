@@ -4,14 +4,14 @@ import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.PhraseTemplate;
-import com.example.notechaser.patterngenerator.TemplatePatternGenerator;
+import com.example.keyfinder.eartraining.AbstractTemplate;
+import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TemplatePatternGeneratorTest {
+public class AbstractPatternGeneratorTest {
 
     @Test
     public void poorExampleOfTest() {
@@ -24,65 +24,65 @@ public class TemplatePatternGeneratorTest {
 
     @Test
     public void testRandomGeneration() {
-        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
+        AbstractPatternGenerator rpg = new AbstractPatternGenerator();
 
         rpg.addMode(new MajorMode(0));
-        rpg.addPhraseTemplate(pt_1_3_5());
+        rpg.addAbstractTemplate(pt_1_3_5());
 
 //        assertEquals(7, rpg.calculateOverallSpaceNeeded());
     }
 
     @Test
     public void testRandomGeneration_2() {
-        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
+        AbstractPatternGenerator rpg = new AbstractPatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MelodicMinorMode(2));
-        rpg.addPhraseTemplate(pt_1_3_5());
+        rpg.addAbstractTemplate(pt_1_3_5());
 
 //        assertEquals(8, rpg.calculateOverallSpaceNeeded());
     }
 
     @Test
     public void testRandomGeneration_3() {
-        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
+        AbstractPatternGenerator rpg = new AbstractPatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));
         rpg.addMode(new MajorMode(6));
-        rpg.addPhraseTemplate(pt_3());
+        rpg.addAbstractTemplate(pt_3());
 
 //        assertEquals(0, rpg.calculateOverallSpaceNeeded());
     }
 
     @Test
     public void testRandomGeneration_4() {
-        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
+        AbstractPatternGenerator rpg = new AbstractPatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));
         rpg.addMode(new MajorMode(6));
 
-        rpg.addPhraseTemplate(pt_3());
-        rpg.addPhraseTemplate(pt_1_3_5());
-        rpg.addPhraseTemplate(pt_1_3_5_7());
+        rpg.addAbstractTemplate(pt_3());
+        rpg.addAbstractTemplate(pt_1_3_5());
+        rpg.addAbstractTemplate(pt_1_3_5_7());
 
 //        assertEquals(11, rpg.calculateOverallSpaceNeeded());
     }
 
     @Test
     public void testRandomGeneration_5() {
-        TemplatePatternGenerator rpg = new TemplatePatternGenerator();
+        AbstractPatternGenerator rpg = new AbstractPatternGenerator();
 
         rpg.addMode(new MajorMode(0));
         rpg.addMode(new MajorMode(3));
         rpg.addMode(new MajorMode(6));
         rpg.addMode(new MelodicMinorMode(2));
 
-        rpg.addPhraseTemplate(pt_3());
-        rpg.addPhraseTemplate(pt_1_3_5());
-        rpg.addPhraseTemplate(pt_1_3_5_7());
-        rpg.addPhraseTemplate(pt_4_6_1_2_13());
+        rpg.addAbstractTemplate(pt_3());
+        rpg.addAbstractTemplate(pt_1_3_5());
+        rpg.addAbstractTemplate(pt_1_3_5_7());
+        rpg.addAbstractTemplate(pt_4_6_1_2_13());
         rpg.setLowerBound(30);
         rpg.setUpperBound(60);
 
@@ -114,16 +114,16 @@ public class TemplatePatternGeneratorTest {
         }
     }
 
-    private PhraseTemplate pt_1_3_5() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_1_3_5() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(0);
         temp.addDegree(2);
         temp.addDegree(4);
         return temp;
     }
 
-    private PhraseTemplate pt_1_3_5_7() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_1_3_5_7() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(0);
         temp.addDegree(2);
         temp.addDegree(4);
@@ -131,8 +131,8 @@ public class TemplatePatternGeneratorTest {
         return temp;
     }
 
-    private PhraseTemplate pt_1_3_5_7_9() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_1_3_5_7_9() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(0);
         temp.addDegree(2);
         temp.addDegree(4);
@@ -141,14 +141,14 @@ public class TemplatePatternGeneratorTest {
         return temp;
     }
 
-    private PhraseTemplate pt_3() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_3() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(2);
         return temp;
     }
 
-    private PhraseTemplate pt_4_6_1_2_13() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_4_6_1_2_13() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(3);
         temp.addDegree(5);
         temp.addDegree(0);

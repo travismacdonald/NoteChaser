@@ -3,7 +3,7 @@ package com.example.notechaser.models.patternengine;
 import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.PhraseTemplate;
+import com.example.keyfinder.eartraining.AbstractTemplate;
 
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class PatternEngineImplTest {
     public void testMoreShit() {
         PatternEngine engine = new PatternEngineImpl();
         engine.setBounds(24, 60);
-        engine.addPhraseTemplate(pt_4_6_1_2_13());
+        engine.addAbstractTemplate(pt_4_6_1_2_13());
         engine.addMode(new MajorMode(3)); // lydian
 
         // Test begins
@@ -44,8 +44,8 @@ public class PatternEngineImplTest {
 //        assertTrue(engine.isAnswerCorrect(answer));
     }
 
-    private PhraseTemplate pt_4_6_1_2_13() {
-        PhraseTemplate temp = new PhraseTemplate();
+    private AbstractTemplate pt_4_6_1_2_13() {
+        AbstractTemplate temp = new AbstractTemplate();
         temp.addDegree(3);
         temp.addDegree(5);
         temp.addDegree(0);

@@ -5,14 +5,24 @@ import com.example.keyfinder.MajorMode;
 import com.example.keyfinder.MelodicMinorMode;
 import com.example.keyfinder.MusicTheory;
 
-
+/**
+ * Class that loads all modes.
+ */
 public class ModeCollection {
+
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
 
     private final MajorMode[] mMajorModes;
 
     private final MelodicMinorMode[] mMelodicMinorModes;
 
     private final HarmonicMinorMode[] mHarmonicMinorModes;
+
+    // ************
+    // CONSTRUCTORS
+    // ************
 
     public ModeCollection() {
         mMajorModes = new MajorMode[MusicTheory.DIATONIC_SCALE_SIZE];
@@ -26,7 +36,9 @@ public class ModeCollection {
         }
     }
 
-    // Todo: some way to handle invalid indices given
+    // **************
+    // PUBLIC METHODS
+    // **************
 
     public MajorMode getMajorMode(int modeIx) {
         return mMajorModes[modeIx];

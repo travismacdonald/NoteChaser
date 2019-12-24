@@ -5,11 +5,31 @@ import com.example.keyfinder.Note;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Class that stores data for a user answer.
+ * Answers are treated like a queue, when the expected size is exceeded,
+ * the head gets dequeued.
+ */
 public class UserAnswer {
 
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
+
+    /**
+     * Notes contained in user answer.
+     * Used as a queue.
+     */
     private List<Note> mAnswer;
 
+    /**
+     * Target number of notes in answer.
+     */
     private int mExpectedSize;
+
+    // ************
+    // CONSTRUCTORS
+    // ************
 
     public UserAnswer() {
         this(-1);
@@ -19,6 +39,10 @@ public class UserAnswer {
         mAnswer = new LinkedList<>();
         mExpectedSize = expectedSize;
     }
+
+    // **************
+    // PUBLIC METHODS
+    // **************
 
     public List<Note> getAnswer() {
         return mAnswer;
@@ -33,9 +57,11 @@ public class UserAnswer {
     }
 
     public void addNote(Note toAdd) {
-        this.queue(toAdd);
+        // Queue
+        mAnswer.add(toAdd);
         if (mAnswer.size() > mExpectedSize) {
-            this.dequeue();
+            // Dequeue
+            mAnswer.remove(0);
         }
     }
 
@@ -47,14 +73,10 @@ public class UserAnswer {
         return mAnswer.size();
     }
 
-    private void queue(Note toAdd) {
-        mAnswer.add(toAdd);
-    }
-
-    private void dequeue() {
-        mAnswer.remove(0);
-    }
-
+    // Todo: use string builder instead of concatenation
+    /**
+     * Build string made of each note with spaces in between.
+     */
     @Override
     public String toString() {
         String toReturn = "";

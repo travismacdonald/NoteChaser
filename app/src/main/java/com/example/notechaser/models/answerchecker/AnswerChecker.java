@@ -3,6 +3,9 @@ package com.example.notechaser.models.answerchecker;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.notechaser.data.UserAnswer;
 
+/**
+ * Interface for answer checker model.
+ */
 public interface AnswerChecker {
 
     boolean samePatternSameOctave(Pattern expected, UserAnswer actual);

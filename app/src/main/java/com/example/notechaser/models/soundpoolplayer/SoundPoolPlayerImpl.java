@@ -7,7 +7,14 @@ import android.util.SparseIntArray;
 
 import com.example.notechaser.R;
 
+/**
+ * Class responsible for playing sound effects.
+ */
 public class SoundPoolPlayerImpl implements SoundPoolPlayer {
+
+    // *********
+    // CONSTANTS
+    // *********
 
     private static final int PRIORITY = 1;
 
@@ -15,9 +22,17 @@ public class SoundPoolPlayerImpl implements SoundPoolPlayer {
 
     private static final int SOURCE_QUALITY = 0;
 
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
+
     private SoundPool mSoundPool;
 
     private SparseIntArray mSoundMap;
+
+    // ************
+    // CONSTRUCTORS
+    // ************
 
     public SoundPoolPlayerImpl(Context context) {
         mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, SOURCE_QUALITY);
@@ -26,10 +41,13 @@ public class SoundPoolPlayerImpl implements SoundPoolPlayer {
         loadSoundMap(context);
     }
 
-    private void loadSoundMap(Context context) {
-        mSoundMap.put(R.raw.answer_correct, this.mSoundPool.load(context, R.raw.answer_correct, PRIORITY));
-    }
+    // *****************
+    // INTERFACE METHODS
+    // *****************
 
+    /**
+     * Plays correct answer sound effect.
+     */
     @Override
     public void playAnswerCorrect() {
         mSoundPool.play(
@@ -39,6 +57,14 @@ public class SoundPoolPlayerImpl implements SoundPoolPlayer {
                 0,
                 0,
                 1);
+    }
+
+    // ***************
+    // PRIVATE METHODS
+    // ***************
+
+    private void loadSoundMap(Context context) {
+        mSoundMap.put(R.raw.answer_correct, this.mSoundPool.load(context, R.raw.answer_correct, PRIORITY));
     }
 
 }

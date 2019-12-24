@@ -28,7 +28,6 @@ public class EarTrainingPresenter
 
     enum State {
         INACTIVE, PLAYING_PATTERN, LISTENING
-
     }
 
     private EarTrainingContract.View mView;
@@ -147,7 +146,7 @@ public class EarTrainingPresenter
     }
 
     @Override
-    public void handlePitchResult(int pitchIx) {
+    public void notifyObserver(int pitchIx) {
         Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
         if (mLastTimeAround == -1) {
             mLastTimeAround = System.currentTimeMillis();
@@ -198,7 +197,7 @@ public class EarTrainingPresenter
     }
 
     @Override
-    public void handlePatternFinished() {
+    public void notifyObserver() {
 
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
@@ -228,19 +227,19 @@ public class EarTrainingPresenter
 //        mPatternEngine.addMode(new MelodicMinorMode(3));
 //        mPatternEngine.addMode(new HarmonicMinorMode(0));
 
-        PhraseTemplate template = new PhraseTemplate();
+        AbstractTemplate template = new AbstractTemplate();
         template.addDegree(0);
         template.addDegree(2);
         template.addDegree(3);
         template.addDegree(4);
 
-        PhraseTemplate otherTemplate = new PhraseTemplate();
+        AbstractTemplate otherTemplate = new AbstractTemplate();
         otherTemplate.addDegree(0);
         otherTemplate.addDegree(1);
         otherTemplate.addDegree(2);
         otherTemplate.addDegree(4);
 
-        PhraseTemplate fullScale = new PhraseTemplate();
+        AbstractTemplate fullScale = new AbstractTemplate();
         fullScale.addDegree(0);
 //        fullScale.addDegree(1);
         fullScale.addDegree(2);
@@ -250,9 +249,9 @@ public class EarTrainingPresenter
         fullScale.addDegree(6);
 //        fullScale.addDegree(7);
 
-//        mPatternEngine.addPhraseTemplate(template);
-//        mPatternEngine.addPhraseTemplate(otherTemplate);
-        mPatternEngine.addPhraseTemplate(fullScale);
+//        mPatternEngine.addAbstractTemplate(template);
+//        mPatternEngine.addAbstractTemplate(otherTemplate);
+        mPatternEngine.addAbstractTemplate(fullScale);
         */
     }
 

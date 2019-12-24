@@ -2,13 +2,20 @@ package com.example.notechaser.patterngenerator;
 
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
-import com.example.notechaser.data.NCIntervalTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Interval Pattern Generator uses a set sequence of intervals that can only be transposed.
+ * (eg: 0 2 4 7 -> can be transposed statically, but the intervals cannot be modified.)
+ */
 public class IntervalPatternGenerator {
+
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
 
     /**
      * For storing in memory.
@@ -17,14 +24,30 @@ public class IntervalPatternGenerator {
 
     private Random mRandom;
 
+    /**
+     * List of interval templates used for pattern generation.
+     */
     private List<IntervalTemplate> mIntervalTemplates;
 
+    /**
+     * Lowest note index used for pattern generation.
+     */
     private int mLowerBound;
 
+    /**
+     * Highest note index used for pattern generation.
+     */
     private int mUpperBound;
 
-    // Max space is worst case
-    private int mMaxSpaceRequired;
+    /**
+     * The minimum range required such that every template can be
+     * generated for at least one key.
+     */
+    private int mMinSpaceRequired;
+
+    // ************
+    // CONSTRUCTORS
+    // ************
 
     public IntervalPatternGenerator() {
         this(-1, -1);
@@ -37,13 +60,22 @@ public class IntervalPatternGenerator {
         mRandom = new Random();
     }
 
+    // **************
+    // PUBLIC METHODS
+    // **************
+
+    // Todo: simplify else statement
+    /**
+     * Chooses a interval template at random, picks a random key within the given range,
+     * and transposes the interval template, resulting in a pattern ready for playback.
+     *
+     * @return pattern ready for playback.
+     */
     public Pattern generatePattern() {
         if (hasSufficientSpace()) {
-            // pick mRandom template
+            // Pick random template
             IntervalTemplate template = mIntervalTemplates.get(mRandom.nextInt(mIntervalTemplates.size()));
-            // pick mRandom key
-            // one of the ugliest lines of code ive seen
-//            int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - Pattern.calculateMinSpaceRequired(phraseTemplate, mode) + 1) + mLowerBound;
+            // Pick random key
             int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - template.getSpaceRequired() + 1) + mLowerBound;
             // return that shit
 //            return template.generatePattern(keyIx);
@@ -54,39 +86,69 @@ public class IntervalPatternGenerator {
         }
     }
 
+    /**
+     * Add interval template to generator.
+     */
     public void addIntervalTemplate(IntervalTemplate toAdd) {
         mIntervalTemplates.add(toAdd);
-        mMaxSpaceRequired = calculateMaxSpaceRequired();
+        mMinSpaceRequired = calcMinSpaceRequired();
     }
 
+    /**
+     * Remove interval template from generator.
+     */
     public void removeIntervalTemplate(IntervalTemplate toRemove) {
         mIntervalTemplates.remove(toRemove);
-        mMaxSpaceRequired = calculateMaxSpaceRequired();
+        mMinSpaceRequired = calcMinSpaceRequired();
     }
 
+    public boolean hasSufficientSpace() {
+        return (mUpperBound - mLowerBound) >= mMinSpaceRequired;
+    }
+
+    // *******************
+    // GETTERS AND SETTERS
+    // *******************
+
+    /**
+     * Get lower bound for pattern range.
+     */
     public int getLowerBound() {
         return mLowerBound;
     }
 
+    /**
+     * Set lower bound for pattern range.
+     */
     public void setLowerBound(int lowerBound) {
         mLowerBound = lowerBound;
     }
 
+    /**
+     * Get upper bound for pattern range.
+     */
     public int getUpperBound() {
         return mUpperBound;
     }
 
+    /**
+     * Set upper bound for pattern range.
+     */
     public void setUpperBound(int upperBound) {
         mUpperBound = upperBound;
     }
 
-    public boolean hasSufficientSpace() {
-        return (mUpperBound - mLowerBound) >= mMaxSpaceRequired;
-    }
+    // ***************
+    // PRIVATE METHODS
+    // ***************
 
-    private int calculateMaxSpaceRequired() {
+    /**
+     * Calculates the minimum space required such that every interval template has space
+     * for at least one key.
+     */
+    private int calcMinSpaceRequired() {
         int maxSpace = -1;
-        // Todo: better solution than brute force
+        // Todo: better solution than linear search
         for (IntervalTemplate template : mIntervalTemplates) {
             final int space = template.getSpaceRequired();
             if (space > maxSpace) {
@@ -95,6 +157,4 @@ public class IntervalPatternGenerator {
         }
         return maxSpace;
     }
-
-
 }
