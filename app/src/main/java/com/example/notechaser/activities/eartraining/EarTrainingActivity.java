@@ -53,7 +53,6 @@ public class EarTrainingActivity extends AppCompatActivity {
                 soundPoolPlayer,
                 pitchProcessor,
                 noteFilter);
-
     }
 
 }

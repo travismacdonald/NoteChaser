@@ -16,8 +16,7 @@ public class ExerciseConfigurationPresenter {
 
     ModeCollection mModeCollection;
 
-    public ExerciseConfigurationPresenter(ExerciseConfigurationContract.View view
-                                          ) {
+    public ExerciseConfigurationPresenter(ExerciseConfigurationContract.View view) {
         mView = view;
 
     }

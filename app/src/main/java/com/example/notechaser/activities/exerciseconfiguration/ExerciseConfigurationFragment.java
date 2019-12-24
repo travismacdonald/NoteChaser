@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.notechaser.R;
+import com.example.notechaser.data.ModeCollection;
 
 
-public class ExerciseConfigurationFragment extends Fragment {
+public class ExerciseConfigurationFragment extends Fragment implements ExerciseConfigurationContract.View{
 
     private View mRoot;
 
@@ -18,7 +19,7 @@ public class ExerciseConfigurationFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public ExerciseConfigurationFragment newInstance() {
+    static public ExerciseConfigurationFragment newInstance() {
         return new ExerciseConfigurationFragment();
     }
 
@@ -30,4 +31,28 @@ public class ExerciseConfigurationFragment extends Fragment {
         return mRoot;
     }
 
+    @Override
+    public void showEarTrainingActivity() {
+
+    }
+
+    @Override
+    public void loadModes(ModeCollection modeCollection) {
+
+    }
+
+    @Override
+    public void showSessionValid() {
+
+    }
+
+    @Override
+    public void showSessionInvalid() {
+
+    }
+
+    @Override
+    public void setPresenter(ExerciseConfigurationContract.Presenter presenter) {
+
+    }
 }
