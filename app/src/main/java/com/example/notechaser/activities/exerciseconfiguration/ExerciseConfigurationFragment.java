@@ -14,6 +14,8 @@ import com.example.notechaser.activities.eartraining.EarTrainingActivity;
 import com.example.notechaser.data.ModeCollection;
 import com.example.notechaser.models.patternengine.PatternEngine;
 
+import java.io.Serializable;
+
 
 public class ExerciseConfigurationFragment extends Fragment implements ExerciseConfigurationContract.View{
 
@@ -47,12 +49,9 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRoot = inflater.inflate(R.layout.exercise_configuration_fragment, container, false);
-        mRoot.findViewById(R.id.banacos).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                test_loadBanacosMethod();
-                showEarTrainingActivity();
-            }
+        mRoot.findViewById(R.id.banacos).setOnClickListener(v -> {
+            test_loadBanacosMethod();
+            showEarTrainingActivity();
         });
         return mRoot;
     }
@@ -62,6 +61,7 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
     public void showEarTrainingActivity() {
         Intent intent = new Intent(getContext(), EarTrainingActivity.class);
         // Todo: will have to see if this works correctly
+        intent.putExtra("engine", (Serializable) mPresenter.getPatternEngine());
         intent.putExtra("settings", (Parcelable) mPresenter.getSettings());
         // intent.putExtra("pattern_generator", (Parcelable) mPatternEngine);
         startActivity(intent);

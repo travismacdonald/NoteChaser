@@ -9,8 +9,10 @@ import com.example.keyfinder.eartraining.AbstractTemplate;
 import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
 import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
 
+import java.io.Serializable;
 
-public class PatternEngineImpl implements PatternEngine {
+
+public class PatternEngineImpl implements PatternEngine, Serializable {
 
     // ****************
     // MEMBER VARIABLES
@@ -132,13 +134,12 @@ public class PatternEngineImpl implements PatternEngine {
 
     @Override
     public void setTypeDynamic() {
-
+        mType = Type.DYNAMIC;
     }
 
     @Override
     public void setTypeFixed() {
-
+        mType = Type.FIXED;
     }
-
 
 }

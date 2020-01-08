@@ -3,7 +3,6 @@ package com.example.notechaser.activities.eartraining;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.notechaser.R;
 import com.example.notechaser.data.EarTrainingSettings;
@@ -16,7 +15,6 @@ import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorImpl;
 import com.example.notechaser.models.notefilter.NoteFilter;
 import com.example.notechaser.models.notefilter.NoteFilterImpl;
 import com.example.notechaser.models.patternengine.PatternEngine;
-import com.example.notechaser.models.patternengine.PatternEngineImpl;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayerImpl;
 
@@ -40,7 +38,7 @@ public class EarTrainingActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        PatternEngine patternEngine = new PatternEngineImpl();
+        PatternEngine patternEngine = (PatternEngine) getIntent().getSerializableExtra("engine");
         AnswerChecker answerChecker = new AnswerCheckerImpl();
         MidiPlayer midiPlayer = new MidiPlayerImpl();
         SoundPoolPlayer soundPoolPlayer = new SoundPoolPlayerImpl(this);

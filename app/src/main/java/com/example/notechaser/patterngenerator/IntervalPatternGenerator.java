@@ -3,6 +3,7 @@ package com.example.notechaser.patterngenerator;
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +12,7 @@ import java.util.Random;
  * Interval Pattern Generator uses a set sequence of intervals that can only be transposed.
  * (eg: 0 2 4 7 -> can be transposed statically, but the intervals cannot be modified.)
  */
-public class IntervalPatternGenerator {
+public class IntervalPatternGenerator implements Serializable {
 
     // ****************
     // MEMBER VARIABLES

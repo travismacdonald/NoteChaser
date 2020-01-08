@@ -7,6 +7,7 @@ import com.example.notechaser.data.BasePresenter;
 import com.example.notechaser.data.BaseView;
 import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.ModeCollection;
+import com.example.notechaser.models.patternengine.PatternEngine;
 
 public class ExerciseConfigurationContract {
 
@@ -63,6 +64,8 @@ public class ExerciseConfigurationContract {
         // Bad methods
 
         EarTrainingSettings getSettings();
+
+        PatternEngine getPatternEngine();
 
     }
 

@@ -4,6 +4,7 @@ import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.Pattern;
 import com.example.keyfinder.eartraining.AbstractTemplate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Random;
  * Abstract Pattern Generator uses abstract patterns to randomly generate patterns.
  * Patterns will be generated in modes given by the user that are in the range given by the user.
  */
-public class AbstractPatternGenerator {
+public class AbstractPatternGenerator implements Serializable {
 
     // ****************
     // MEMBER VARIABLES
