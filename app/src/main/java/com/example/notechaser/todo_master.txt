@@ -1,0 +1,4 @@
+- Rename abstract and interval, to dynamic and fixed
+- User session settings
+    - playback type (chord, ascending, etc)
+    - answer checking type (same octave, ...)

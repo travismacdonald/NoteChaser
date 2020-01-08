@@ -180,7 +180,7 @@ public class MidiPlayerImpl implements MidiPlayer {
                 observer.notifyObserver();
             }
         };
-        mPatternThread = new Thread(curPattern, "Playback thread");
+        mPatternThread = new Thread(curPattern, "PlaybackType thread");
         mPatternThread.start();
         return mPatternThread;
     }

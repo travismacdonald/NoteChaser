@@ -1,5 +1,7 @@
 package com.example.notechaser.models.patternengine;
 
+import android.util.Log;
+
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.keyfinder.eartraining.Pattern;
@@ -10,8 +12,15 @@ import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
 
 public class PatternEngineImpl implements PatternEngine {
 
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
+
+    /**
+     * Type of pattern generator used
+     */
     private enum Type {
-        PHRASE, INTERVAL
+        DYNAMIC, FIXED
     }
 
     // Todo: make this abstract: RPG can then hold any kind of random pattern generator
@@ -25,27 +34,43 @@ public class PatternEngineImpl implements PatternEngine {
 
     public PatternEngineImpl() {
         // Todo: clean this up
-        mType = Type.INTERVAL;
+        mType = null;
         mAbstractPatternGenerator = new AbstractPatternGenerator();
         mIntervalPatternGenerator = new IntervalPatternGenerator();
         mCurPattern = null;
     }
 
+//    @Override
+//    public boolean isValid() {
+//        if ()
+//        if (!hasSufficientSpace())
+//    }
+
     @Override
     public boolean hasSufficientSpace() {
-        if (mType == Type.INTERVAL) {
+        if (mType == null) {
+            Log.d("bug", "Choose type of generator");
+            return false;
+        }
+        else if (mType == Type.FIXED) {
             return mIntervalPatternGenerator.hasSufficientSpace();
         }
-        return mAbstractPatternGenerator.hasSufficientSpace();
+        else {
+            return mAbstractPatternGenerator.hasSufficientSpace();
+        }
     }
 
     @Override
     public Pattern generatePattern() {
-        if (mType == Type.INTERVAL) {
-            mCurPattern = mIntervalPatternGenerator.generatePattern();
-            return mCurPattern;
+        if (mType == null) {
+            Log.d("bug", "Choose type of generator");
         }
-        mCurPattern = mAbstractPatternGenerator.generatePattern();
+        else if (mType == Type.FIXED) {
+            mCurPattern = mIntervalPatternGenerator.generatePattern();
+        }
+        else {
+            mCurPattern = mAbstractPatternGenerator.generatePattern();
+        }
         return mCurPattern;
     }
 
@@ -57,6 +82,11 @@ public class PatternEngineImpl implements PatternEngine {
     @Override
     public void addIntervalTemplate(IntervalTemplate toAdd) {
         mIntervalPatternGenerator.addIntervalTemplate(toAdd);
+    }
+
+    @Override
+    public void removeIntervalTemplate(IntervalTemplate toRemove) {
+        mIntervalPatternGenerator.removeIntervalTemplate(toRemove);
     }
 
     @Override
@@ -99,4 +129,16 @@ public class PatternEngineImpl implements PatternEngine {
     public void removeMode(Mode mode) {
         mAbstractPatternGenerator.removeMode(mode);
     }
+
+    @Override
+    public void setTypeDynamic() {
+
+    }
+
+    @Override
+    public void setTypeFixed() {
+
+    }
+
+
 }

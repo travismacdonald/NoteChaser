@@ -19,6 +19,8 @@ import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
+
+
     // for debugging
     private long mLastTimeAround = -1;
 
@@ -202,8 +204,6 @@ public class EarTrainingPresenter
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
     }
-
-
 
     private void setupTest() {
         mPatternEngine.setBounds(40, 76); // low e to high e

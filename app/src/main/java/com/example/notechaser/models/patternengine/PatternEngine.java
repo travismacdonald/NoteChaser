@@ -12,13 +12,13 @@ public interface PatternEngine {
     // See if pattern has enough space to generate at least one pattern
     boolean hasSufficientSpace();
 
-    // only return pattern, doesn't generate new one
     Pattern getCurPattern();
 
-    // Generate and return random pattern
     Pattern generatePattern();
 
     void addIntervalTemplate(IntervalTemplate toAdd);
+
+    void removeIntervalTemplate(IntervalTemplate toRemove);
 
     void addAbstractTemplate(AbstractTemplate toAdd);
 
@@ -33,5 +33,9 @@ public interface PatternEngine {
     void addMode(Mode mode);
 
     void removeMode(Mode mode);
+
+    void setTypeDynamic();
+
+    void setTypeFixed();
 
 }

@@ -28,27 +28,27 @@ public class EarTrainingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ear_training_activity);
 
-        EarTrainingFragment earTrainingFragment =
+        EarTrainingFragment frag =
                 (EarTrainingFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
 
-        if (earTrainingFragment == null) {
-            earTrainingFragment = EarTrainingFragment.newInstance();
+        if (frag == null) {
+            frag = EarTrainingFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.contentFrame, earTrainingFragment);
+            transaction.add(R.id.contentFrame, frag);
             transaction.commit();
         }
 
         PatternEngine patternEngine = new PatternEngineImpl();
-        AnswerChecker checker = new AnswerCheckerImpl();
+        AnswerChecker answerChecker = new AnswerCheckerImpl();
         MidiPlayer midiPlayer = new MidiPlayerImpl();
         SoundPoolPlayer soundPoolPlayer = new SoundPoolPlayerImpl(this);
         NCPitchProcessor pitchProcessor = new NCPitchProcessorImpl(this);
         NoteFilter noteFilter = new NoteFilterImpl();
 
         mEarTrainingPresenter = new EarTrainingPresenter(
-                earTrainingFragment,
+                frag,
                 patternEngine,
-                checker,
+                answerChecker,
                 midiPlayer,
                 soundPoolPlayer,
                 pitchProcessor,

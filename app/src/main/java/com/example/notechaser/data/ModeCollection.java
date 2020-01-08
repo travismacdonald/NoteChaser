@@ -24,6 +24,9 @@ public class ModeCollection {
     // CONSTRUCTORS
     // ************
 
+    /**
+     * Load all modes into memory on construction.
+     */
     public ModeCollection() {
         mMajorModes = new MajorMode[MusicTheory.DIATONIC_SCALE_SIZE];
         mMelodicMinorModes = new MelodicMinorMode[MusicTheory.DIATONIC_SCALE_SIZE];
