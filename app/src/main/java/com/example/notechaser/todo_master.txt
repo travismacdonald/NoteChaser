@@ -2,3 +2,8 @@
 - User session settings
     - playback type (chord, ascending, etc)
     - answer checking type (same octave, ...)
+
+- make session dynamic
+    - check playback type
+    - check answer type
+    - check cadence playback

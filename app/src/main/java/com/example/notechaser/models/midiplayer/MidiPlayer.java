@@ -24,6 +24,11 @@ public interface MidiPlayer {
 
     Thread playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay);
 
+    Thread playPattern(Pattern toPlay,
+                       PatternPlayerObserver observer,
+                       int startDelay,
+                       boolean shouldPlayCadence);
+
     boolean playbackIsActive();
 
     void stopCurPlayback();

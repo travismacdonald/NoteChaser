@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.keyfinder.MusicTheory;
+import com.example.keyfinder.Note;
 import com.example.notechaser.R;
 
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
@@ -25,6 +27,11 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     private Button mToggleButton;
 
     private TextView mNoteCountTv;
+
+    private TextView mNoteTv;
+
+    private TextView mPitchTv;
+
 
     // ************
     // CONSTRUCTORS
@@ -72,6 +79,17 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
         mNoteCountTv.setText(curCount + "/" + answerCount);
     }
 
+    @Override
+    public void showPitchResult(int pitchInHz, Note note) {
+        mPitchTv.setText(Integer.toString(pitchInHz));
+        mNoteTv.setText(note.getName() + note.getIx() / MusicTheory.TOTAL_NOTES);
+    }
+
+    @Override
+    public void showNoPitchDetected() {
+        mPitchTv.setText("-1");
+        mNoteTv.setText("null");
+    }
 
     @Override
     public void showAnswerCorrect() {
@@ -117,5 +135,9 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
         });
 
         mNoteCountTv = mRoot.findViewById(R.id.notes_heard_tv);
+
+        mPitchTv = mRoot.findViewById(R.id.pitch_tv);
+        mNoteTv = mRoot.findViewById(R.id.note_tv);
     }
+
 }

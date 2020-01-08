@@ -20,7 +20,9 @@ import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
-
+    // ****************
+    // MEMBER VARIABLES
+    // ****************
 
     // for debugging
     private long mLastTimeAround = -1;
@@ -62,6 +64,10 @@ public class EarTrainingPresenter
 
     // Todo: These are test variables; delete when no longer needed
 
+    // ************
+    // CONSTRUCTORS
+    // ************
+
     public EarTrainingPresenter(EarTrainingContract.View view,
                                 PatternEngine patternEngine,
                                 AnswerChecker checker,
@@ -80,7 +86,6 @@ public class EarTrainingPresenter
         mSettings = settings;
 
         mNullInitHeard = -1;
-
         mState = State.INACTIVE;
         mUserAnswer = new UserAnswer();
         mLastNoteAdded = null;
@@ -88,10 +93,11 @@ public class EarTrainingPresenter
 
         mView.setPresenter(this);
         mPitchProcessor.addPitchObserver(this);
-
-        setupTest();
     }
 
+    // *****************
+    // INTERFACE METHODS
+    // *****************
 
     @Override
     public void start() {
@@ -105,16 +111,6 @@ public class EarTrainingPresenter
     }
 
     @Override
-    public void setLowerBound(int lowerBound) {
-        mPatternEngine.setLowerBound(lowerBound);
-    }
-
-    @Override
-    public void setUpperBound(int upperBound) {
-        mPatternEngine.setUpperBound(upperBound);
-    }
-
-    @Override
     public void startEarTrainingExercise(int delay) {
         mPatternEngine.generatePattern();
         resumeEarTrainingExercise(delay);
@@ -123,23 +119,6 @@ public class EarTrainingPresenter
     @Override
     public void startEarTrainingExercise() {
         startEarTrainingExercise(0);
-    }
-
-    private void resumeEarTrainingExercise() {
-        resumeEarTrainingExercise(0);
-    }
-
-    // Run single exercise
-    private void resumeEarTrainingExercise(int delay) {
-        if (!mPitchProcessor.isRunning()) {
-            mPitchProcessor.start();
-        }
-        mState = State.PLAYING_PATTERN;
-        mUserAnswer.clear();
-        mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
-        mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
-        final Thread thread = mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay);
-
     }
 
     @Override
@@ -153,8 +132,10 @@ public class EarTrainingPresenter
         }
     }
 
+    // 217-498
+
     @Override
-    public void notifyObserver(int pitchIx) {
+    public void notifyObserver(double pitchInHz, int pitchIx) {
         Log.d("accuracy", "Pitch: " + pitchIx + '\n' + System.currentTimeMillis());
         if (mLastTimeAround == -1) {
             mLastTimeAround = System.currentTimeMillis();
@@ -166,6 +147,7 @@ public class EarTrainingPresenter
             /* Determine Note */
             final Note curNote;
             if (pitchIx == -1) {
+                mView.showNoPitchDetected();
                 // Null isn't really added,
                 // but it means there was space in between the last heard note.
                 // This is in place to avoid repeatedly adding the same note
@@ -181,6 +163,7 @@ public class EarTrainingPresenter
             }
             else {
                 curNote = new Note(pitchIx);
+                mView.showPitchResult((int) pitchInHz, curNote);
                 mLastNoteIsNull = false;
 
                 /* Add note */
@@ -206,59 +189,29 @@ public class EarTrainingPresenter
 
     @Override
     public void notifyObserver() {
-
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
     }
 
-    private void setupTest() {
-        mPatternEngine.setBounds(40, 76); // low e to high e
+    // ***************
+    // PRIVATE METHODS
+    // ***************
 
-        IntervalTemplate template = new IntervalTemplate(IntervalBank.MAJOR_TRIAD);
+    private void resumeEarTrainingExercise() {
+        resumeEarTrainingExercise(0);
+    }
 
-        mPatternEngine.addIntervalTemplate(template);
-
-
-        // PHRASE TEMPLATE SETUP
-        /*
-        mPatternEngine.setBounds(40, 76); // low e to high e
-
-        for (int i = 0; i < 7; i++) {
-            mPatternEngine.addMode(new MajorMode(i));
-            mPatternEngine.addMode(new MelodicMinorMode(i));
-            mPatternEngine.addMode(new HarmonicMinorMode(i));
+    // Run single exercise
+    private void resumeEarTrainingExercise(int delay) {
+        if (!mPitchProcessor.isRunning()) {
+            mPitchProcessor.start();
         }
-//        mPatternEngine.addMode(new MajorMode(0));
-//        mPatternEngine.addMode(new MajorMode(1));
-//        mPatternEngine.addMode(new MelodicMinorMode(3));
-//        mPatternEngine.addMode(new HarmonicMinorMode(0));
-
-        AbstractTemplate template = new AbstractTemplate();
-        template.addDegree(0);
-        template.addDegree(2);
-        template.addDegree(3);
-        template.addDegree(4);
-
-        AbstractTemplate otherTemplate = new AbstractTemplate();
-        otherTemplate.addDegree(0);
-        otherTemplate.addDegree(1);
-        otherTemplate.addDegree(2);
-        otherTemplate.addDegree(4);
-
-        AbstractTemplate fullScale = new AbstractTemplate();
-        fullScale.addDegree(0);
-//        fullScale.addDegree(1);
-        fullScale.addDegree(2);
-//        fullScale.addDegree(3);
-        fullScale.addDegree(4);
-//        fullScale.addDegree(5);
-        fullScale.addDegree(6);
-//        fullScale.addDegree(7);
-
-//        mPatternEngine.addAbstractTemplate(template);
-//        mPatternEngine.addAbstractTemplate(otherTemplate);
-        mPatternEngine.addAbstractTemplate(fullScale);
-        */
+        mState = State.PLAYING_PATTERN;
+        mUserAnswer.clear();
+        mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
+        mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
+        final Thread thread =
+                mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay, mSettings.shouldPlayCadence());
     }
 
 }

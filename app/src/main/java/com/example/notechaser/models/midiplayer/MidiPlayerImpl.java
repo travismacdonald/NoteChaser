@@ -34,6 +34,8 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private static final int NOTE_DURATION = 500;
 
+    private static final int CADENCE_DURATION = 800;
+
     private static final int REVERB_DURATION = 850;
 
     // *****************
@@ -43,12 +45,7 @@ public class MidiPlayerImpl implements MidiPlayer {
     /**
      * Indices of root notes for I-IV-V-I cadence in C.
      */
-    private static final int[][] sCadence = {
-            { 36 },
-            { 41 },
-            { 43 },
-            { 36 }
-    };
+    private Note[][] mCadence;
 
     private Thread mCadenceThread;
 
@@ -86,6 +83,8 @@ public class MidiPlayerImpl implements MidiPlayer {
         mActiveNotes = null;
         mActiveNotes = new HashSet<>();
         mCurrentPattern = null;
+
+        loadCadence();
     }
 
     // *****************
@@ -145,12 +144,43 @@ public class MidiPlayerImpl implements MidiPlayer {
      */
     @Override
     public Thread playPattern(Pattern toPlay, PatternPlayerObserver observer, int startDelay) {
+        return playPattern(toPlay, observer, startDelay, false);
+    }
+
+    @Override
+    public Thread playPattern(
+            Pattern toPlay,
+            PatternPlayerObserver observer,
+            int startDelay,
+            boolean shouldPlayCadence) {
         mCurrentPattern = toPlay;
         Runnable curPattern = () -> {
             try {
                 Thread.sleep(startDelay);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.out.println(e);
+            }
+            // tODO: make playback sound a bit smoother
+            if (shouldPlayCadence) {
+                for (Note[] curChord : mCadence) {
+                    for (Note curNote : curChord) {
+                        startNotePlayback(curNote);
+                    }
+                    try {
+                        Thread.sleep(CADENCE_DURATION);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                    for (Note curNote : curChord) {
+                        stopNotePlayback(curNote);
+                    }
+                }
+                try {
+                    Thread.sleep(NOTE_DURATION);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
             }
             for (Note curNote : toPlay.getNotes()) {
                 startNotePlayback(curNote);
@@ -159,7 +189,7 @@ public class MidiPlayerImpl implements MidiPlayer {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                // Pattern is interrupted; playback has already been stopped.
+                // Playback has already been stopped.
                 if (toPlay.canInterrupt()) {
                     toPlay.setCanInterrupt(false);
                     return;
@@ -296,6 +326,34 @@ public class MidiPlayerImpl implements MidiPlayer {
         message[0] = (byte) PROGRAM_CHANGE;
         message[1] = (byte) mPlugin;
         mMidiDriver.write(message);
+    }
+
+    private void loadCadence() {
+        mCadence = new Note[4][];
+
+        // C Maj
+        Note cbass = new Note(36);
+        Note c3 = new Note(48);
+        Note g3 = new Note(55);
+        Note e4 = new Note(64);
+        mCadence[0] = new Note[]{ cbass, c3, g3, e4 };
+
+        // F Maj
+        Note fBass = new Note(41);
+        Note f3 = new Note(53);
+        Note c4 = new Note(60);
+        Note a4 = new Note(57);
+        mCadence[1] = new Note[]{ fBass, f3, c4, a4 };
+
+        // G Maj
+        Note gBass = new Note(50);
+        Note d4 = new Note(62);
+        Note b5 = new Note(59);
+        mCadence[2] = new Note[]{ gBass, g3, d4, b5 };
+
+        // C Maj
+        mCadence[3] = mCadence[0];
+
     }
 
 }

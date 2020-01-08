@@ -1,5 +1,6 @@
 package com.example.notechaser.activities.eartraining;
 
+import com.example.keyfinder.Note;
 import com.example.notechaser.data.BasePresenter;
 import com.example.notechaser.data.BaseView;
 
@@ -17,14 +18,13 @@ public class EarTrainingContract {
 
         void showInactive();
 
+        void showPitchResult(int pitchInHz, Note note);
+
+        void showNoPitchDetected();
+
     }
 
     interface Presenter extends BasePresenter {
-
-        void setLowerBound(int lowerBound);
-
-        void setUpperBound(int upperBound);
-
 
         void startEarTrainingExercise();
 

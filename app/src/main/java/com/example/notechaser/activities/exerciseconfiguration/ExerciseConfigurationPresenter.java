@@ -3,7 +3,6 @@ package com.example.notechaser.activities.exerciseconfiguration;
 import com.example.keyfinder.Mode;
 import com.example.keyfinder.eartraining.AbstractTemplate;
 import com.example.keyfinder.eartraining.IntervalTemplate;
-import com.example.keyfinder.eartraining.Pattern;
 import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.ModeCollection;
 import com.example.notechaser.models.patternengine.PatternEngine;

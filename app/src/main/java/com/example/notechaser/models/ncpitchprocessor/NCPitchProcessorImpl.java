@@ -72,10 +72,10 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
             final float pitchInHz = result.getPitch();
             // Todo: move to thread; move off of main UI thread
             mActivity.runOnUiThread(() -> {
-                int pitchAsInt = convertPitchToIx(pitchInHz);
+                int pitchIx = convertPitchToIx(pitchInHz);
 
                 for (NCPitchProcessorObserver observer : mPitchObservers) {
-                    observer.notifyObserver(pitchAsInt);
+                    observer.notifyObserver(pitchInHz, pitchIx);
                 }
             });
         };
