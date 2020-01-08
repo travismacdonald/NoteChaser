@@ -40,6 +40,8 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
         mPatternEngine = patternEngine;
         mSettings = settings;
         mModeCollection = modeCollection;
+
+        mView.setPresenter(this);
     }
 
     // *****************
@@ -155,6 +157,11 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
     @Override
     public void setPlayCadence(boolean shouldPlayCadence) {
         mSettings.setPlayCadence(shouldPlayCadence);
+    }
+
+    @Override
+    public EarTrainingSettings getSettings() {
+        return mSettings;
     }
 
 }

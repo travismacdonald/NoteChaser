@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.keyfinder.Note;
 import com.example.keyfinder.eartraining.IntervalBank;
 import com.example.keyfinder.eartraining.IntervalTemplate;
+import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.UserAnswer;
 import com.example.notechaser.models.answerchecker.AnswerChecker;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
@@ -46,6 +47,8 @@ public class EarTrainingPresenter
 
     private NoteFilter mNoteFilter;
 
+    private EarTrainingSettings mSettings;
+
     private State mState;
 
     private UserAnswer mUserAnswer;
@@ -65,7 +68,8 @@ public class EarTrainingPresenter
                                 MidiPlayer midiPlayer,
                                 SoundPoolPlayer soundPoolPlayer,
                                 NCPitchProcessor pitchProcessor,
-                                NoteFilter noteFilter) {
+                                NoteFilter noteFilter,
+                                EarTrainingSettings settings) {
         mView = view;
         mPatternEngine = patternEngine;
         mChecker = checker;
@@ -73,6 +77,8 @@ public class EarTrainingPresenter
         mSoundPoolPlayer = soundPoolPlayer;
         mPitchProcessor = pitchProcessor;
         mNoteFilter = noteFilter;
+        mSettings = settings;
+
         mNullInitHeard = -1;
 
         mState = State.INACTIVE;

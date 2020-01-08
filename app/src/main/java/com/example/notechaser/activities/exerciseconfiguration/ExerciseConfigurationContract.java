@@ -5,6 +5,7 @@ import com.example.keyfinder.eartraining.AbstractTemplate;
 import com.example.keyfinder.eartraining.IntervalTemplate;
 import com.example.notechaser.data.BasePresenter;
 import com.example.notechaser.data.BaseView;
+import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.ModeCollection;
 
 public class ExerciseConfigurationContract {
@@ -58,6 +59,10 @@ public class ExerciseConfigurationContract {
         void setLowerBound(int lowerBound);
 
         void setPlayCadence(boolean shouldPlayCadence);
+
+        // Bad methods
+
+        EarTrainingSettings getSettings();
 
     }
 

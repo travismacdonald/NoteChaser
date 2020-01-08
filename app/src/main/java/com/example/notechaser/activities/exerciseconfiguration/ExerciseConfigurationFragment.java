@@ -62,7 +62,8 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
     public void showEarTrainingActivity() {
         Intent intent = new Intent(getContext(), EarTrainingActivity.class);
         // Todo: will have to see if this works correctly
-        intent.putExtra("pattern_generator", (Parcelable) mPatternEngine);
+        intent.putExtra("settings", (Parcelable) mPresenter.getSettings());
+        // intent.putExtra("pattern_generator", (Parcelable) mPatternEngine);
         startActivity(intent);
     }
 
@@ -94,7 +95,7 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
      * This method simulates the user choosing the Banacos ear training method
      */
     private void test_loadBanacosMethod() {
-
+        mPresenter.loadBanacosSettings();
     }
 
 }

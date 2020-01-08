@@ -3,8 +3,10 @@ package com.example.notechaser.activities.eartraining;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.notechaser.R;
+import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.models.answerchecker.AnswerChecker;
 import com.example.notechaser.models.answerchecker.AnswerCheckerImpl;
 import com.example.notechaser.models.midiplayer.MidiPlayer;
@@ -45,6 +47,8 @@ public class EarTrainingActivity extends AppCompatActivity {
         NCPitchProcessor pitchProcessor = new NCPitchProcessorImpl(this);
         NoteFilter noteFilter = new NoteFilterImpl();
 
+        EarTrainingSettings settings = getIntent().getParcelableExtra("settings");
+
         mEarTrainingPresenter = new EarTrainingPresenter(
                 frag,
                 patternEngine,
@@ -52,7 +56,8 @@ public class EarTrainingActivity extends AppCompatActivity {
                 midiPlayer,
                 soundPoolPlayer,
                 pitchProcessor,
-                noteFilter);
+                noteFilter,
+                settings);
     }
 
 }
