@@ -7,3 +7,5 @@
     - check playback type
     - check answer type
     - check cadence playback
+
+- fix bug: crash on interrupt cadence playback
