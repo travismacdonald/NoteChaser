@@ -27,6 +27,8 @@ public class ExerciseConfigurationContract {
 
         void loadBanacosSettings();
 
+        boolean isValid();
+
         void setPatternDynamic();
 
         void setPatternFixed();

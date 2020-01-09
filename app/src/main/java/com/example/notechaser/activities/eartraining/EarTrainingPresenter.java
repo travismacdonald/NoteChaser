@@ -174,8 +174,7 @@ public class EarTrainingPresenter
 
                     /* Answer reached */
                     if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
-                        final boolean answerCorrect =
-                                mChecker.samePatternAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+                        final boolean answerCorrect = checkAnswer(mUserAnswer);
                         if (answerCorrect) {
                             mView.showAnswerCorrect();
                             mSoundPoolPlayer.playAnswerCorrect();
@@ -212,6 +211,25 @@ public class EarTrainingPresenter
         mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
         final Thread thread =
                 mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay, mSettings.shouldPlayCadence());
+    }
+
+    /**
+     * Determines which method to check answer with and returns the result.
+     */
+    private boolean checkAnswer(UserAnswer answer) {
+        if (mSettings.shouldMatchOctave() && mSettings.shouldMatchOrder()) {
+            return mChecker.samePatternSameOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+        }
+        else if (mSettings.shouldMatchOctave() && !mSettings.shouldMatchOrder()) {
+            return mChecker.sameNotesSameOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+        }
+        else if (!mSettings.shouldMatchOctave() && mSettings.shouldMatchOrder()) {
+            return mChecker.samePatternAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+        }
+        else if (!mSettings.shouldMatchOctave() && !mSettings.shouldMatchOrder()) {
+            return mChecker.sameNotesAnyOctave(mPatternEngine.getCurPattern(), mUserAnswer);
+        }
+        return false;
     }
 
 }

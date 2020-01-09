@@ -61,7 +61,7 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
     // Just a test method
     @Override
     public void loadBanacosSettings() {
-        // Simulate banacos settings
+        // Simulate Banacos method
         setPatternFixed();
         Integer[] interval = {0};
         IntervalTemplate template = new IntervalTemplate(interval);
@@ -70,8 +70,14 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
         setMatchOrder(true);
         setPlayCadence(true);
         setPlaybackAscending();
-        setLowerBound(48);
-        setUpperBound(72);
+    }
+
+    /**
+     * Checks if engine will generate valid patterns.
+     */
+    @Override
+    public boolean isValid() {
+        return mPatternEngine.hasSufficientSpace();
     }
 
     @Override

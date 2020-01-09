@@ -34,7 +34,7 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private static final int NOTE_DURATION = 500;
 
-    private static final int CADENCE_DURATION = 800;
+    private static final int CADENCE_DURATION = 675;
 
     private static final int REVERB_DURATION = 850;
 

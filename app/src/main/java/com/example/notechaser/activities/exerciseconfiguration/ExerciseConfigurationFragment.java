@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.notechaser.R;
 import com.example.notechaser.activities.eartraining.EarTrainingActivity;
@@ -24,6 +26,10 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
     // ****************
 
     private View mRoot;
+
+    private EditText mLowerEdit;
+
+    private EditText mUpperEdit;
 
     private ExerciseConfigurationContract.Presenter mPresenter;
 
@@ -49,22 +55,25 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRoot = inflater.inflate(R.layout.exercise_configuration_fragment, container, false);
-        mRoot.findViewById(R.id.banacos).setOnClickListener(v -> {
-            test_loadBanacosMethod();
-            showEarTrainingActivity();
-        });
+        setupView();
         return mRoot;
     }
 
+    // *****************
+    // INTERFACE METHODS
+    // *****************
 
     @Override
     public void showEarTrainingActivity() {
-        Intent intent = new Intent(getContext(), EarTrainingActivity.class);
-        // Todo: will have to see if this works correctly
-        intent.putExtra("engine", (Serializable) mPresenter.getPatternEngine());
-        intent.putExtra("settings", (Parcelable) mPresenter.getSettings());
-        // intent.putExtra("pattern_generator", (Parcelable) mPatternEngine);
-        startActivity(intent);
+        if (mPresenter.isValid()) {
+            Intent intent = new Intent(getContext(), EarTrainingActivity.class);
+            intent.putExtra("engine", (Serializable) mPresenter.getPatternEngine());
+            intent.putExtra("settings", (Parcelable) mPresenter.getSettings());
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(getContext(), "Not enough space", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -90,6 +99,17 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
     // ***************
     // PRIVATE METHODS
     // ***************
+
+    private void setupView() {
+        mLowerEdit = mRoot.findViewById(R.id.lower_edit);
+        mUpperEdit = mRoot.findViewById(R.id.upper_edit);
+        mRoot.findViewById(R.id.banacos).setOnClickListener(v -> {
+            test_loadBanacosMethod();
+            mPresenter.setLowerBound(Integer.parseInt(mLowerEdit.getText().toString()));
+            mPresenter.setUpperBound(Integer.parseInt(mUpperEdit.getText().toString()));
+            showEarTrainingActivity();
+        });
+    }
 
     /**
      * This method simulates the user choosing the Banacos ear training method
