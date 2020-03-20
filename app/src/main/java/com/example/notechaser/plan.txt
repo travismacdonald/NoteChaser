@@ -12,9 +12,9 @@
             - * banacos and note chaser *
 
     a. INTERVAL
-      Features:
-        - All 12 intervals within octave (FREE)
-        - 12 intervals outside octave (PAID)
+        Features:
+            - All 12 intervals within octave (FREE)
+            - 12 intervals outside octave (PAID)
 
     b. Harmonic
         * see list of chords *
@@ -88,3 +88,53 @@
 
     - Min6 (1 b3 5 6)
     - Min maj7 (1 b3 5 7)
+
+
+--------------------------------
+    iv. Order of Settings
+--------------------------------
+
+    a. Interval
+        - Intervals
+        - Range
+
+        - Playback type
+        - Answer type (octave matter, order matters)
+        - Timer
+        - Fixed root
+
+--------------------------------
+    v. Flow of App
+--------------------------------
+
+    a. Interval
+        i. CHOOSE INTERVALS. (Check boxes, mutually exclusive)
+            All (1 octave)
+            All (2 octave)
+            Pentatonic (1 octave)
+            Major (1 octave)
+            Custom
+                - blacked out if another option chosen
+        ii. SETTINGS
+            Session Type (drop down)
+                - Range
+                    - Notes played between lower and upper bound (inclusive)
+                    - Space required is shown (ex: 2 Octaves + m3)
+                OR
+                - Fixed root
+                    - All intervals start with the root note
+            --------
+            Playback Type (Checkbox)
+                - Ascending, Descending, chord (at least one)
+            Answer (Switches)
+                - Match octave
+                - Same order (may get rid of this option)
+            Session Length (Drop down)
+                - By num questions (slider)
+                - By minutes (slider)
+                - No limit
+
+
+
+
+
