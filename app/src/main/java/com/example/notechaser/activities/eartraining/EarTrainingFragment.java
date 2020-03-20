@@ -16,26 +16,15 @@ import com.example.notechaser.R;
 
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
-
     private EarTrainingContract.Presenter mPresenter;
 
     private View mRoot;
 
     private Button mToggleButton;
-
     private TextView mNoteCountTv;
-
     private TextView mNoteTv;
-
     private TextView mPitchTv;
 
-
-    // ************
-    // CONSTRUCTORS
-    // ************
 
     public EarTrainingFragment() {
         // Required empty public constructor
@@ -45,22 +34,12 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
         return new EarTrainingFragment();
     }
 
-    // *****************
-    // INHERITED METHODS
-    // *****************
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.ear_training_fragment, container, false);
         setupView();
         return mRoot;
     }
-
-    // *****************
-    // INTERFACE METHODS
-    // *****************
 
     @Override
     public void onResume() {
@@ -116,10 +95,6 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     public void setPresenter(EarTrainingContract.Presenter presenter) {
         mPresenter = presenter;
     }
-
-    // ***************
-    // PRIVATE METHODS
-    // ***************
 
     private void setupView() {
         mToggleButton = mRoot.findViewById(R.id.play_button);

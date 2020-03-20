@@ -3,7 +3,11 @@
     <string name="pitchText" />
     <string name="randomToneButtonText">Start</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- EXERCISE TYPE BUTTONS -->
+    <string name="single_note_button">Single Note</string>
+    <string name="interval_button">Interval</string>
+    <string name="harmonic_button">Harmonic</string>
+    <string name="melodic_button">Melodic</string>
+    <string name="scale_button">Scale</string>
 
 </resources>

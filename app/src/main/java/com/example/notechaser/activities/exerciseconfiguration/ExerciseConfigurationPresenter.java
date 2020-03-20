@@ -132,7 +132,7 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
 
     @Override
     public void setPlaybackChord() {
-        mSettings.setPlaybackChord();
+        mSettings.setPlaybackHarmonic();
     }
 
     @Override

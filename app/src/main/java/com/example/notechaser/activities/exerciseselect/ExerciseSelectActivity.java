@@ -1,14 +1,14 @@
 package com.example.notechaser.activities.exerciseselect;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.notechaser.R;
-import com.example.notechaser.activities.exerciseconfiguration.ExerciseConfigurationPresenter;
 
 public class ExerciseSelectActivity extends AppCompatActivity {
 
-    private ExerciseConfigurationPresenter mPresenter;
+    private ExerciseSelectPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +17,15 @@ public class ExerciseSelectActivity extends AppCompatActivity {
 
         ExerciseSelectFragment frag =
                 (ExerciseSelectFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+
+        if (frag == null) {
+            frag = ExerciseSelectFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.contentFrame, frag);
+            transaction.commit();
+        }
+
+        mPresenter = new ExerciseSelectPresenter();
     }
 
 }
