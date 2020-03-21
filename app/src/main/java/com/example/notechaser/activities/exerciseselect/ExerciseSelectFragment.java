@@ -1,15 +1,17 @@
 package com.example.notechaser.activities.exerciseselect;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.notechaser.Constants;
 import com.example.notechaser.R;
+import com.example.notechaser.activities.exerciseconfiguration.ExerciseConfigurationActivity;
 
 
 public class ExerciseSelectFragment extends Fragment implements ExerciseSelectContract.View {
@@ -34,56 +36,55 @@ public class ExerciseSelectFragment extends Fragment implements ExerciseSelectCo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.exercise_select_fragment, container, false);
         setupView();
         return mRoot;
-
     }
-
-
 
 
     @Override
     public void setPresenter(ExerciseSelectContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
 
+    @Override
+    public void showExerciseConfigurationActivity(String exerciseType) {
+        Intent intent = new Intent(getContext(), ExerciseConfigurationActivity.class);
+        intent.putExtra(Constants.EXERCISE_TYPE_TAG, exerciseType);
+        startActivity(intent);
+    }
 
     private void setupView() {
         mSingleNoteButton = mRoot.findViewById(R.id.singlenote_button);
         mSingleNoteButton.setTag(Constants.SINGLE_NOTE);
         mSingleNoteButton.setOnClickListener(v ->
-            selectExerciseType((String) mSingleNoteButton.getTag())
+            mPresenter.exerciseTypeSelected((String) mSingleNoteButton.getTag())
         );
 
         mIntervalButton = mRoot.findViewById(R.id.interval_button);
         mIntervalButton.setTag(Constants.INTERVAL);
         mIntervalButton.setOnClickListener(v ->
-                selectExerciseType((String) mIntervalButton.getTag())
+                mPresenter.exerciseTypeSelected((String) mIntervalButton.getTag())
         );
 
         mHarmonicButton = mRoot.findViewById(R.id.harmonic_button);
         mHarmonicButton.setTag(Constants.HARMONIC);
         mHarmonicButton.setOnClickListener(v ->
-                selectExerciseType((String) mHarmonicButton.getTag())
+                mPresenter.exerciseTypeSelected((String) mHarmonicButton.getTag())
         );
 
         mScaleButton = mRoot.findViewById(R.id.scale_button);
         mScaleButton.setTag(Constants.SCALE);
         mScaleButton.setOnClickListener(v ->
-                selectExerciseType((String) mScaleButton.getTag())
+                mPresenter.exerciseTypeSelected((String) mScaleButton.getTag())
         );
 
         mMelodicButton = mRoot.findViewById(R.id.melodic_button);
         mMelodicButton.setTag(Constants.MELODIC);
         mMelodicButton.setOnClickListener(v ->
-                selectExerciseType((String) mMelodicButton.getTag())
+                mPresenter.exerciseTypeSelected((String) mMelodicButton.getTag())
         );
     }
 
-    private void selectExerciseType(String exerciseType) {
-        // todo: start config activity with exercise type
-        Toast.makeText(mRoot.getContext(), exerciseType, Toast.LENGTH_SHORT).show();
-    }
 }

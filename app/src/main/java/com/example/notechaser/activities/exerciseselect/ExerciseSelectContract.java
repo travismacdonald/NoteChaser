@@ -7,9 +7,13 @@ public class ExerciseSelectContract {
 
     interface View extends BaseView<Presenter> {
 
+        void showExerciseConfigurationActivity(String exerciseType);
+
     }
 
     interface Presenter extends BasePresenter {
+
+        void exerciseTypeSelected(String exerciseType);
 
     }
 

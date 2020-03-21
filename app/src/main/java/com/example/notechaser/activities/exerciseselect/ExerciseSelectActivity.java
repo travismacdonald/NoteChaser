@@ -25,7 +25,7 @@ public class ExerciseSelectActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        mPresenter = new ExerciseSelectPresenter();
+        mPresenter = new ExerciseSelectPresenter(frag);
     }
 
 }
