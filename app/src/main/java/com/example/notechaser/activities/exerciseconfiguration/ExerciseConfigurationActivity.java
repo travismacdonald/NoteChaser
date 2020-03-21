@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.notechaser.Constants;
 import com.example.notechaser.R;
 import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.ModeCollection;
@@ -24,10 +25,19 @@ public class ExerciseConfigurationActivity extends AppCompatActivity {
 
         if (frag == null) {
             frag = ExerciseConfigurationFragment.newInstance();
+
+            // Get args for fragment
+            Bundle args = new Bundle();
+            String exerciseType = getIntent().getStringExtra(Constants.EXERCISE_TYPE_TAG);
+            args.putString(Constants.EXERCISE_TYPE_TAG, exerciseType);
+            frag.setArguments(args);
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.contentFrame, frag);
             transaction.commit();
         }
+
+
 
         PatternEngine patternEngine = new PatternEngineImpl();
         EarTrainingSettings settings = new EarTrainingSettings();

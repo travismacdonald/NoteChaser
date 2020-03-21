@@ -16,9 +16,6 @@ import com.example.notechaser.models.patternengine.PatternEngine;
 
 public class ExerciseConfigurationPresenter implements ExerciseConfigurationContract.Presenter {
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
 
     ExerciseConfigurationContract.View mView;
 
@@ -28,9 +25,6 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
 
     ModeCollection mModeCollection;
 
-    // ************
-    // CONSTRUCTORS
-    // ************
 
     public ExerciseConfigurationPresenter(ExerciseConfigurationContract.View view,
                                           PatternEngine patternEngine,
@@ -44,9 +38,6 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
         mView.setPresenter(this);
     }
 
-    // *****************
-    // INTERFACE METHODS
-    // *****************
 
     @Override
     public void start() {
