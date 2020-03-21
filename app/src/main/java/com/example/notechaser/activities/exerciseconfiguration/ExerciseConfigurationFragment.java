@@ -4,7 +4,8 @@ package com.example.notechaser.activities.exerciseconfiguration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,6 @@ import java.io.Serializable;
 
 public class ExerciseConfigurationFragment extends Fragment implements ExerciseConfigurationContract.View{
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
-
     private View mRoot;
 
     private EditText mLowerEdit;
@@ -33,14 +30,7 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
 
     private ExerciseConfigurationContract.Presenter mPresenter;
 
-    /**
-     * Generator that gets configured for the ear training activity.
-     */
     private PatternEngine mPatternEngine;
-
-    // ************
-    // CONSTRUCTORS
-    // ************
 
     public ExerciseConfigurationFragment() {
         // Required empty public constructor
@@ -51,17 +41,13 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRoot = inflater.inflate(R.layout.exercise_configuration_fragment, container, false);
         setupView();
         return mRoot;
     }
-
-    // *****************
-    // INTERFACE METHODS
-    // *****************
 
     @Override
     public void showEarTrainingActivity() {
@@ -96,9 +82,6 @@ public class ExerciseConfigurationFragment extends Fragment implements ExerciseC
         mPresenter = presenter;
     }
 
-    // ***************
-    // PRIVATE METHODS
-    // ***************
 
     private void setupView() {
         mLowerEdit = mRoot.findViewById(R.id.lower_edit);

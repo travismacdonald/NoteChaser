@@ -1,27 +1,20 @@
 package com.example.notechaser.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+
+import java.io.Serializable;
 
 /**
  * Data class that holds the user settings for the ear training session.
  */
-public class EarTrainingSettings implements Parcelable {
+public class EarTrainingSettings implements Serializable {
 
-    // ************
-    // ENUM CLASSES
-    // ************
-
+    // Todo: refactor to have own boolean values
     public enum PlaybackType {
         ASCENDING,
         DESCENDING,
-        CHORD,
+        HARMONIC,
         RANDOM
     }
-
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
 
     private PlaybackType mPlaybackType;
 
@@ -31,9 +24,6 @@ public class EarTrainingSettings implements Parcelable {
 
     private Boolean mPlayCadence;
 
-    // ************
-    // CONSTRUCTORS
-    // ************
 
     public EarTrainingSettings() {
         mPlaybackType = null;
@@ -42,9 +32,6 @@ public class EarTrainingSettings implements Parcelable {
         mPlayCadence = null;
     }
 
-    // **************
-    // PUBLIC METHODS
-    // **************
 
     public PlaybackType getPlaybackType() {
         return mPlaybackType;
@@ -58,8 +45,8 @@ public class EarTrainingSettings implements Parcelable {
         mPlaybackType = PlaybackType.DESCENDING;
     }
 
-    public void setPlaybackChord() {
-        mPlaybackType = PlaybackType.CHORD;
+    public void setPlaybackHarmonic() {
+        mPlaybackType = PlaybackType.HARMONIC;
     }
 
     public void setPlaybackRandom() {
@@ -89,57 +76,5 @@ public class EarTrainingSettings implements Parcelable {
     public void setPlayCadence(boolean shouldPlayCadence) {
         mPlayCadence = shouldPlayCadence;
     }
-
-
-    protected EarTrainingSettings(Parcel in) {
-        mPlaybackType = (PlaybackType) in.readValue(PlaybackType.class.getClassLoader());
-        byte mMatchOctaveVal = in.readByte();
-        mMatchOctave = mMatchOctaveVal == 0x02 ? null : mMatchOctaveVal != 0x00;
-        byte mMatchOrderVal = in.readByte();
-        mMatchOrder = mMatchOrderVal == 0x02 ? null : mMatchOrderVal != 0x00;
-        byte mPlayCadenceVal = in.readByte();
-        mPlayCadence = mPlayCadenceVal == 0x02 ? null : mPlayCadenceVal != 0x00;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(mPlaybackType);
-        if (mMatchOctave == null) {
-            dest.writeByte((byte) (0x02));
-        }
-        else {
-            dest.writeByte((byte) (mMatchOctave ? 0x01 : 0x00));
-        }
-        if (mMatchOrder == null) {
-            dest.writeByte((byte) (0x02));
-        }
-        else {
-            dest.writeByte((byte) (mMatchOrder ? 0x01 : 0x00));
-        }
-        if (mPlayCadence == null) {
-            dest.writeByte((byte) (0x02));
-        }
-        else {
-            dest.writeByte((byte) (mPlayCadence ? 0x01 : 0x00));
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<EarTrainingSettings> CREATOR = new Parcelable.Creator<EarTrainingSettings>() {
-        @Override
-        public EarTrainingSettings createFromParcel(Parcel in) {
-            return new EarTrainingSettings(in);
-        }
-
-        @Override
-        public EarTrainingSettings[] newArray(int size) {
-            return new EarTrainingSettings[size];
-        }
-    };
 
 }

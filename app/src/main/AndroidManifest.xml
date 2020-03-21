@@ -13,13 +13,16 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".activities.exerciseconfiguration.ExerciseConfigurationActivity">
+
+        </activity>
+
+        <activity android:name=".activities.eartraining.EarTrainingActivity"></activity>
+        <activity android:name=".activities.exerciseselect.ExerciseSelectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.eartraining.EarTrainingActivity"></activity>
     </application>
 
 </manifest>

@@ -20,10 +20,6 @@ import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
 public class EarTrainingPresenter
         implements EarTrainingContract.Presenter, NCPitchProcessorObserver, PatternPlayerObserver {
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
-
     // for debugging
     private long mLastTimeAround = -1;
 
@@ -64,10 +60,6 @@ public class EarTrainingPresenter
 
     // Todo: These are test variables; delete when no longer needed
 
-    // ************
-    // CONSTRUCTORS
-    // ************
-
     public EarTrainingPresenter(EarTrainingContract.View view,
                                 PatternEngine patternEngine,
                                 AnswerChecker checker,
@@ -95,9 +87,6 @@ public class EarTrainingPresenter
         mPitchProcessor.addPitchObserver(this);
     }
 
-    // *****************
-    // INTERFACE METHODS
-    // *****************
 
     @Override
     public void start() {
@@ -191,10 +180,6 @@ public class EarTrainingPresenter
         mState = State.LISTENING;
         mNullInitHeard = System.currentTimeMillis();
     }
-
-    // ***************
-    // PRIVATE METHODS
-    // ***************
 
     private void resumeEarTrainingExercise() {
         resumeEarTrainingExercise(0);
