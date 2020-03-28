@@ -13,6 +13,7 @@ import java.util.Random;
  * Abstract Pattern Generator uses abstract patterns to randomly generate patterns.
  * Patterns will be generated in modes given by the user that are in the range given by the user.
  */
+@Deprecated
 public class AbstractPatternGenerator implements Serializable {
 
     // ****************
