@@ -2,25 +2,17 @@ package com.example.notechaser.models.patternengine;
 
 import android.util.Log;
 
-import com.example.keyfinder.Mode;
-import com.example.keyfinder.eartraining.IntervalTemplate;
-import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.AbstractTemplate;
+
 import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
 import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
+import com.example.notechaser.patterngenerator.Pattern;
+import com.example.notechaser.patterngenerator.PatternTemplate;
 
 import java.io.Serializable;
 
 
 public class PatternEngineImpl implements PatternEngine, Serializable {
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
-
-    /**
-     * Type of pattern generator used
-     */
     private enum Type {
         DYNAMIC, FIXED
     }
@@ -82,24 +74,24 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     }
 
     @Override
-    public void addIntervalTemplate(IntervalTemplate toAdd) {
+    public void addIntervalTemplate(PatternTemplate toAdd) {
         mIntervalPatternGenerator.addIntervalTemplate(toAdd);
     }
 
     @Override
-    public void removeIntervalTemplate(IntervalTemplate toRemove) {
+    public void removeIntervalTemplate(PatternTemplate toRemove) {
         mIntervalPatternGenerator.removeIntervalTemplate(toRemove);
     }
 
-    @Override
-    public void addAbstractTemplate(AbstractTemplate toAdd) {
-        mAbstractPatternGenerator.addAbstractTemplate(toAdd);
-    }
-
-    @Override
-    public void removeAbstractTemplate(AbstractTemplate toRemove) {
-        mAbstractPatternGenerator.removeAbstractTemplate(toRemove);
-    }
+//    @Override
+//    public void addAbstractTemplate(AbstractTemplate toAdd) {
+//        mAbstractPatternGenerator.addAbstractTemplate(toAdd);
+//    }
+//
+//    @Override
+//    public void removeAbstractTemplate(AbstractTemplate toRemove) {
+//        mAbstractPatternGenerator.removeAbstractTemplate(toRemove);
+//    }
 
     @Override
     public void setLowerBound(int lowerBound) {

@@ -14,7 +14,7 @@ public class IntervalPatternGenerator implements Serializable {
     private Random mRandom;
 
     // Todo: change IntervalTemplate ta PatternTemplate
-    private List<IntervalTemplate> mIntervalTemplates;
+    private List<PatternTemplate> mIntervalTemplates;
 
     private int mLowerBound;
 
@@ -36,7 +36,7 @@ public class IntervalPatternGenerator implements Serializable {
     public Pattern generatePattern() {
         if (hasSufficientSpace()) {
             // Pick random template
-            IntervalTemplate template = mIntervalTemplates.get(mRandom.nextInt(mIntervalTemplates.size()));
+            PatternTemplate template = mIntervalTemplates.get(mRandom.nextInt(mIntervalTemplates.size()));
             // Pick random key
             int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - template.getSpaceRequired() + 1) + mLowerBound;
             // return that shit
@@ -48,12 +48,12 @@ public class IntervalPatternGenerator implements Serializable {
         }
     }
 
-    public void addIntervalTemplate(IntervalTemplate toAdd) {
+    public void addIntervalTemplate(PatternTemplate toAdd) {
         mIntervalTemplates.add(toAdd);
         mMinSpaceRequired = calcMinSpaceRequired();
     }
 
-    public void removeIntervalTemplate(IntervalTemplate toRemove) {
+    public void removeIntervalTemplate(PatternTemplate toRemove) {
         mIntervalTemplates.remove(toRemove);
         mMinSpaceRequired = calcMinSpaceRequired();
     }
@@ -81,7 +81,7 @@ public class IntervalPatternGenerator implements Serializable {
     private int calcMinSpaceRequired() {
         int maxSpace = -1;
         // Todo: better solution than linear search
-        for (IntervalTemplate template : mIntervalTemplates) {
+        for (PatternTemplate template : mIntervalTemplates) {
             final int space = template.getSpaceRequired();
             if (space > maxSpace) {
                 maxSpace = space;
