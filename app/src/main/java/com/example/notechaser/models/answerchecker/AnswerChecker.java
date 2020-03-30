@@ -1,7 +1,8 @@
 package com.example.notechaser.models.answerchecker;
 
-import com.example.keyfinder.eartraining.Pattern;
+
 import com.example.notechaser.data.UserAnswer;
+import com.example.notechaser.patterngenerator.Pattern;
 
 /**
  * Interface for answer checker model.

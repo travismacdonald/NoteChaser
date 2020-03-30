@@ -10,9 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.keyfinder.MusicTheory;
-import com.example.keyfinder.Note;
+
 import com.example.notechaser.R;
+import com.example.notechaser.patterngenerator.MusicTheory;
+import com.example.notechaser.patterngenerator.Note;
 
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
 
@@ -61,7 +62,7 @@ public class EarTrainingFragment extends Fragment implements EarTrainingContract
     @Override
     public void showPitchResult(int pitchInHz, Note note) {
         mPitchTv.setText(Integer.toString(pitchInHz));
-        mNoteTv.setText(note.getName() + note.getIx() / MusicTheory.TOTAL_NOTES);
+        mNoteTv.setText(note.getNameFlat() + note.getIx() / 12); // TODO: fix hardcoded int
     }
 
     @Override

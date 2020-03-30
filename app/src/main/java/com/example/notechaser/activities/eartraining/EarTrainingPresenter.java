@@ -2,9 +2,7 @@ package com.example.notechaser.activities.eartraining;
 
 import android.util.Log;
 
-import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.IntervalBank;
-import com.example.keyfinder.eartraining.IntervalTemplate;
+
 import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.UserAnswer;
 import com.example.notechaser.models.answerchecker.AnswerChecker;
@@ -15,6 +13,7 @@ import com.example.notechaser.models.patternengine.PatternEngine;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessor;
 import com.example.notechaser.models.ncpitchprocessor.NCPitchProcessorObserver;
 import com.example.notechaser.models.soundpoolplayer.SoundPoolPlayer;
+import com.example.notechaser.patterngenerator.Note;
 
 
 public class EarTrainingPresenter
@@ -159,10 +158,10 @@ public class EarTrainingPresenter
                 if (mNoteFilter.isNoteValid(curNote) && !curNote.equals(mLastNoteAdded)) {
                     mUserAnswer.addNote(curNote);
                     mLastNoteAdded = curNote;
-                    mView.showNumNotesHeard(mUserAnswer.size(), mPatternEngine.getCurPattern().size());
+                    mView.showNumNotesHeard(mUserAnswer.size(), mPatternEngine.getCurPattern().getSize());
 
                     /* Answer reached */
-                    if (mUserAnswer.size() == mPatternEngine.getCurPattern().size()) {
+                    if (mUserAnswer.size() == mPatternEngine.getCurPattern().getSize()) {
                         final boolean answerCorrect = checkAnswer(mUserAnswer);
                         if (answerCorrect) {
                             mView.showAnswerCorrect();

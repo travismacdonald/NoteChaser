@@ -1,7 +1,9 @@
 package com.example.notechaser.models.midiplayer;
 
-import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.Pattern;
+
+
+import com.example.notechaser.patterngenerator.Note;
+import com.example.notechaser.patterngenerator.Pattern;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -123,7 +125,8 @@ public class MidiPlayerImpl implements MidiPlayer {
      */
     @Override
     public Thread playPattern(Pattern toPlay) {
-        return playPattern(toPlay, null, 0);
+//        return playPattern(toPlay, null, 0);
+        return null;
     }
 
     /**
@@ -131,7 +134,8 @@ public class MidiPlayerImpl implements MidiPlayer {
      */
     @Override
     public Thread playPattern(Pattern toPlay, PatternPlayerObserver observer) {
-        return playPattern(toPlay, observer, 0);
+//        return playPattern(toPlay, observer, 0);
+        return null;
     }
 
     /**
