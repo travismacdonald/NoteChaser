@@ -1,56 +1,31 @@
 package com.example.notechaser.patterngenerator
 
 import java.io.Serializable
-import java.util.*
 
+/**
+ * Class that holds untransposed patterns.
+ */
 // todo: change serializable to parcelable
-class PatternTemplate : Serializable {
-    var indices: List<Int>
-        private set
-    private var highestIx = 0
-    private var lowestIx = 0
+class PatternTemplate(private var notes: MutableList<Note> = arrayListOf()) : Serializable {
 
-    constructor() {
-        indices = ArrayList()
-        highestIx = -1
-        lowestIx = -1
-    }
-
-    constructor(indices: Array<Int?>) : this(Arrays.asList<Int>(*indices)) {}
-    constructor(indices: List<Int>) {
-        this.indices = indices
-        findRange()
-    }
-
-    private fun findRange() {
-        if (size() == 0) {
-            lowestIx = -1
-            highestIx = lowestIx
-        } else {
-            lowestIx = indices[0]
-            highestIx = lowestIx
-            for (ix in indices) {
-                if (ix < lowestIx) {
-                    lowestIx = ix
-                } else if (ix > highestIx) {
-                    highestIx = ix
-                }
-            }
+    var range = -1
+        get() {
+            if (notes.isEmpty()) -1
+            // Todo: better way of writing this?
+            return (notes.minBy { it.ix }?.ix ?: 0) - (notes.maxBy { it.ix }?.ix ?: 5)
         }
+        private set
+
+    var size = notes.size
+        get() = notes.size
+        private set
+
+    fun addNote(note: Note) {
+        notes.add(note)
     }
 
-    val spaceRequired: Int
-        get() = highestIx - lowestIx
-
-    //    public Pattern generatePattern(int key) {
-    //        Pattern pattern = new Pattern();
-    //        for (int ix : indices) {
-    //            pattern.getNotes().add(new Note(ix + key));
-    //        }
-    //        return pattern;
-    //    }
-    fun size(): Int {
-        return indices.size
+    fun removeNote(ix: Int) {
+        notes.removeAt(ix)
     }
 
 }
