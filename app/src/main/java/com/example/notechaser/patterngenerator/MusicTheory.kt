@@ -6,6 +6,8 @@ class MusicTheory {
         const val FLAT = '\u266d'
         const val NATURAL = '\u266e'
 
+        const val CHROMATIC_SCALE_SIZE = 12;
+
         val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
         val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
         val HARMONIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 8, 11)
@@ -69,6 +71,5 @@ class MusicTheory {
                 "Lydian ${SHARP}9",
                 "Altered Diminished"
         )
-
     }
 }
