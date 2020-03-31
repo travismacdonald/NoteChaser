@@ -38,10 +38,11 @@ public class IntervalPatternGenerator implements Serializable {
             // Pick random template
             PatternTemplate template = mIntervalTemplates.get(mRandom.nextInt(mIntervalTemplates.size()));
             // Pick random key
-            int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - template.getSpaceRequired() + 1) + mLowerBound;
+//            int keyIx = mRandom.nextInt(mUpperBound - mLowerBound - template.getSpaceRequired() + 1) + mLowerBound;
             // return that shit
 //            return template.generatePattern(keyIx);
-            return new Pattern(template, keyIx);
+//            return new Pattern(template, keyIx);
+            return null;
         }
         else {
             return null;
@@ -82,7 +83,8 @@ public class IntervalPatternGenerator implements Serializable {
         int maxSpace = -1;
         // Todo: better solution than linear search
         for (PatternTemplate template : mIntervalTemplates) {
-            final int space = template.getSpaceRequired();
+//            final int space = template.getSpaceRequired();
+            int space = -69;
             if (space > maxSpace) {
                 maxSpace = space;
             }

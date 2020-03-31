@@ -1,6 +1,6 @@
 package com.example.notechaser;
 
-import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
+
 
 import org.junit.Test;
 

@@ -16,19 +16,11 @@ import java.util.Set;
  */
 public class MidiPlayerImpl implements MidiPlayer {
 
-    // **************
-    // MIDI CONSTANTS
-    // **************
-
     private static final int START = 0X90;
 
     private static final int STOP = 0X80;
 
     private static final int PROGRAM_CHANGE = 0XC0;
-
-    // ******************
-    // PLAYBACK CONSTANTS
-    // ******************
 
     private static final int VOLUME_OFF = 0;
 
@@ -39,10 +31,6 @@ public class MidiPlayerImpl implements MidiPlayer {
     private static final int CADENCE_DURATION = 675;
 
     private static final int REVERB_DURATION = 850;
-
-    // *****************
-    // PRIVATE VARIABLES
-    //******************
 
     /**
      * Indices of root notes for I-IV-V-I cadence in C.
@@ -57,24 +45,11 @@ public class MidiPlayerImpl implements MidiPlayer {
 
     private int mVolume;
 
-    /**
-     * Index of midi plugin.
-     */
     private int mPlugin;
 
-    /**
-     * Current notes being played by midi.
-     */
     private Set<Note> mActiveNotes;
 
-    /**
-     * Current pattern to be played by midi.
-     */
     private Pattern mCurrentPattern;
-
-    // ************
-    // CONSTRUCTORS
-    // ************
 
     public MidiPlayerImpl() {
         mMidiDriver = new MidiDriver();
@@ -89,24 +64,12 @@ public class MidiPlayerImpl implements MidiPlayer {
         loadCadence();
     }
 
-    // *****************
-    // INTERFACE METHODS
-    // *****************
-
-    /**
-     * Function used to setup midi driver.
-     * This method is called before the midi driver can be used for playback.
-     */
     @Override
     public void start() {
         mMidiDriver.start();
         sendMidiSetup();
     }
 
-    /**
-     * Function for deconstructing midi driver.
-     * This method is called when the activity using it is being destroyed.
-     */
     @Override
     public void stop() {
         mMidiDriver.stop();
@@ -120,22 +83,14 @@ public class MidiPlayerImpl implements MidiPlayer {
         // blah
     }
 
-    /**
-     * Queue pattern for playback. No start delay and no observer.
-     */
     @Override
     public Thread playPattern(Pattern toPlay) {
-//        return playPattern(toPlay, null, 0);
-        return null;
+        return playPattern(toPlay, null, 0);
     }
 
-    /**
-     * Queue pattern for playback. No start delay.
-     */
     @Override
     public Thread playPattern(Pattern toPlay, PatternPlayerObserver observer) {
-//        return playPattern(toPlay, observer, 0);
-        return null;
+        return playPattern(toPlay, observer, 0);
     }
 
     /**
@@ -193,15 +148,15 @@ public class MidiPlayerImpl implements MidiPlayer {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                // Playback has already been stopped.
-                if (toPlay.canInterrupt()) {
-                    toPlay.setCanInterrupt(false);
-                    return;
-                }
+//                // Playback has already been stopped.
+//                if (toPlay.canInterrupt()) {
+//                    toPlay.setCanInterrupt(false);
+//                    return;
+//                }
                 // Pattern is not interrupted.
-                else {
-                    stopNotePlayback(curNote);
-                }
+//                else {
+//                    stopNotePlayback(curNote);
+//                }
             }
             // Notify observer
             if (observer != null) {
@@ -224,7 +179,7 @@ public class MidiPlayerImpl implements MidiPlayer {
      */
     @Override
     public void stopCurPlayback() {
-        mCurrentPattern.setCanInterrupt(true);
+//        mCurrentPattern.setCanInterrupt(true);
         mCurrentPattern = null;
         // Todo: concurrent modification error happening here
         for (Note toStop : mActiveNotes) {

@@ -4,7 +4,7 @@ import android.util.Log;
 
 
 import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
-import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
+//import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
 import com.example.notechaser.patterngenerator.Pattern;
 import com.example.notechaser.patterngenerator.PatternTemplate;
 
@@ -18,7 +18,7 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     }
 
     // Todo: make this abstract: RPG can then hold any kind of random pattern generator
-    private AbstractPatternGenerator mAbstractPatternGenerator;
+//    private AbstractPatternGenerator mAbstractPatternGenerator;
 
     private IntervalPatternGenerator mIntervalPatternGenerator;
 
@@ -29,7 +29,7 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     public PatternEngineImpl() {
         // Todo: clean this up
         mType = null;
-        mAbstractPatternGenerator = new AbstractPatternGenerator();
+//        mAbstractPatternGenerator = new AbstractPatternGenerator();
         mIntervalPatternGenerator = new IntervalPatternGenerator();
         mCurPattern = null;
     }
@@ -50,7 +50,8 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
             return mIntervalPatternGenerator.hasSufficientSpace();
         }
         else {
-            return mAbstractPatternGenerator.hasSufficientSpace();
+//            return mAbstractPatternGenerator.hasSufficientSpace();
+            return false;
         }
     }
 
@@ -63,7 +64,7 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
             mCurPattern = mIntervalPatternGenerator.generatePattern();
         }
         else {
-            mCurPattern = mAbstractPatternGenerator.generatePattern();
+//            mCurPattern = mAbstractPatternGenerator.generatePattern();
         }
         return mCurPattern;
     }
@@ -96,13 +97,13 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     @Override
     public void setLowerBound(int lowerBound) {
         mIntervalPatternGenerator.setLowerBound(lowerBound);
-        mAbstractPatternGenerator.setLowerBound(lowerBound);
+//        mAbstractPatternGenerator.setLowerBound(lowerBound);
     }
 
     @Override
     public void setUpperBound(int upperBound) {
         mIntervalPatternGenerator.setUpperBound(upperBound);
-        mAbstractPatternGenerator.setUpperBound(upperBound);
+//        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
@@ -110,19 +111,19 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
         mIntervalPatternGenerator.setUpperBound(upperBound);
         mIntervalPatternGenerator.setLowerBound(lowerBound);
 
-        mAbstractPatternGenerator.setLowerBound(lowerBound);
-        mAbstractPatternGenerator.setUpperBound(upperBound);
+//        mAbstractPatternGenerator.setLowerBound(lowerBound);
+//        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
-    @Override
-    public void addMode(Mode mode) {
-        mAbstractPatternGenerator.addMode(mode);
-    }
-
-    @Override
-    public void removeMode(Mode mode) {
-        mAbstractPatternGenerator.removeMode(mode);
-    }
+//    @Override
+//    public void addMode(Mode mode) {
+//        mAbstractPatternGenerator.addMode(mode);
+//    }
+//
+//    @Override
+//    public void removeMode(Mode mode) {
+//        mAbstractPatternGenerator.removeMode(mode);
+//    }
 
     @Override
     public void setTypeDynamic() {

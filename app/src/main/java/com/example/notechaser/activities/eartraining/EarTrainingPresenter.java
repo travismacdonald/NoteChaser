@@ -191,8 +191,8 @@ public class EarTrainingPresenter
         }
         mState = State.PLAYING_PATTERN;
         mUserAnswer.clear();
-        mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().size());
-        mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().size());
+        mUserAnswer.setExpectedSize(mPatternEngine.getCurPattern().getSize());
+        mView.showNumNotesHeard(0, mPatternEngine.getCurPattern().getSize());
         final Thread thread =
                 mMidiPlayer.playPattern(mPatternEngine.getCurPattern(), this, delay, mSettings.shouldPlayCadence());
     }
