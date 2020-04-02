@@ -6,26 +6,29 @@ import java.io.Serializable
  * Class that holds untransposed patterns.
  */
 // todo: change serializable to parcelable
-class PatternTemplate(var intervals: MutableList<Int> = arrayListOf()) : Serializable {
+class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) : Serializable {
+
+    var intervals: List<Int> = _intervals
+        get() = _intervals
+        private set
 
     var range = -1
         get() {
-            if (intervals.isEmpty()) -1
-            // Todo: better way of writing this?
-            return (intervals.minBy { it } ?: 0) - (intervals.maxBy { it } ?: 5)
+            if (_intervals.isEmpty()) -1
+            return (_intervals.minBy { it }!!) - (_intervals.maxBy { it }!!)
         }
         private set
 
-    var size = intervals.size
-        get() = intervals.size
+    var size = _intervals.size
+        get() = _intervals.size
         private set
 
     fun addInterval(interval: Int) {
-        intervals.add(interval)
+        _intervals.add(interval)
     }
 
     fun removeInterval(ix: Int) {
-        intervals.removeAt(ix)
+        _intervals.removeAt(ix)
     }
 
 }
