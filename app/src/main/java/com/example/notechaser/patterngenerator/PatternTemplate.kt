@@ -6,7 +6,7 @@ import java.io.Serializable
  * Class that holds untransposed patterns.
  */
 // todo: change serializable to parcelable
-class PatternTemplate(private var intervals: MutableList<Int> = arrayListOf()) : Serializable {
+class PatternTemplate(var intervals: MutableList<Int> = arrayListOf()) : Serializable {
 
     var range = -1
         get() {
