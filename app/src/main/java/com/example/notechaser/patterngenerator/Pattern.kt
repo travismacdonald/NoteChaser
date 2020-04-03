@@ -1,5 +1,9 @@
 package com.example.notechaser.patterngenerator
 
-internal data class Pattern(val notes: List<Note> = arrayListOf()) {
-    val size = notes.size
+internal class Pattern(template: PatternTemplate, ix: Int) {
+
+    val notes: List<Note> = template.intervals.map { Note(it + ix) }
+
+    val size = template.size
+
 }
