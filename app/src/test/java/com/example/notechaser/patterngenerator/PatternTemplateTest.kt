@@ -6,57 +6,93 @@ import org.junit.Test
 class PatternTemplateTest {
 
     @Test
-    fun testInitTransposeNone() {
+    fun testIntervalsTransposedNone() {
         val template = PatternTemplate(arrayListOf(0, 2, 4))
-        assertEquals(arrayListOf(0, 2, 4), template.intervals)
+        assertEquals(arrayListOf(0, 2, 4), template.intervalsTransposed)
     }
 
     @Test
-    fun testInitTransposeDown() {
+    fun testIntervalsTransposedDown() {
         val template = PatternTemplate(arrayListOf(1, 3, 5))
-        assertEquals(arrayListOf(0, 2, 4), template.intervals)
+        assertEquals(arrayListOf(0, 2, 4), template.intervalsTransposed)
     }
 
     @Test
-    fun testInitTransposeUp() {
+    fun testIntervalsTransposedUp() {
         val template = PatternTemplate(arrayListOf(-1, 1, 3))
-        assertEquals(arrayListOf(0, 2, 4), template.intervals)
+        assertEquals(arrayListOf(0, 2, 4), template.intervalsTransposed)
     }
 
     @Test
-    fun testInitTransposeNoneRange() {
+    fun testIntervalsTransposedNoneRange() {
         val template = PatternTemplate(arrayListOf(0, 2, 4))
         assertEquals(4, template.range)
     }
 
     @Test
-    fun testInitTransposeDownRange() {
+    fun testIntervalsTransposedDownRange() {
         val template = PatternTemplate(arrayListOf(1, 3, 5))
         assertEquals(4, template.range)
     }
 
     @Test
-    fun testInitTransposeUpRange() {
+    fun testIntervalsTransposedUpRange() {
         val template = PatternTemplate(arrayListOf(-1, 1, 3))
         assertEquals(4, template.range)
     }
 
     @Test
-    fun testInitTransposeNoneMid() {
+    fun testIntervalsTransposedNoneMid() {
         val template = PatternTemplate(arrayListOf(2, 0, 4))
-        assertEquals(arrayListOf(2, 0, 4), template.intervals)
+        assertEquals(arrayListOf(2, 0, 4), template.intervalsTransposed)
     }
 
     @Test
-    fun testInitTransposeDownMid() {
+    fun testIntervalsTransposedDownMid() {
         val template = PatternTemplate(arrayListOf(3, 1, 5))
-        assertEquals(arrayListOf(2, 0, 4), template.intervals)
+        assertEquals(arrayListOf(2, 0, 4), template.intervalsTransposed)
     }
 
     @Test
-    fun testInitTransposeUpMid() {
+    fun testIntervalsTransposedUpMid() {
         val template = PatternTemplate(arrayListOf(1, -1, 3))
-        assertEquals(arrayListOf(2, 0, 4), template.intervals)
+        assertEquals(arrayListOf(2, 0, 4), template.intervalsTransposed)
+    }
+
+    @Test
+    fun testIntervalsUntransposed() {
+        val template = PatternTemplate(arrayListOf(2, 4, 6))
+        assertEquals(arrayListOf(2, 4, 6), template.intervalsUntransposed)
+    }
+
+    @Test
+    fun testAddIntervalTransposeDown() {
+        val template = PatternTemplate(arrayListOf(3, 5, 7))
+        // templates.intervalsTransposed == [ 0, 2, 4 ]
+        template.addInterval(1)
+        assertEquals(arrayListOf(2, 4, 6, 0), template.intervalsTransposed)
+    }
+
+    @Test
+    fun testAddIntervalUntransposedDown() {
+        val template = PatternTemplate(arrayListOf(3, 5, 7))
+        template.addInterval(1)
+        assertEquals(arrayListOf(3, 5, 7, 1), template.intervalsUntransposed)
+    }
+
+    @Test
+    fun testRemoveIntervalTransposeDown() {
+        val template = PatternTemplate(arrayListOf(3, 5, 7))
+        // templates.intervalsTransposed == [ 0, 2, 4 ]
+        template.removeIntervalAt(0)
+        assertEquals(arrayListOf(0, 2), template.intervalsTransposed)
+    }
+
+    @Test
+    fun testRemoveIntervalNoTransposeDown() {
+        val template = PatternTemplate(arrayListOf(3, 5, 7))
+        template.removeIntervalAt(0)
+        assertEquals(arrayListOf(5, 7), template.intervalsUntransposed)
     }
 
 }
