@@ -9,28 +9,26 @@ import java.io.Serializable
 class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) : Serializable {
 
     /**
-     * Intervals are unmodified.
+     * Intervals that are unmodified. (Backing property for _intervals)
      */
-    var intervalsUntransposed: List<Int> = _intervals
+    val intervals: List<Int>
         get() = _intervals
-        private set
 
     /**
-     * Intervals that are transposed so that the minimum interval is zero.
+     * Intervals that are all equally transposed so that the minimum interval is zero.
      */
-    var intervalsTransposed: List<Int> = _intervals
+    val intervalsTransposed: List<Int>
         get() {
-            if (_intervals.min() == 0) return _intervals
-            else return _intervals.map { it - _intervals.min()!! }
+            return if (_intervals.min() == 0) _intervals
+            else _intervals.map { it - _intervals.min()!! }
         }
-        private set
 
-    var range = -1
+    val range: Int
         get() {
-            if (_intervals.isEmpty()) return -1
-            else return _intervals.max()!! - _intervals.min()!!
+            return if (_intervals.isEmpty())
+                throw EmptyPatternTemplateException("Cannot get range of empty PatternTemplate.")
+            else _intervals.max()!! - _intervals.min()!!
         }
-        private set
 
     var size = _intervals.size
         get() = _intervals.size
@@ -42,7 +40,7 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
 
     fun addAllIntervals(vararg intervals: Int) {
         for (interval in intervals) {
-            _intervals.add(interval)
+            addInterval(interval)
         }
     }
 
@@ -50,4 +48,24 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
         _intervals.removeAt(ix)
     }
 
+    fun isEmpty(): Boolean {
+        return _intervals.isEmpty()
+    }
+
+    fun isNotEmpty(): Boolean {
+        return _intervals.isNotEmpty()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (other is PatternTemplate)
+                && _intervals == other._intervals
+    }
+
+    // Todo: make sure this works correctly
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
 }
+
+class EmptyPatternTemplateException(message: String) : Exception()
