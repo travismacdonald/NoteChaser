@@ -10,68 +10,63 @@ class NoteTest {
     val NATURAL = '\u266e'
 
     @Test
-    fun c0_equals() {
-        val c = Note(0)
-        assertEquals(Note(0), c)
+    fun `test notes equal passes with same index`() {
+        val lhs = Note(0)
+        val rhs = Note(0)
+        assertTrue(lhs == rhs)
     }
 
     @Test
-    fun c0_c12_notEqual() {
-        val c0 = Note(0)
-        val c1 = Note(1)
-        assertNotEquals(c0, c1)
+    fun `test equals fails with different indexes`() {
+        val lhs = Note(0)
+        val rhs = Note(1)
+        assertTrue(lhs != rhs)
     }
 
     @Test
-    fun c0_ix() {
-        val c = Note(0)
-        assertEquals(0, c.ix)
+        fun `test class stores index correctly`() {
+        val note = Note(0)
+        assertEquals(0, note.ix)
     }
 
     @Test
-    fun c0_nameSharp() {
+    fun `test nameSharp is correct for index 0`() {
         val c = Note(0)
         assertEquals("C", c.nameSharp)
     }
 
     @Test
-    fun c0_nameFlat() {
+    fun `test nameFlat is correct for index 0`() {
         val c = Note(0)
         assertEquals("C", c.nameFlat)
     }
 
     @Test
-    fun c12_ix() {
+    fun `test note constructs when index is greater than 12`() {
         val c = Note(12)
         assertEquals(12, c.ix)
     }
 
     @Test
-    fun c12_nameSharp() {
+    fun `test nameSharp is correct when given index greater than 12`() {
         val c = Note(12)
         assertEquals("C", c.nameSharp)
     }
 
     @Test
-    fun c12_nameFlat() {
+    fun `test nameFlat is correct when given index greater than 12`() {
         val c = Note(12)
         assertEquals("C", c.nameFlat)
     }
 
     @Test
-    fun dFlat0_ix() {
-        val dFlat = Note(1)
-        assertEquals(1, dFlat.ix)
+    fun `test nameSharp is correct when index equals 1`() {
+        val cSharp = Note(1)
+        assertEquals("C$SHARP", cSharp.nameSharp)
     }
 
     @Test
-    fun dFlat0_nameSharp() {
-        val dFlat = Note(1)
-        assertEquals("C$SHARP", dFlat.nameSharp)
-    }
-
-    @Test
-    fun dFlat0_nameFlat() {
+    fun `test nameFlat is correct when index equals 1`() {
         val dFlat = Note(1)
         assertEquals("D$FLAT", dFlat.nameFlat)
     }
