@@ -33,4 +33,20 @@ class PatternTest {
         assertFailsWith<EmptyPatternTemplateException> { val pattern = Pattern(template, 4) }
     }
 
+    @Test
+    fun `test equals is true with same notes`() {
+        val template = PatternTemplate(arrayListOf(3, 2, 4))
+        val lhs = Pattern(template, 5)
+        val rhs = Pattern(template, 5)
+        assertTrue(lhs == rhs)
+    }
+
+    @Test
+    fun `test equals is false with different notes`() {
+        val template = PatternTemplate(arrayListOf(3, 2, 4))
+        val lhs = Pattern(template, 5)
+        val rhs = Pattern(template, 3)
+        assertTrue(lhs != rhs)
+    }
+
 }
