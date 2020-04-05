@@ -102,12 +102,12 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
 
     @Override
     public void addFixedTemplate(PatternTemplate template) {
-        mPatternEngine.addIntervalTemplate(template);
+        mPatternEngine.addPatternTemplate(template);
     }
 
     @Override
     public void removedFixedTemplate(PatternTemplate template) {
-        mPatternEngine.removeIntervalTemplate(template);
+        mPatternEngine.removePatternTemplate(template);
     }
 
     @Override

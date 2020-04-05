@@ -13,9 +13,9 @@ public interface PatternEngine {
 
     Pattern generatePattern();
 
-    void addIntervalTemplate(PatternTemplate toAdd);
+    void addPatternTemplate(PatternTemplate toAdd);
 
-    void removeIntervalTemplate(PatternTemplate toRemove);
+    void removePatternTemplate(PatternTemplate toRemove);
 
 //    void addAbstractTemplate( toAdd);
 //
