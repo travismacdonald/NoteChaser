@@ -40,6 +40,12 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
         _intervals.add(interval)
     }
 
+    fun addAllIntervals(vararg intervals: Int) {
+        for (interval in intervals) {
+            _intervals.add(interval)
+        }
+    }
+
     fun removeIntervalAt(ix: Int) {
         _intervals.removeAt(ix)
     }
