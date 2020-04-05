@@ -56,9 +56,14 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
         return _intervals.isNotEmpty()
     }
 
+    /**
+     * intervalsTransposed was chosen in this case because although two templates with
+     * different (untransposed) intervals may seem different, they will result in the
+     * same patterns. This is because only intervalsTransposed is used to construct patterns.
+     */
     override fun equals(other: Any?): Boolean {
         return (other is PatternTemplate)
-                && _intervals == other._intervals
+                && intervalsTransposed == other.intervalsTransposed
     }
 
     // Todo: make sure this works correctly

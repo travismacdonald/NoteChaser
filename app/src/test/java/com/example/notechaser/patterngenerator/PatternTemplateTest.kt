@@ -140,10 +140,10 @@ class PatternTemplateTest {
     }
 
     @Test
-    fun `test equals fails with different intervals`() {
+    fun `test equals true with different intervals but same intervalsTransposed`() {
         val lhs = PatternTemplate(arrayListOf(3, 5, 7))
         val rhs = PatternTemplate(arrayListOf(2, 4, 6))
-        assertFalse(lhs == rhs)
+        assertTrue(lhs == rhs)
     }
 
     @Test
