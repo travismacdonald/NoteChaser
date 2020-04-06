@@ -153,4 +153,10 @@ class PatternTemplateTest {
         assertTrue(lhs.intervalsTransposed == rhs.intervalsTransposed)
     }
 
+    @Test
+    fun `test toString`() {
+        val template = PatternTemplate(arrayListOf(1, 5, 8))
+        assertEquals("1 5 8", template.toString())
+    }
+
 }

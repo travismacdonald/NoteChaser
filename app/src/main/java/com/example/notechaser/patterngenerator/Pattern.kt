@@ -30,4 +30,16 @@ class Pattern(template: PatternTemplate, ix: Int) {
         return super.hashCode()
     }
 
+    fun toStringFlat(): String {
+        return notes.joinToString(separator = " ") { it.nameFlat }
+    }
+
+    fun toStringSharp(): String {
+        return notes.joinToString(separator = " ") { it.nameSharp }
+    }
+
+    override fun toString(): String {
+        return notes.joinToString(separator = " ") { it.ix.toString() }
+    }
+
 }

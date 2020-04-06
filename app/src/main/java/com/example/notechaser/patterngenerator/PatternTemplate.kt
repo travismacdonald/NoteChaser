@@ -6,6 +6,7 @@ import java.io.Serializable
  * Class that holds intervals for patterns templates.
  */
 // todo: change serializable to parcelable
+// todo: change _intervals to type Int varargs
 class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) : Serializable {
 
     /**
@@ -69,6 +70,10 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
     // Todo: make sure this works correctly
     override fun hashCode(): Int {
         return super.hashCode()
+    }
+
+    override fun toString(): String {
+        return _intervals.joinToString(separator = " ") { it.toString() }
     }
 
 }

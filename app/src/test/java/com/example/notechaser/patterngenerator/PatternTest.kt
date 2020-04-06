@@ -49,4 +49,31 @@ class PatternTest {
         assertTrue(lhs != rhs)
     }
 
+    @Test
+    fun `test toString works correctly`() {
+        val template = PatternTemplate(arrayListOf(0, 4, 7))
+        val pattern = Pattern(template, 13)
+        assertEquals("13 17 20", pattern.toString())
+    }
+
+    @Test
+    fun `test toStringFlat works correctly`() {
+        val template = PatternTemplate(arrayListOf(0, 4, 7))
+        val pattern = Pattern(template, 13)
+        assertEquals(
+                "D${MusicTheory.FLAT} F A${MusicTheory.FLAT}",
+                pattern.toStringFlat()
+        )
+    }
+
+    @Test
+    fun `test toStringSharp works correctly`() {
+        val template = PatternTemplate(arrayListOf(0, 4, 7))
+        val pattern = Pattern(template, 13)
+        assertEquals(
+                "C${MusicTheory.SHARP} F G${MusicTheory.SHARP}", // perhaps E# would be more correct
+                pattern.toStringSharp()
+        )
+    }
+
 }
