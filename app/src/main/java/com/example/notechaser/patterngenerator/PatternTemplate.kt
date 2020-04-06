@@ -1,5 +1,6 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 import java.io.Serializable
 
 /**
@@ -27,7 +28,7 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
     val range: Int
         get() {
             return if (_intervals.isEmpty())
-                throw EmptyPatternTemplateException("Cannot get range of empty PatternTemplate.")
+                throw EmptyTemplateException("Cannot get range of empty PatternTemplate.")
             else _intervals.max()!! - _intervals.min()!!
         }
 
@@ -77,5 +78,3 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
     }
 
 }
-
-class EmptyPatternTemplateException(message: String) : Exception()

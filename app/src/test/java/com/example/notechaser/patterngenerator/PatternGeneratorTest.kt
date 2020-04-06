@@ -1,5 +1,9 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.DuplicateTemplateException
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateListException
+import com.example.notechaser.patterngenerator.exceptions.InsufficientRangeException
+import com.example.notechaser.patterngenerator.exceptions.InvalidRangeException
 import org.junit.Test
 
 import org.junit.Assert.*

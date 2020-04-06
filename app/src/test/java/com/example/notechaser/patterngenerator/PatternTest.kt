@@ -1,5 +1,6 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -30,7 +31,7 @@ class PatternTest {
     @Test
     fun `test pattern constructed with empty template throws exception`() {
         val template = PatternTemplate(arrayListOf())
-        assertFailsWith<EmptyPatternTemplateException> { val pattern = Pattern(template, 4) }
+        assertFailsWith<EmptyTemplateException> { val pattern = Pattern(template, 4) }
     }
 
     @Test

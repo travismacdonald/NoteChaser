@@ -1,5 +1,6 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -77,7 +78,7 @@ class PatternTemplateTest {
     @Test
     fun `test range throws exception with empty template`() {
         val template = PatternTemplate()
-        assertFailsWith<EmptyPatternTemplateException> { template.range }
+        assertFailsWith<EmptyTemplateException> { template.range }
 
     }
 
@@ -100,7 +101,7 @@ class PatternTemplateTest {
     fun `test range is correct after removeIntervalAt`() {
         val template = PatternTemplate(arrayListOf(4))
         template.removeIntervalAt(0)
-        assertFailsWith<EmptyPatternTemplateException> { template.range }
+        assertFailsWith<EmptyTemplateException> { template.range }
     }
 
     @Test

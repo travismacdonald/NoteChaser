@@ -1,5 +1,7 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
+
 
 /**
  * Patterns store Notes that are transposed so that the lowest
@@ -15,7 +17,7 @@ class Pattern(template: PatternTemplate, ix: Int) {
 
     init {
         if (template.isEmpty())
-            throw EmptyPatternTemplateException("Cannot create Pattern from empty PatternTemplate.")
+            throw EmptyTemplateException("Cannot construct Pattern from empty PatternTemplate.")
         else notes = template.intervalsTransposed.map { Note(it + ix) }
     }
 

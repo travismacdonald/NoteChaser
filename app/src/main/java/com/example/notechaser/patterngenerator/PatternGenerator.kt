@@ -1,5 +1,9 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.DuplicateTemplateException
+import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateListException
+import com.example.notechaser.patterngenerator.exceptions.InsufficientRangeException
+import com.example.notechaser.patterngenerator.exceptions.InvalidRangeException
 import java.io.Serializable
 import java.lang.Exception
 import kotlin.random.Random
@@ -8,23 +12,6 @@ import kotlin.random.Random
 
 // Todo: change serializable to parcelable
 class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Serializable {
-
-    // Todo: find way to clean this up
-    private val invalidRangeExceptionMsg: String
-        get() = "lowerBound is greater than upperBound." +
-                "\n\tlowerBound: $lowerBound" +
-                "\n\tupperBound: $upperBound"
-
-    private val emptyTemplateListExceptionMsg: String
-        get() = "_templates does not contain any PatternTemplates."
-
-    private val duplicateTemplateExceptionMsg: String
-        get() = "Tried to add equivalent template to _templates."
-
-    private val insufficientRangeExceptionMsg: String
-        get() = "Not enough range to generate Pattern." +
-                "\n\tRange required: ${findRangeRequired()}" +
-                "\n\tActual range: ${upperBound - lowerBound}"
 
     private val _templates = arrayListOf<PatternTemplate>()
 
@@ -36,7 +23,7 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
 
     fun findRangeRequired(): Int {
         if (_templates.isEmpty()) {
-            throw EmptyTemplateListException(emptyTemplateListExceptionMsg)
+            throw EmptyTemplateListException("_templates does not contain any PatternTemplates.")
         }
         return _templates.maxBy { it.range }?.range!!
     }
@@ -46,11 +33,23 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
     }
 
     fun generatePattern(): Pattern {
-        if (!hasValidRange()) throw InvalidRangeException(invalidRangeExceptionMsg)
-        else if (!hasSufficientRange()) throw InsufficientRangeException(insufficientRangeExceptionMsg)
+        if (!hasValidRange()) {
+            throw InvalidRangeException(
+                    "lowerBound is greater than upperBound." +
+                            "\n\tlowerBound: $lowerBound" +
+                            "\n\tupperBound: $upperBound"
+            )
+        }
+        else if (!hasSufficientRange()) {
+            throw InsufficientRangeException(
+                "Not enough range to generate Pattern." +
+                        "\n\tRange required: ${findRangeRequired()}" +
+                        "\n\tActual range: ${upperBound - lowerBound}"
+            )
+        }
         else {
             val template = templates[Random.nextInt(size)]
-            // +1 because pattern generation range has ixclusive bounds
+            // + 1 because pattern generation range has inclusive bounds
             val ix = Random.nextInt(lowerBound, (upperBound - template.range) + 1)
             return Pattern(template, ix)
         }
@@ -61,7 +60,9 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
     }
 
     fun addPatternTemplate(template: PatternTemplate) {
-        if (contains(template)) throw DuplicateTemplateException(duplicateTemplateExceptionMsg)
+        if (contains(template)) {
+            throw DuplicateTemplateException("Tried to add equivalent template to _templates.")
+        }
         _templates.add(template)
     }
 
@@ -86,11 +87,3 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
     }
 
 }
-
-class EmptyTemplateListException(message: String) : Exception(message)
-
-class DuplicateTemplateException(message: String) : Exception(message)
-
-class InvalidRangeException(message: String) : Exception(message)
-
-class InsufficientRangeException(message: String) : Exception(message)
