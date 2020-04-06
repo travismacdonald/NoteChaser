@@ -47,7 +47,7 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
             return false;
         }
         else if (mType == Type.FIXED) {
-            return mPatternGenerator.hasSufficientSpace();
+            return mPatternGenerator.hasSufficientRange();
         }
         else {
 //            return mAbstractPatternGenerator.hasSufficientSpace();
@@ -81,7 +81,7 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
 
     @Override
     public void removePatternTemplate(PatternTemplate toRemove) {
-        mPatternGenerator.removePatternTemplate(toRemove);
+//        mPatternGenerator.removePatternTemplate(toRemove);
     }
 
 //    @Override
