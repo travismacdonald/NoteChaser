@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.notechaser.R
 import com.example.notechaser.databinding.FragmentExerciseConfigurationBinding
+import timber.log.Timber
 
 class ExerciseConfigurationFragment : Fragment() {
 
@@ -23,7 +24,7 @@ class ExerciseConfigurationFragment : Fragment() {
                         container,
                         false)
         val args = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!)
-        Log.d("fragx", args.exerciseType.toString());
+        Timber.i( args.exerciseType.toString());
 
         return binding.root
     }
