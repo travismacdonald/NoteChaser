@@ -1,19 +1,20 @@
 package com.example.notechaser.patterngenerator
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.example.notechaser.patterngenerator.exceptions.DuplicateTemplateException
 import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateListException
 import com.example.notechaser.patterngenerator.exceptions.InsufficientRangeException
 import com.example.notechaser.patterngenerator.exceptions.InvalidRangeException
-import java.io.Serializable
-import java.lang.Exception
 import kotlin.random.Random
 
 // Todo: address issues of tracking changes to templates already in generator's template list
 
-// Todo: change serializable to parcelable
-class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Serializable {
-
-    private val _templates = arrayListOf<PatternTemplate>()
+class PatternGenerator(
+        var lowerBound: Int = -1,
+        var upperBound: Int = -1,
+        private val _templates: ArrayList<PatternTemplate> = arrayListOf())
+    : Parcelable {
 
     val templates: List<PatternTemplate>
         get() = _templates
@@ -39,15 +40,13 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
                             "\n\tlowerBound: $lowerBound" +
                             "\n\tupperBound: $upperBound"
             )
-        }
-        else if (!hasSufficientRange()) {
+        } else if (!hasSufficientRange()) {
             throw InsufficientRangeException(
-                "Not enough range to generate Pattern." +
-                        "\n\tRange required: ${findRangeRequired()}" +
-                        "\n\tActual range: ${upperBound - lowerBound}"
+                    "Not enough range to generate Pattern." +
+                            "\n\tRange required: ${findRangeRequired()}" +
+                            "\n\tActual range: ${upperBound - lowerBound}"
             )
-        }
-        else {
+        } else {
             val template = templates[Random.nextInt(size)]
             // + 1 because pattern generation range has inclusive bounds
             val ix = Random.nextInt(lowerBound, (upperBound - template.range) + 1)
@@ -86,4 +85,25 @@ class PatternGenerator (var lowerBound: Int = -1, var upperBound: Int = -1) : Se
         return lowerBound in 0..upperBound
     }
 
+    constructor(source: Parcel) : this(
+            source.readInt(),
+            source.readInt(),
+            source.createTypedArrayList(PatternTemplate.CREATOR)
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeInt(lowerBound)
+        writeInt(upperBound)
+        writeTypedList(_templates)
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<PatternGenerator> = object : Parcelable.Creator<PatternGenerator> {
+            override fun createFromParcel(source: Parcel): PatternGenerator = PatternGenerator(source)
+            override fun newArray(size: Int): Array<PatternGenerator?> = arrayOfNulls(size)
+        }
+    }
 }
