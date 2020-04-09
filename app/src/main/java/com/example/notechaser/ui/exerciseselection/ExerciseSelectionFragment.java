@@ -1,4 +1,4 @@
-package com.example.notechaser.ui.exerciseselect;
+package com.example.notechaser.ui.exerciseselection;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import com.example.notechaser.R;
 import com.example.notechaser.ui.exerciseconfiguration.ExerciseConfigurationActivity;
 
 
-public class ExerciseSelectFragment extends Fragment implements ExerciseSelectContract.View {
+public class ExerciseSelectionFragment extends Fragment implements ExerciseSelectContract.View {
 
     ExerciseSelectContract.Presenter mPresenter;
 
@@ -27,17 +27,17 @@ public class ExerciseSelectFragment extends Fragment implements ExerciseSelectCo
     private Button mMelodicButton;
 
 
-    public ExerciseSelectFragment() {
+    public ExerciseSelectionFragment() {
         // todo: find out what to do with this
     }
 
-    static public ExerciseSelectFragment newInstance() {
-        return new ExerciseSelectFragment();
+    static public ExerciseSelectionFragment newInstance() {
+        return new ExerciseSelectionFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRoot = inflater.inflate(R.layout.exercise_select_fragment, container, false);
+        mRoot = inflater.inflate(R.layout.exercise_selection_fragment, container, false);
         setupView();
         return mRoot;
     }

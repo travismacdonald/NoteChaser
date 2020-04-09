@@ -18,7 +18,7 @@
         </activity>
         <activity android:name=".ui.exerciseconfiguration.ExerciseConfigurationActivity"></activity>
         <activity android:name=".ui.eartraining.EarTrainingActivity" />
-        <activity android:name=".ui.exerciseselect.ExerciseSelectActivity">
+        <activity android:name=".ui.exerciseselection.ExerciseSelectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

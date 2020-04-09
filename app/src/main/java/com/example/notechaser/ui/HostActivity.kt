@@ -8,11 +8,9 @@ import com.example.notechaser.databinding.ActivityHostBinding
 
 class HostActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityHostBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_host)
+        DataBindingUtil.setContentView<ActivityHostBinding>(this, R.layout.activity_host)
     }
 
 }
