@@ -2,7 +2,6 @@ package com.example.notechaser.ui.exerciseconfiguration
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ class ExerciseConfigurationFragment : Fragment() {
                         container,
                         false)
         val args = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!)
-        Timber.i(args.exerciseType.toString());
+        Timber.i(args.exerciseType.toString())
 
         return binding.root
     }
