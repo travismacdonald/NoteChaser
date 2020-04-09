@@ -13,8 +13,8 @@ import kotlin.random.Random
 class PatternGenerator(
         var lowerBound: Int = -1,
         var upperBound: Int = -1,
-        private val _templates: ArrayList<PatternTemplate> = arrayListOf())
-    : Parcelable {
+        private val _templates: ArrayList<PatternTemplate> = arrayListOf()
+    ): Parcelable {
 
     val templates: List<PatternTemplate>
         get() = _templates
