@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
@@ -23,15 +22,36 @@ class ExerciseSelectionFragment : Fragment() {
                         R.layout.fragment_exercise_selection,
                         container,
                         false)
+
         binding.apply {
-            customButton.setOnClickListener {view ->
-                view.findNavController().navigate(
-                        ExerciseSelectionFragmentDirections
-                                .actionExerciseSelectionFragmentToExerciseConfigurationFragment(ExerciseType.CUSTOM))
+            singlenoteButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.SINGLE_NOTE)
+            }
+            intervallicButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.INTERVALLIC)
+            }
+            harmonicButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.HARMONIC)
+            }
+            scaleButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.SCALE)
+            }
+            melodicButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.MELODIC)
+            }
+            customButton.setOnClickListener { view ->
+                navToExerciseSelectionFragment(view, ExerciseType.CUSTOM)
             }
         }
 
+
         return binding.root
+    }
+
+    private fun navToExerciseSelectionFragment(view: View, type: ExerciseType) {
+        view.findNavController().navigate(
+                ExerciseSelectionFragmentDirections
+                        .actionExerciseSelectionFragmentToExerciseConfigurationFragment(type))
     }
 
 }

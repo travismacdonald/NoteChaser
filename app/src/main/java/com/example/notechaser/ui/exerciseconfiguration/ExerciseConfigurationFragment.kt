@@ -24,7 +24,7 @@ class ExerciseConfigurationFragment : Fragment() {
                         container,
                         false)
         val args = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!)
-        Timber.i( args.exerciseType.toString());
+        Timber.i(args.exerciseType.toString());
 
         return binding.root
     }
