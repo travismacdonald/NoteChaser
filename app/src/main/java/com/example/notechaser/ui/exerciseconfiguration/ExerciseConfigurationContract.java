@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.exerciseconfiguration;
+package com.example.notechaser.ui.exerciseconfiguration;
 
 
 import com.example.notechaser.data.BasePresenter;

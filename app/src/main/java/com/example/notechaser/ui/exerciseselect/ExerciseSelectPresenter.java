@@ -1,6 +1,4 @@
-package com.example.notechaser.activities.exerciseselect;
-
-import com.example.notechaser.activities.eartraining.EarTrainingContract;
+package com.example.notechaser.ui.exerciseselect;
 
 public class ExerciseSelectPresenter implements ExerciseSelectContract.Presenter {
 

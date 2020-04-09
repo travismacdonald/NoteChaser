@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.exerciseselect;
+package com.example.notechaser.ui.exerciseselect;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.Button;
 
 import com.example.notechaser.Constants;
 import com.example.notechaser.R;
-import com.example.notechaser.activities.exerciseconfiguration.ExerciseConfigurationActivity;
+import com.example.notechaser.ui.exerciseconfiguration.ExerciseConfigurationActivity;
 
 
 public class ExerciseSelectFragment extends Fragment implements ExerciseSelectContract.View {

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".activities.exerciseselect.ExerciseSelectActivity">
+    tools:context=".ui.exerciseselect.ExerciseSelectActivity">
 
     <Button
         android:id="@+id/singlenote_button"

@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.eartraining;
+package com.example.notechaser.ui.eartraining;
 
 
 import com.example.notechaser.data.BasePresenter;

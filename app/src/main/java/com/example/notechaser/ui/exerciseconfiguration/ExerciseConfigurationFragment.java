@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.exerciseconfiguration;
+package com.example.notechaser.ui.exerciseconfiguration;
 
 
 import android.content.Intent;
@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.notechaser.R;
-import com.example.notechaser.activities.eartraining.EarTrainingActivity;
+import com.example.notechaser.ui.eartraining.EarTrainingActivity;
 import com.example.notechaser.data.ModeCollection;
 import com.example.notechaser.models.patternengine.PatternEngine;
 
