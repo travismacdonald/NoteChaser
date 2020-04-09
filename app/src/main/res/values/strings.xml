@@ -5,9 +5,10 @@
 
     <!-- EXERCISE TYPE BUTTONS -->
     <string name="single_note_button">Single Note</string>
-    <string name="interval_button">Interval</string>
+    <string name="interval_button">Intervallic</string>
     <string name="harmonic_button">Harmonic</string>
-    <string name="melodic_button">Melodic</string>
     <string name="scale_button">Scale</string>
+    <string name="melodic_button">Melodic</string>
+    <string name="custom_button">Custom</string>
 
 </resources>
