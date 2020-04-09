@@ -1,6 +1,8 @@
 package com.example.notechaser.data;
 
-import com.example.keyfinder.Note;
+
+
+import com.example.notechaser.patterngenerator.Note;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -2,33 +2,25 @@ package com.example.notechaser.models.patternengine;
 
 import android.util.Log;
 
-import com.example.keyfinder.Mode;
-import com.example.keyfinder.eartraining.IntervalTemplate;
-import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.AbstractTemplate;
-import com.example.notechaser.patterngenerator.IntervalPatternGenerator;
-import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
+
+import com.example.notechaser.patterngenerator.PatternGenerator;
+//import com.example.notechaser.patterngenerator.AbstractPatternGenerator;
+import com.example.notechaser.patterngenerator.Pattern;
+import com.example.notechaser.patterngenerator.PatternTemplate;
 
 import java.io.Serializable;
 
 
 public class PatternEngineImpl implements PatternEngine, Serializable {
 
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
-
-    /**
-     * Type of pattern generator used
-     */
     private enum Type {
         DYNAMIC, FIXED
     }
 
     // Todo: make this abstract: RPG can then hold any kind of random pattern generator
-    private AbstractPatternGenerator mAbstractPatternGenerator;
+//    private AbstractPatternGenerator mAbstractPatternGenerator;
 
-    private IntervalPatternGenerator mIntervalPatternGenerator;
+    private PatternGenerator mPatternGenerator;
 
     private Pattern mCurPattern;
 
@@ -37,8 +29,8 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     public PatternEngineImpl() {
         // Todo: clean this up
         mType = null;
-        mAbstractPatternGenerator = new AbstractPatternGenerator();
-        mIntervalPatternGenerator = new IntervalPatternGenerator();
+//        mAbstractPatternGenerator = new AbstractPatternGenerator();
+        mPatternGenerator = new PatternGenerator();
         mCurPattern = null;
     }
 
@@ -55,10 +47,11 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
             return false;
         }
         else if (mType == Type.FIXED) {
-            return mIntervalPatternGenerator.hasSufficientSpace();
+            return mPatternGenerator.hasSufficientRange();
         }
         else {
-            return mAbstractPatternGenerator.hasSufficientSpace();
+//            return mAbstractPatternGenerator.hasSufficientSpace();
+            return false;
         }
     }
 
@@ -68,10 +61,10 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
             Log.d("bug", "Choose type of generator");
         }
         else if (mType == Type.FIXED) {
-            mCurPattern = mIntervalPatternGenerator.generatePattern();
+            mCurPattern = mPatternGenerator.generatePattern();
         }
         else {
-            mCurPattern = mAbstractPatternGenerator.generatePattern();
+//            mCurPattern = mAbstractPatternGenerator.generatePattern();
         }
         return mCurPattern;
     }
@@ -82,55 +75,55 @@ public class PatternEngineImpl implements PatternEngine, Serializable {
     }
 
     @Override
-    public void addIntervalTemplate(IntervalTemplate toAdd) {
-        mIntervalPatternGenerator.addIntervalTemplate(toAdd);
+    public void addPatternTemplate(PatternTemplate toAdd) {
+        mPatternGenerator.addPatternTemplate(toAdd);
     }
 
     @Override
-    public void removeIntervalTemplate(IntervalTemplate toRemove) {
-        mIntervalPatternGenerator.removeIntervalTemplate(toRemove);
+    public void removePatternTemplate(PatternTemplate toRemove) {
+//        mPatternGenerator.removePatternTemplate(toRemove);
     }
 
-    @Override
-    public void addAbstractTemplate(AbstractTemplate toAdd) {
-        mAbstractPatternGenerator.addAbstractTemplate(toAdd);
-    }
-
-    @Override
-    public void removeAbstractTemplate(AbstractTemplate toRemove) {
-        mAbstractPatternGenerator.removeAbstractTemplate(toRemove);
-    }
+//    @Override
+//    public void addAbstractTemplate(AbstractTemplate toAdd) {
+//        mAbstractPatternGenerator.addAbstractTemplate(toAdd);
+//    }
+//
+//    @Override
+//    public void removeAbstractTemplate(AbstractTemplate toRemove) {
+//        mAbstractPatternGenerator.removeAbstractTemplate(toRemove);
+//    }
 
     @Override
     public void setLowerBound(int lowerBound) {
-        mIntervalPatternGenerator.setLowerBound(lowerBound);
-        mAbstractPatternGenerator.setLowerBound(lowerBound);
+        mPatternGenerator.setLowerBound(lowerBound);
+//        mAbstractPatternGenerator.setLowerBound(lowerBound);
     }
 
     @Override
     public void setUpperBound(int upperBound) {
-        mIntervalPatternGenerator.setUpperBound(upperBound);
-        mAbstractPatternGenerator.setUpperBound(upperBound);
+        mPatternGenerator.setUpperBound(upperBound);
+//        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
     @Override
     public void setBounds(int lowerBound, int upperBound) {
-        mIntervalPatternGenerator.setUpperBound(upperBound);
-        mIntervalPatternGenerator.setLowerBound(lowerBound);
+        mPatternGenerator.setUpperBound(upperBound);
+        mPatternGenerator.setLowerBound(lowerBound);
 
-        mAbstractPatternGenerator.setLowerBound(lowerBound);
-        mAbstractPatternGenerator.setUpperBound(upperBound);
+//        mAbstractPatternGenerator.setLowerBound(lowerBound);
+//        mAbstractPatternGenerator.setUpperBound(upperBound);
     }
 
-    @Override
-    public void addMode(Mode mode) {
-        mAbstractPatternGenerator.addMode(mode);
-    }
-
-    @Override
-    public void removeMode(Mode mode) {
-        mAbstractPatternGenerator.removeMode(mode);
-    }
+//    @Override
+//    public void addMode(Mode mode) {
+//        mAbstractPatternGenerator.addMode(mode);
+//    }
+//
+//    @Override
+//    public void removeMode(Mode mode) {
+//        mAbstractPatternGenerator.removeMode(mode);
+//    }
 
     @Override
     public void setTypeDynamic() {

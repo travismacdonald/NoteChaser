@@ -1,8 +1,9 @@
 package com.example.notechaser.activities.eartraining;
 
-import com.example.keyfinder.Note;
+
 import com.example.notechaser.data.BasePresenter;
 import com.example.notechaser.data.BaseView;
+import com.example.notechaser.patterngenerator.Note;
 
 public class EarTrainingContract {
 

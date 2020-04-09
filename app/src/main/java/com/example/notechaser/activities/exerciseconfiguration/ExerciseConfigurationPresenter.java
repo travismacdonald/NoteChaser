@@ -1,11 +1,10 @@
 package com.example.notechaser.activities.exerciseconfiguration;
 
-import com.example.keyfinder.Mode;
-import com.example.keyfinder.eartraining.AbstractTemplate;
-import com.example.keyfinder.eartraining.IntervalTemplate;
+
 import com.example.notechaser.data.EarTrainingSettings;
 import com.example.notechaser.data.ModeCollection;
 import com.example.notechaser.models.patternengine.PatternEngine;
+import com.example.notechaser.patterngenerator.PatternTemplate;
 
 /* Todo:
  *  show all the modes on the configuration screen
@@ -54,9 +53,9 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
     public void loadBanacosSettings() {
         // Simulate Banacos method
         setPatternFixed();
-        Integer[] interval = {0};
-        IntervalTemplate template = new IntervalTemplate(interval);
-        addFixedTemplate(template);
+//        Integer[] interval = {0};
+//        PatternTemplate template = new PatternTemplate(interval);
+//        addFixedTemplate(template);
         setMatchOctave(true);
         setMatchOrder(true);
         setPlayCadence(true);
@@ -81,34 +80,34 @@ public class ExerciseConfigurationPresenter implements ExerciseConfigurationCont
         mPatternEngine.setTypeFixed();
     }
 
+//    @Override
+//    public void addMode(Mode mode) {
+//        mPatternEngine.addMode(mode);
+//    }
+//
+//    @Override
+//    public void removeMode(Mode mode) {
+//        mPatternEngine.removeMode(mode);
+//    }
+//
+//    @Override
+//    public void addDynamicTemplate(AbstractTemplate template) {
+//        mPatternEngine.addAbstractTemplate(template);
+//    }
+//
+//    @Override
+//    public void removeDynamicTemplate(AbstractTemplate template) {
+//        mPatternEngine.removeAbstractTemplate(template);
+//    }
+
     @Override
-    public void addMode(Mode mode) {
-        mPatternEngine.addMode(mode);
+    public void addFixedTemplate(PatternTemplate template) {
+        mPatternEngine.addPatternTemplate(template);
     }
 
     @Override
-    public void removeMode(Mode mode) {
-        mPatternEngine.removeMode(mode);
-    }
-
-    @Override
-    public void addDynamicTemplate(AbstractTemplate template) {
-        mPatternEngine.addAbstractTemplate(template);
-    }
-
-    @Override
-    public void removeDynamicTemplate(AbstractTemplate template) {
-        mPatternEngine.removeAbstractTemplate(template);
-    }
-
-    @Override
-    public void addFixedTemplate(IntervalTemplate template) {
-        mPatternEngine.addIntervalTemplate(template);
-    }
-
-    @Override
-    public void removedFixedTemplate(IntervalTemplate template) {
-        mPatternEngine.removeIntervalTemplate(template);
+    public void removedFixedTemplate(PatternTemplate template) {
+        mPatternEngine.removePatternTemplate(template);
     }
 
     @Override

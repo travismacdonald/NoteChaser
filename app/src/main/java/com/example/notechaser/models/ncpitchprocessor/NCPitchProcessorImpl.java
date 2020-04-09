@@ -18,19 +18,11 @@ import be.tarsos.dsp.util.PitchConverter;
  */
 public class NCPitchProcessorImpl implements NCPitchProcessor {
 
-    // *********
-    // CONSTANTS
-    // *********
-
     private static final int SAMPLE_RATE = 22050;
 
     private static final int AUDIO_BUFFER_SIZE = 1024;
 
     private static final int BUFFER_OVERLAP = 0;
-
-    // ****************
-    // MEMBER VARIABLES
-    // ****************
 
     private AudioDispatcher mDispatcher;
 
@@ -45,10 +37,6 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
 
     private List<NCPitchProcessorObserver> mPitchObservers;
 
-    // ************
-    // CONSTRUCTORS
-    // ************
-
     public NCPitchProcessorImpl(AppCompatActivity activity) {
         mActivity = activity;
 
@@ -57,14 +45,6 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         mIsRunning = false;
     }
 
-    // *****************
-    // INTERFACE METHODS
-    // *****************
-
-    /**
-     * Begin live pitch processing via microphone.
-     * Update observers every time pitch is determined.
-     */
     @Override
     public void start() {
         PitchDetectionHandler handler = (result, event) -> {
@@ -94,9 +74,6 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         audioThread.start();
     }
 
-    /**
-     * End pitch processing.
-     */
     @Override
     public void stop() {
         if (mDispatcher == null) {
@@ -107,38 +84,21 @@ public class NCPitchProcessorImpl implements NCPitchProcessor {
         mIsRunning = false;
     }
 
-    /**
-     * Add observer to be notified of pitch result.
-     */
     @Override
     public void addPitchObserver(NCPitchProcessorObserver observer) {
         mPitchObservers.add(observer);
     }
 
-    /**
-     * Remove observer.
-     */
     @Override
     public void removePitchObserver(NCPitchProcessorObserver observer) {
         mPitchObservers.remove(observer);
     }
 
-    /**
-     * Check if pitch processor is currently running.
-     */
     @Override
     public boolean isRunning() {
         return mIsRunning;
     }
 
-    // ***************
-    // PRIVATE METHODS
-    // ***************
-
-    /**
-     * Converts pitch given in hertz, to midi key.
-     * (eg: 440hz -> 45)
-     */
     private int convertPitchToIx(double pitchInHz) {
         if (pitchInHz == -1) {
             return -1;

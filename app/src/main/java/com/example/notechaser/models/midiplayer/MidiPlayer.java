@@ -1,7 +1,9 @@
 package com.example.notechaser.models.midiplayer;
 
-import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.Pattern;
+
+
+import com.example.notechaser.patterngenerator.Note;
+import com.example.notechaser.patterngenerator.Pattern;
 
 import java.util.List;
 

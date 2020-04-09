@@ -1,6 +1,7 @@
 package com.example.notechaser.models.notefilter;
 
-import com.example.keyfinder.Note;
+
+import com.example.notechaser.patterngenerator.Note;
 
 public interface NoteFilter {
 

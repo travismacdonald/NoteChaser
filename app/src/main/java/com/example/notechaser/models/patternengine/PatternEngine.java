@@ -1,11 +1,8 @@
 package com.example.notechaser.models.patternengine;
 
-import com.example.keyfinder.Mode;
-import com.example.keyfinder.Note;
-import com.example.keyfinder.eartraining.IntervalTemplate;
-import com.example.keyfinder.eartraining.Pattern;
-import com.example.keyfinder.eartraining.AbstractTemplate;
 
+import com.example.notechaser.patterngenerator.Pattern;
+import com.example.notechaser.patterngenerator.PatternTemplate;
 
 public interface PatternEngine {
 
@@ -16,13 +13,13 @@ public interface PatternEngine {
 
     Pattern generatePattern();
 
-    void addIntervalTemplate(IntervalTemplate toAdd);
+    void addPatternTemplate(PatternTemplate toAdd);
 
-    void removeIntervalTemplate(IntervalTemplate toRemove);
+    void removePatternTemplate(PatternTemplate toRemove);
 
-    void addAbstractTemplate(AbstractTemplate toAdd);
-
-    void removeAbstractTemplate(AbstractTemplate toRemove);
+//    void addAbstractTemplate( toAdd);
+//
+//    void removeAbstractTemplate(AbstractTemplate toRemove);
 
     void setLowerBound(int lowerBound);
 
@@ -30,9 +27,9 @@ public interface PatternEngine {
 
     void setBounds(int lowerBound, int upperBound);
 
-    void addMode(Mode mode);
-
-    void removeMode(Mode mode);
+//    void addMode(Mode mode);
+//
+//    void removeMode(Mode mode);
 
     void setTypeDynamic();
 
