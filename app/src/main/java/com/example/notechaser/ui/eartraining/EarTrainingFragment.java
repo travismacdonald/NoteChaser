@@ -1,4 +1,4 @@
-package com.example.notechaser.activities.eartraining;
+package com.example.notechaser.ui.eartraining;
 
 
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 
 import com.example.notechaser.R;
-import com.example.notechaser.patterngenerator.MusicTheory;
 import com.example.notechaser.patterngenerator.Note;
 
 public class EarTrainingFragment extends Fragment implements EarTrainingContract.View {
