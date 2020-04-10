@@ -1,0 +1,37 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/questions_title">
+
+        <DropDownPreference
+            app:defaultValue="diatonic"
+            app:entries="@array/patterntype_entries"
+            app:entryValues="@array/patterntype_values"
+            app:key="@string/patterntype_key"
+            app:title="@string/patterntype_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/playback_title">
+
+        <MultiSelectListPreference
+            android:dialogTitle="@string/playbacktype_title"
+            android:entries="@array/playbacktype_entries"
+            android:entryValues="@array/playbacktype_values"
+            android:key="@string/playbacktype_key"
+            android:summary="@string/playbacktype_summary"
+            android:title="@string/playbacktype_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/answer_title">
+
+        <CheckBoxPreference
+            android:key="@string/matchoctave_key"
+            android:summary="@string/matchoctave_summary"
+            android:title="@string/matchoctave_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

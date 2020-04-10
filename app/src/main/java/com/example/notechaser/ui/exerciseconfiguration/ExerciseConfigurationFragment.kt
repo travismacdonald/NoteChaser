@@ -6,25 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceFragmentCompat
 import com.example.notechaser.R
-import com.example.notechaser.databinding.FragmentExerciseConfigurationBinding
 import timber.log.Timber
 
-class ExerciseConfigurationFragment : Fragment() {
+class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val binding: FragmentExerciseConfigurationBinding =
-                DataBindingUtil.inflate(
-                        inflater,
-                        R.layout.fragment_exercise_configuration,
-                        container,
-                        false)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.fragment_exercise_configuration, rootKey)
         val args = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!)
         Timber.i(args.exerciseType.toString())
-
-        return binding.root
     }
 }

@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Pattern Type -->
+    <string-array name="patterntype_entries">
+        <item>Diatonic</item>
+        <item>Chromatic</item>
+    </string-array>
+
+    <string-array name="patterntype_values">
+        <item>diatonic</item>
+        <item>chromatic</item>
+    </string-array>
+
+    <!-- Note Order -->
+    <string-array name="playbacktype_entries">
+        <item>Ascending</item>
+        <item>Descending</item>
+        <item>Harmonic</item>
+    </string-array>
+
+    <string-array name="playbacktype_values">
+        <item>ascending</item>
+        <item>descending</item>
+        <item>harmonic</item>
+    </string-array>
+
+</resources>

@@ -1,14 +1,34 @@
 <resources>
-    <string name="app_name">Note Chaser</string>
-    <string name="pitchText" />
-    <string name="randomToneButtonText">Start</string>
 
-    <!-- EXERCISE TYPE BUTTONS -->
+    <!-- Global Strings -->
+    <string name="app_name">Note Chaser</string>
+
+    <!-- Exercise Buttons -->
     <string name="single_note_button">Single Note</string>
     <string name="interval_button">Intervallic</string>
     <string name="harmonic_button">Harmonic</string>
     <string name="scale_button">Scale</string>
     <string name="melodic_button">Melodic</string>
     <string name="custom_button">Custom</string>
+
+    <!-- Question Preferences -->
+    <string name="questions_title">Questions</string>
+
+    <string name="patterntype_title">Pattern Type</string>
+    <string name="patterntype_key">patterntype</string>
+
+    <!-- Playback Preferences -->
+    <string name="playback_title">Playback</string>
+
+    <string name="playbacktype_title">Playback Type</string>
+    <string name="playbacktype_summary">Order of notes</string>
+    <string name="playbacktype_key">playbacktype</string>
+
+    <!-- Answer Preferences -->
+    <string name="answer_title">Answer</string>
+    
+    <string name="matchoctave_title">Match Octave</string>
+    <string name="matchoctave_summary">Answer must match octave</string>
+    <string name="matchoctave_key">matchoctave</string>
 
 </resources>

@@ -12,7 +12,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.notechaser"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.github.billthefarmer:mididriver:v1.17'
     implementation files('libs/TarsosDSP-Android-2.0.jar')
     implementation "androidx.core:core-ktx:1.2.0"
+    implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
