@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.databinding.FragmentExerciseSelectionBinding
 import com.example.notechaser.patterngenerator.MusicTheory
@@ -26,6 +23,13 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
             if (value == null) {
                 value = entryValues[0].toString()
+            }
+        }
+
+        /* Set value to 'Ascending' by default */
+        findPreference<MultiSelectListPreference>(getString(R.string.playbacktype_key))?.apply {
+            if (values.isEmpty()) {
+                values.add(entryValues[0].toString())
             }
         }
 

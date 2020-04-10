@@ -5,10 +5,10 @@
 
         <DropDownPreference
             app:defaultValue="diatonic"
-            app:entries="@array/patterntype_entries"
-            app:entryValues="@array/patterntype_values"
-            app:key="@string/patterntype_key"
-            app:title="@string/patterntype_title"
+            app:entries="@array/notechoice_entries"
+            app:entryValues="@array/notechoice_values"
+            app:key="@string/notechoice_key"
+            app:title="@string/notechoice_title"
             app:useSimpleSummaryProvider="true" />
 
         <DropDownPreference

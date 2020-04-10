@@ -19,8 +19,8 @@
 
     <string name="questions_title">Questions</string>
 
-    <string name="patterntype_key">patterntype</string>
-    <string name="patterntype_title">Pattern Type</string>
+    <string name="notechoice_key">notechoice</string>
+    <string name="notechoice_title">Note Choice</string>
 
 
     <!-- Playback Preferences -->
