@@ -11,6 +11,30 @@
             app:title="@string/patterntype_title"
             app:useSimpleSummaryProvider="true" />
 
+        <DropDownPreference
+            app:defaultValue="question_limit"
+            app:entries="@array/sessionlength_entries"
+            app:entryValues="@array/sessionlength_values"
+            app:key="@string/sessionlength_key"
+            app:title="@string/sessionlength_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SeekBarPreference
+            android:key="@string/timerlength_key"
+            android:title="@string/timerlength_title"
+            android:max="60"
+            app:min="5"
+            app:showSeekBarValue="true"
+            android:defaultValue="15" />
+
+        <SeekBarPreference
+            android:key="@string/numquestions_key"
+            android:title="@string/numquestions_title"
+            android:max="120"
+            app:min="10"
+            app:showSeekBarValue="true"
+            android:defaultValue="20" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/playback_title">
@@ -23,11 +47,29 @@
             android:summary="@string/playbacktype_summary"
             android:title="@string/playbacktype_title" />
 
+        <SwitchPreferenceCompat
+            android:key="@string/playcadence_key"
+            android:summary="@string/playcadence_summary"
+            android:title="@string/playcadence_title" />
+
+        <SwitchPreferenceCompat
+            android:key="@string/matchkey_key"
+            android:defaultValue="true"
+            android:dependency="@string/playcadence_key"
+            android:summary="@string/matchkey_summary"
+            android:title="@string/matchkey_title" />
+
+        <ListPreference
+            android:key="@string/cadencekey_key"
+            android:title="@string/cadencekey_title"
+            app:useSimpleSummaryProvider="true"
+            android:dialogTitle="@string/cadencekey_title"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/answer_title">
 
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="@string/matchoctave_key"
             android:summary="@string/matchoctave_summary"
             android:title="@string/matchoctave_title" />

@@ -1,5 +1,7 @@
 package com.example.notechaser.ui.exerciseselection
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.navigation.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.databinding.FragmentExerciseSelectionBinding
+import timber.log.Timber
 
 class ExerciseSelectionFragment : Fragment() {
 

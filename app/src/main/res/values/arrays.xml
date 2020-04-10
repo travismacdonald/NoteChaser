@@ -24,4 +24,17 @@
         <item>harmonic</item>
     </string-array>
 
+    <!-- Session Length -->
+    <string-array name="sessionlength_entries">
+        <item>Question Limit</item>
+        <item>Time Limit</item>
+        <item>Unlimited</item>
+    </string-array>
+
+    <string-array name="sessionlength_values">
+        <item>question_limit</item>
+        <item>time_limit</item>
+        <item>unlimited</item>
+    </string-array>
+
 </resources>

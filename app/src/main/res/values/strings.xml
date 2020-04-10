@@ -1,9 +1,12 @@
 <resources>
 
     <!-- Global Strings -->
+
     <string name="app_name">Note Chaser</string>
 
+
     <!-- Exercise Buttons -->
+
     <string name="single_note_button">Single Note</string>
     <string name="interval_button">Intervallic</string>
     <string name="harmonic_button">Harmonic</string>
@@ -11,24 +14,50 @@
     <string name="melodic_button">Melodic</string>
     <string name="custom_button">Custom</string>
 
+
     <!-- Question Preferences -->
+
     <string name="questions_title">Questions</string>
 
-    <string name="patterntype_title">Pattern Type</string>
     <string name="patterntype_key">patterntype</string>
+    <string name="patterntype_title">Pattern Type</string>
+
 
     <!-- Playback Preferences -->
+
     <string name="playback_title">Playback</string>
 
+    <string name="playbacktype_key">playbacktype</string>
     <string name="playbacktype_title">Playback Type</string>
     <string name="playbacktype_summary">Order of notes</string>
-    <string name="playbacktype_key">playbacktype</string>
+
+    <string name="playcadence_key">playcadence</string>
+    <string name="playcadence_title">Play Cadence</string>
+    <string name="playcadence_summary">Play cadence before pattern</string>
+
 
     <!-- Answer Preferences -->
+
     <string name="answer_title">Answer</string>
-    
-    <string name="matchoctave_title">Match Octave</string>
-    <string name="matchoctave_summary">Answer must match octave</string>
+
     <string name="matchoctave_key">matchoctave</string>
+    <string name="matchoctave_title">Match Octave</string>
+    <string name="matchoctave_summary">Answer must be the same octave as pattern</string>
+
+    <string name="cadencekey_key">cadencekey</string>
+    <string name="cadencekey_title">Cadence Key</string>
+
+    <string name="matchkey_key">cadencekeymatchquestion</string>
+    <string name="matchkey_title">Match Key</string>
+    <string name="matchkey_summary">Cadence key matches pattern key</string>
+
+    <string name="sessionlength_key">sessionlength</string>
+    <string name="sessionlength_title">Session Length</string>
+
+    <string name="timerlength_key">timerlength</string>
+    <string name="timerlength_title">Timer Length</string>
+
+    <string name="numquestions_key">numquestions</string>
+    <string name="numquestions_title">Number of Questions</string>
 
 </resources>
