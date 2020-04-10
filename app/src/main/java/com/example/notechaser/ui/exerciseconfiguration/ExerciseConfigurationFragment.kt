@@ -23,8 +23,9 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 findPreference(getString(R.string.playbacktype_key))!!
         val playCadenceSwitch: SwitchPreferenceCompat =
                 findPreference(getString(R.string.playcadence_key))!!
+        val noteChoiceDropDown: DropDownPreference =
+                findPreference(getString(R.string.notechoice_key))!!
 
-        /* Cadence Key List */
         cadenceKeyList.apply {
             entries = MusicTheory.CHROMATIC_SCALE_FLAT
             entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
@@ -64,6 +65,23 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                     when (newValue) {
                         false -> isEnabled = true
                         true -> isEnabled = false
+                    }
+                }
+                true
+            }
+        }
+
+        noteChoiceDropDown.apply {
+            val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                when (newValue) {
+                    noteChoiceArray[0] -> {
+                        matchKeySwitch.isVisible = true
+                        cadenceKeyList.isVisible = true
+                    }
+                    noteChoiceArray[1] -> {
+                        matchKeySwitch.isVisible = false
+                        cadenceKeyList.isVisible = false
                     }
                 }
                 true

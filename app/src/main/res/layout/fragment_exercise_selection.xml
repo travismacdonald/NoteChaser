@@ -9,36 +9,42 @@
 
         <Button
             android:id="@+id/singlenote_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/single_note_button" />
 
         <Button
             android:id="@+id/intervallic_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/interval_button" />
 
         <Button
             android:id="@+id/harmonic_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/harmonic_button" />
 
         <Button
             android:id="@+id/scale_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scale_button" />
 
         <Button
             android:id="@+id/melodic_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/melodic_button" />
 
         <Button
             android:id="@+id/custom_button"
+            android:width="@dimen/exercisetype_button_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/custom_button" />
