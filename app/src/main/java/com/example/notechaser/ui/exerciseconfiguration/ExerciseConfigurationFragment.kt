@@ -19,8 +19,10 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 findPreference(getString(R.string.matchkey_key))!!
         val cadenceKeyList: ListPreference =
                 findPreference(getString(R.string.cadencekey_key))!!
-        val playbackTypeMulti: MultiSelectListPreference =
-                findPreference(getString(R.string.playbacktype_key))!!
+        val playbackTypeHarmMulti: MultiSelectListPreference =
+                findPreference(getString(R.string.playbacktype_harm_key))!!
+        val playbackTypeMelMulti: MultiSelectListPreference =
+                findPreference(getString(R.string.playbacktype_mel_key))!!
         val playCadenceSwitch: SwitchPreferenceCompat =
                 findPreference(getString(R.string.playcadence_key))!!
         val noteChoiceDropDown: DropDownPreference =
@@ -34,28 +36,33 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             }
             isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
         }
-
-        /* TODO: Consider differentiating logic between harmonic modes and melodic modes */
-        playbackTypeMulti.apply {
+        
+        playbackTypeHarmMulti.apply {
             when (exerciseType) {
                 ExerciseType.INTERVALLIC, ExerciseType.HARMONIC -> {
                     isVisible = true
-                    entries = entries.sliceArray(0..2)
-                    values.clear()
-                    values.add(entryValues[2].toString())
-                }
-                ExerciseType.SCALE -> {
-                    isVisible = true
-                    entries = entries.sliceArray(0..1)
-                    values.clear()
-                    values.add(entryValues[0].toString())
+                    if (values.isEmpty()) {
+                        values.add(entryValues[0].toString())
+                    }
                 }
                 else -> {
                     isVisible = false
                 }
             }
-            if (values.isEmpty()) {
-                values.add(entryValues[0].toString())
+        }
+
+        playbackTypeMelMulti.apply {
+            when (exerciseType) {
+                ExerciseType.SCALE -> {
+                    isVisible = true
+                    if (values.isEmpty()) {
+                        values.add(entryValues[0].toString())
+                    }
+                }
+                else -> {
+                    Timber.i("i should be invisible what the fuck")
+                    isVisible = false
+                }
             }
         }
 

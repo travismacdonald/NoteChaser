@@ -13,16 +13,32 @@
     </string-array>
 
     <!-- Note Order -->
-    <string-array name="playbacktype_entries">
+
+        <!-- NOTE: Two different lists for different playback modes
+               ~ One is for primarily melodic types (SCALE)
+               ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+          -->
+
+    <string-array name="playbacktype_harm_entries">
+        <item>Harmonic</item>
         <item>Ascending</item>
         <item>Descending</item>
-        <item>Harmonic</item>
     </string-array>
 
-    <string-array name="playbacktype_values">
+    <string-array name="playbacktype_harm_values">
+        <item>harmonic</item>
         <item>ascending</item>
         <item>descending</item>
-        <item>harmonic</item>
+    </string-array>
+
+    <string-array name="playbacktype_mel_entries">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+
+    <string-array name="playbacktype_mel_values">
+        <item>ascending</item>
+        <item>descending</item>
     </string-array>
 
     <!-- Session Length -->

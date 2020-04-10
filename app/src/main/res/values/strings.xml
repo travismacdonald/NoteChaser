@@ -27,9 +27,18 @@
 
     <string name="playback_title">Playback</string>
 
-    <string name="playbacktype_key">playbacktype</string>
-    <string name="playbacktype_title">Playback Type</string>
-    <string name="playbacktype_summary">Order of notes</string>
+        <!-- NOTE: Two different lists for different playback modes
+               ~ One is for primarily melodic types (SCALE)
+               ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+          -->
+
+    <string name="playbacktype_mel_key">playbacktype_mel</string>
+    <string name="playbacktype_mel_title">Playback Type</string>
+    <string name="playbacktype_mel_summary">Order of notes</string>
+
+    <string name="playbacktype_harm_key">playbacktype_harm</string>
+    <string name="playbacktype_harm_title">Playback Type</string>
+    <string name="playbacktype_harm_summary">Order of notes</string>
 
     <string name="playcadence_key">playcadence</string>
     <string name="playcadence_title">Play Cadence</string>

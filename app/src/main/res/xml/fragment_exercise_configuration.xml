@@ -39,14 +39,26 @@
 
     <PreferenceCategory app:title="@string/playback_title">
 
+        <!-- NOTE: Two different lists for different playback modes
+           ~ One is for primarily melodic types (SCALE)
+           ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+          -->
+
         <MultiSelectListPreference
-            app:isPreferenceVisible="false"
-            android:dialogTitle="@string/playbacktype_title"
-            android:entries="@array/playbacktype_entries"
-            android:entryValues="@array/playbacktype_values"
-            android:key="@string/playbacktype_key"
-            android:summary="@string/playbacktype_summary"
-            android:title="@string/playbacktype_title" />
+            android:dialogTitle="@string/playbacktype_harm_title"
+            android:entries="@array/playbacktype_harm_entries"
+            android:entryValues="@array/playbacktype_harm_values"
+            android:key="@string/playbacktype_harm_key"
+            android:summary="@string/playbacktype_harm_summary"
+            android:title="@string/playbacktype_harm_title" />
+
+        <MultiSelectListPreference
+            android:dialogTitle="@string/playbacktype_mel_title"
+            android:entries="@array/playbacktype_mel_entries"
+            android:entryValues="@array/playbacktype_mel_values"
+            android:key="@string/playbacktype_mel_key"
+            android:summary="@string/playbacktype_mel_summary"
+            android:title="@string/playbacktype_mel_title" />
 
         <SwitchPreferenceCompat
             android:key="@string/playcadence_key"
