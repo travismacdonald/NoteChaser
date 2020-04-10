@@ -40,6 +40,7 @@
     <PreferenceCategory app:title="@string/playback_title">
 
         <MultiSelectListPreference
+            app:isPreferenceVisible="false"
             android:dialogTitle="@string/playbacktype_title"
             android:entries="@array/playbacktype_entries"
             android:entryValues="@array/playbacktype_values"

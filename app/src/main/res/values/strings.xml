@@ -47,7 +47,7 @@
     <string name="cadencekey_key">cadencekey</string>
     <string name="cadencekey_title">Cadence Key</string>
 
-    <string name="matchkey_key">cadencekeymatchquestion</string>
+    <string name="matchkey_key">matchkey</string>
     <string name="matchkey_title">Match Key</string>
     <string name="matchkey_summary">Cadence key matches pattern key</string>
 
