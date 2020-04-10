@@ -50,6 +50,7 @@
 
         <SwitchPreferenceCompat
             android:key="@string/playcadence_key"
+            app:defaultValue="false"
             android:summary="@string/playcadence_summary"
             android:title="@string/playcadence_title" />
 
@@ -62,6 +63,7 @@
 
         <ListPreference
             android:key="@string/cadencekey_key"
+            android:dependency="@string/playcadence_key"
             android:title="@string/cadencekey_title"
             app:useSimpleSummaryProvider="true"
             android:dialogTitle="@string/cadencekey_title"/>

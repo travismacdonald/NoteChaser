@@ -2,14 +2,9 @@ package com.example.notechaser.ui.exerciseconfiguration
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.databinding.FragmentExerciseSelectionBinding
 import com.example.notechaser.patterngenerator.MusicTheory
 import timber.log.Timber
 
@@ -20,16 +15,27 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
         val exerciseType = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!).exerciseType
 
-        findPreference<ListPreference>(getString(R.string.cadencekey_key))?.apply {
+        val matchKeySwitch: SwitchPreferenceCompat =
+                findPreference(getString(R.string.matchkey_key))!!
+        val cadenceKeyList: ListPreference =
+                findPreference(getString(R.string.cadencekey_key))!!
+        val playbackTypeMulti: MultiSelectListPreference =
+                findPreference(getString(R.string.playbacktype_key))!!
+        val playCadenceSwitch: SwitchPreferenceCompat =
+                findPreference(getString(R.string.playcadence_key))!!
+
+        /* Cadence Key List */
+        cadenceKeyList.apply {
             entries = MusicTheory.CHROMATIC_SCALE_FLAT
             entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
             if (value == null) {
                 value = entryValues[0].toString()
             }
+            isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
         }
 
         /* TODO: Consider differentiating logic between harmonic modes and melodic modes */
-        findPreference<MultiSelectListPreference>(getString(R.string.playbacktype_key))?.apply {
+        playbackTypeMulti.apply {
             when (exerciseType) {
                 ExerciseType.INTERVALLIC, ExerciseType.HARMONIC -> {
                     isVisible = true
@@ -37,7 +43,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                     values.clear()
                     values.add(entryValues[2].toString())
                 }
-                ExerciseType.SCALE, ExerciseType.MELODIC -> {
+                ExerciseType.SCALE -> {
                     isVisible = true
                     entries = entries.sliceArray(0..1)
                     values.clear()
@@ -49,6 +55,18 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             }
             if (values.isEmpty()) {
                 values.add(entryValues[0].toString())
+            }
+        }
+
+        matchKeySwitch.apply {
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                cadenceKeyList.apply {
+                    when (newValue) {
+                        false -> isEnabled = true
+                        true -> isEnabled = false
+                    }
+                }
+                true
             }
         }
 

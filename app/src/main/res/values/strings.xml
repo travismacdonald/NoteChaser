@@ -49,7 +49,7 @@
 
     <string name="matchkey_key">matchkey</string>
     <string name="matchkey_title">Match Key</string>
-    <string name="matchkey_summary">Cadence key matches pattern key</string>
+    <string name="matchkey_summary">Cadence matches pattern key (recommended)</string>
 
     <string name="sessionlength_key">sessionlength</string>
     <string name="sessionlength_title">Session Length</string>
