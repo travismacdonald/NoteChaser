@@ -6,7 +6,6 @@ import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.patterngenerator.MusicTheory
-import timber.log.Timber
 
 class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
@@ -27,6 +26,12 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 findPreference(getString(R.string.playcadence_key))!!
         val noteChoiceDropDown: DropDownPreference =
                 findPreference(getString(R.string.notechoice_key))!!
+        val sessionLengthDropDown: DropDownPreference =
+                findPreference(getString(R.string.sessionlength_key))!!
+        val numQuestionsSeekBar: SeekBarPreference =
+                findPreference(getString(R.string.numquestions_key))!!
+        val timerLengthSeekBar: SeekBarPreference =
+                findPreference(getString(R.string.timerlength_key))!!
 
         cadenceKeyList.apply {
             entries = MusicTheory.CHROMATIC_SCALE_FLAT
@@ -36,7 +41,37 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             }
             isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
         }
-        
+
+        sessionLengthDropDown.apply {
+            val valueArray = resources.getStringArray(R.array.sessionlength_values)
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                when (newValue) {
+                    /* valueArray[0] == Question Limit */
+                    valueArray[0] -> {
+                        numQuestionsSeekBar.isVisible = true
+                        timerLengthSeekBar.isVisible = false
+                    }
+                    /* valueArray[0] == Time Limit */
+                    valueArray[1] -> {
+                        numQuestionsSeekBar.isVisible = false
+                        timerLengthSeekBar.isVisible = true
+                    }
+                    /* valueArray[2] == Unlimited */
+                    valueArray[2] -> {
+                        numQuestionsSeekBar.isVisible = false
+                        timerLengthSeekBar.isVisible = false
+                    }
+                }
+                cadenceKeyList.apply {
+                    when (newValue) {
+                        false -> isEnabled = true
+                        true -> isEnabled = false
+                    }
+                }
+                true
+            }
+        }
+
         playbackTypeHarmMulti.apply {
             when (exerciseType) {
                 ExerciseType.INTERVALLIC, ExerciseType.HARMONIC -> {
@@ -60,7 +95,6 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                     }
                 }
                 else -> {
-                    Timber.i("i should be invisible what the fuck")
                     isVisible = false
                 }
             }
@@ -82,10 +116,13 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 when (newValue) {
+                    // TODO: Fix
+                    /* noteChoiceArray[0] == Diatonic */
                     noteChoiceArray[0] -> {
                         matchKeySwitch.isVisible = true
                         cadenceKeyList.isVisible = true
                     }
+                    /* noteChoiceArray[1] == Chromatic */
                     noteChoiceArray[1] -> {
                         matchKeySwitch.isVisible = false
                         cadenceKeyList.isVisible = false
