@@ -14,16 +14,6 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
         val exerciseType = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!).exerciseType
 
-        val matchKeySwitch: SwitchPreferenceCompat =
-                findPreference(getString(R.string.matchkey_key))!!
-        val cadenceKeyList: ListPreference =
-                findPreference(getString(R.string.cadencekey_key))!!
-        val playbackTypeHarmMulti: MultiSelectListPreference =
-                findPreference(getString(R.string.playbacktype_harm_key))!!
-        val playbackTypeMelMulti: MultiSelectListPreference =
-                findPreference(getString(R.string.playbacktype_mel_key))!!
-        val playCadenceSwitch: SwitchPreferenceCompat =
-                findPreference(getString(R.string.playcadence_key))!!
         val noteChoiceDropDown: DropDownPreference =
                 findPreference(getString(R.string.notechoice_key))!!
         val sessionLengthDropDown: DropDownPreference =
@@ -32,6 +22,16 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 findPreference(getString(R.string.numquestions_key))!!
         val timerLengthSeekBar: SeekBarPreference =
                 findPreference(getString(R.string.timerlength_key))!!
+        val playbackTypeHarmMulti: MultiSelectListPreference =
+                findPreference(getString(R.string.playbacktype_harm_key))!!
+        val playbackTypeMelMulti: MultiSelectListPreference =
+                findPreference(getString(R.string.playbacktype_mel_key))!!
+        val playCadenceSwitch: SwitchPreferenceCompat =
+                findPreference(getString(R.string.playcadence_key))!!
+        val matchKeySwitch: SwitchPreferenceCompat =
+                findPreference(getString(R.string.matchkey_key))!!
+        val cadenceKeyList: ListPreference =
+                findPreference(getString(R.string.cadencekey_key))!!
 
         noteChoiceDropDown.apply {
             val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
@@ -51,15 +51,6 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 true
             }
             this.callChangeListener(value)
-        }
-
-        cadenceKeyList.apply {
-            entries = MusicTheory.CHROMATIC_SCALE_FLAT
-            entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
-            if (value == null) {
-                value = entryValues[0].toString()
-            }
-            isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
         }
 
         sessionLengthDropDown.apply {
@@ -119,6 +110,15 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                     isVisible = false
                 }
             }
+        }
+
+        cadenceKeyList.apply {
+            entries = MusicTheory.CHROMATIC_SCALE_FLAT
+            entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
+            if (value == null) {
+                value = entryValues[0].toString()
+            }
+            isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
         }
 
         matchKeySwitch.apply {
