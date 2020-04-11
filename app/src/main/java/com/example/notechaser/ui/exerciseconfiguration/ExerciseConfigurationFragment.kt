@@ -12,7 +12,8 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_exercise_configuration, rootKey)
 
-        val exerciseType = ExerciseConfigurationFragmentArgs.fromBundle(arguments!!).exerciseType
+        val exerciseType: ExerciseType =
+                ExerciseConfigurationFragmentArgs.fromBundle(arguments!!).exerciseType
 
         val noteChoiceDropDown: DropDownPreference =
                 findPreference(getString(R.string.notechoice_key))!!
@@ -34,6 +35,16 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 findPreference(getString(R.string.cadencekey_key))!!
 
         noteChoiceDropDown.apply {
+            when (exerciseType) {
+                ExerciseType.SINGLE_NOTE, ExerciseType.INTERVALLIC -> {
+                    isVisible = true
+                    matchKeySwitch.isVisible = true
+                }
+                else -> {
+                    isVisible = false
+                    matchKeySwitch.isVisible = false
+                }
+            }
             val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 when (newValue) {
@@ -50,7 +61,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 }
                 true
             }
-            this.callChangeListener(value)
+            if (isVisible) { callChangeListener(value) }
         }
 
         sessionLengthDropDown.apply {
@@ -118,7 +129,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             if (value == null) {
                 value = entryValues[0].toString()
             }
-            isEnabled = playCadenceSwitch.isChecked && !matchKeySwitch.isChecked
+            isEnabled = playCadenceSwitch.isChecked && (!matchKeySwitch.isChecked || !matchKeySwitch.isVisible)
         }
 
         matchKeySwitch.apply {
