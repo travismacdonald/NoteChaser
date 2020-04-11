@@ -6,6 +6,7 @@ import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.patterngenerator.MusicTheory
+import timber.log.Timber
 
 class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
@@ -123,17 +124,19 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
             }
         }
 
-        cadenceKeyList.apply {
-            entries = MusicTheory.CHROMATIC_SCALE_FLAT
-            entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
-            if (value == null) {
-                value = entryValues[0].toString()
+        playCadenceSwitch.apply {
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                cadenceKeyList.apply {
+                    isEnabled = (newValue as Boolean) && (!matchKeySwitch.isChecked || !matchKeySwitch.isVisible)
+                }
+                true
             }
-            isEnabled = playCadenceSwitch.isChecked && (!matchKeySwitch.isChecked || !matchKeySwitch.isVisible)
+            callChangeListener(isChecked)
         }
 
         matchKeySwitch.apply {
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                Timber.d("newValue called from match key switch")
                 cadenceKeyList.apply {
                     when (newValue) {
                         false -> isEnabled = true
@@ -142,6 +145,15 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 }
                 true
             }
+        }
+
+        cadenceKeyList.apply {
+            entries = MusicTheory.CHROMATIC_SCALE_FLAT
+            entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
+            if (value == null) {
+                value = entryValues[0].toString()
+            }
+            isEnabled = playCadenceSwitch.isChecked && (!matchKeySwitch.isChecked || !matchKeySwitch.isVisible)
         }
 
         /* TODO: Fix seekbar to only allow increments of 5 */
