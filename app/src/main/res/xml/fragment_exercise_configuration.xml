@@ -20,20 +20,22 @@
             app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
-            android:key="@string/timerlength_key"
-            android:title="@string/timerlength_title"
-            android:max="60"
-            app:min="5"
-            app:showSeekBarValue="true"
-            android:defaultValue="15" />
-
-        <SeekBarPreference
+            app:isPreferenceVisible="false"
             android:key="@string/numquestions_key"
             android:title="@string/numquestions_title"
             android:max="120"
             app:min="10"
             app:showSeekBarValue="true"
             android:defaultValue="20" />
+
+        <SeekBarPreference
+            app:isPreferenceVisible="false"
+            android:key="@string/timerlength_key"
+            android:title="@string/timerlength_title"
+            android:max="60"
+            app:min="5"
+            app:showSeekBarValue="true"
+            android:defaultValue="15" />
 
     </PreferenceCategory>
 

@@ -33,6 +33,26 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
         val timerLengthSeekBar: SeekBarPreference =
                 findPreference(getString(R.string.timerlength_key))!!
 
+        noteChoiceDropDown.apply {
+            val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                when (newValue) {
+                    /* noteChoiceArray[0] == Diatonic */
+                    noteChoiceArray[0] -> {
+                        matchKeySwitch.isVisible = true
+                        if (matchKeySwitch.isChecked) { cadenceKeyList.isEnabled = false }
+                    }
+                    /* noteChoiceArray[1] == Chromatic */
+                    noteChoiceArray[1] -> {
+                        matchKeySwitch.isVisible = false
+                        if (playCadenceSwitch.isChecked) { cadenceKeyList.isEnabled = true }
+                    }
+                }
+                true
+            }
+            this.callChangeListener(value)
+        }
+
         cadenceKeyList.apply {
             entries = MusicTheory.CHROMATIC_SCALE_FLAT
             entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
@@ -70,6 +90,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 }
                 true
             }
+            this.callChangeListener(value)
         }
 
         playbackTypeHarmMulti.apply {
@@ -106,26 +127,6 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                     when (newValue) {
                         false -> isEnabled = true
                         true -> isEnabled = false
-                    }
-                }
-                true
-            }
-        }
-
-        noteChoiceDropDown.apply {
-            val noteChoiceArray = resources.getStringArray(R.array.notechoice_values)
-            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-                when (newValue) {
-                    // TODO: Fix
-                    /* noteChoiceArray[0] == Diatonic */
-                    noteChoiceArray[0] -> {
-                        matchKeySwitch.isVisible = true
-                        cadenceKeyList.isVisible = true
-                    }
-                    /* noteChoiceArray[1] == Chromatic */
-                    noteChoiceArray[1] -> {
-                        matchKeySwitch.isVisible = false
-                        cadenceKeyList.isVisible = false
                     }
                 }
                 true
