@@ -2,6 +2,7 @@ package com.example.notechaser.ui.exerciseconfiguration
 
 
 import android.os.Bundle
+import android.widget.SeekBar
 import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
@@ -67,7 +68,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
 
         sessionLengthDropDown.apply {
             val valueArray = resources.getStringArray(R.array.sessionlength_values)
-            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
                 when (newValue) {
                     /* valueArray[0] == Question Limit */
                     valueArray[0] -> {
@@ -85,15 +86,23 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                         timerLengthSeekBar.isVisible = false
                     }
                 }
-                cadenceKeyList.apply {
-                    when (newValue) {
-                        false -> isEnabled = true
-                        true -> isEnabled = false
-                    }
-                }
+//                cadenceKeyList.apply {
+//                    when (newValue) {
+//                        false -> isEnabled = true
+//                        true -> isEnabled = false
+//                    }
+//                }
                 true
             }
             this.callChangeListener(value)
+        }
+
+        numQuestionsSeekBar.apply {
+            
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
+                value = (newValue as Int) * 5
+                true
+            }
         }
 
         playbackTypeHarmMulti.apply {
