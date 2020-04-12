@@ -27,7 +27,7 @@
 
     <string name="playback_title">Playback</string>
 
-        <!-- NOTE: Two different lists for different playback modes
+    <!-- NOTE: Two different lists for different playback modes
                ~ One is for primarily melodic types (SCALE)
                ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
           -->
@@ -68,5 +68,8 @@
 
     <string name="numquestions_key">numquestions</string>
     <string name="numquestions_title">Number of Questions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

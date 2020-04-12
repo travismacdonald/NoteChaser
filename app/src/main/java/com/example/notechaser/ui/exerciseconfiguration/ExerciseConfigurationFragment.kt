@@ -98,7 +98,7 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
         }
 
         numQuestionsSeekBar.apply {
-            
+
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
                 value = (newValue as Int) * 5
                 true
