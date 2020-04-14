@@ -5,8 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
+import com.example.notechaser.data.ExerciseSetupHeader
+import com.example.notechaser.data.ExerciseSetupItem
+import com.example.notechaser.data.ExerciseSetupSwitch
+import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import timber.log.Timber
@@ -25,10 +31,24 @@ class ExerciseSetupFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        Timber.d(ExerciseSetupFragmentArgs.fromBundle(arguments!!).exerciseType.toString())
+        val binding: FragmentExerciseSetupBinding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_exercise_setup, container,false
+        )
 
+        val manager = LinearLayoutManager(activity)
+        val adapter = ExerciseSetupAdapter()
 
-        return inflater.inflate(R.layout.fragment_exercise_setup, container, false)
+        val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("note choice"))
+        val playCadenceSwitch: ExerciseSetupItem = ExerciseSetupItem.Switch(ExerciseSetupSwitch("switch", false))
+        val list: List<ExerciseSetupItem> = arrayListOf(noteChoiceHeader, playCadenceSwitch)
+        adapter.submitList(list)
+
+        binding.settingsList.adapter = adapter
+        binding.settingsList.layoutManager = manager
+
+        Timber.d("made it here")
+
+        return binding.root
     }
 
 }
