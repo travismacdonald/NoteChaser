@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.ExerciseSetupItem
 import com.example.notechaser.data.ExerciseSetupHeader
 import com.example.notechaser.data.ExerciseSetupSwitch
+import com.example.notechaser.databinding.ItemExerciseSetupSwitchBinding
 import com.example.notechaser.databinding.ItemSettingsHeaderBinding
-import com.example.notechaser.databinding.ItemSettingsSwitchBinding
+
 import java.lang.ClassCastException
 
 private val TYPE_HEADER = 0;
@@ -62,16 +63,17 @@ class ExerciseSetupAdapter :
         }
     }
 
-    class SwitchViewHolder private constructor(val binding: ItemSettingsSwitchBinding)
+    class SwitchViewHolder private constructor(val binding: ItemExerciseSetupSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(switch: ExerciseSetupSwitch) {
-            binding.textView.text = switch.text
+            binding.label.text = switch.heading
+            binding.description.text = switch.description
             binding.switchWidget.isChecked = switch.isChecked
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemSettingsSwitchBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemExerciseSetupSwitchBinding.inflate(layoutInflater, parent, false)
                 return SwitchViewHolder(binding)
             }
         }
