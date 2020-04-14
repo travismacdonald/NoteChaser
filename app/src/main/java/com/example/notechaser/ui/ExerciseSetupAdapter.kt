@@ -69,6 +69,9 @@ class ExerciseSetupAdapter :
             binding.label.text = switch.heading
             binding.description.text = switch.description
             binding.switchWidget.isChecked = switch.isChecked
+//            if (switch.imgSrc != null) {
+//                binding.icon.setImageResource(switch.imgSrc)
+//            }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {
