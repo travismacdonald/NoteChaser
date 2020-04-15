@@ -40,7 +40,7 @@ class ExerciseSetupFragment : Fragment() {
 
         val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("note choice"))
         val playCadenceSwitch: ExerciseSetupItem =
-                ExerciseSetupItem.Switch(ExerciseSetupSwitch("Weird Fishes", "This is a Description", false))
+                ExerciseSetupItem.Switch(ExerciseSetupSwitch("Play Cadence", "Play cadence before question", false))
         val list: List<ExerciseSetupItem> = arrayListOf(noteChoiceHeader, playCadenceSwitch)
         adapter.submitList(list)
 

@@ -69,6 +69,9 @@ class ExerciseSetupAdapter :
             binding.label.text = switch.heading
             binding.description.text = switch.description
             binding.switchWidget.isChecked = switch.isChecked
+            binding.layout.setOnClickListener {
+                binding.switchWidget.isChecked = !binding.switchWidget.isChecked
+            }
 //            if (switch.imgSrc != null) {
 //                binding.icon.setImageResource(switch.imgSrc)
 //            }

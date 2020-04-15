@@ -9,7 +9,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
+        android:background="@drawable/exercisesetupitem_background"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_height="72dp">
 
         <TextView
@@ -22,7 +26,6 @@
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@id/icon"
-            tools:ignore="RtlSymmetry"
             tools:text="Paranoid Android" />
 
         <TextView
@@ -33,7 +36,6 @@
             android:fontFamily="@font/rubik"
             app:layout_constraintBottom_toBottomOf="@+id/icon"
             app:layout_constraintLeft_toLeftOf="parent"
-            tools:ignore="RtlSymmetry"
             tools:text="No Surprises" />
 
         <ImageView

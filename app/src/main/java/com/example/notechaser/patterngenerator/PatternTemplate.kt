@@ -1,7 +1,5 @@
 package com.example.notechaser.patterngenerator
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 
 /**
@@ -9,7 +7,7 @@ import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
  */
 // todo: change serializable to parcelable
 // todo: change _intervals to type Int varargs
-class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) : Parcelable {
+class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) {
 
     /**
      * Intervals that are unmodified. (Backing property for _intervals)
@@ -75,23 +73,5 @@ class PatternTemplate(private val _intervals: MutableList<Int> = arrayListOf()) 
 
     override fun toString(): String {
         return _intervals.joinToString(separator = " ") { it.toString() }
-    }
-
-    constructor(source: Parcel) : this(
-            ArrayList<Int>().apply { source.readList(this, Int::class.java.classLoader) }
-    )
-
-    override fun describeContents() = 0
-
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeList(_intervals)
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<PatternTemplate> = object : Parcelable.Creator<PatternTemplate> {
-            override fun createFromParcel(source: Parcel): PatternTemplate = PatternTemplate(source)
-            override fun newArray(size: Int): Array<PatternTemplate?> = arrayOfNulls(size)
-        }
     }
 }

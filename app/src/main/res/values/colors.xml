@@ -3,4 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!-- Exercise Setup Item -->
+    <color name="setupItemBackground">#DDDDDD</color>
+    <color name="setupItemRipple">#AAAAAA</color>
+
 </resources>
