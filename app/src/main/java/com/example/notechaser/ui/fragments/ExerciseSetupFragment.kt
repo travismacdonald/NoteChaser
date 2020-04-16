@@ -41,7 +41,7 @@ class ExerciseSetupFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val manager = LinearLayoutManager(activity)
-        val adapter = ExerciseSetupAdapter()
+        val adapter = ExerciseSetupAdapter(this)
 
         val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("note choice"))
         val playCadenceSwitch: ExerciseSetupItem =
@@ -51,9 +51,9 @@ class ExerciseSetupFragment : Fragment() {
                         viewModel.settings.playCadence)
                 )
 
-        viewModel.settings.playCadence.observe(viewLifecycleOwner, Observer {
-            adapter.notifyDataSetChanged()
-        })
+//        viewModel.settings.playCadence.observe(viewLifecycleOwner, Observer {
+//
+//        })
 
         val list: List<ExerciseSetupItem> = arrayListOf(noteChoiceHeader, playCadenceSwitch)
         adapter.submitList(list)

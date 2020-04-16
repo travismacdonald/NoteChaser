@@ -2,6 +2,7 @@ package com.example.notechaser.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import java.lang.ClassCastException
 private val TYPE_HEADER = 0;
 private val TYPE_SWITCH = 1;
 
-class ExerciseSetupAdapter :
+class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         ListAdapter<ExerciseSetupItem, RecyclerView.ViewHolder>(ExerciseSettingDiffCallback()) {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -35,8 +36,14 @@ class ExerciseSetupAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_HEADER -> HeaderViewHolder.from(parent)
-            TYPE_SWITCH -> SwitchViewHolder.from(parent)
+            TYPE_HEADER ->
+                HeaderViewHolder.from(parent).apply {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
+            TYPE_SWITCH ->
+                SwitchViewHolder.from(parent).apply {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -52,6 +59,7 @@ class ExerciseSetupAdapter :
 
     class HeaderViewHolder private constructor(val binding: ItemSettingsHeaderBinding)
         : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(header: ExerciseSetupHeader) {
             binding.textview.text = header.text
         }
@@ -64,8 +72,11 @@ class ExerciseSetupAdapter :
         }
     }
 
+
+    // TODO Debugging going on here
     class SwitchViewHolder private constructor(val binding: ItemExerciseSetupSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(switch: ExerciseSetupSwitch) {
             binding.obj = switch
             binding.layout.setOnClickListener {
