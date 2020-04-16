@@ -8,4 +8,9 @@
     <color name="setupItemBackground">#DDDDDD</color>
     <color name="setupItemRipple">#AAAAAA</color>
 
+    <color name="setupitem_title">#000000</color>
+    <color name="setupitem_title_disabled">#BBBBBB</color>
+    <color name="setupitem_summary">#666666</color>
+    <color name="setupitem_summary_disabled">#BBBBBB</color>
+
 </resources>

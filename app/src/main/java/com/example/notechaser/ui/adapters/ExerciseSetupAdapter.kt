@@ -77,9 +77,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
         fun bind(switch: ExerciseSetupSwitch) {
             binding.obj = switch
-            if (switch.imgSrc != null) {
-                binding.icon.setImageResource(switch.imgSrc)
-            }
+            switch.imgSrc?.let { binding.icon.setImageResource(switch.imgSrc) }
+//            if (switch.imgSrc != null) {
+//                binding.icon.setImageResource(switch.imgSrc)
+//            }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {

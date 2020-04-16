@@ -43,7 +43,6 @@ class ExerciseSetupFragment : Fragment() {
         args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
 
         // TODO: may have to make this mutable later on
-
         val setupItemList: List<ExerciseSetupItem> = when (args.exerciseType) {
             ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
             ExerciseType.INTERVALLIC -> makeIntervallicList()
@@ -52,9 +51,6 @@ class ExerciseSetupFragment : Fragment() {
             ExerciseType.MELODIC -> makeMelodicList()
             else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
         }
-
-
-        Timber.d(setupItemList.size.toString())
 
         adapter.submitList(setupItemList)
         binding.settingsList.adapter = adapter

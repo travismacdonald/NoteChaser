@@ -2,4 +2,10 @@
 <resources>
 
     <dimen name="exercisetype_button_width">170dp</dimen>
+    <dimen name="setupitem_title">16sp</dimen>
+    <dimen name="setupitem_summary">14sp</dimen>
+    <dimen name="setupitem_height">72dp</dimen>
+    <dimen name="setupitem_margin">16dp</dimen>
+    <dimen name="setupitem_icon">40dp</dimen>
+    <dimen name="setupitem_text_margin">72dp</dimen>
 </resources>

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="obj"
@@ -14,53 +17,64 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/exercisesetupitem_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}">
+        android:clickable="@{obj.isEnabled() || obj.isEnabled() == null}"
+        android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
+        android:visibility="@{(obj.isVisible() || obj.isVisible() == null) ? View.VISIBLE : View.GONE}">
 
         <TextView
-            android:id="@+id/label"
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="76dp"
+            android:layout_marginStart="@dimen/setupitem_text_margin"
+            android:layout_marginTop="@dimen/setupitem_margin"
+            android:layout_marginEnd="@dimen/setupitem_text_margin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.heading}"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/icon"
+            android:text="@{obj.title}"
+            android:textColor=
+                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_title : @color/setupitem_title_disabled}"
+            android:textSize="@dimen/setupitem_title"
+            app:layout_constraintBottom_toTopOf="@id/summary"
+
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Paranoid Android" />
 
         <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="76dp"
+            android:layout_marginStart="@dimen/setupitem_text_margin"
+            android:layout_marginEnd="@dimen/setupitem_text_margin"
+            android:layout_marginBottom="@dimen/setupitem_margin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.description}"
-            app:layout_constraintBottom_toBottomOf="@+id/icon"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="@{obj.summary}"
+            android:textColor=
+                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_summary : @color/setupitem_summary_disabled}"
+            android:textSize="@dimen/setupitem_summary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="No Surprises" />
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="@dimen/setupitem_icon"
+            android:layout_height="@dimen/setupitem_icon"
+            android:layout_marginStart="@dimen/setupitem_margin"
+            android:layout_marginEnd="@dimen/setupitem_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_music_note_black_40dp" />
 
+        <!-- TODO: Perhaps later this have a bit more customization -->
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/setupitem_margin"
             android:checked="@{obj.isChecked()}"
-            android:enabled="@{obj.isEnabled()}"
+            android:enabled="@{obj.isEnabled() || obj.isEnabled() == null}"
             android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
