@@ -15,8 +15,10 @@ import timber.log.Timber
 
 import java.lang.ClassCastException
 
-private val TYPE_HEADER = 0;
-private val TYPE_SWITCH = 1;
+private const val TYPE_HEADER = 0;
+private const val TYPE_SWITCH = 1;
+
+// TODO: save attribute to shared preferences on every attribute change
 
 class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         ListAdapter<ExerciseSetupItem, RecyclerView.ViewHolder>(ExerciseSettingDiffCallback()) {
@@ -78,9 +80,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         fun bind(switch: ExerciseSetupSwitch) {
             binding.obj = switch
             switch.imgSrc?.let { binding.icon.setImageResource(switch.imgSrc) }
-//            if (switch.imgSrc != null) {
-//                binding.icon.setImageResource(switch.imgSrc)
-//            }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {

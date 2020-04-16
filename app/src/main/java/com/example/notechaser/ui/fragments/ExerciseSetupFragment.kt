@@ -17,7 +17,6 @@ import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
-import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 class ExerciseSetupFragment : Fragment() {
@@ -60,18 +59,19 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun makeSingleNoteList(): List<ExerciseSetupItem> {
-        val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("Pattern"))
+        val noteChoiceHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(ExerciseSetupHeader(getString(R.string.playback_title)))
         val playCadenceSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        getString(R.string.playback_title),
-                        getString(R.string.playcadence_summary),
+                        getString(R.string.playCadence_title),
+                        getString(R.string.playCadence_summary),
                         viewModel.settings.playCadence,
                         imgSrc = R.drawable.ic_music_note_black_40dp)
                 )
         val matchKeySwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        getString(R.string.matchkey_title),
-                        getString(R.string.matchkey_summary),
+                        getString(R.string.matchKey_title),
+                        getString(R.string.matchKey_summary),
                         viewModel.settings.matchKey,
                         isEnabled = viewModel.settings.playCadence,
                         imgSrc = R.drawable.ic_music_note_black_40dp)

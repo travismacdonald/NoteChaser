@@ -1,28 +1,28 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/questions_title">
+    <PreferenceCategory app:title="@string/questions_header">
 
         <DropDownPreference
             app:defaultValue="diatonic"
             app:entries="@array/notechoice_entries"
             app:entryValues="@array/notechoice_values"
-            app:key="@string/notechoice_key"
-            app:title="@string/notechoice_title"
+            app:key="@string/noteChoice_key"
+            app:title="@string/noteChoice_title"
             app:useSimpleSummaryProvider="true" />
 
         <DropDownPreference
             app:defaultValue="question_limit"
             app:entries="@array/sessionlength_entries"
             app:entryValues="@array/sessionlength_values"
-            app:key="@string/sessionlength_key"
-            app:title="@string/sessionlength_title"
+            app:key="@string/sessionLength_key"
+            app:title="@string/sessionLength_title"
             app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
             app:isPreferenceVisible="false"
-            android:key="@string/numquestions_key"
-            android:title="@string/numquestions_title"
+            android:key="@string/numQuestions_key"
+            android:title="@string/numQuestions_title"
             android:max="120"
             app:min="10"
             app:showSeekBarValue="true"
@@ -30,8 +30,8 @@
 
         <SeekBarPreference
             app:isPreferenceVisible="false"
-            android:key="@string/timerlength_key"
-            android:title="@string/timerlength_title"
+            android:key="@string/timerLength_key"
+            android:title="@string/timerLength_title"
             android:max="60"
             app:min="5"
             app:showSeekBarValue="true"
@@ -47,49 +47,49 @@
           -->
 
         <MultiSelectListPreference
-            android:dialogTitle="@string/playbacktype_harm_title"
+            android:dialogTitle="@string/playbackType_harm_title"
             android:entries="@array/playbacktype_harm_entries"
             android:entryValues="@array/playbacktype_harm_values"
-            android:key="@string/playbacktype_harm_key"
-            android:summary="@string/playbacktype_harm_summary"
-            android:title="@string/playbacktype_harm_title" />
+            android:key="@string/playbackType_harm_key"
+            android:summary="@string/playbackType_harm_summary"
+            android:title="@string/playbackType_harm_title" />
 
         <MultiSelectListPreference
-            android:dialogTitle="@string/playbacktype_mel_title"
+            android:dialogTitle="@string/playbackType_mel_title"
             android:entries="@array/playbacktype_mel_entries"
             android:entryValues="@array/playbacktype_mel_values"
-            android:key="@string/playbacktype_mel_key"
-            android:summary="@string/playbacktype_mel_summary"
-            android:title="@string/playbacktype_mel_title" />
+            android:key="@string/playbackType_mel_key"
+            android:summary="@string/playbackType_mel_summary"
+            android:title="@string/playbackType_mel_title" />
 
         <SwitchPreferenceCompat
-            android:key="@string/playcadence_key"
+            android:key="@string/playCadence_key"
             app:defaultValue="false"
-            android:summary="@string/playcadence_summary"
-            android:title="@string/playcadence_title" />
+            android:summary="@string/playCadence_summary"
+            android:title="@string/playCadence_title" />
 
         <SwitchPreferenceCompat
-            android:key="@string/matchkey_key"
+            android:key="@string/matchKey_key"
             android:defaultValue="true"
-            android:dependency="@string/playcadence_key"
-            android:summary="@string/matchkey_summary"
-            android:title="@string/matchkey_title" />
+            android:dependency="@string/playCadence_key"
+            android:summary="@string/matchKey_summary"
+            android:title="@string/matchKey_title" />
 
         <ListPreference
-            android:key="@string/cadencekey_key"
-            android:dependency="@string/playcadence_key"
-            android:title="@string/cadencekey_title"
+            android:key="@string/cadenceKey_key"
+            android:dependency="@string/playCadence_key"
+            android:title="@string/cadenceKey_title"
             app:useSimpleSummaryProvider="true"
-            android:dialogTitle="@string/cadencekey_title"/>
+            android:dialogTitle="@string/cadenceKey_title"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/answer_title">
+    <PreferenceCategory app:title="@string/answer_heading">
 
         <SwitchPreferenceCompat
-            android:key="@string/matchoctave_key"
-            android:summary="@string/matchoctave_summary"
-            android:title="@string/matchoctave_title" />
+            android:key="@string/matchOctave_key"
+            android:summary="@string/matchOctave_summary"
+            android:title="@string/matchOctave_title" />
 
     </PreferenceCategory>
 

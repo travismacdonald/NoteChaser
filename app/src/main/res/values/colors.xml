@@ -5,12 +5,16 @@
     <color name="colorAccent">#D81B60</color>
 
     <!-- Exercise Setup Item -->
-    <color name="setupItemBackground">#DDDDDD</color>
-    <color name="setupItemRipple">#AAAAAA</color>
+    <color name="itemBackground">#FFFFFF</color>
+    <color name="itemRipple">#AAAAAA</color>
 
-    <color name="setupitem_title">#000000</color>
-    <color name="setupitem_title_disabled">#BBBBBB</color>
-    <color name="setupitem_summary">#666666</color>
-    <color name="setupitem_summary_disabled">#BBBBBB</color>
+    <color name="itemTitleText">#000000</color>
+    <color name="itemTitleTextDisabled">#BBBBBB</color>
+    <color name="itemSummaryText">#666666</color>
+    <color name="itemSummaryTextDisabled">#BBBBBB</color>
+
+    <!-- Exercise Setup Header -->
+    <color name="headerBackground">#DDDDDD</color>
+    <color name="headerText">#666666</color>
 
 </resources>

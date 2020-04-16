@@ -2,7 +2,6 @@ package com.example.notechaser.ui.exerciseconfiguration
 
 
 import android.os.Bundle
-import android.widget.SeekBar
 import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
@@ -18,23 +17,23 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
                 ExerciseConfigurationFragmentArgs.fromBundle(arguments!!).exerciseType
 
         val noteChoiceDropDown: DropDownPreference =
-                findPreference(getString(R.string.notechoice_key))!!
+                findPreference(getString(R.string.noteChoice_key))!!
         val sessionLengthDropDown: DropDownPreference =
-                findPreference(getString(R.string.sessionlength_key))!!
+                findPreference(getString(R.string.sessionLength_key))!!
         val numQuestionsSeekBar: SeekBarPreference =
-                findPreference(getString(R.string.numquestions_key))!!
+                findPreference(getString(R.string.numQuestions_key))!!
         val timerLengthSeekBar: SeekBarPreference =
-                findPreference(getString(R.string.timerlength_key))!!
+                findPreference(getString(R.string.timerLength_key))!!
         val playbackTypeHarmMulti: MultiSelectListPreference =
-                findPreference(getString(R.string.playbacktype_harm_key))!!
+                findPreference(getString(R.string.playbackType_harm_key))!!
         val playbackTypeMelMulti: MultiSelectListPreference =
-                findPreference(getString(R.string.playbacktype_mel_key))!!
+                findPreference(getString(R.string.playbackType_mel_key))!!
         val playCadenceSwitch: SwitchPreferenceCompat =
-                findPreference(getString(R.string.playcadence_key))!!
+                findPreference(getString(R.string.playCadence_key))!!
         val matchKeySwitch: SwitchPreferenceCompat =
-                findPreference(getString(R.string.matchkey_key))!!
+                findPreference(getString(R.string.matchKey_key))!!
         val cadenceKeyList: ListPreference =
-                findPreference(getString(R.string.cadencekey_key))!!
+                findPreference(getString(R.string.cadenceKey_key))!!
 
         noteChoiceDropDown.apply {
             when (exerciseType) {

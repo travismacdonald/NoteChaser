@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
+<!-- TODO: Fix bug where dragging switch thumb doesn't update value -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -27,14 +27,14 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/setupitem_text_margin"
-            android:layout_marginTop="@dimen/setupitem_margin"
-            android:layout_marginEnd="@dimen/setupitem_text_margin"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginTop="@dimen/itemSmallMargin"
+            android:layout_marginEnd="@dimen/itemTextMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.title}"
             android:textColor=
                 "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_title : @color/setupitem_title_disabled}"
-            android:textSize="@dimen/setupitem_title"
+            android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
 
             app:layout_constraintTop_toTopOf="parent"
@@ -44,35 +44,37 @@
             android:id="@+id/summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/setupitem_text_margin"
-            android:layout_marginEnd="@dimen/setupitem_text_margin"
-            android:layout_marginBottom="@dimen/setupitem_margin"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginEnd="@dimen/itemTextMargin"
+            android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.summary}"
             android:textColor=
                 "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_summary : @color/setupitem_summary_disabled}"
-            android:textSize="@dimen/setupitem_summary"
+            android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="No Surprises" />
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="@dimen/setupitem_icon"
-            android:layout_height="@dimen/setupitem_icon"
-            android:layout_marginStart="@dimen/setupitem_margin"
-            android:layout_marginEnd="@dimen/setupitem_margin"
+            android:layout_width="@dimen/itemIconSize"
+            android:layout_height="@dimen/itemIconSize"
+            android:layout_marginStart="@dimen/itemSmallMargin"
+            android:layout_marginEnd="@dimen/itemSmallMargin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_music_note_black_40dp" />
+            tools:src="@drawable/ic_music_note_black_40dp"
+            android:contentDescription="Music Symbol" />
 
         <!-- TODO: Perhaps later this have a bit more customization -->
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/setupitem_margin"
+            android:layout_marginEnd="@dimen/itemSmallMargin"
+            android:clickable="false"
             android:checked="@{obj.isChecked()}"
             android:enabled="@{obj.isEnabled() || obj.isEnabled() == null}"
             android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"

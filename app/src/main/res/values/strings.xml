@@ -2,13 +2,13 @@
 
     <!-- Global Strings -->
 
-    <string name="app_name">Note Chaser</string>
+    <string name="appName">Note Chaser</string>
 
 
     <!-- Exercise Buttons -->
 
-    <string name="single_note_button">Single Note</string>
-    <string name="interval_button">Intervallic</string>
+    <string name="singleNote_button">Single Note</string>
+    <string name="intervallic_button">Intervallic</string>
     <string name="harmonic_button">Harmonic</string>
     <string name="scale_button">Scale</string>
     <string name="melodic_button">Melodic</string>
@@ -17,10 +17,10 @@
 
     <!-- Question Preferences -->
 
-    <string name="questions_title">Questions</string>
+    <string name="questions_header">Question Settings</string>
 
-    <string name="notechoice_key">notechoice</string>
-    <string name="notechoice_title">Note Choice</string>
+    <string name="noteChoice_key">noteChoice</string>
+    <string name="noteChoice_title">Note Choice</string>
 
 
     <!-- Playback Preferences -->
@@ -28,48 +28,46 @@
     <string name="playback_title">Playback</string>
 
     <!-- NOTE: Two different lists for different playback modes
-               ~ One is for primarily melodic types (SCALE)
-               ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
-          -->
+                 - One is for primarily melodic types (SCALE)
+                 - Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+      -->
 
-    <string name="playbacktype_mel_key">playbacktype_mel</string>
-    <string name="playbacktype_mel_title">Playback Type</string>
-    <string name="playbacktype_mel_summary">Order of notes</string>
+    <string name="playbackType_mel_key">playbackType_mel</string>
+    <string name="playbackType_mel_title">Playback Type</string>
+    <string name="playbackType_mel_summary">Order of notes</string>
 
-    <string name="playbacktype_harm_key">playbacktype_harm</string>
-    <string name="playbacktype_harm_title">Playback Type</string>
-    <string name="playbacktype_harm_summary">Order of notes</string>
+    <string name="playbackType_harm_key">playbackType_harm</string>
+    <string name="playbackType_harm_title">Playback Type</string>
+    <string name="playbackType_harm_summary">Order of notes</string>
 
-    <string name="playcadence_key">playcadence</string>
-    <string name="playcadence_title">Play Cadence</string>
-    <string name="playcadence_summary">Play cadence before pattern</string>
+    <string name="playCadence_key">playCadence</string>
+    <string name="playCadence_title">Play Cadence</string>
+    <string name="playCadence_summary">Play cadence before pattern</string>
 
 
     <!-- Answer Preferences -->
 
-    <string name="answer_title">Answer</string>
+    <string name="answer_heading">Answer</string>
 
-    <string name="matchoctave_key">matchoctave</string>
-    <string name="matchoctave_title">Match Octave</string>
-    <string name="matchoctave_summary">Answer must be the same octave as pattern</string>
+    <string name="matchOctave_key">matchOctave</string>
+    <string name="matchOctave_title">Match Octave</string>
+    <string name="matchOctave_summary">Answer must be the same octave as pattern</string>
 
-    <string name="cadencekey_key">cadencekey</string>
-    <string name="cadencekey_title">Cadence Key</string>
+    <string name="cadenceKey_key">cadenceKey</string>
+    <string name="cadenceKey_title">Cadence Key</string>
 
-    <string name="matchkey_key">matchkey</string>
-    <string name="matchkey_title">Match Key</string>
-    <string name="matchkey_summary">Cadence matches pattern key (recommended)</string>
+    <string name="matchKey_key">matchKey</string>
+    <string name="matchKey_title">Match Key</string>
+    <string name="matchKey_summary">Cadence matches pattern key (recommended)</string>
 
-    <string name="sessionlength_key">sessionlength</string>
-    <string name="sessionlength_title">Session Length</string>
+    <string name="sessionLength_key">sessionLength</string>
+    <string name="sessionLength_title">Session Length</string>
 
-    <string name="timerlength_key">timerlength</string>
-    <string name="timerlength_title">Timer Length</string>
+    <string name="timerLength_key">timerLength</string>
+    <string name="timerLength_title">Timer Length</string>
 
-    <string name="numquestions_key">numquestions</string>
-    <string name="numquestions_title">Number of Questions</string>
+    <string name="numQuestions_key">numQuestions</string>
+    <string name="numQuestions_title">Number of Questions</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
