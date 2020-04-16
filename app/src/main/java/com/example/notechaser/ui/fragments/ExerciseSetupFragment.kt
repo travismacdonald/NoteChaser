@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
+import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
 import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSwitch
@@ -18,10 +18,8 @@ import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 
-/**
- * A simple [Fragment] subclass.
- */
 class ExerciseSetupFragment : Fragment() {
 
     val viewModel: ExerciseSetupViewModel by viewModels {
@@ -29,8 +27,8 @@ class ExerciseSetupFragment : Fragment() {
                 ExerciseSetupFragmentArgs.fromBundle(arguments!!).exerciseType
         )
     }
-
     lateinit var binding: FragmentExerciseSetupBinding
+    lateinit var args: ExerciseSetupFragmentArgs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,7 +40,30 @@ class ExerciseSetupFragment : Fragment() {
 
         val manager = LinearLayoutManager(activity)
         val adapter = ExerciseSetupAdapter(this)
+        args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
 
+        // TODO: may have to make this mutable later on
+
+        val setupItemList: List<ExerciseSetupItem> = when (args.exerciseType) {
+            ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
+            ExerciseType.INTERVALLIC -> makeIntervallicList()
+            ExerciseType.HARMONIC -> makeHarmonicList()
+            ExerciseType.SCALE -> makeScaleList()
+            ExerciseType.MELODIC -> makeMelodicList()
+            else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
+        }
+
+
+        Timber.d(setupItemList.size.toString())
+
+        adapter.submitList(setupItemList)
+        binding.settingsList.adapter = adapter
+        binding.settingsList.layoutManager = manager
+
+        return binding.root
+    }
+
+    private fun makeSingleNoteList(): List<ExerciseSetupItem> {
         val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("note choice"))
         val playCadenceSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
@@ -51,15 +72,27 @@ class ExerciseSetupFragment : Fragment() {
                         viewModel.settings.playCadence,
                         R.drawable.ic_music_note_black_40dp)
                 )
-
-        val list: List<ExerciseSetupItem> = arrayListOf(noteChoiceHeader, playCadenceSwitch)
-        adapter.submitList(list)
-
-        binding.settingsList.adapter = adapter
-        binding.settingsList.layoutManager = manager
-
-        return binding.root
+        return arrayListOf(noteChoiceHeader, playCadenceSwitch)
     }
 
+    // TODO
+    private fun makeIntervallicList(): List<ExerciseSetupItem> {
+        return ArrayList<ExerciseSetupItem>()
+    }
+
+    // TODO
+    private fun makeHarmonicList(): List<ExerciseSetupItem> {
+        return ArrayList<ExerciseSetupItem>()
+    }
+
+    // TODO
+    private fun makeScaleList(): List<ExerciseSetupItem> {
+        return ArrayList<ExerciseSetupItem>()
+    }
+
+    // TODO
+    private fun makeMelodicList(): List<ExerciseSetupItem> {
+        return ArrayList<ExerciseSetupItem>()
+    }
 
 }
