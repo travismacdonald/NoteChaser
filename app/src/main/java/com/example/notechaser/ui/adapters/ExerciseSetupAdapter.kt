@@ -72,21 +72,14 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
-
-    // TODO Debugging going on here
     class SwitchViewHolder private constructor(val binding: ItemExerciseSetupSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(switch: ExerciseSetupSwitch) {
             binding.obj = switch
-            binding.layout.setOnClickListener {
-                binding.switchWidget.isChecked = !binding.switchWidget.isChecked
-                Timber.d("here we go")
+            if (switch.imgSrc != null) {
+                binding.icon.setImageResource(switch.imgSrc)
             }
-            // TODO: Clean this mess up
-//            if (switch.imgSrc != null) {
-//                binding.icon.setImageResource(switch.imgSrc)
-//            }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {

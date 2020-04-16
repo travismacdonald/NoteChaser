@@ -48,30 +48,18 @@ class ExerciseSetupFragment : Fragment() {
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
                         "Play Cadence",
                         "Play cadence before question",
-                        viewModel.settings.playCadence)
+                        viewModel.settings.playCadence,
+                        R.drawable.ic_music_note_black_40dp)
                 )
-
-//        viewModel.settings.playCadence.observe(viewLifecycleOwner, Observer {
-//
-//        })
 
         val list: List<ExerciseSetupItem> = arrayListOf(noteChoiceHeader, playCadenceSwitch)
         adapter.submitList(list)
 
         binding.settingsList.adapter = adapter
         binding.settingsList.layoutManager = manager
-        binding.button.setOnClickListener { changePlayCadence() }
-
-
-
-        Timber.d("made it here")
 
         return binding.root
     }
 
-    private fun changePlayCadence() {
-        viewModel.settings.playCadence.value = !viewModel.settings.playCadence.value!!
-        binding.button.text = viewModel.settings.playCadence.value.toString()
-    }
 
 }
