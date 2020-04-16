@@ -25,7 +25,7 @@
 
     <!-- Playback Preferences -->
 
-    <string name="playback_title">Playback</string>
+    <string name="playback_header">Playback Settings</string>
 
     <!-- NOTE: Two different lists for different playback modes
                  - One is for primarily melodic types (SCALE)
@@ -47,7 +47,7 @@
 
     <!-- Answer Preferences -->
 
-    <string name="answer_heading">Answer</string>
+    <string name="answer_heading">Answer Settings</string>
 
     <string name="matchOctave_key">matchOctave</string>
     <string name="matchOctave_title">Match Octave</string>

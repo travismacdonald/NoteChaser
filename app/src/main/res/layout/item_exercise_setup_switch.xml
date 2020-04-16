@@ -18,7 +18,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/exercisesetupitem_background"
+        android:background="@drawable/settings_item_background"
         android:clickable="@{obj.isEnabled() || obj.isEnabled() == null}"
         android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
         android:visibility="@{(obj.isVisible() || obj.isVisible() == null) ? View.VISIBLE : View.GONE}">
@@ -33,7 +33,7 @@
             android:fontFamily="@font/rubik"
             android:text="@{obj.title}"
             android:textColor=
-                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_title : @color/setupitem_title_disabled}"
+                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
 
@@ -50,7 +50,7 @@
             android:fontFamily="@font/rubik"
             android:text="@{obj.summary}"
             android:textColor=
-                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/setupitem_summary : @color/setupitem_summary_disabled}"
+                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"

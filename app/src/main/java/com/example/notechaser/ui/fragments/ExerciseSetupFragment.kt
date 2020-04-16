@@ -60,7 +60,7 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun makeSingleNoteList(): List<ExerciseSetupItem> {
         val noteChoiceHeader: ExerciseSetupItem =
-                ExerciseSetupItem.Header(ExerciseSetupHeader(getString(R.string.playback_title)))
+                ExerciseSetupItem.Header(ExerciseSetupHeader(getString(R.string.playback_header)))
         val playCadenceSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
                         getString(R.string.playCadence_title),

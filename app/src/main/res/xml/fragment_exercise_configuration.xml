@@ -39,7 +39,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/playback_title">
+    <PreferenceCategory app:title="@string/playback_header">
 
         <!-- NOTE: Two different lists for different playback modes
            ~ One is for primarily melodic types (SCALE)
