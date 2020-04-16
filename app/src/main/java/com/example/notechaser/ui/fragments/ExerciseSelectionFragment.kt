@@ -1,4 +1,4 @@
-package com.example.notechaser.ui
+package com.example.notechaser.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.databinding.FragmentExerciseSelectionBinding
+
 
 class ExerciseSelectionFragment : Fragment() {
 

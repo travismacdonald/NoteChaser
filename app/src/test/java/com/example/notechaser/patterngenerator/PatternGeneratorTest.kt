@@ -7,7 +7,6 @@ import com.example.notechaser.patterngenerator.exceptions.InvalidRangeException
 import org.junit.Test
 
 import org.junit.Assert.*
-import java.lang.NullPointerException
 import kotlin.test.assertFailsWith
 
 class PatternGeneratorTest {
@@ -15,14 +14,14 @@ class PatternGeneratorTest {
     @Test
     fun `test setUpperBound`() {
         val generator = PatternGenerator()
-        generator.upperBound = 24
-        assertEquals(24, generator.upperBound)
+        generator._upperBound = 24
+        assertEquals(24, generator._upperBound)
     }
 
     @Test
     fun `test getUpperBound default value`() {
         val generator = PatternGenerator()
-        assertEquals(-1, generator.upperBound)
+        assertEquals(-1, generator._upperBound)
     }
 
     @Test

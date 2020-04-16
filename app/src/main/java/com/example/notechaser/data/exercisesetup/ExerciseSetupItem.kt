@@ -1,4 +1,4 @@
-package com.example.notechaser.data
+package com.example.notechaser.data.exercisesetup
 
 sealed class ExerciseSetupItem {
 

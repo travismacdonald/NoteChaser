@@ -1,15 +1,16 @@
-package com.example.notechaser.ui
+package com.example.notechaser.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notechaser.data.ExerciseSetupItem
-import com.example.notechaser.data.ExerciseSetupHeader
-import com.example.notechaser.data.ExerciseSetupSwitch
+import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
+import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
+import com.example.notechaser.data.exercisesetup.ExerciseSetupSwitch
 import com.example.notechaser.databinding.ItemExerciseSetupSwitchBinding
 import com.example.notechaser.databinding.ItemSettingsHeaderBinding
+import timber.log.Timber
 
 import java.lang.ClassCastException
 
@@ -66,12 +67,12 @@ class ExerciseSetupAdapter :
     class SwitchViewHolder private constructor(val binding: ItemExerciseSetupSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(switch: ExerciseSetupSwitch) {
-            binding.label.text = switch.heading
-            binding.description.text = switch.description
-            binding.switchWidget.isChecked = switch.isChecked
+            binding.obj = switch
             binding.layout.setOnClickListener {
                 binding.switchWidget.isChecked = !binding.switchWidget.isChecked
+                Timber.d("here we go")
             }
+            // TODO: Clean this mess up
 //            if (switch.imgSrc != null) {
 //                binding.icon.setImageResource(switch.imgSrc)
 //            }
