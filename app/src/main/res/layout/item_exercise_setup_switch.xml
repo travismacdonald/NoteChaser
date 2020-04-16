@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:checked="@{obj.isChecked()}"
+            android:enabled="@{obj.isEnabled()}"
             android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"

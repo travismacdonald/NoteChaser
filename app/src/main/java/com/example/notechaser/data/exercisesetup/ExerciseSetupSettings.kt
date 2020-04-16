@@ -7,10 +7,11 @@ class ExerciseSetupSettings {
 
     val playCadence = MutableLiveData<Boolean>()
 
-    var matchKey: Boolean = false
+    val matchKey = MutableLiveData<Boolean>()
 
     init {
         playCadence.value = true
+        matchKey.value = true
     }
 
 }

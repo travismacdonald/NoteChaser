@@ -64,15 +64,23 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun makeSingleNoteList(): List<ExerciseSetupItem> {
-        val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("note choice"))
+        val noteChoiceHeader: ExerciseSetupItem = ExerciseSetupItem.Header(ExerciseSetupHeader("Pattern"))
         val playCadenceSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        "Play Cadence",
-                        "Play cadence before question",
+                        getString(R.string.playback_title),
+                        getString(R.string.playcadence_summary),
                         viewModel.settings.playCadence,
-                        R.drawable.ic_music_note_black_40dp)
+                        imgSrc = R.drawable.ic_music_note_black_40dp)
                 )
-        return arrayListOf(noteChoiceHeader, playCadenceSwitch)
+        val matchKeySwitch: ExerciseSetupItem =
+                ExerciseSetupItem.Switch(ExerciseSetupSwitch(
+                        getString(R.string.matchkey_title),
+                        getString(R.string.matchkey_summary),
+                        viewModel.settings.matchKey,
+                        isEnabled = viewModel.settings.playCadence,
+                        imgSrc = R.drawable.ic_music_note_black_40dp)
+                )
+        return arrayListOf(noteChoiceHeader, playCadenceSwitch, matchKeySwitch)
     }
 
     // TODO
