@@ -17,6 +17,7 @@ import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 class ExerciseSetupFragment : Fragment() {
@@ -36,6 +37,10 @@ class ExerciseSetupFragment : Fragment() {
                 inflater, R.layout.fragment_exercise_setup, container,false
         )
         binding.lifecycleOwner = this
+
+        binding.testButton.setOnClickListener { Timber.d(
+                " \nPlayCadence = ${viewModel.settings.playCadence.value}\n" +
+                           "MatchKey =    ${viewModel.settings.matchKey.value}") }
 
         val manager = LinearLayoutManager(activity)
         val adapter = ExerciseSetupAdapter(this)

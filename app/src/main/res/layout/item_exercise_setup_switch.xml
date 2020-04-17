@@ -32,8 +32,7 @@
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.title}"
-            android:textColor=
-                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemTitleText : @color/itemTitleTextDisabled}"
+            android:textColor="@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
 
@@ -49,8 +48,7 @@
             android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.summary}"
-            android:textColor=
-                "@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
+            android:textColor="@{obj.isEnabled() || obj.isEnabled() == null ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
@@ -62,11 +60,11 @@
             android:layout_height="@dimen/itemIconSize"
             android:layout_marginStart="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemSmallMargin"
+            android:contentDescription="Music Symbol"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_music_note_black_40dp"
-            android:contentDescription="Music Symbol" />
+            tools:src="@drawable/ic_music_note_black_40dp" />
 
         <!-- TODO: Perhaps later this have a bit more customization -->
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -74,13 +72,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/itemSmallMargin"
-            android:clickable="false"
             android:checked="@{obj.isChecked()}"
+            android:clickable="false"
             android:enabled="@{obj.isEnabled() || obj.isEnabled() == null}"
-            android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:useMaterialThemeColors="false" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
