@@ -6,7 +6,7 @@
 
     <!-- Exercise Setup Item -->
     <color name="itemBackground">#FFFFFF</color>
-    <color name="itemRipple">#AAAAAA</color>
+    <color name="itemRipple">#BBBBBB</color>
 
     <color name="itemTitleText">#000000</color>
     <color name="itemTitleTextDisabled">#BBBBBB</color>
