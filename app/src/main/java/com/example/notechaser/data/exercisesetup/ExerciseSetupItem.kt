@@ -9,6 +9,8 @@ sealed class ExerciseSetupItem {
 
     }
 
+    data class Spinner(val spinner: ExerciseSetupSpinner) : ExerciseSetupItem()
+
     data class MultiList(val entries: List<String>, val values: List<String>) : ExerciseSetupItem() {
 
     }

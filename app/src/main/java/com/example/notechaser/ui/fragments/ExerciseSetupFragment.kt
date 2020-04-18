@@ -1,24 +1,24 @@
 package com.example.notechaser.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
 import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
+import com.example.notechaser.data.exercisesetup.ExerciseSetupSpinner
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSwitch
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -34,13 +34,15 @@ class ExerciseSetupFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_exercise_setup, container,false
+                inflater, R.layout.fragment_exercise_setup, container, false
         )
         binding.lifecycleOwner = this
 
-        binding.testButton.setOnClickListener { Timber.d(
-                " \nPlayCadence = ${viewModel.settings.playCadence.value}\n" +
-                           "MatchKey =    ${viewModel.settings.matchKey.value}") }
+        binding.testButton.setOnClickListener {
+            Timber.d(
+                    " \nPlayCadence = ${viewModel.settings.playCadence.value}\n" +
+                            "MatchKey =    ${viewModel.settings.matchKey.value}")
+        }
 
         val manager = LinearLayoutManager(activity)
         val adapter = ExerciseSetupAdapter(this)
@@ -70,13 +72,27 @@ class ExerciseSetupFragment : Fragment() {
 
         /* Question Settings */
 
-        val questionsHeader: ExerciseSetupItem = (
-                    ExerciseSetupItem.Header(
-                            ExerciseSetupHeader(getString(R.string.questions_header))))
+        val questionsHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(
+                        ExerciseSetupHeader(getString(R.string.questions_header)))
+
+//        val noteChoiceSpinner: ExerciseSetupItem =
+//                ExerciseSetupItem.MultiList(
+//
+//                )
+
+        val noteChoiceSpinner: ExerciseSetupItem =
+                ExerciseSetupItem.Spinner(
+                        ExerciseSetupSpinner(
+                                getString(R.string.noteChoice_title),
+                                arrayListOf("bitch", "lasagna"),
+                                arrayListOf()
+                        )
+                )
 
         /* Playback Settings */
 
-        val noteChoiceHeader: ExerciseSetupItem =
+        val playbackHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
                         ExerciseSetupHeader(getString(R.string.playback_header)))
 
@@ -85,8 +101,7 @@ class ExerciseSetupFragment : Fragment() {
                         getString(R.string.playCadence_title),
                         getString(R.string.playCadence_summary),
                         viewModel.settings.playCadence,
-                        imgSrc = R.drawable.ic_music_note_black_40dp)
-                )
+                        imgSrc = R.drawable.ic_music_note_black_40dp))
 
         val matchKeySwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
@@ -101,7 +116,8 @@ class ExerciseSetupFragment : Fragment() {
 
         return arrayListOf(
                 questionsHeader,
-                noteChoiceHeader,
+                noteChoiceSpinner,
+                playbackHeader,
                 playCadenceSwitch,
                 matchKeySwitch)
     }

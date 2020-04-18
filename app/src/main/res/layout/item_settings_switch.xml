@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- TODO: Fix bug where dragging switch thumb doesn't update value -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -60,7 +58,6 @@
             android:layout_height="@dimen/itemIconSize"
             android:layout_marginStart="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemSmallMargin"
-            android:contentDescription="Music Symbol"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
