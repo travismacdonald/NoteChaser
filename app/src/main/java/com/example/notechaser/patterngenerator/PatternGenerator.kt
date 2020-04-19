@@ -1,6 +1,5 @@
 package com.example.notechaser.patterngenerator
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.notechaser.patterngenerator.exceptions.DuplicateTemplateException
 import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateListException
@@ -15,13 +14,9 @@ class PatternGenerator(
         private val _templates: ArrayList<PatternTemplate> = arrayListOf()
     ) : PlayableGenerator {
 
-    private val _lowerBound: MutableLiveData<Int> = MutableLiveData()
-    val lowerBound: LiveData<Int>
-        get() = _lowerBound
+    val lowerBound = MutableLiveData<Int>(-1)
 
-    private val _upperBound: MutableLiveData<Int> = MutableLiveData()
-    val upperBound: LiveData<Int>
-        get() = _upperBound
+    val upperBound = MutableLiveData<Int>(-1)
 
     val templates: List<PatternTemplate>
         get() = _templates
@@ -37,26 +32,26 @@ class PatternGenerator(
     }
 
     fun hasSufficientRange(): Boolean {
-        return _upperBound.value!! - _lowerBound.value!! >= findRangeRequired()
+        return upperBound.value!! - lowerBound.value!! >= findRangeRequired()
     }
 
     override fun generatePlayable(): Playable {
         if (!hasValidRange()) {
             throw InvalidRangeException(
                     "lowerBound is greater than upperBound." +
-                            "\n\tlowerBound: ${_lowerBound.value}" +
-                            "\n\tupperBound: ${_upperBound.value}"
+                            "\n\tlowerBound: ${lowerBound.value}" +
+                            "\n\tupperBound: ${upperBound.value}"
             )
         } else if (!hasSufficientRange()) {
             throw InsufficientRangeException(
                     "Not enough range to generate Pattern." +
                             "\n\tRange required: ${findRangeRequired()}" +
-                            "\n\tActual range: ${_upperBound.value!! - _lowerBound.value!!}"
+                            "\n\tActual range: ${upperBound.value!! - lowerBound.value!!}"
             )
         } else {
             val template = templates[Random.nextInt(size)]
             // + 1 because pattern generation range has inclusive bounds
-            val ix = Random.nextInt(_lowerBound.value!!, (_upperBound.value!! - template.range) + 1)
+            val ix = Random.nextInt(lowerBound.value!!, (upperBound.value!! - template.range) + 1)
             return Pattern(template, ix)
         }
     }
@@ -89,7 +84,7 @@ class PatternGenerator(
     }
 
     private fun hasValidRange(): Boolean {
-        return _lowerBound.value!! in 0.._upperBound.value!!
+        return lowerBound.value!! in 0..upperBound.value!!
     }
 
 }

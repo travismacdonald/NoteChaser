@@ -14,19 +14,21 @@ class PatternGeneratorTest {
     @Test
     fun `test setUpperBound`() {
         val generator = PatternGenerator()
-        generator._upperBound = 24
-        assertEquals(24, generator._upperBound)
+        generator.upperBound.value = 24
+        assertEquals(24, generator.upperBound.value)
     }
 
     @Test
     fun `test getUpperBound default value`() {
         val generator = PatternGenerator()
-        assertEquals(-1, generator._upperBound)
+        assertEquals(-1, generator.upperBound.value)
     }
 
     @Test
     fun `test hasSufficientSpace should be true when required range equals bound range`() {
-        val generator = PatternGenerator(3, 10)   // Bound range: 7
+        val generator = PatternGenerator()   // Bound range: 7
+        generator.lowerBound.value = 3
+        generator.upperBound.value = 10
         val templateOne = PatternTemplate(arrayListOf(0, 7))   // template range: 7
         val templateTwo = PatternTemplate(arrayListOf(3, 5))   // template range: 2
         generator.addPatternTemplate(templateOne)
@@ -36,7 +38,9 @@ class PatternGeneratorTest {
 
     @Test
     fun `test hasSufficientSpace should be false when required range exceeds bound range`() {
-        val generator = PatternGenerator(0, 6)   // Bound range: 6
+        val generator = PatternGenerator()   // Bound range: 6
+        generator.lowerBound.value = 0
+        generator.upperBound.value = 6
         val templateOne = PatternTemplate(arrayListOf(0, 7))   // template range: 7
         val templateTwo = PatternTemplate(arrayListOf(3, 5))   // template range: 2
         generator.addPatternTemplate(templateOne)
@@ -46,20 +50,26 @@ class PatternGeneratorTest {
 
     @Test
     fun `test findRangeRequired throws exception when template list is empty`() {
-        val generator = PatternGenerator(0, 8)
+        val generator = PatternGenerator()
+        generator.lowerBound.value = 0
+        generator.upperBound.value = 8
         assertFailsWith<EmptyTemplateListException> { generator.findRangeRequired() }
     }
 
     @Test
     fun `test generatePattern throws exception with invalid range`() {
-        val generator = PatternGenerator(5, 0) // lower bound > upper bound
+        val generator = PatternGenerator() // lower bound > upper bound
+        generator.lowerBound.value = 5
+        generator.upperBound.value = 0
         generator.addPatternTemplate(PatternTemplate(arrayListOf(1, 2, 3)))
         assertFailsWith<InvalidRangeException> { generator.generatePlayable() }
     }
 
     @Test
     fun `test generatePattern throws exception with insufficient range`() {
-        val generator = PatternGenerator(0, 8)
+        val generator = PatternGenerator()
+        generator.lowerBound.value = 0
+        generator.upperBound.value = 8
         generator.addPatternTemplate(PatternTemplate(arrayListOf(1, 2, 3)))
         generator.addPatternTemplate(PatternTemplate(arrayListOf(0, 2, 9)))
         assertFailsWith<InsufficientRangeException> { generator.generatePlayable() }
@@ -146,7 +156,9 @@ class PatternGeneratorTest {
     // todo: find better way to test this
     @Test
     fun `bad test`() {
-        val generator = PatternGenerator(6, 14)
+        val generator = PatternGenerator()
+        generator.lowerBound.value = 6
+        generator.upperBound.value = 14
         generator.addPatternTemplate(PatternTemplate(arrayListOf(3, 0, 6)))
         for (i in 0 until 100) {
             println(generator.generatePlayable().toString())
