@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 class PatternGenerator(
         private val _templates: ArrayList<PatternTemplate> = arrayListOf()
-    ) {
+    ) : PlayableGenerator {
 
     private val _lowerBound: MutableLiveData<Int> = MutableLiveData()
     val lowerBound: LiveData<Int>
@@ -40,7 +40,7 @@ class PatternGenerator(
         return _upperBound.value!! - _lowerBound.value!! >= findRangeRequired()
     }
 
-    fun generatePattern(): Pattern {
+    override fun generatePlayable(): Playable {
         if (!hasValidRange()) {
             throw InvalidRangeException(
                     "lowerBound is greater than upperBound." +

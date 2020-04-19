@@ -9,9 +9,9 @@ import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
  * The Notes in a Pattern are immutable, which is why it throws
  * an exception when it is given an empty PatternTemplate.
  */
-class Pattern(template: PatternTemplate, ix: Int) {
+class Pattern(template: PatternTemplate, ix: Int) : Playable {
 
-    val notes: List<Note>
+    override val notes: List<Note>
 
     val size = template.size
 
