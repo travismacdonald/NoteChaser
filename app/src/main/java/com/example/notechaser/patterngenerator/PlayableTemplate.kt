@@ -2,7 +2,7 @@ package com.example.notechaser.patterngenerator
 
 import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 
-abstract class PlayableTemplate(private val _intervals: MutableList<Int>) {
+abstract class PlayableTemplate(protected val _intervals: MutableList<Int>) {
 
     /**
      * Intervals that are untransposed.
