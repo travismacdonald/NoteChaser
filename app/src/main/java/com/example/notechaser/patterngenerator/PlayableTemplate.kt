@@ -1,7 +1,7 @@
 package com.example.notechaser.patterngenerator
 
-import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 
+// TODO: probably want to implement a max size at some point
 abstract class PlayableTemplate(protected val _intervals: MutableList<Int>) {
 
     /**
@@ -39,6 +39,11 @@ abstract class PlayableTemplate(protected val _intervals: MutableList<Int>) {
     fun isNotEmpty(): Boolean {
         return _intervals.isNotEmpty()
     }
+
+    fun contains(interval: Int): Boolean {
+        return _intervals.contains(interval)
+    }
+
 
     /**
      * intervalsTransposed was chosen in this case because although two templates with

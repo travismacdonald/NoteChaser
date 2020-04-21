@@ -1,59 +1,36 @@
 package com.example.notechaser.patterngenerator
 
+import com.example.notechaser.patterngenerator.exceptions.DuplicateIntervalException
 import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
 
-class ChordTemplate(private val _intervals: MutableList<Int> = arrayListOf()) {
+// TODO: could override contains to use binary search for val, doesn't really make a performance difference
+class ChordTemplate(_intervals: MutableList<Int> = arrayListOf())
+    : PlayableTemplate(_intervals) {
 
-    /**
-     * Intervals that are unmodified. (Backing property for _intervals)
-     */
-    val intervals: List<Int>
-        get() = _intervals
+    init {
+        _intervals.sort()
+    }
 
-    /**
-     * Intervals that are all equally transposed so that the minimum interval is zero.
-     */
-    val intervalsTransposed: List<Int>
-        get() {
-            return if (_intervals.min() == 0) _intervals
-            else _intervals.map { it - _intervals.min()!! }
-        }
-
-    val range: Int
+    override val range: Int
         get() {
             return if (_intervals.isEmpty())
-                throw EmptyTemplateException("Cannot get range of empty PatternTemplate.")
-            else _intervals.max()!! - _intervals.min()!!
+                throw EmptyTemplateException("Cannot get range of empty PlayableTemplate.")
+            // Take advantage of sorted list
+            else _intervals[0] - _intervals[size - 1]
         }
 
-    val size: Int
-        get() = _intervals.size
-
-    fun addInterval(interval: Int) {
-        // TODO: add interval at properly sorted position
+    override fun addInterval(interval: Int) {
+        if (_intervals.contains(interval)) {
+            throw DuplicateIntervalException("Chord template already contains interval $interval")
+        }
+        val insertionIx = -(_intervals.binarySearch(interval) + 1)
+        _intervals.add(insertionIx, interval)
     }
 
-    fun addAllIntervals(vararg intervals: Int) {
-//        for (interval in intervals) {
-//            addInterval(interval)
-//        }
-        // TODO: sort list, then add
-    }
-
-    fun removeIntervalAt(ix: Int) {
-        _intervals.removeAt(ix)
-    }
-
-    fun isEmpty(): Boolean {
-        return _intervals.isEmpty()
-    }
-
-    fun isNotEmpty(): Boolean {
-        return _intervals.isNotEmpty()
-    }
-
-    fun contains(interval: Int): Boolean {
-        return _intervals.contains(interval)
+    override fun addAllIntervals(vararg intervals: Int) {
+        for (interval in intervals) {
+            addInterval(interval)
+        }
     }
 
     /**
