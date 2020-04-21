@@ -1,4 +1,4 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
 
 // TODO: probably want to implement a max size at some point

@@ -1,4 +1,4 @@
-package com.example.notechaser.patterngenerator.exceptions
+package com.example.notechaser.playablegenerator.exceptions
 
 import java.lang.Exception
 

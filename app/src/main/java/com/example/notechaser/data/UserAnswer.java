@@ -2,7 +2,7 @@ package com.example.notechaser.data;
 
 
 
-import com.example.notechaser.patterngenerator.Note;
+import com.example.notechaser.playablegenerator.Note;
 
 import java.util.LinkedList;
 import java.util.List;

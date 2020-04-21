@@ -1,4 +1,4 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
 data class Note(val ix: Int) {
     val nameSharp = MusicTheory.CHROMATIC_SCALE_SHARP[ix % MusicTheory.CHROMATIC_SCALE_SIZE]

@@ -1,30 +1,23 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.patterngenerator.exceptions.DuplicateIntervalException
-import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
+import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
 
-// TODO: could override contains to use binary search for val, doesn't really make a performance difference
-class ChordTemplate(_intervals: MutableList<Int> = arrayListOf())
+// TODO: remove duplicated equals() and hashCode()
+/**
+ * Class that holds intervals for patterns templates.
+ */
+class PatternTemplate(_intervals: MutableList<Int> = arrayListOf())
     : PlayableTemplate(_intervals) {
-
-    init {
-        _intervals.sort()
-    }
 
     override val range: Int
         get() {
             return if (_intervals.isEmpty())
                 throw EmptyTemplateException("Cannot get range of empty PlayableTemplate.")
-            // Take advantage of sorted list
-            else _intervals[0] - _intervals[size - 1]
+            else _intervals.max()!! - _intervals.min()!!
         }
 
     override fun addInterval(interval: Int) {
-        if (_intervals.contains(interval)) {
-            throw DuplicateIntervalException("Chord template already contains interval $interval")
-        }
-        val insertionIx = -(_intervals.binarySearch(interval) + 1)
-        _intervals.add(insertionIx, interval)
+        _intervals.add(interval)
     }
 
     override fun addAllIntervals(vararg intervals: Int) {
@@ -51,5 +44,4 @@ class ChordTemplate(_intervals: MutableList<Int> = arrayListOf())
     override fun toString(): String {
         return _intervals.joinToString(separator = " ") { it.toString() }
     }
-
 }

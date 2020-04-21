@@ -1,6 +1,6 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
+import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith

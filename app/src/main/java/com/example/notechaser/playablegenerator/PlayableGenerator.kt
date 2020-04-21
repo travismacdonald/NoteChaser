@@ -1,24 +1,23 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
-import com.example.notechaser.patterngenerator.exceptions.DuplicateTemplateException
-import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateListException
-import com.example.notechaser.patterngenerator.exceptions.InsufficientRangeException
-import com.example.notechaser.patterngenerator.exceptions.InvalidRangeException
+import com.example.notechaser.playablegenerator.exceptions.DuplicateTemplateException
+import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateListException
+import com.example.notechaser.playablegenerator.exceptions.InsufficientRangeException
+import com.example.notechaser.playablegenerator.exceptions.InvalidRangeException
 import java.util.ArrayList
 import kotlin.random.Random
 
 // Todo: address issues of tracking changes to templates already in generator's template list
 
-class PatternGenerator(
-        private val _templates: ArrayList<PatternTemplate> = arrayListOf()
-    ) : PlayableGenerator {
+class PlayableGenerator(
+        private val _templates: ArrayList<PlayableTemplate> = arrayListOf()) {
 
-    val lowerBound = MutableLiveData<Int>(-1)
+    val lowerBound = MutableLiveData(-1)
 
-    val upperBound = MutableLiveData<Int>(-1)
+    val upperBound = MutableLiveData(-1)
 
-    val templates: List<PatternTemplate>
+    val templates: List<PlayableTemplate>
         get() = _templates
 
     val size: Int
@@ -35,7 +34,7 @@ class PatternGenerator(
         return upperBound.value!! - lowerBound.value!! >= findRangeRequired()
     }
 
-    override fun generatePlayable(): Playable {
+    fun generatePlayable(): Playable {
         if (!hasValidRange()) {
             throw InvalidRangeException(
                     "lowerBound is greater than upperBound." +
@@ -52,22 +51,22 @@ class PatternGenerator(
             val template = templates[Random.nextInt(size)]
             // + 1 because pattern generation range has inclusive bounds
             val ix = Random.nextInt(lowerBound.value!!, (upperBound.value!! - template.range) + 1)
-            return Pattern(template, ix)
+            return Playable(template, ix)
         }
     }
 
-    fun getPatternTemplateAt(ix: Int): PatternTemplate {
+    fun getTemplateAt(ix: Int): PlayableTemplate {
         return _templates[ix]
     }
 
-    fun addPatternTemplate(template: PatternTemplate) {
+    fun addTemplate(template: PlayableTemplate) {
         if (contains(template)) {
             throw DuplicateTemplateException("Tried to add equivalent template to _templates.")
         }
         _templates.add(template)
     }
 
-    fun removePatternTemplateAt(ix: Int) {
+    fun removeTemplateAt(ix: Int) {
         _templates.removeAt(ix)
     }
 
@@ -79,7 +78,7 @@ class PatternGenerator(
         return _templates.isNotEmpty()
     }
 
-    fun contains(template: PatternTemplate): Boolean {
+    fun contains(template: PlayableTemplate): Boolean {
         return _templates.contains(template)
     }
 

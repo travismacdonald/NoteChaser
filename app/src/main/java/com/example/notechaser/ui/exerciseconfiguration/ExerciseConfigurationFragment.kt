@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.patterngenerator.MusicTheory
+import com.example.notechaser.playablegenerator.MusicTheory
 import timber.log.Timber
 
 class ExerciseConfigurationFragment : PreferenceFragmentCompat() {

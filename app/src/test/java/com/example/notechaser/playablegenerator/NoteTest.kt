@@ -1,4 +1,4 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
 import org.junit.Assert.*
 import org.junit.Test

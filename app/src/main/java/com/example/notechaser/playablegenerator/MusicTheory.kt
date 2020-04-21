@@ -1,4 +1,4 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
 class MusicTheory {
     companion object {

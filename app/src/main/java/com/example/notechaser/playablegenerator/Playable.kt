@@ -1,6 +1,6 @@
-package com.example.notechaser.patterngenerator
+package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
+import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
 
 
 /**
@@ -9,9 +9,9 @@ import com.example.notechaser.patterngenerator.exceptions.EmptyTemplateException
  * The Notes in a Pattern are immutable, which is why it throws
  * an exception when it is given an empty PatternTemplate.
  */
-class Pattern(template: PatternTemplate, ix: Int) : Playable {
+class Playable(template: PlayableTemplate, ix: Int) {
 
-    override val notes: List<Note>
+    val notes: List<Note>
 
     val size = template.size
 
@@ -24,7 +24,7 @@ class Pattern(template: PatternTemplate, ix: Int) : Playable {
     // todo: equals and hashcode method
 
     override fun equals(other: Any?): Boolean {
-        return (other is Pattern)
+        return (other is Playable)
                 && notes == other.notes
     }
 
