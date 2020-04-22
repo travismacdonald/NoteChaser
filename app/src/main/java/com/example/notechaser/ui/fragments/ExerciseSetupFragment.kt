@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
+import com.example.notechaser.playablegenerator.MusicTheory
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
@@ -83,6 +85,9 @@ class ExerciseSetupFragment : Fragment() {
                                 5f,
                                 200f,
                                 viewModel.settings.numQuestions,
+                                Transformations.map(viewModel.settings.numQuestions) { value ->
+                                    value.toString()
+                                },
                                 5f
                         )
                 )
@@ -92,12 +97,16 @@ class ExerciseSetupFragment : Fragment() {
                         ExerciseSetupSlider(
                                 "Max Interval",
                                 1f,
-                                11f,
+                                // Have to account for inclusive upper bound
+                                (MusicTheory.CHROMATIC_INTERVAL_NAMES.size - 1).toFloat(),
                                 viewModel.settings.maxIntervalInPattern,
-                                1f,
-                                arrayOf("", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7")
+                                Transformations.map(viewModel.settings.maxIntervalInPattern) { value ->
+                                    MusicTheory.CHROMATIC_INTERVAL_NAMES[value]
+                                },
+                                1f)
+//                                arrayOf("", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7")
                         )
-                )
+
 
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
