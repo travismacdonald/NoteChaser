@@ -7,18 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.exercisesetup.*
-
-import com.example.notechaser.databinding.ItemSettingsHeaderBinding
-import com.example.notechaser.databinding.ItemSettingsSingleListBinding
-import com.example.notechaser.databinding.ItemSettingsSpinnerBinding
-import com.example.notechaser.databinding.ItemSettingsSwitchBinding
+import com.example.notechaser.databinding.*
 
 import java.lang.ClassCastException
 
 private const val TYPE_HEADER = 0
 private const val TYPE_SWITCH = 1
 private const val TYPE_SPINNER = 2
-private const val TYPE_SINGLE_LIST = 3;
+private const val TYPE_SINGLE_LIST = 3
+private const val TYPE_MULTI_LIST = 4
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
@@ -43,6 +40,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
                 holder.bind(listItem.list)
             }
+            is MultiListViewHolder -> {
+                val listItem = getItem(position) as ExerciseSetupItem.MultiList
+                holder.bind(listItem.list)
+            }
         }
     }
 
@@ -64,6 +65,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 SingleListViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
+            TYPE_MULTI_LIST ->
+                MultiListViewHolder.from(parent).apply {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -74,7 +79,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.Switch -> TYPE_SWITCH
             is ExerciseSetupItem.Spinner -> TYPE_SPINNER
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
-            is ExerciseSetupItem.MultiList -> -1 // TODO
+            is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
         }
     }
 
@@ -146,6 +151,24 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemSettingsSingleListBinding.inflate(layoutInflater, parent, false)
                 return SingleListViewHolder(binding)
+            }
+        }
+    }
+
+    /**
+     * Setup Single List
+     */
+    class MultiListViewHolder private constructor(val binding: ItemSettingsMultiListBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(list: ExerciseSetupMultiList) {
+            binding.obj = list
+        }
+        companion object {
+            fun from(parent: ViewGroup): MultiListViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemSettingsMultiListBinding.inflate(layoutInflater, parent, false)
+                return MultiListViewHolder(binding)
             }
         }
     }

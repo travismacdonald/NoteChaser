@@ -38,9 +38,10 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
+        // TODO: Test button here! remove later plz
         binding.testButton.setOnClickListener {
             Timber.d(
-                    "\nNoteChoice = ${viewModel.settings.noteChoice.value}\n")
+                    "\nItemsChecked = ${viewModel.settings.playbackTypeMel.value!!.contentToString()}\n")
         }
 
         val manager = LinearLayoutManager(activity)
@@ -78,7 +79,6 @@ class ExerciseSetupFragment : Fragment() {
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val itemChecked = viewModel.settings.noteChoice
-        var currentItemChecked = itemChecked.value!!
         val noteChoiceList: ExerciseSetupItem =
                 ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
                         noteChoiceTitle,
@@ -86,19 +86,20 @@ class ExerciseSetupFragment : Fragment() {
                         noteChoiceArray,
                         itemChecked,
                         clickListener = View.OnClickListener {
+                            var tempItem = itemChecked.value!!
                             MaterialAlertDialogBuilder(context)
                                     .setTitle(noteChoiceTitle)
-                                    .setNegativeButton("Dismiss") { dialog, which ->
+                                    .setNegativeButton("Dismiss") { _, _ ->
                                         // Do nothing
                                     }
-                                    .setPositiveButton("Confirm") { dialog, which ->
+                                    .setPositiveButton("Confirm") { _, _ ->
                                         // Commit Changes
-                                        if (itemChecked.value != currentItemChecked) {
-                                            itemChecked.value = currentItemChecked
+                                        if (itemChecked.value != tempItem) {
+                                            itemChecked.value = tempItem
                                         }
                                     }
-                                    .setSingleChoiceItems(noteChoiceArray, itemChecked.value!!) { dialog, which ->
-                                        currentItemChecked = which
+                                    .setSingleChoiceItems(noteChoiceArray, itemChecked.value!!) { _, which ->
+                                        tempItem = which
                                     }
                                     .show()
                         }
@@ -110,6 +111,37 @@ class ExerciseSetupFragment : Fragment() {
         val playbackHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
                         ExerciseSetupHeader(getString(R.string.playback_header)))
+
+        // TODO: This some ugly ass code
+        val playbackTypeTitle = resources.getString(R.string.playbackType_mel_title)
+        val playbackTypeArr = resources.getStringArray(R.array.playbacktype_mel_entries)
+        val itemsChecked = viewModel.settings.playbackTypeMel
+
+        val playbackTypeList: ExerciseSetupItem =
+                ExerciseSetupItem.MultiList(ExerciseSetupMultiList(
+                        playbackTypeTitle,
+                        getString(R.string.playbackType_mel_summary),
+                        playbackTypeArr,
+                        itemsChecked,
+                        clickListener = View.OnClickListener {
+                            val tempList = itemsChecked.value!!.clone()
+                            MaterialAlertDialogBuilder(context)
+                                    .setTitle(noteChoiceTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        itemsChecked.value = tempList.copyOf()
+
+                                    }
+                                    .setMultiChoiceItems(playbackTypeArr, itemsChecked.value!!.clone()) { _, which, checked ->
+                                        tempList[which] = checked
+                                    }
+                                    .show()
+                        }
+
+                ))
 
         val playCadenceSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(ExerciseSetupSwitch(
@@ -162,15 +194,23 @@ class ExerciseSetupFragment : Fragment() {
                 )
                 )
 
+
+
         /* Answer Settings */
 
+
+
         return arrayListOf(
+                /* Questions */
                 questionsHeader,
                 noteChoiceList,
+                /* Playback */
                 playbackHeader,
+                playbackTypeList,
                 playCadenceSwitch,
                 matchKeySwitch,
-                testSwitch)
+                testSwitch
+                /* Answers */)
     }
 
     // TODO

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="obj"
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupMultiList" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/settings_item_background"
+        android:onClick="@{obj.clickListener}"
+        android:clickable="@{obj.isEnabled()}"
+        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginTop="@dimen/itemSmallMargin"
+            android:layout_marginEnd="@dimen/itemTextMargin"
+            android:fontFamily="@font/rubik"
+            android:text="@{obj.title}"
+            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
+            android:textSize="@dimen/itemTitleTextSize"
+            app:layout_constraintBottom_toTopOf="@id/summary"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="National Anthem" />
+
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginEnd="@dimen/itemTextMargin"
+            android:layout_marginBottom="@dimen/itemSmallMargin"
+            android:fontFamily="@font/rubik"
+            android:text="@{obj.summary}"
+            android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
+            android:textSize="@dimen/itemSummaryTextSize"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="Everything in Its Right Place" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
