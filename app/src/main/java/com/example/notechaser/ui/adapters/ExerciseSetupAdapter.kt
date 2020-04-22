@@ -171,9 +171,9 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             binding.slider.valueFrom = slider.valueFrom
             binding.slider.valueTo = slider.valueTo
             binding.slider.stepSize = slider.stepSize
-            binding.slider.value = slider.curValue.value!!.toFloat()
+            binding.slider.value = slider.value.value!!.toFloat()
             binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
-                slider.curValue.value = value.toInt()
+                slider.value.value = value.toInt()
             }
 
         }

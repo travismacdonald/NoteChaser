@@ -16,7 +16,8 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/settings_item_background">
+        android:background="@drawable/settings_item_background"
+        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
         <TextView
             android:id="@+id/title"
@@ -25,9 +26,9 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:textColor="@color/itemTitleText"
-            android:text="@{obj.title}"
             android:fontFamily="@font/rubik"
+            android:text="@{obj.title}"
+            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/slider"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,9 +41,9 @@
             android:layout_marginEnd="@dimen/itemSmallMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.curDisplayValue}"
+            android:text="@{obj.displayValue}"
+            android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
             android:textSize="@dimen/itemSummaryTextSize"
-            android:textColor="@color/itemSummaryText"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="Maj3" />
@@ -55,9 +56,9 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginEnd="@dimen/itemSmallMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
+            app:labelBehavior="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            app:labelBehavior="gone"
             tools:text="Lotus Flower" />
 
         <ImageView

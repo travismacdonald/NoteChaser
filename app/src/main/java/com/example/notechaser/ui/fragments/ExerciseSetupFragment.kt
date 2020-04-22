@@ -186,6 +186,7 @@ class ExerciseSetupFragment : Fragment() {
                         getString(R.string.matchKey_title),
                         getString(R.string.matchKey_summary),
                         viewModel.settings.matchKey,
+                        // TODO: arg is mutable only live data; the mediator can probably be removed/simplified
                         isEnabled = {
                             val result = MediatorLiveData<Boolean>()
                             val isEnabled = {

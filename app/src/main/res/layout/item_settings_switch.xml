@@ -33,7 +33,6 @@
             android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
-
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Paranoid Android" />
 
