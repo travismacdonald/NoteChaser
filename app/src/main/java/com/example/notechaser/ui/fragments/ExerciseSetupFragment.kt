@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
-import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
-import com.example.notechaser.data.exercisesetup.ExerciseSetupSpinner
-import com.example.notechaser.data.exercisesetup.ExerciseSetupSwitch
+import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
@@ -85,8 +85,8 @@ class ExerciseSetupFragment : Fragment() {
                 ExerciseSetupItem.Spinner(
                         ExerciseSetupSpinner(
                                 getString(R.string.noteChoice_title),
-                                arrayListOf("bitch", "lasagna"),
-                                arrayListOf()
+                                arrayListOf("Chromatic", "Diatonic"),
+                                arrayListOf(NoteChoiceType.CHROMATIC, NoteChoiceType.DIATONIC)
                         )
                 )
 
@@ -108,7 +108,34 @@ class ExerciseSetupFragment : Fragment() {
                         getString(R.string.matchKey_title),
                         getString(R.string.matchKey_summary),
                         viewModel.settings.matchKey,
-                        isEnabled = viewModel.settings.playCadence,
+                        isEnabled = {
+                            val result = MediatorLiveData<Boolean>()
+                            val isEnabled = {
+                                result.value = viewModel.settings.playCadence.value
+                            }
+                            result.addSource(viewModel.settings.playCadence) { isEnabled() }
+                            result
+                        }.invoke(),
+//                        isEnabled = viewModel.settings.playCadence,
+                        imgSrc = R.drawable.ic_music_note_black_40dp)
+                )
+
+        val testSwitch: ExerciseSetupItem =
+                ExerciseSetupItem.Switch(ExerciseSetupSwitch(
+                        "Third Item",
+                        "Suck my balls",
+                        MutableLiveData(false),
+                        isEnabled = {
+                            val result = MediatorLiveData<Boolean>()
+                            val isEnabled = {
+                                val playCadence = viewModel.settings.playCadence.value!!
+                                val matchKey = viewModel.settings.matchKey.value!!
+                                result.value = playCadence && matchKey
+                            }
+                            result.addSource(viewModel.settings.playCadence) { isEnabled() }
+                            result.addSource(viewModel.settings.matchKey) { isEnabled() }
+                            result
+                        }.invoke(),
                         imgSrc = R.drawable.ic_music_note_black_40dp)
                 )
 
@@ -119,7 +146,8 @@ class ExerciseSetupFragment : Fragment() {
                 noteChoiceSpinner,
                 playbackHeader,
                 playCadenceSwitch,
-                matchKeySwitch)
+                matchKeySwitch,
+                testSwitch)
     }
 
     // TODO

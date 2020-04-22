@@ -6,8 +6,9 @@ data class ExerciseSetupSwitch(
         val title: String,
         val summary: String,
         val isChecked: MutableLiveData<Boolean>,
-        val isEnabled: MutableLiveData<Boolean>? = null,
-        val isVisible: MutableLiveData<Boolean>? = null,
+        val isEnabled: MutableLiveData<Boolean> = MutableLiveData(true),
+//        val isEnabled: MutableLiveData<Boolean>,
+        val isVisible: MutableLiveData<Boolean> = MutableLiveData(true),
         val imgSrc: Int? = null) {
 
     fun setIsChecked(value: Boolean) {
