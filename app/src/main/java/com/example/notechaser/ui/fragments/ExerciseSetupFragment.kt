@@ -41,7 +41,7 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: Test button here! remove later plz
         binding.testButton.setOnClickListener {
             Timber.d(
-                    "\nItemsChecked = ${viewModel.settings.playbackTypeMel.value!!.contentToString()}\n")
+                    "\nnumQuestions = ${viewModel.settings.numQuestions.value!!}\n")
         }
 
         val manager = LinearLayoutManager(activity)
@@ -76,6 +76,29 @@ class ExerciseSetupFragment : Fragment() {
                 ExerciseSetupItem.Header(
                         ExerciseSetupHeader(getString(R.string.questions_header)))
 
+        val numQuestionsSlider: ExerciseSetupItem =
+                ExerciseSetupItem.Slider(
+                        ExerciseSetupSlider(
+                                getString(R.string.numQuestions_title),
+                                5f,
+                                200f,
+                                viewModel.settings.numQuestions,
+                                5f
+                        )
+                )
+
+        val maxIntervalSlider: ExerciseSetupItem =
+                ExerciseSetupItem.Slider(
+                        ExerciseSetupSlider(
+                                "Max Interval",
+                                1f,
+                                11f,
+                                viewModel.settings.maxIntervalInPattern,
+                                1f,
+                                arrayOf("", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7")
+                        )
+                )
+
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val noteChoiceValue = viewModel.settings.noteChoice
@@ -86,7 +109,7 @@ class ExerciseSetupFragment : Fragment() {
                         noteChoiceValue,
                         clickListener = View.OnClickListener {
                             var tempItem = noteChoiceValue.value!!
-                            MaterialAlertDialogBuilder(context)
+                            MaterialAlertDialogBuilder(context!!)
                                     .setTitle(noteChoiceTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
                                         // Do nothing
@@ -124,7 +147,7 @@ class ExerciseSetupFragment : Fragment() {
                         playbackTypeValues,
                         clickListener = View.OnClickListener {
                             val tempList = playbackTypeValues.value!!.clone()
-                            MaterialAlertDialogBuilder(context)
+                            MaterialAlertDialogBuilder(context!!)
                                     .setTitle(noteChoiceTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
                                         // Do nothing
@@ -202,6 +225,8 @@ class ExerciseSetupFragment : Fragment() {
         return arrayListOf(
                 /* Questions */
                 questionsHeader,
+                numQuestionsSlider,
+                maxIntervalSlider,
                 noteChoiceList,
                 /* Playback */
                 playbackHeader,

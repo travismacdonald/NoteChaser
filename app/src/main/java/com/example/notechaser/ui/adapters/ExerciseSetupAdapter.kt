@@ -9,13 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
 
-import java.lang.ClassCastException
-
 private const val TYPE_HEADER = 0
 private const val TYPE_SWITCH = 1
-private const val TYPE_SPINNER = 2
+
 private const val TYPE_SINGLE_LIST = 3
 private const val TYPE_MULTI_LIST = 4
+private const val TYPE_SLIDER = 5
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
@@ -32,10 +31,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val switchItem = getItem(position) as ExerciseSetupItem.Switch
                 holder.bind(switchItem.switch)
             }
-            is SpinnerViewHolder -> {
-                val spinnerItem = getItem(position) as ExerciseSetupItem.Spinner
-                holder.bind(spinnerItem.spinner)
-            }
             is SingleListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
                 holder.bind(listItem.list)
@@ -44,6 +39,11 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val listItem = getItem(position) as ExerciseSetupItem.MultiList
                 holder.bind(listItem.list)
             }
+            is SliderViewHolder -> {
+                val sliderItem = getItem(position) as ExerciseSetupItem.Slider
+                holder.bind(sliderItem.slider)
+            }
+
         }
     }
 
@@ -57,16 +57,16 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 SwitchViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
-            TYPE_SPINNER ->
-                SpinnerViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
             TYPE_SINGLE_LIST ->
                 SingleListViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
             TYPE_MULTI_LIST ->
                 MultiListViewHolder.from(parent).apply {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
+            TYPE_SLIDER ->
+                SliderViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -77,9 +77,9 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         return when (getItem(position)) {
             is ExerciseSetupItem.Header -> TYPE_HEADER
             is ExerciseSetupItem.Switch -> TYPE_SWITCH
-            is ExerciseSetupItem.Spinner -> TYPE_SPINNER
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
+            is ExerciseSetupItem.Slider -> TYPE_SLIDER
         }
     }
 
@@ -122,21 +122,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
-    class SpinnerViewHolder private constructor(val binding: ItemSettingsSpinnerBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(spinner: ExerciseSetupSpinner) {
-            binding.obj = spinner
-        }
-        companion object {
-            fun from(parent: ViewGroup): SpinnerViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemSettingsSpinnerBinding.inflate(layoutInflater, parent, false)
-                return SpinnerViewHolder(binding)
-            }
-        }
-    }
-
     /**
      * Setup Single List
      */
@@ -156,7 +141,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     }
 
     /**
-     * Setup Single List
+     * Setup Multi List
      */
     class MultiListViewHolder private constructor(val binding: ItemSettingsMultiListBinding)
         : RecyclerView.ViewHolder(binding.root) {
@@ -172,6 +157,35 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             }
         }
     }
+
+    /**
+     * Setup Slider
+     */
+    class SliderViewHolder private constructor(val binding: ItemSettingsSliderBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
+        // TODO: Move to databinding if you can
+        // TODO: Change some of the naming conventions: kind of confusing
+        fun bind(slider: ExerciseSetupSlider) {
+            binding.obj = slider
+            binding.slider.valueFrom = slider.valueFrom
+            binding.slider.valueTo = slider.valueTo
+            binding.slider.stepSize = slider.stepSize
+            binding.slider.value = slider.curValue.value!!.toFloat()
+            binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
+                slider.curValue.value = value.toInt()
+            }
+
+        }
+        companion object {
+            fun from(parent: ViewGroup): SliderViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemSettingsSliderBinding.inflate(layoutInflater, parent, false)
+                return SliderViewHolder(binding)
+            }
+        }
+    }
+
 }
 
 // TODO: Verify correctness
