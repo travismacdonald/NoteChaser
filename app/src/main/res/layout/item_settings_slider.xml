@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="obj"
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupSlider" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/settings_item_background">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginTop="@dimen/itemSmallMargin"
+            android:layout_marginEnd="@dimen/itemTextMargin"
+            android:fontFamily="@font/rubik"
+            android:textSize="@dimen/itemTitleTextSize"
+            app:layout_constraintBottom_toTopOf="@id/slider"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2 + 2 = 5" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/itemTextMargin"
+            android:layout_marginEnd="@dimen/itemSmallMargin"
+            android:layout_marginBottom="@dimen/itemSmallMargin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="Lotus Flower"
+            tools:value="5.0"
+            tools:valueFrom="0.0"
+            tools:valueTo="10.0" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/itemIconSize"
+            android:layout_height="@dimen/itemIconSize"
+            android:layout_marginStart="@dimen/itemSmallMargin"
+            android:layout_marginEnd="@dimen/itemSmallMargin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_music_note_black_40dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
