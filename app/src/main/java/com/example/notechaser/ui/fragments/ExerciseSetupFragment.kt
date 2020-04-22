@@ -17,6 +17,7 @@ import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
@@ -39,8 +40,7 @@ class ExerciseSetupFragment : Fragment() {
 
         binding.testButton.setOnClickListener {
             Timber.d(
-                    " \nPlayCadence = ${viewModel.settings.playCadence.value}\n" +
-                            "MatchKey =    ${viewModel.settings.matchKey.value}")
+                    "\nNoteChoice = ${viewModel.settings.noteChoice.value}\n")
         }
 
         val manager = LinearLayoutManager(activity)
@@ -75,19 +75,35 @@ class ExerciseSetupFragment : Fragment() {
                 ExerciseSetupItem.Header(
                         ExerciseSetupHeader(getString(R.string.questions_header)))
 
-//        val noteChoiceSpinner: ExerciseSetupItem =
-//                ExerciseSetupItem.MultiList(
-//
-//                )
+        val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
+        val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
+        val itemChecked = viewModel.settings.noteChoice
+        var currentItemChecked = itemChecked.value!!
+        val noteChoiceList: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
+                        noteChoiceTitle,
+                        "selected value here",
+                        noteChoiceArray,
+                        itemChecked,
+                        clickListener = View.OnClickListener {
+                            MaterialAlertDialogBuilder(context)
+                                    .setTitle(noteChoiceTitle)
+                                    .setNegativeButton("Dismiss") { dialog, which ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { dialog, which ->
+                                        // Commit Changes
+                                        if (itemChecked.value != currentItemChecked) {
+                                            itemChecked.value = currentItemChecked
+                                        }
+                                    }
+                                    .setSingleChoiceItems(noteChoiceArray, itemChecked.value!!) { dialog, which ->
+                                        currentItemChecked = which
+                                    }
+                                    .show()
+                        }
 
-        val noteChoiceSpinner: ExerciseSetupItem =
-                ExerciseSetupItem.Spinner(
-                        ExerciseSetupSpinner(
-                                getString(R.string.noteChoice_title),
-                                arrayListOf("Chromatic", "Diatonic"),
-                                arrayListOf(NoteChoiceType.CHROMATIC, NoteChoiceType.DIATONIC)
-                        )
-                )
+                ))
 
         /* Playback Settings */
 
@@ -133,26 +149,28 @@ class ExerciseSetupFragment : Fragment() {
                             result.addSource(viewModel.settings.playCadence) { isEnabled() }
                             result.addSource(viewModel.settings.matchKey) { isEnabled() }
                             result
+                        }.invoke(),
+                        isVisible = {
+                            val result = MediatorLiveData<Boolean>()
+                            val isVisible = {
+                                val noteChoice = viewModel.settings.noteChoice.value!!
+                                result.value = noteChoice == Constants.NOTE_CHOICE_CHROMATIC
+                            }
+                            result.addSource(viewModel.settings.noteChoice) { isVisible() }
+                            result
                         }.invoke()
-                        )
                 )
-
-        val testList: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
-                        "Title",
-                        "Summary"
-                ))
+                )
 
         /* Answer Settings */
 
         return arrayListOf(
                 questionsHeader,
-                noteChoiceSpinner,
+                noteChoiceList,
                 playbackHeader,
                 playCadenceSwitch,
                 matchKeySwitch,
-                testSwitch,
-                testList)
+                testSwitch)
     }
 
     // TODO

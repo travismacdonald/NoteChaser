@@ -97,7 +97,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
-
     /**
      * Setup Item Switch
      */
@@ -133,6 +132,9 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
+    /**
+     * Setup Single List
+     */
     class SingleListViewHolder private constructor(val binding: ItemSettingsSingleListBinding)
         : RecyclerView.ViewHolder(binding.root) {
 

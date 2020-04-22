@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
+        android:onClick="@{obj.clickListener}"
         android:clickable="@{obj.isEnabled()}"
         android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
@@ -43,7 +44,7 @@
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.summary}"
+            android:text="@{obj.entries[obj.itemChecked]}"
             android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
