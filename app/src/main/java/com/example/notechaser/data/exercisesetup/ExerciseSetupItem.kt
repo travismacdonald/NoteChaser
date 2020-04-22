@@ -5,9 +5,7 @@ sealed class ExerciseSetupItem {
 
     data class Header(val header: ExerciseSetupHeader) : ExerciseSetupItem()
 
-    data class SingleList(val entries: List<String>, val values: List<String>) : ExerciseSetupItem() {
-
-    }
+    data class SingleList(val list: ExerciseSetupSingleList) : ExerciseSetupItem()
 
     data class Spinner(val spinner: ExerciseSetupSpinner) : ExerciseSetupItem()
 

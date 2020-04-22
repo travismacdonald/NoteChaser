@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -116,7 +115,6 @@ class ExerciseSetupFragment : Fragment() {
                             result.addSource(viewModel.settings.playCadence) { isEnabled() }
                             result
                         }.invoke(),
-//                        isEnabled = viewModel.settings.playCadence,
                         imgSrc = R.drawable.ic_music_note_black_40dp)
                 )
 
@@ -135,9 +133,15 @@ class ExerciseSetupFragment : Fragment() {
                             result.addSource(viewModel.settings.playCadence) { isEnabled() }
                             result.addSource(viewModel.settings.matchKey) { isEnabled() }
                             result
-                        }.invoke(),
-                        imgSrc = R.drawable.ic_music_note_black_40dp)
+                        }.invoke()
+                        )
                 )
+
+        val testList: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
+                        "Title",
+                        "Summary"
+                ))
 
         /* Answer Settings */
 
@@ -147,7 +151,8 @@ class ExerciseSetupFragment : Fragment() {
                 playbackHeader,
                 playCadenceSwitch,
                 matchKeySwitch,
-                testSwitch)
+                testSwitch,
+                testList)
     }
 
     // TODO

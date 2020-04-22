@@ -9,7 +9,7 @@
 
         <variable
             name="obj"
-            type="com.example.notechaser.data.exercisesetup.ExerciseSetupSwitch" />
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupSingleList" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
         android:clickable="@{obj.isEnabled()}"
-        android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
         android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
         <TextView
@@ -33,9 +32,8 @@
             android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
-
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Paranoid Android" />
+            tools:text="Let Down" />
 
         <TextView
             android:id="@+id/summary"
@@ -50,32 +48,7 @@
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="No Surprises" />
-
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="@dimen/itemIconSize"
-            android:layout_height="@dimen/itemIconSize"
-            android:layout_marginStart="@dimen/itemSmallMargin"
-            android:layout_marginEnd="@dimen/itemSmallMargin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_music_note_black_40dp" />
-
-        <!-- TODO: Perhaps later this have a bit more customization -->
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchWidget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/itemSmallMargin"
-            android:checked="@{obj.isChecked()}"
-            android:clickable="false"
-            android:enabled="@{obj.isEnabled()}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:useMaterialThemeColors="false" />
+            tools:text="Exit Music (For a Film)" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
