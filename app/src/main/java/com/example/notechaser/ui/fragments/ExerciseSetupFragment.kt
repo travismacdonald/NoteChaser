@@ -78,15 +78,14 @@ class ExerciseSetupFragment : Fragment() {
 
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
-        val itemChecked = viewModel.settings.noteChoice
+        val noteChoiceValue = viewModel.settings.noteChoice
         val noteChoiceList: ExerciseSetupItem =
                 ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
                         noteChoiceTitle,
-                        "selected value here",
                         noteChoiceArray,
-                        itemChecked,
+                        noteChoiceValue,
                         clickListener = View.OnClickListener {
-                            var tempItem = itemChecked.value!!
+                            var tempItem = noteChoiceValue.value!!
                             MaterialAlertDialogBuilder(context)
                                     .setTitle(noteChoiceTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
@@ -94,11 +93,11 @@ class ExerciseSetupFragment : Fragment() {
                                     }
                                     .setPositiveButton("Confirm") { _, _ ->
                                         // Commit Changes
-                                        if (itemChecked.value != tempItem) {
-                                            itemChecked.value = tempItem
+                                        if (noteChoiceValue.value != tempItem) {
+                                            noteChoiceValue.value = tempItem
                                         }
                                     }
-                                    .setSingleChoiceItems(noteChoiceArray, itemChecked.value!!) { _, which ->
+                                    .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
                                         tempItem = which
                                     }
                                     .show()
@@ -115,16 +114,16 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: This some ugly ass code
         val playbackTypeTitle = resources.getString(R.string.playbackType_mel_title)
         val playbackTypeArr = resources.getStringArray(R.array.playbacktype_mel_entries)
-        val itemsChecked = viewModel.settings.playbackTypeMel
+        val playbackTypeValues = viewModel.settings.playbackTypeMel
 
         val playbackTypeList: ExerciseSetupItem =
                 ExerciseSetupItem.MultiList(ExerciseSetupMultiList(
                         playbackTypeTitle,
                         getString(R.string.playbackType_mel_summary),
                         playbackTypeArr,
-                        itemsChecked,
+                        playbackTypeValues,
                         clickListener = View.OnClickListener {
-                            val tempList = itemsChecked.value!!.clone()
+                            val tempList = playbackTypeValues.value!!.clone()
                             MaterialAlertDialogBuilder(context)
                                     .setTitle(noteChoiceTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
@@ -132,10 +131,10 @@ class ExerciseSetupFragment : Fragment() {
                                     }
                                     .setPositiveButton("Confirm") { _, _ ->
                                         // Commit Changes
-                                        itemsChecked.value = tempList.copyOf()
+                                        playbackTypeValues.value = tempList.copyOf()
 
                                     }
-                                    .setMultiChoiceItems(playbackTypeArr, itemsChecked.value!!.clone()) { _, which, checked ->
+                                    .setMultiChoiceItems(playbackTypeArr, tempList) { _, which, checked ->
                                         tempList[which] = checked
                                     }
                                     .show()

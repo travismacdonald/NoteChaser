@@ -3,6 +3,7 @@ package com.example.notechaser.data.exercisesetup
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 
+// TODO: Could implement a generated summary with all the values, but hey what do i kno
 data class ExerciseSetupMultiList(
         val title: String,
         val summary: String,
