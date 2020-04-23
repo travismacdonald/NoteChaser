@@ -1,6 +1,8 @@
 package com.example.notechaser.playablegenerator
 
+import com.example.notechaser.utilities.MusicTheoryUtils
+
 data class Note(val ix: Int) {
-    val nameSharp = MusicTheory.CHROMATIC_SCALE_SHARP[ix % MusicTheory.CHROMATIC_SCALE_SIZE]
-    val nameFlat = MusicTheory.CHROMATIC_SCALE_FLAT[ix % MusicTheory.CHROMATIC_SCALE_SIZE]
+    val nameSharp = MusicTheoryUtils.CHROMATIC_SCALE_SHARP[ix % MusicTheoryUtils.OCTAVE_SIZE]
+    val nameFlat = MusicTheoryUtils.CHROMATIC_SCALE_FLAT[ix % MusicTheoryUtils.OCTAVE_SIZE]
 }

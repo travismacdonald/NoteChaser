@@ -13,9 +13,9 @@ import kotlin.random.Random
 class PlayableGenerator(
         private val _templates: ArrayList<PlayableTemplate> = arrayListOf()) {
 
-    val lowerBound = MutableLiveData(-1)
+    val lowerBound = MutableLiveData(36)
 
-    val upperBound = MutableLiveData(-1)
+    val upperBound = MutableLiveData(48)
 
     val templates: List<PlayableTemplate>
         get() = _templates

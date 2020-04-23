@@ -22,7 +22,7 @@ class ExerciseSetupSettings {
 
     val numQuestions = MutableLiveData(20)
 
-    val maxIntervalInPattern = MutableLiveData(1)
+    val maxIntervalInPattern = MutableLiveData(4)
 
     init {
         // TODO: Move these values to constructor call

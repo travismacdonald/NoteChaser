@@ -1,12 +1,14 @@
-package com.example.notechaser.playablegenerator
+package com.example.notechaser.utilities
 
-class MusicTheory {
+class MusicTheoryUtils {
+
     companion object {
+
         const val SHARP = '\u266F'
         const val FLAT = '\u266d'
         const val NATURAL = '\u266e'
 
-        const val CHROMATIC_SCALE_SIZE = 12;
+        const val OCTAVE_SIZE = 12;
 
         val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
         val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
@@ -103,5 +105,10 @@ class MusicTheory {
                 "M7",
                 "P8"
         )
+
+        fun ixToName(ix: Int): String {
+            return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
+        }
+
     }
 }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.preference.*
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.playablegenerator.MusicTheory
+import com.example.notechaser.utilities.MusicTheoryUtils
 import timber.log.Timber
 
 class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
@@ -156,8 +156,8 @@ class ExerciseConfigurationFragment : PreferenceFragmentCompat() {
         }
 
         cadenceKeyList.apply {
-            entries = MusicTheory.CHROMATIC_SCALE_FLAT
-            entryValues = MusicTheory.CHROMATIC_SCALE_FLAT
+            entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT
+            entryValues = MusicTheoryUtils.CHROMATIC_SCALE_FLAT
             if (value == null) {
                 value = entryValues[0].toString()
             }

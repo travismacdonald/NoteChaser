@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
+import timber.log.Timber
 
 private const val TYPE_HEADER = 0
 private const val TYPE_SWITCH = 1
@@ -205,14 +206,19 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         // TODO: Change some of the naming conventions: kind of confusing
         fun bind(rangeBar: ExerciseSetupRangeBar) {
             binding.obj = rangeBar
-            binding.slider.valueFrom = rangeBar.valueFrom
-            binding.slider.valueTo = rangeBar.valueTo
-            binding.slider.stepSize = rangeBar.stepSize
-            binding.slider.setValues(
+            binding.rangeBar.valueFrom = rangeBar.valueFrom
+            binding.rangeBar.valueTo = rangeBar.valueTo
+            binding.rangeBar.stepSize = rangeBar.stepSize
+            binding.rangeBar.setValues(
                     rangeBar.lowerValue.value!!.toFloat(), rangeBar.upperValue.value!!.toFloat())
-//            binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
-//                slider.value.value = value.toInt()
-//            }
+            binding.rangeBar.addOnChangeListener { sliderItem, value, fromUser ->
+                if (sliderItem.activeThumbIndex == 0) {
+                    rangeBar.lowerValue.value = value.toInt()
+                }
+                else {
+                    rangeBar.upperValue.value = value.toInt()
+                }
+            }
 
         }
         companion object {
@@ -226,7 +232,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
 }
 
-// TODO: Verify correctness
+// TODO: Probably get rid of this - contents don't change in this adapter
 private class ExerciseSettingDiffCallback : DiffUtil.ItemCallback<ExerciseSetupItem>() {
 
     override fun areContentsTheSame(oldItem: ExerciseSetupItem, newItem: ExerciseSetupItem): Boolean {

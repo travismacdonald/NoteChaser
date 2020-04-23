@@ -15,7 +15,7 @@ import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
-import com.example.notechaser.playablegenerator.MusicTheory
+import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
@@ -43,7 +43,8 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: Test button here! remove later plz
         binding.testButton.setOnClickListener {
             Timber.d(
-                    "\nnumQuestions = ${viewModel.settings.numQuestions.value!!}\n")
+                    " \nlower = ${viewModel.generator.lowerBound.value!!}" +
+                            "\nupper = ${viewModel.generator.upperBound.value!!}")
         }
 
         val manager = LinearLayoutManager(activity)
@@ -81,36 +82,15 @@ class ExerciseSetupFragment : Fragment() {
         val numQuestionsSlider: ExerciseSetupItem =
                 ExerciseSetupItem.Slider(
                         ExerciseSetupSlider(
+                                // TODO: Extract some of these numbers
                                 getString(R.string.numQuestions_title),
-                                5f,
+                                10f,
                                 200f,
                                 viewModel.settings.numQuestions,
                                 Transformations.map(viewModel.settings.numQuestions) { value ->
                                     value.toString()
                                 },
-                                5f
-                        )
-                )
-
-        val patternRangeBar: ExerciseSetupItem =
-                ExerciseSetupItem.RangeBar(
-                        ExerciseSetupRangeBar(
-                                "Range Bar",
-                                1f,
-                                120f,
-                                MutableLiveData(5),
-                                MutableLiveData(20),
-                                displayValue = {
-                                    val result = MediatorLiveData<String>()
-                                    val updateRange = {
-                                        val lower = viewModel.generator.lowerBound.value.toString()
-                                        val upper = viewModel.generator.upperBound.value.toString()
-                                        result.value = "$lower - $upper"
-                                    }
-                                    result.addSource(viewModel.generator.lowerBound) { updateRange() }
-                                    result.addSource(viewModel.generator.upperBound) { updateRange() }
-                                    result
-                                }.invoke()
+                                10f
                         )
                 )
 
@@ -120,15 +100,35 @@ class ExerciseSetupFragment : Fragment() {
                                 "Max Interval",
                                 1f,
                                 // Have to account for inclusive upper bound
-                                (MusicTheory.CHROMATIC_INTERVAL_NAMES.size - 1).toFloat(),
+                                (MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES.size - 1).toFloat(),
                                 viewModel.settings.maxIntervalInPattern,
                                 Transformations.map(viewModel.settings.maxIntervalInPattern) { value ->
-                                    MusicTheory.CHROMATIC_INTERVAL_NAMES[value]
+                                    MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES[value]
                                 },
                                 1f)
-//                                arrayOf("", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7")
                         )
 
+        val patternRangeBar: ExerciseSetupItem =
+                ExerciseSetupItem.RangeBar(
+                        ExerciseSetupRangeBar(
+                                "Range Bar",
+                                24f,
+                                88f,
+                                viewModel.generator.lowerBound,
+                                viewModel.generator.upperBound,
+                                displayValue = {
+                                    val result = MediatorLiveData<String>()
+                                    val updateRange = {
+                                        val lower = MusicTheoryUtils.ixToName(viewModel.generator.lowerBound.value!!)
+                                        val upper = MusicTheoryUtils.ixToName(viewModel.generator.upperBound.value!!)
+                                        result.value = "$lower to $upper"
+                                    }
+                                    result.addSource(viewModel.generator.lowerBound) { updateRange() }
+                                    result.addSource(viewModel.generator.upperBound) { updateRange() }
+                                    result
+                                }.invoke()
+                        )
+                )
 
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)

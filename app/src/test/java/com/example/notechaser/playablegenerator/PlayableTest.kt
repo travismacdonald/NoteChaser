@@ -1,6 +1,7 @@
 package com.example.notechaser.playablegenerator
 
 import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
+import com.example.notechaser.utilities.MusicTheoryUtils
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -62,7 +63,7 @@ class PlayableTest {
         val template = PatternTemplate(arrayListOf(0, 4, 7))
         val pattern = Playable(template, 13)
         assertEquals(
-                "D${MusicTheory.FLAT} F A${MusicTheory.FLAT}",
+                "D${MusicTheoryUtils.FLAT} F A${MusicTheoryUtils.FLAT}",
                 pattern.toStringFlat()
         )
     }
@@ -72,7 +73,7 @@ class PlayableTest {
         val template = PatternTemplate(arrayListOf(0, 4, 7))
         val pattern = Playable(template, 13)
         assertEquals(
-                "C${MusicTheory.SHARP} F G${MusicTheory.SHARP}", // perhaps E# would be more correct
+                "C${MusicTheoryUtils.SHARP} F G${MusicTheoryUtils.SHARP}", // perhaps E# would be more correct
                 pattern.toStringSharp()
         )
     }

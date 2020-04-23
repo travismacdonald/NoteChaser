@@ -1,20 +1,22 @@
 package com.example.notechaser.playablegenerator
 
+import com.example.notechaser.utilities.MusicTheoryUtils
+
 class ScaleGenerator {
 
     companion object {
 
         public fun generateMajorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheory.MAJOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.MAJOR_SCALE_SEQUENCE, ix)
 
         }
 
         public fun generateMelodicMinorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheory.MELODIC_MINOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.MELODIC_MINOR_SCALE_SEQUENCE, ix)
         }
 
         public fun generateHarmonicMinorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheory.HARMONIC_MINOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.HARMONIC_MINOR_SCALE_SEQUENCE, ix)
         }
 
         /**
@@ -29,7 +31,7 @@ class ScaleGenerator {
                 toReturn.addInterval(scaleSequence[i] - offset)
             }
             for (i in 0 until ix) {
-                toReturn.addInterval(scaleSequence[i] + MusicTheory.CHROMATIC_SCALE_SIZE - offset)
+                toReturn.addInterval(scaleSequence[i] + MusicTheoryUtils.OCTAVE_SIZE - offset)
             }
             return toReturn
         }
