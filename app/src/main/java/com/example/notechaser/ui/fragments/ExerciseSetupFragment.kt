@@ -92,6 +92,28 @@ class ExerciseSetupFragment : Fragment() {
                         )
                 )
 
+        val patternRangeBar: ExerciseSetupItem =
+                ExerciseSetupItem.RangeBar(
+                        ExerciseSetupRangeBar(
+                                "Range Bar",
+                                1f,
+                                120f,
+                                MutableLiveData(5),
+                                MutableLiveData(20),
+                                displayValue = {
+                                    val result = MediatorLiveData<String>()
+                                    val updateRange = {
+                                        val lower = viewModel.generator.lowerBound.value.toString()
+                                        val upper = viewModel.generator.upperBound.value.toString()
+                                        result.value = "$lower - $upper"
+                                    }
+                                    result.addSource(viewModel.generator.lowerBound) { updateRange() }
+                                    result.addSource(viewModel.generator.upperBound) { updateRange() }
+                                    result
+                                }.invoke()
+                        )
+                )
+
         val maxIntervalSlider: ExerciseSetupItem =
                 ExerciseSetupItem.Slider(
                         ExerciseSetupSlider(
@@ -237,6 +259,7 @@ class ExerciseSetupFragment : Fragment() {
                 questionsHeader,
                 numQuestionsSlider,
                 maxIntervalSlider,
+                patternRangeBar,
                 noteChoiceList,
                 /* Playback */
                 playbackHeader,

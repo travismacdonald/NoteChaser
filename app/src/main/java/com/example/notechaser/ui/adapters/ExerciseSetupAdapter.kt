@@ -15,6 +15,7 @@ private const val TYPE_SWITCH = 1
 private const val TYPE_SINGLE_LIST = 3
 private const val TYPE_MULTI_LIST = 4
 private const val TYPE_SLIDER = 5
+private const val TYPE_RANGE_BAR = 6
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
@@ -43,7 +44,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val sliderItem = getItem(position) as ExerciseSetupItem.Slider
                 holder.bind(sliderItem.slider)
             }
-
+            is RangeBarViewHolder -> {
+                val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
+                holder.bind(rangeBarItem.rangeBar)
+            }
         }
     }
 
@@ -69,6 +73,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 SliderViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
+            TYPE_RANGE_BAR ->
+                RangeBarViewHolder.from(parent).apply {
+                    binding.lifecycleOwner = lifecycleOwner
+                }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -80,6 +88,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
             is ExerciseSetupItem.Slider -> TYPE_SLIDER
+            is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
         }
     }
 
@@ -182,6 +191,35 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemSettingsSliderBinding.inflate(layoutInflater, parent, false)
                 return SliderViewHolder(binding)
+            }
+        }
+    }
+
+    /**
+     * Setup RangeBar
+     */
+    class RangeBarViewHolder private constructor(val binding: ItemSettingsRangeBarBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
+        // TODO: Move to databinding if you can
+        // TODO: Change some of the naming conventions: kind of confusing
+        fun bind(rangeBar: ExerciseSetupRangeBar) {
+            binding.obj = rangeBar
+            binding.slider.valueFrom = rangeBar.valueFrom
+            binding.slider.valueTo = rangeBar.valueTo
+            binding.slider.stepSize = rangeBar.stepSize
+            binding.slider.setValues(
+                    rangeBar.lowerValue.value!!.toFloat(), rangeBar.upperValue.value!!.toFloat())
+//            binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
+//                slider.value.value = value.toInt()
+//            }
+
+        }
+        companion object {
+            fun from(parent: ViewGroup): RangeBarViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemSettingsRangeBarBinding.inflate(layoutInflater, parent, false)
+                return RangeBarViewHolder(binding)
             }
         }
     }

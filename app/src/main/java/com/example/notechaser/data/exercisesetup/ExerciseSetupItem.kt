@@ -12,4 +12,6 @@ sealed class ExerciseSetupItem {
 
     data class Slider(val slider: ExerciseSetupSlider) : ExerciseSetupItem()
 
+    data class RangeBar(val rangeBar: ExerciseSetupRangeBar) : ExerciseSetupItem()
+
 }
