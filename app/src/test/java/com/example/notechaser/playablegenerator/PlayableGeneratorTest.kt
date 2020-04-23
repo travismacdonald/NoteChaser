@@ -13,20 +13,20 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test setUpperBound`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.upperBound.value = 24
         assertEquals(24, generator.upperBound.value)
     }
 
     @Test
     fun `test getUpperBound default value`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         assertEquals(-1, generator.upperBound.value)
     }
 
     @Test
     fun `test hasSufficientSpace should be true when required range equals bound range`() {
-        val generator = PlayableGenerator()   // Bound range: 7
+        val generator = Generator()   // Bound range: 7
         generator.lowerBound.value = 3
         generator.upperBound.value = 10
         val templateOne = PatternTemplate(arrayListOf(0, 7))   // template range: 7
@@ -38,7 +38,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test hasSufficientSpace should be false when required range exceeds bound range`() {
-        val generator = PlayableGenerator()   // Bound range: 6
+        val generator = Generator()   // Bound range: 6
         generator.lowerBound.value = 0
         generator.upperBound.value = 6
         val templateOne = PatternTemplate(arrayListOf(0, 7))   // template range: 7
@@ -50,7 +50,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test findRangeRequired throws exception when template list is empty`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.lowerBound.value = 0
         generator.upperBound.value = 8
         assertFailsWith<EmptyTemplateListException> { generator.findRangeRequired() }
@@ -58,7 +58,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test generatePattern throws exception with invalid range`() {
-        val generator = PlayableGenerator() // lower bound > upper bound
+        val generator = Generator() // lower bound > upper bound
         generator.lowerBound.value = 5
         generator.upperBound.value = 0
         generator.addTemplate(PatternTemplate(arrayListOf(1, 2, 3)))
@@ -67,7 +67,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test generatePattern throws exception with insufficient range`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.lowerBound.value = 0
         generator.upperBound.value = 8
         generator.addTemplate(PatternTemplate(arrayListOf(1, 2, 3)))
@@ -77,7 +77,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test getPatternTemplateAt`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         val thisTemplate = PatternTemplate(arrayListOf(4, 5, 6))
         val otherTemplate = PatternTemplate(arrayListOf(3, 4))
         generator.addTemplate(thisTemplate)
@@ -87,7 +87,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test addPatternTemplate throws exception when equal template in generator`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         val thisTemplate = PatternTemplate(arrayListOf(0, 2, 4))
         val otherTemplate = PatternTemplate(arrayListOf(0, 2, 4))
         generator.addTemplate(thisTemplate)
@@ -96,7 +96,7 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test removePatternTemplateAt`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         val thisTemplate = PatternTemplate(arrayListOf(0, 2, 4))
         val otherTemplate = PatternTemplate(arrayListOf(5, 9))
         generator.addTemplate(thisTemplate)
@@ -107,33 +107,33 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test isEmpty true when no templates`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         assertTrue(generator.isEmpty())
     }
 
     @Test
     fun `test isEmpty false when it contains templates`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.addTemplate(PatternTemplate(arrayListOf(2, 4)))
         assertFalse(generator.isEmpty())
     }
 
     @Test
     fun `test isNotEmpty false when no templates`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         assertFalse(generator.isNotEmpty())
     }
 
     @Test
     fun `test isNotEmpty true when it contains templates`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.addTemplate(PatternTemplate(arrayListOf(2, 4)))
         assertTrue(generator.isNotEmpty())
     }
 
     @Test
     fun `test contains should contain equal template`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         val thisTemplate = PatternTemplate(arrayListOf(1, 2, 3))
         val otherTemplate = PatternTemplate(arrayListOf(1, 2, 3)) // templates are equal
         generator.addTemplate(thisTemplate)
@@ -142,13 +142,13 @@ class PlayableGeneratorTest {
 
     @Test
     fun `test size zero when empty`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         assertEquals(0, generator.size)
     }
 
     @Test
     fun `test size changes when templates added`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.addTemplate(PatternTemplate(arrayListOf(2, 9)))
         assertEquals(1, generator.size)
     }
@@ -156,7 +156,7 @@ class PlayableGeneratorTest {
     // todo: find better way to test this
     @Test
     fun `bad test`() {
-        val generator = PlayableGenerator()
+        val generator = Generator()
         generator.lowerBound.value = 6
         generator.upperBound.value = 14
         generator.addTemplate(PatternTemplate(arrayListOf(3, 0, 6)))
