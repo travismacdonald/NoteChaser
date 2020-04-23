@@ -3,4 +3,18 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!-- Exercise Setup Item -->
+    <color name="itemBackground">#FFFFFF</color>
+    <color name="itemRipple">#BBBBBB</color>
+
+    <color name="itemTitleText">#000000</color>
+    <color name="itemTitleTextDisabled">#BBBBBB</color>
+    <color name="itemSummaryText">#666666</color>
+    <color name="itemSummaryTextDisabled">#BBBBBB</color>
+
+    <!-- Exercise Setup Header -->
+    <color name="headerBackground">#DDDDDD</color>
+    <color name="headerText">#666666</color>
+
 </resources>

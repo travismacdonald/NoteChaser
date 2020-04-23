@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Pattern Type -->
+    <string-array name="notechoice_entries">
+        <item>Diatonic</item>
+        <item>Chromatic</item>
+    </string-array>
+
+    <string-array name="notechoice_values">
+        <item>diatonic</item>
+        <item>chromatic</item>
+    </string-array>
+
+    <!-- Note Order -->
+
+        <!-- NOTE: Two different lists for different playback modes
+               ~ One is for primarily melodic types (SCALE)
+               ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+          -->
+
+    <string-array name="playbacktype_harm_entries">
+        <item>Harmonic</item>
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+
+    <string-array name="playbacktype_harm_values">
+        <item>harmonic</item>
+        <item>ascending</item>
+        <item>descending</item>
+    </string-array>
+
+    <string-array name="playbacktype_mel_entries">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+
+    <string-array name="playbacktype_mel_values">
+        <item>ascending</item>
+        <item>descending</item>
+    </string-array>
+
+    <!-- Session Length -->
+    <string-array name="sessionlength_entries">
+        <item>Question Limit</item>
+        <item>Time Limit</item>
+        <item>Unlimited</item>
+    </string-array>
+
+    <string-array name="sessionlength_values">
+        <item>question_limit</item>
+        <item>time_limit</item>
+        <item>unlimited</item>
+    </string-array>
+
+</resources>

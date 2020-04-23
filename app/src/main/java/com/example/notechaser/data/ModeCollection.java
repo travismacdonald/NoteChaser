@@ -5,8 +5,6 @@ package com.example.notechaser.data;
 //import com.example.keyfinder.MelodicMinorMode;
 //import com.example.keyfinder.MusicTheory;
 
-import com.example.notechaser.patterngenerator.MusicTheory;
-
 /**
  * Class that loads all modes.
  */

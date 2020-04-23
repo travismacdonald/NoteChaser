@@ -10,7 +10,6 @@
         android:id="@+id/pitchText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pitchText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -33,7 +32,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
         android:padding="15dp"
-        android:text="@string/randomToneButtonText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

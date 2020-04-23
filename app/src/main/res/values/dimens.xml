@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="typeButtonWidth">170dp</dimen>
+
+    <!-- Exercise Setup -->
+    <dimen name="itemTitleTextSize">16sp</dimen>
+    <dimen name="itemSummaryTextSize">14sp</dimen>
+    <dimen name="itemHeight">72dp</dimen>
+    <dimen name="itemSmallMargin">16dp</dimen>
+    <dimen name="itemIconSize">40dp</dimen>
+    <dimen name="itemTextMargin">72dp</dimen>
+
+    <dimen name="headerTextSize">16sp</dimen>
+    <dimen name="headerHeight">56dp</dimen>
+
+</resources>

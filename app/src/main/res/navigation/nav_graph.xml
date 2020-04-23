@@ -7,13 +7,16 @@
 
     <fragment
         android:id="@+id/exerciseSelectionFragment"
-        android:name="com.example.notechaser.ui.exerciseselection.ExerciseSelectionFragment"
+        android:name="com.example.notechaser.ui.fragments.ExerciseSelectionFragment"
         android:label="ExerciseSelectionFragment"
         tools:layout="@layout/fragment_exercise_selection">
 
         <action
             android:id="@+id/action_exerciseSelectionFragment_to_exerciseConfigurationFragment"
             app:destination="@id/exerciseConfigurationFragment" />
+        <action
+            android:id="@+id/action_exerciseSelectionFragment_to_exerciseSetupFragment"
+            app:destination="@id/exerciseSetupFragment" />
 
     </fragment>
 
@@ -21,10 +24,24 @@
         android:id="@+id/exerciseConfigurationFragment"
         android:name="com.example.notechaser.ui.exerciseconfiguration.ExerciseConfigurationFragment"
         android:label="exercise_configuration_fragment"
-        tools:layout="@layout/fragment_exercise_configuration" >
+        tools:layout="@xml/fragment_exercise_configuration" >
+
         <argument
             android:name="exerciseType"
             app:argType="com.example.notechaser.data.ExerciseType" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseSetupFragment"
+        android:name="com.example.notechaser.ui.fragments.ExerciseSetupFragment"
+        android:label="fragment_exercise_setup"
+        tools:layout="@layout/fragment_exercise_setup" >
+
+        <argument
+            android:name="exerciseType"
+            app:argType="com.example.notechaser.data.ExerciseType" />
+
     </fragment>
 
 </navigation>
