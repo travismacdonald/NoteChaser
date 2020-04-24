@@ -35,11 +35,11 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             }
             is SingleListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
-                holder.bind(listItem.list)
+                holder.bind(listItem)
             }
             is MultiListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.MultiList
-                holder.bind(listItem.list)
+                holder.bind(listItem)
             }
             is SliderViewHolder -> {
                 val sliderItem = getItem(position) as ExerciseSetupItem.Slider
@@ -138,7 +138,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class SingleListViewHolder private constructor(val binding: ItemSettingsSingleListBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: ExerciseSetupSingleList) {
+        fun bind(list: ExerciseSetupItem.SingleList) {
             binding.obj = list
         }
         companion object {
@@ -156,7 +156,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class MultiListViewHolder private constructor(val binding: ItemSettingsMultiListBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: ExerciseSetupMultiList) {
+        fun bind(list: ExerciseSetupItem.MultiList) {
             binding.obj = list
         }
         companion object {

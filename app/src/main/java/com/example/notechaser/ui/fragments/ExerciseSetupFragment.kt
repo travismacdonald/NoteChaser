@@ -279,7 +279,6 @@ class ExerciseSetupFragment : Fragment() {
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
-
         /* Questions */
 
         val questionsHeader: ExerciseSetupItem =
@@ -299,67 +298,64 @@ class ExerciseSetupFragment : Fragment() {
             res
         }
         val noteChoiceList: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
-                        noteChoiceTitle,
-                        noteChoiceArray,
-                        noteChoiceValue,
-                        clickListener = View.OnClickListener {
-                            var tempItem = noteChoiceValue.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(noteChoiceTitle)
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
+            ExerciseSetupItem.SingleList(
+                noteChoiceTitle,
+                noteChoiceArray,
+                noteChoiceValue,
+                clickListener = View.OnClickListener {
+                    var tempItem = noteChoiceValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(noteChoiceTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                when (tempItem) {
+                                    // TODO: perhaps not the most efficient, but quite readable
+                                    noteChoiceArray.indexOf("Diatonic") -> {
+                                        generator.noteType.value = GeneratorNoteType.DIATONIC
                                     }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        when (tempItem) {
-                                            // TODO: perhaps not the most efficient, but quite readable
-                                            noteChoiceArray.indexOf("Diatonic") -> {
-                                                generator.noteType.value = GeneratorNoteType.DIATONIC
-                                            }
-                                            noteChoiceArray.indexOf("Chromatic") -> {
-                                                generator.noteType.value = GeneratorNoteType.CHROMATIC
-                                            }
-                                            else -> -1
-                                        }
+                                    noteChoiceArray.indexOf("Chromatic") -> {
+                                        generator.noteType.value = GeneratorNoteType.CHROMATIC
                                     }
-                                    .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
-                        }
-
-                ))
+                                    else -> -1
+                                }
+                            }
+                            .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+            )
 
 
         val chromaticMulti: ExerciseSetupItem =
             ExerciseSetupItem.MultiList(
-                    ExerciseSetupMultiList(
-                            "Chromatic Intervals",
-                            "Intervals to choose from",
-                            MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-                            generator.chromaticDegrees,
-                            clickListener = View.OnClickListener {
-                                val tempList = generator.chromaticDegrees.value!!.clone()
-                                MaterialAlertDialogBuilder(context!!)
-                                        .setTitle(noteChoiceTitle)
-                                        .setNegativeButton("Dismiss") { _, _ ->
-                                            // Do nothing
-                                        }
-                                        .setPositiveButton("Confirm") { _, _ ->
-                                            // Commit Changes
-                                            generator.chromaticDegrees.value = tempList.copyOf()
-
-                                        }
-                                        .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-                                            tempList[which] = checked
-                                        }
-                                        .show()
-                            },
-                            isVisible = Transformations.map(generator.noteType) { value ->
-                                value == GeneratorNoteType.CHROMATIC
+                "Chromatic Intervals",
+                "Intervals to choose from",
+                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                generator.chromaticDegrees,
+                clickListener = View.OnClickListener {
+                    val tempList = generator.chromaticDegrees.value!!.clone()
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(noteChoiceTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
                             }
-                    )
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                generator.chromaticDegrees.value = tempList.copyOf()
+
+                            }
+                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                tempList[which] = checked
+                            }
+                            .show()
+                },
+                isVisible = Transformations.map(generator.noteType) { value ->
+                    value == GeneratorNoteType.CHROMATIC
+                }
             )
 
 
