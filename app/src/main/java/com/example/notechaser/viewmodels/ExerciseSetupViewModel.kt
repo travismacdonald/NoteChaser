@@ -13,7 +13,7 @@ class ExerciseSetupViewModel internal constructor(
 
     // TODO: Playable Generator
     val settings = ExerciseSetupSettings()
-    val generator = TemplatePlayableGenerator()
+    lateinit var generator: PlayableGenerator
 
 
 
