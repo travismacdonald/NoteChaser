@@ -74,7 +74,7 @@ class MusicTheoryUtils {
                 "Altered Diminished"
         )
 
-        val CHROMATIC_INTERVAL_NAMES = arrayOf(
+        val CHROMATIC_INTERVAL_NAMES_SINGLE = arrayOf(
                 "P1",
                 "m2",
                 "M2",
@@ -86,24 +86,17 @@ class MusicTheoryUtils {
                 "m6",
                 "M6",
                 "m7",
-                "M7",
-                "P8"
+                "M7"
         )
 
-        val DIATONIC_INTERVAL_NAMES = arrayOf(
-                "P1",
-                "m2",
-                "M2",
-                "m3",
-                "M3",
-                "P4",
-                "Tritone",
-                "P5",
-                "m6",
-                "M6",
-                "m7",
-                "M7",
-                "P8"
+        val DIATONIC_INTERVAL_NAMES_SINGLE = arrayOf(
+                "1st",
+                "2nd",
+                "3rd",
+                "4th",
+                "5th",
+                "6th",
+                "7th"
         )
 
         fun ixToName(ix: Int): String {

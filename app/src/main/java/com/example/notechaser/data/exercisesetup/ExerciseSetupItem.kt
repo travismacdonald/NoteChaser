@@ -1,5 +1,6 @@
 package com.example.notechaser.data.exercisesetup
 
+// TODO: Refactor this so all items are contained in this class
 sealed class ExerciseSetupItem {
 
     data class Header(val header: ExerciseSetupHeader) : ExerciseSetupItem()

@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
@@ -22,7 +20,6 @@ import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -285,14 +282,11 @@ class ExerciseSetupFragment : Fragment() {
 
         /* Questions */
 
-        // TODO: header
-
         val questionsHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
                         ExerciseSetupHeader(getString(R.string.questions_header))
                 )
 
-        // TODO: noteChoice
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val noteChoiceValue = Transformations.map(generator.noteType) { value ->
@@ -337,6 +331,39 @@ class ExerciseSetupFragment : Fragment() {
 
                 ))
 
+
+        val chromaticMulti: ExerciseSetupItem =
+            ExerciseSetupItem.MultiList(
+                    ExerciseSetupMultiList(
+                            "Chromatic Intervals",
+                            "Intervals to choose from",
+                            MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                            generator.chromaticDegrees,
+                            clickListener = View.OnClickListener {
+                                val tempList = generator.chromaticDegrees.value!!.clone()
+                                MaterialAlertDialogBuilder(context!!)
+                                        .setTitle(noteChoiceTitle)
+                                        .setNegativeButton("Dismiss") { _, _ ->
+                                            // Do nothing
+                                        }
+                                        .setPositiveButton("Confirm") { _, _ ->
+                                            // Commit Changes
+                                            generator.chromaticDegrees.value = tempList.copyOf()
+
+                                        }
+                                        .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                            tempList[which] = checked
+                                        }
+                                        .show()
+                            },
+                            isVisible = Transformations.map(generator.noteType) { value ->
+                                value == GeneratorNoteType.CHROMATIC
+                            }
+                    )
+            )
+
+
+
         // TODO: chromaticMulti
 
         // TODO: diatonicMulti
@@ -366,7 +393,8 @@ class ExerciseSetupFragment : Fragment() {
         return arrayListOf(
                 /* Questions */
                 questionsHeader,
-                noteChoiceList
+                noteChoiceList,
+                chromaticMulti
                 /* Session */
 
                 /* Playback */

@@ -36,6 +36,10 @@ class SingleNoteGenerator() : PlayableGenerator {
             true, false, false, false, false, false, false
     ))
 
+    val selectAllChromatic = MutableLiveData(false)
+
+    val selectAllDiatonic = MutableLiveData(false)
+
     // TODO: Make it so there has to be at least 2 true values in the array
     fun hasSelectedDegrees(): Boolean {
         return when (noteType.value) {
