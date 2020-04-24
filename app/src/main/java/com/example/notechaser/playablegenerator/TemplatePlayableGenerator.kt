@@ -2,7 +2,6 @@ package com.example.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
 import com.example.notechaser.playablegenerator.exceptions.DuplicateTemplateException
-import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateListException
 import java.lang.IllegalStateException
 import kotlin.random.Random
 
@@ -15,7 +14,7 @@ class TemplatePlayableGenerator() : PlayableGenerator {
      * Type FIXED_ROOT: pattern's lowest note is always rootIx
      * Type FIXED_STARTING_NOTE: playable's first note is always startingIx
      */
-    var type = MutableLiveData(GeneratorType.RANGE)
+    var rangeType = MutableLiveData(GeneratorRangeType.BOUNDED)
 
     val lowerBound = MutableLiveData(36)
 
@@ -56,7 +55,7 @@ class TemplatePlayableGenerator() : PlayableGenerator {
      * Function determines if patterns can be safely generated.
      */
     fun isValid(): Boolean {
-        if (type.value == GeneratorType.RANGE && !hasSufficientRange()) {
+        if (rangeType.value == GeneratorRangeType.BOUNDED && !hasSufficientRange()) {
             return false
         }
         if (_templates.isEmpty()) {
