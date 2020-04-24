@@ -69,9 +69,9 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     /**
-     * Setup adapter for single note settings.
+     * Test list.
      */
-    private fun makeSingleNoteList(): List<ExerciseSetupItem> {
+    private fun makeTestList(): List<ExerciseSetupItem> {
 
         /* Question Settings */
 
@@ -267,6 +267,50 @@ class ExerciseSetupFragment : Fragment() {
                 playCadenceSwitch,
                 matchKeySwitch,
                 testSwitch
+                /* Answers */)
+    }
+
+    private fun makeSingleNoteList(): List<ExerciseSetupItem> {
+
+        /* Questions */
+
+        // TODO: header
+
+        // TODO: noteChoice
+
+        // TODO: chromaticMulti
+
+        // TODO: diatonicMulti
+
+        // TODO: question key (disabled if chromatic and all notes chosen)
+
+        // TODO: question scale (mixo, dorian, etc ... )
+
+        // TODO: question range
+
+        /* Session */
+
+        // TODO: header
+
+        // TODO: session type
+
+        // TODO: session timer
+
+        // TODO: num questions
+
+        /* Answers */
+
+        // TODO: header
+
+        // TODO: match octave
+
+        return arrayListOf(
+                /* Questions */
+
+                /* Session */
+
+                /* Playback */
+
                 /* Answers */)
     }
 
