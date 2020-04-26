@@ -40,6 +40,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is MultiListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.MultiList
                 holder.bind(listItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SliderViewHolder -> {
                 val sliderItem = getItem(position) as ExerciseSetupItem.Slider
@@ -67,9 +68,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                     binding.lifecycleOwner = lifecycleOwner
                 }
             TYPE_MULTI_LIST ->
-                MultiListViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
+                MultiListViewHolder.from(parent)
             TYPE_SLIDER ->
                 SliderViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner

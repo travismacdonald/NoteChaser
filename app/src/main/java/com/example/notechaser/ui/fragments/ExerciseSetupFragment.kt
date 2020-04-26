@@ -359,10 +359,32 @@ class ExerciseSetupFragment : Fragment() {
             )
 
 
-
-        // TODO: chromaticMulti
-
-        // TODO: diatonicMulti
+        val diatonicMulti: ExerciseSetupItem =
+                ExerciseSetupItem.MultiList(
+                        "Diatonic Intervals",
+                        "Intervals to choose from",
+                        MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
+                        generator.diatonicDegrees,
+                        clickListener = View.OnClickListener {
+                            val tempList = generator.diatonicDegrees.value!!.clone()
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(noteChoiceTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.diatonicDegrees.value = tempList.copyOf()
+                                    }
+                                    .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                        tempList[which] = checked
+                                    }
+                                    .show()
+                        },
+                        isVisible = Transformations.map(generator.noteType) { value ->
+                            value == GeneratorNoteType.DIATONIC
+                        }
+                )
 
         // TODO: question key (disabled if chromatic and all notes chosen)
 
@@ -390,7 +412,8 @@ class ExerciseSetupFragment : Fragment() {
                 /* Questions */
                 questionsHeader,
                 noteChoiceList,
-                chromaticMulti
+                chromaticMulti,
+                diatonicMulti
                 /* Session */
 
                 /* Playback */
