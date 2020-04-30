@@ -21,6 +21,8 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     val questionKey = MutableLiveData(0)
 
+    val parentScale = MutableLiveData(ParentScale("Major", MusicTheoryUtils.MAJOR_SCALE_SEQUENCE))
+
     var scale = intArrayOf()
 
     val chromaticDegrees = MutableLiveData(booleanArrayOf(

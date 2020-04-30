@@ -1,5 +1,8 @@
 package com.example.notechaser.utilities
 
+import com.example.notechaser.playablegenerator.ParentScale
+import com.example.notechaser.playablegenerator.PatternTemplate
+
 class MusicTheoryUtils {
 
     companion object {
@@ -8,7 +11,7 @@ class MusicTheoryUtils {
         const val FLAT = '\u266d'
         const val NATURAL = '\u266e'
 
-        const val OCTAVE_SIZE = 12;
+        const val OCTAVE_SIZE = 12
 
         val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
         val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
@@ -101,6 +104,21 @@ class MusicTheoryUtils {
 
         fun ixToName(ix: Int): String {
             return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
+        }
+
+        fun getModeSequence(parent: ParentScale, modeIx: Int): IntArray {
+            val toReturn = IntArray(parent.intervals.size)
+            val offset = parent.intervals[modeIx]
+            var counter = 0
+            for (i in modeIx until toReturn.size) {
+                toReturn[counter] = parent.intervals[i] - offset
+//                toReturn.addInterval(scaleSequence[i] - offset)
+            }
+            for (i in 0 until modeIx) {
+                toReturn[counter] = parent.intervals[i] + OCTAVE_SIZE - offset
+//                toReturn.addInterval(scaleSequence[i] + MusicTheoryUtils.OCTAVE_SIZE - offset)
+            }
+            return toReturn
         }
 
     }
