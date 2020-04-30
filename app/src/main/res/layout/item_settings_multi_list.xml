@@ -16,10 +16,10 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isGone="@{obj.isVisible()}"
         android:background="@drawable/settings_item_background"
         android:clickable="@{obj.isEnabled()}"
-        android:onClick="@{obj.clickListener}">
+        android:onClick="@{obj.clickListener}"
+        app:is_visible="@{obj.isVisible()}">
 
         <TextView
             android:id="@+id/title"

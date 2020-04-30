@@ -6,18 +6,26 @@ import androidx.lifecycle.MutableLiveData
 
 // TODO: Refactor this so all items are contained in this class
 // TODO: perhaps this can be an interface instead
-sealed class ExerciseSetupItem {
+interface ExerciseSetupItem {
 
-    data class Header(val header: ExerciseSetupHeader) : ExerciseSetupItem()
+    val isEnabled: LiveData<Boolean>
+
+    val isVisible: LiveData<Boolean>
+
+    data class Header(
+            val header: ExerciseSetupHeader,
+            override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
+            override val isVisible: LiveData<Boolean> = MutableLiveData(true)
+    ) : ExerciseSetupItem
 
     data class SingleList(
             val title: String,
             val entries: Array<String>,
             val itemChecked: LiveData<Int>,
             val clickListener: View.OnClickListener,
-            val isEnabled: LiveData<Boolean> = MutableLiveData(true),
-            val isVisible: LiveData<Boolean> = MutableLiveData(true)
-    ) : ExerciseSetupItem()
+            override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
+            override val isVisible: LiveData<Boolean> = MutableLiveData(true)
+    ) : ExerciseSetupItem
 
     data class MultiList(
             val title: String,
@@ -25,14 +33,14 @@ sealed class ExerciseSetupItem {
             val entries: Array<String>,
             val itemsChecked: LiveData<BooleanArray>,
             val clickListener: View.OnClickListener,
-            val isEnabled: LiveData<Boolean> = MutableLiveData(true),
-            val isVisible: LiveData<Boolean> = MutableLiveData(true)
-    ) : ExerciseSetupItem()
+            override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
+            override val isVisible: LiveData<Boolean> = MutableLiveData(true)
+    ) : ExerciseSetupItem
 
-    data class Switch(val switch: ExerciseSetupSwitch) : ExerciseSetupItem()
-
-    data class Slider(val slider: ExerciseSetupSlider) : ExerciseSetupItem()
-
-    data class RangeBar(val rangeBar: ExerciseSetupRangeBar) : ExerciseSetupItem()
+//    data class Switch(val switch: ExerciseSetupSwitch) : ExerciseSetupItem()
+//
+//    data class Slider(val slider: ExerciseSetupSlider) : ExerciseSetupItem()
+//
+//    data class RangeBar(val rangeBar: ExerciseSetupRangeBar) : ExerciseSetupItem()
 
 }
