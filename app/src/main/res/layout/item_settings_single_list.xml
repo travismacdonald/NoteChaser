@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
-        android:onClick="@{obj.clickListener}"
         android:clickable="@{obj.isEnabled()}"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+        android:onClick="@{obj.clickListener}"
+        app:is_visible="@{obj.isVisible()}">
 
         <TextView
             android:id="@+id/title"

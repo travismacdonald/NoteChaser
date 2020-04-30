@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
@@ -21,7 +20,6 @@ import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -97,7 +95,7 @@ class ExerciseSetupFragment : Fragment() {
             }
             res
         }
-        val noteChoiceList: ExerciseSetupItem =
+        val noteChoiceSingle: ExerciseSetupItem =
             ExerciseSetupItem.SingleList(
                 noteChoiceTitle,
                 noteChoiceArray,
@@ -133,6 +131,7 @@ class ExerciseSetupFragment : Fragment() {
         val chromaticMulti: ExerciseSetupItem =
             ExerciseSetupItem.MultiList(
                 "Chromatic Intervals",
+                    // TODO: do better
                 "Intervals to choose from",
                 MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
                 generator.chromaticDegrees,
@@ -162,6 +161,7 @@ class ExerciseSetupFragment : Fragment() {
         val diatonicMulti: ExerciseSetupItem =
                 ExerciseSetupItem.MultiList(
                         "Diatonic Intervals",
+                        // TODO: do better
                         "Intervals to choose from",
                         MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
                         generator.diatonicDegrees,
@@ -186,7 +186,31 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
-        // TODO: question key (disabled if chromatic and all notes chosen)
+        val questionKeyTitle = resources.getString(R.string.questionKey_title)
+        val questionKeySingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        questionKeyTitle,
+                        MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
+                        generator.questionKey,
+                        clickListener = View.OnClickListener {
+                            var tempItem = generator.questionKey.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(questionKeyTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.questionKey.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
+                )
+
+
 
         // TODO: question scale (mixo, dorian, etc ... )
 
@@ -209,9 +233,13 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: match octave
 
         settingItemsArray.add(questionsHeader)
-        settingItemsArray.add(noteChoiceList)
+        settingItemsArray.add(noteChoiceSingle)
         settingItemsArray.add(chromaticMulti)
         settingItemsArray.add(diatonicMulti)
+        settingItemsArray.add(questionKeySingle)
+
+
+        // TODO: this is just here to check for blank space at end
         settingItemsArray.add(questionsHeader)
 
     }

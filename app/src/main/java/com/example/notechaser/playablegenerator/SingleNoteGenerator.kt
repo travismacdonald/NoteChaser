@@ -5,6 +5,7 @@ import com.example.notechaser.utilities.MusicTheoryUtils
 import java.lang.IllegalStateException
 import kotlin.random.Random
 
+// TODO: This class probably shouldn't be responsible for default values (multiple fixes here)
 class SingleNoteGenerator() : PlayableGenerator {
 
     /**
@@ -16,22 +17,17 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     val upperBound = MutableLiveData(48)
 
-    // TODO: This class probably shouldn't be responsible for default vals
     val noteType = MutableLiveData(GeneratorNoteType.DIATONIC)
 
-    // TODO: This class probably shouldn't be responsible for default vals
-    val key = MutableLiveData(0)
+    val questionKey = MutableLiveData(0)
 
-    // TODO: This class probably shouldn't be responsible for default vals
     var scale = intArrayOf()
 
-    // TODO: This class probably shouldn't be responsible for default vals
     val chromaticDegrees = MutableLiveData(booleanArrayOf(
             true, false, false, false, false, false,
             false, false, false, false, false, false
     ))
 
-    // TODO: This class probably shouldn't be responsible for default vals
     val diatonicDegrees = MutableLiveData(booleanArrayOf(
             true, false, false, false, false, false, false
     ))
@@ -65,7 +61,7 @@ class SingleNoteGenerator() : PlayableGenerator {
         }
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
             for (i in lowerBound.value!!..upperBound.value!!) {
-                if (chromaticDegrees.value!![i + key.value!!]) {
+                if (chromaticDegrees.value!![i + questionKey.value!!]) {
                     notePool.add(i)
                 }
             }

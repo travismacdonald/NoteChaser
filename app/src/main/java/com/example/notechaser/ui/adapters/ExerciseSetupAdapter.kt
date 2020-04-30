@@ -47,14 +47,8 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
                 SwitchViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
-            TYPE_SINGLE_LIST ->
-                SingleListViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_MULTI_LIST ->
-                MultiListViewHolder.from(parent).apply {
-//                    binding.lifecycleOwner = lifecycleOwner
-                }
+            TYPE_SINGLE_LIST -> SingleListViewHolder.from(parent)
+            TYPE_MULTI_LIST -> MultiListViewHolder.from(parent)
             TYPE_SLIDER ->
                 SliderViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
@@ -80,6 +74,7 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
             is SingleListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
                 holder.bind(listItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is MultiListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.MultiList
