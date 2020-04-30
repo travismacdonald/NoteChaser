@@ -1,7 +1,6 @@
 package com.example.notechaser.utilities
 
-import com.example.notechaser.playablegenerator.ParentScale
-import com.example.notechaser.playablegenerator.PatternTemplate
+import java.lang.IllegalArgumentException
 
 class MusicTheoryUtils {
 
@@ -106,17 +105,28 @@ class MusicTheoryUtils {
             return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
         }
 
-        fun getModeSequence(parent: ParentScale, modeIx: Int): IntArray {
-            val toReturn = IntArray(parent.intervals.size)
-            val offset = parent.intervals[modeIx]
+        fun getModeIntervals(intervals: IntArray, modeIx: Int): IntArray {
+            if (intervals[0] != 0) {
+                throw IllegalArgumentException(
+                        "Cannot use scale when first interval is not zero.\n" +
+                        "Intervals = $intervals")
+            }
+            // No need to change anything
+            if (modeIx == 0) {
+                return intervals
+            }
+            val toReturn = IntArray(intervals.size)
+            val offset = intervals[modeIx]
             var counter = 0
             for (i in modeIx until toReturn.size) {
-                toReturn[counter] = parent.intervals[i] - offset
+                toReturn[counter] = intervals[i] - offset
+                ++counter
 //                toReturn.addInterval(scaleSequence[i] - offset)
             }
             for (i in 0 until modeIx) {
-                toReturn[counter] = parent.intervals[i] + OCTAVE_SIZE - offset
+                toReturn[counter] = intervals[i] + OCTAVE_SIZE - offset
 //                toReturn.addInterval(scaleSequence[i] + MusicTheoryUtils.OCTAVE_SIZE - offset)
+                ++counter
             }
             return toReturn
         }

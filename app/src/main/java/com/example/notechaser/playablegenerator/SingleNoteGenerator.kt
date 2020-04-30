@@ -6,6 +6,7 @@ import java.lang.IllegalStateException
 import kotlin.random.Random
 
 // TODO: This class probably shouldn't be responsible for default values (multiple fixes here)
+//       SOLUTION: make some sort of injector function to take care of this
 class SingleNoteGenerator() : PlayableGenerator {
 
     /**
@@ -21,6 +22,7 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     val questionKey = MutableLiveData(0)
 
+    // TODO: extract hardcoded parent scale
     val parentScale = MutableLiveData(ParentScale("Major", MusicTheoryUtils.MAJOR_SCALE_SEQUENCE))
 
     var scale = intArrayOf()
