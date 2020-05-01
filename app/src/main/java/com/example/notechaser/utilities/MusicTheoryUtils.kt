@@ -1,5 +1,8 @@
 package com.example.notechaser.utilities
 
+import com.example.notechaser.playablegenerator.ParentScale
+import java.lang.IllegalArgumentException
+
 class MusicTheoryUtils {
 
     companion object {
@@ -8,7 +11,7 @@ class MusicTheoryUtils {
         const val FLAT = '\u266d'
         const val NATURAL = '\u266e'
 
-        const val OCTAVE_SIZE = 12;
+        const val OCTAVE_SIZE = 12
 
         val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
         val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
@@ -74,7 +77,7 @@ class MusicTheoryUtils {
                 "Altered Diminished"
         )
 
-        val CHROMATIC_INTERVAL_NAMES = arrayOf(
+        val CHROMATIC_INTERVAL_NAMES_SINGLE = arrayOf(
                 "P1",
                 "m2",
                 "M2",
@@ -86,28 +89,52 @@ class MusicTheoryUtils {
                 "m6",
                 "M6",
                 "m7",
-                "M7",
-                "P8"
+                "M7"
         )
 
-        val DIATONIC_INTERVAL_NAMES = arrayOf(
-                "P1",
-                "m2",
-                "M2",
-                "m3",
-                "M3",
-                "P4",
-                "Tritone",
-                "P5",
-                "m6",
-                "M6",
-                "m7",
-                "M7",
-                "P8"
+        val DIATONIC_INTERVAL_NAMES_SINGLE = arrayOf(
+                "1st",
+                "2nd",
+                "3rd",
+                "4th",
+                "5th",
+                "6th",
+                "7th"
+        )
+
+        // TODO: Replace with actual DB later
+        val PARENT_SCALE_BANK = arrayOf(
+                ParentScale("Major", MAJOR_SCALE_SEQUENCE),
+                ParentScale("Melodic Minor", MELODIC_MINOR_SCALE_SEQUENCE),
+                ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_SEQUENCE)
         )
 
         fun ixToName(ix: Int): String {
             return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
+        }
+
+        fun getModeIntervals(intervals: IntArray, modeIx: Int): IntArray {
+            if (intervals[0] != 0) {
+                throw IllegalArgumentException(
+                        "Cannot use scale when first interval is not zero.\n" +
+                        "Intervals = $intervals")
+            }
+            // No need to change anything
+            if (modeIx == 0) {
+                return intervals
+            }
+            val toReturn = IntArray(intervals.size)
+            val offset = intervals[modeIx]
+            var counter = 0
+            for (i in modeIx until toReturn.size) {
+                toReturn[counter] = intervals[i] - offset
+                ++counter
+            }
+            for (i in 0 until modeIx) {
+                toReturn[counter] = intervals[i] + OCTAVE_SIZE - offset
+                ++counter
+            }
+            return toReturn
         }
 
     }

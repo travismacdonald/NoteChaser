@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="obj"
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Button" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/settings_item_background" >
+
+        <Button
+            android:id="@+id/title"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/rubik"
+            android:text="@{obj.title}"
+            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
+            android:textSize="@dimen/itemTitleTextSize"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Start" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

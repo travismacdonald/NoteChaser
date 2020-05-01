@@ -8,19 +8,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
+import com.example.notechaser.playablegenerator.GeneratorNoteType
+import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -30,7 +32,9 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
     lateinit var binding: FragmentExerciseSetupBinding
+    lateinit var adapter: ExerciseSetupAdapter
     lateinit var args: ExerciseSetupFragmentArgs
+    lateinit var settingItemsArray: MutableList<ExerciseSetupItem>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,19 +44,12 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        // TODO: Test button here! remove later plz
-        binding.testButton.setOnClickListener {
-            Timber.d(
-                    " \nlower = ${viewModel.generator.lowerBound.value!!}" +
-                            "\nupper = ${viewModel.generator.upperBound.value!!}")
-        }
-
         val manager = LinearLayoutManager(activity)
-        val adapter = ExerciseSetupAdapter(this)
+        adapter = ExerciseSetupAdapter(this)
         args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
 
         // TODO: may have to make this mutable later on
-        val setupItemList: List<ExerciseSetupItem> = when (args.exerciseType) {
+        when (args.exerciseType) {
             ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
             ExerciseType.INTERVALLIC -> makeIntervallicList()
             ExerciseType.HARMONIC -> makeHarmonicList()
@@ -61,85 +58,111 @@ class ExerciseSetupFragment : Fragment() {
             else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
         }
 
-        adapter.submitList(setupItemList)
+        adapter.submitList(settingItemsArray)
         binding.settingsList.adapter = adapter
         binding.settingsList.layoutManager = manager
 
         return binding.root
     }
 
-    /**
-     * Setup adapter for single note settings.
-     */
-    private fun makeSingleNoteList(): List<ExerciseSetupItem> {
 
-        /* Question Settings */
+    private fun makeSingleNoteList() {
+
+        settingItemsArray = arrayListOf()
+        viewModel.generator = SingleNoteGenerator()
+        val generator = viewModel.generator as SingleNoteGenerator
+
+        /* Questions */
 
         val questionsHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
-                        ExerciseSetupHeader(getString(R.string.questions_header)))
-
-        val numQuestionsSlider: ExerciseSetupItem =
-                ExerciseSetupItem.Slider(
-                        ExerciseSetupSlider(
-                                // TODO: Extract some of these numbers
-                                getString(R.string.numQuestions_title),
-                                10f,
-                                200f,
-                                viewModel.settings.numQuestions,
-                                Transformations.map(viewModel.settings.numQuestions) { value ->
-                                    value.toString()
-                                },
-                                10f
-                        )
+                        ExerciseSetupHeader(getString(R.string.questions_header))
                 )
 
-        val maxIntervalSlider: ExerciseSetupItem =
-                ExerciseSetupItem.Slider(
-                        ExerciseSetupSlider(
-                                "Max Interval",
-                                1f,
-                                // Have to account for inclusive upper bound
-                                (MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES.size - 1).toFloat(),
-                                viewModel.settings.maxIntervalInPattern,
-                                Transformations.map(viewModel.settings.maxIntervalInPattern) { value ->
-                                    MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES[value]
-                                },
-                                1f)
-                        )
-
-        val patternRangeBar: ExerciseSetupItem =
-                ExerciseSetupItem.RangeBar(
-                        ExerciseSetupRangeBar(
-                                "Range Bar",
-                                24f,
-                                88f,
-                                viewModel.generator.lowerBound,
-                                viewModel.generator.upperBound,
-                                displayValue = {
-                                    val result = MediatorLiveData<String>()
-                                    val updateRange = {
-                                        val lower = MusicTheoryUtils.ixToName(viewModel.generator.lowerBound.value!!)
-                                        val upper = MusicTheoryUtils.ixToName(viewModel.generator.upperBound.value!!)
-                                        result.value = "$lower to $upper"
-                                    }
-                                    result.addSource(viewModel.generator.lowerBound) { updateRange() }
-                                    result.addSource(viewModel.generator.upperBound) { updateRange() }
-                                    result
-                                }.invoke()
-                        )
-                )
 
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
-        val noteChoiceValue = viewModel.settings.noteChoice
-        val noteChoiceList: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(ExerciseSetupSingleList(
-                        noteChoiceTitle,
-                        noteChoiceArray,
-                        noteChoiceValue,
+        val noteChoiceValue = Transformations.map(generator.noteType) { value ->
+            val res: Int = when (value) {
+                // TODO: perhaps not the most efficient, but quite readable
+                GeneratorNoteType.DIATONIC -> noteChoiceArray.indexOf("Diatonic")
+                GeneratorNoteType.CHROMATIC -> noteChoiceArray.indexOf("Chromatic")
+                else -> -1
+            }
+            res
+        }
+        val noteChoiceSingle: ExerciseSetupItem =
+            ExerciseSetupItem.SingleList(
+                noteChoiceTitle,
+                noteChoiceArray,
+                noteChoiceValue,
+                clickListener = View.OnClickListener {
+                    var tempItem = noteChoiceValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(noteChoiceTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                when (tempItem) {
+                                    // TODO: perhaps not the most efficient, but quite readable
+                                    noteChoiceArray.indexOf("Diatonic") -> {
+                                        generator.noteType.value = GeneratorNoteType.DIATONIC
+                                    }
+                                    noteChoiceArray.indexOf("Chromatic") -> {
+                                        generator.noteType.value = GeneratorNoteType.CHROMATIC
+                                    }
+                                    else -> -1
+                                }
+                            }
+                            .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+            )
+
+
+        val chromaticMulti: ExerciseSetupItem =
+            ExerciseSetupItem.MultiList(
+                "Chromatic Intervals",
+                    // TODO: write a better summary and extract
+                "Intervals to choose from",
+                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                generator.chromaticDegrees,
+                clickListener = View.OnClickListener {
+                    val tempList = generator.chromaticDegrees.value!!.clone()
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(noteChoiceTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                generator.chromaticDegrees.value = tempList.copyOf()
+
+                            }
+                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                tempList[which] = checked
+                            }
+                            .show()
+                },
+                isVisible = Transformations.map(generator.noteType) { value ->
+                    value == GeneratorNoteType.CHROMATIC
+                }
+            )
+
+
+        val diatonicMulti: ExerciseSetupItem =
+                ExerciseSetupItem.MultiList(
+                        "Diatonic Intervals",
+                        // TODO: write a better summary
+                        "Intervals to choose from",
+                        MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
+                        generator.diatonicDegrees,
                         clickListener = View.OnClickListener {
-                            var tempItem = noteChoiceValue.value!!
+                            val tempList = generator.diatonicDegrees.value!!.clone()
                             MaterialAlertDialogBuilder(context!!)
                                     .setTitle(noteChoiceTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
@@ -147,127 +170,229 @@ class ExerciseSetupFragment : Fragment() {
                                     }
                                     .setPositiveButton("Confirm") { _, _ ->
                                         // Commit Changes
-                                        if (noteChoiceValue.value != tempItem) {
-                                            noteChoiceValue.value = tempItem
-                                        }
+                                        generator.diatonicDegrees.value = tempList.copyOf()
                                     }
-                                    .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
+                                    .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                        tempList[which] = checked
+                                    }
+                                    .show()
+                        },
+                        isVisible = Transformations.map(generator.noteType) { value ->
+                            value == GeneratorNoteType.DIATONIC
+                        }
+                )
+
+        val questionKeyTitle = resources.getString(R.string.questionKey_title)
+        val questionKeySingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        questionKeyTitle,
+                        MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
+                        generator.questionKey,
+                        clickListener = View.OnClickListener {
+                            var tempItem = generator.questionKey.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(questionKeyTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.questionKey.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, tempItem) { _, which ->
                                         tempItem = which
                                     }
                                     .show()
                         }
+                )
 
-                ))
 
-        /* Playback Settings */
-
-        val playbackHeader: ExerciseSetupItem =
-                ExerciseSetupItem.Header(
-                        ExerciseSetupHeader(getString(R.string.playback_header)))
-
-        // TODO: This some ugly ass code
-        val playbackTypeTitle = resources.getString(R.string.playbackType_mel_title)
-        val playbackTypeArr = resources.getStringArray(R.array.playbacktype_mel_entries)
-        val playbackTypeValues = viewModel.settings.playbackTypeMel
-
-        val playbackTypeList: ExerciseSetupItem =
-                ExerciseSetupItem.MultiList(ExerciseSetupMultiList(
-                        playbackTypeTitle,
-                        getString(R.string.playbackType_mel_summary),
-                        playbackTypeArr,
-                        playbackTypeValues,
+        val parentScaleTitle = resources.getString(R.string.parentScale_title)
+        val parentScaleEntries = (MusicTheoryUtils.PARENT_SCALE_BANK.map { it.name }).toTypedArray()
+        val parentScaleValue = Transformations.map(generator.parentScale) { value ->
+            parentScaleEntries.indexOf(value.name)
+        }
+        val parentScaleSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        parentScaleTitle,
+                        parentScaleEntries,
+                        parentScaleValue,
                         clickListener = View.OnClickListener {
-                            val tempList = playbackTypeValues.value!!.clone()
+                            var tempItem = parentScaleValue.value!!
                             MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(noteChoiceTitle)
+                                    .setTitle(parentScaleTitle)
                                     .setNegativeButton("Dismiss") { _, _ ->
                                         // Do nothing
                                     }
                                     .setPositiveButton("Confirm") { _, _ ->
                                         // Commit Changes
-                                        playbackTypeValues.value = tempList.copyOf()
-
+                                        generator.parentScale.value = MusicTheoryUtils.PARENT_SCALE_BANK[tempItem]
                                     }
-                                    .setMultiChoiceItems(playbackTypeArr, tempList) { _, which, checked ->
-                                        tempList[which] = checked
+                                    .setSingleChoiceItems(parentScaleEntries, tempItem) { _, which ->
+                                        tempItem = which
                                     }
                                     .show()
                         }
-
-                ))
-
-        val playCadenceSwitch: ExerciseSetupItem =
-                ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        getString(R.string.playCadence_title),
-                        getString(R.string.playCadence_summary),
-                        viewModel.settings.playCadence,
-                        imgSrc = R.drawable.ic_music_note_black_40dp))
-
-        val matchKeySwitch: ExerciseSetupItem =
-                ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        getString(R.string.matchKey_title),
-                        getString(R.string.matchKey_summary),
-                        viewModel.settings.matchKey,
-                        // TODO: arg is mutable only live data; the mediator can probably be removed/simplified
-                        isEnabled = {
-                            val result = MediatorLiveData<Boolean>()
-                            val isEnabled = {
-                                result.value = viewModel.settings.playCadence.value
-                            }
-                            result.addSource(viewModel.settings.playCadence) { isEnabled() }
-                            result
-                        }.invoke(),
-                        imgSrc = R.drawable.ic_music_note_black_40dp)
                 )
 
-        val testSwitch: ExerciseSetupItem =
-                ExerciseSetupItem.Switch(ExerciseSetupSwitch(
-                        "Third Item",
-                        "Suck my balls",
-                        MutableLiveData(false),
-                        isEnabled = {
-                            val result = MediatorLiveData<Boolean>()
-                            val isEnabled = {
-                                val playCadence = viewModel.settings.playCadence.value!!
-                                val matchKey = viewModel.settings.matchKey.value!!
-                                result.value = playCadence && matchKey
-                            }
-                            result.addSource(viewModel.settings.playCadence) { isEnabled() }
-                            result.addSource(viewModel.settings.matchKey) { isEnabled() }
-                            result
-                        }.invoke(),
-                        isVisible = {
-                            val result = MediatorLiveData<Boolean>()
-                            val isVisible = {
-                                val noteChoice = viewModel.settings.noteChoice.value!!
-                                result.value = noteChoice == Constants.NOTE_CHOICE_CHROMATIC
-                            }
-                            result.addSource(viewModel.settings.noteChoice) { isVisible() }
-                            result
-                        }.invoke()
+        // TODO: extract hard coded
+        val modeTitle = "Mode"
+        // TODO: turn mode and parent scale into one parameter
+        val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
+        val modeValue = generator.mode
+        val modeSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        modeTitle,
+                        modeEntries,
+                        modeValue,
+                        clickListener = View.OnClickListener {
+                            var tempItem = modeValue.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(modeTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.mode.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
                 )
+
+        val playableRangeBar: ExerciseSetupItem =
+                ExerciseSetupItem.RangeBar(
+                            "Range Bar",
+                            24f,
+                            88f,
+                            generator.lowerBound,
+                            generator.upperBound,
+                            displayValue = {
+                                val result = MediatorLiveData<String>()
+                                val updateRange = {
+                                    val lower = MusicTheoryUtils.ixToName(generator.lowerBound.value!!)
+                                    val upper = MusicTheoryUtils.ixToName(generator.upperBound.value!!)
+                                    result.value = "$lower to $upper"
+                                }
+                                result.addSource(generator.lowerBound) { updateRange() }
+                                result.addSource(generator.upperBound) { updateRange() }
+                                result
+                            }.invoke()
                 )
 
 
+        /* Session */
 
-        /* Answer Settings */
+        val sessionHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(
+                        ExerciseSetupHeader(getString(R.string.session_header))
+                )
 
+        // TODO: extract hard coded
+        val sessionLengthTitle = "Session Length"
+        // TODO: turn mode and parent scale into one parameter
+        val sessionLengthEntries = arrayOf("Question Limit", "Time Limit", "Unlimited")
+        val sessionLengthValue = viewModel.settings.sessionLength
+        val sessionLengthSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        sessionLengthTitle,
+                        sessionLengthEntries,
+                        sessionLengthValue,
+                        clickListener = View.OnClickListener {
+                            var tempItem = sessionLengthValue.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(modeTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        sessionLengthValue.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(sessionLengthEntries, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
+                )
 
+        // TODO: session timer
 
-        return arrayListOf(
-                /* Questions */
-                questionsHeader,
-                numQuestionsSlider,
-                maxIntervalSlider,
-                patternRangeBar,
-                noteChoiceList,
-                /* Playback */
-                playbackHeader,
-                playbackTypeList,
-                playCadenceSwitch,
-                matchKeySwitch,
-                testSwitch
-                /* Answers */)
+        val numQuestionsSlider: ExerciseSetupItem =
+                    ExerciseSetupItem.Slider(
+                            // TODO: Extract some of these numbers
+                            getString(R.string.numQuestions_title),
+                            10f,
+                            200f,
+                            viewModel.settings.numQuestions,
+                            Transformations.map(viewModel.settings.numQuestions) { value ->
+                                value.toString()
+                            },
+                            10f,
+                            isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                                value == ExerciseSetupSettings.QUESTION_LIMIT
+                            }
+
+            )
+
+        val timerLengthSlider: ExerciseSetupItem =
+                ExerciseSetupItem.Slider(
+                        // TODO: Extract some of these numbers
+                        getString(R.string.timerLength_title),
+                        5f,
+                        60f,
+                        viewModel.settings.timerLength,
+                        Transformations.map(viewModel.settings.timerLength) { value ->
+                            value.toString()
+                        },
+                        5f,
+                        isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                            value == ExerciseSetupSettings.TIME_LIMIT
+                        }
+
+                )
+
+        /* Answers */
+
+        val answerHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(
+                        ExerciseSetupHeader(getString(R.string.answer_header))
+                )
+
+        // TODO: match octave
+        val matchOctaveSwitch: ExerciseSetupItem =
+                ExerciseSetupItem.Switch(
+                        getString(R.string.matchOctave_title),
+                        getString(R.string.matchOctave_summary),
+                        viewModel.settings.matchOctave)
+
+        val nextButton: ExerciseSetupItem =
+                ExerciseSetupItem.Button(
+                        "Start"
+                )
+
+        settingItemsArray.add(questionsHeader)
+        settingItemsArray.add(noteChoiceSingle)
+        settingItemsArray.add(chromaticMulti)
+        settingItemsArray.add(diatonicMulti)
+        settingItemsArray.add(questionKeySingle)
+        settingItemsArray.add(parentScaleSingle)
+        settingItemsArray.add(modeSingle)
+        settingItemsArray.add(playableRangeBar)
+
+        settingItemsArray.add(sessionHeader)
+        settingItemsArray.add(sessionLengthSingle)
+        settingItemsArray.add(numQuestionsSlider)
+        settingItemsArray.add(timerLengthSlider)
+
+        settingItemsArray.add(answerHeader)
+        settingItemsArray.add(matchOctaveSwitch)
+
+        settingItemsArray.add(nextButton)
+
     }
 
     // TODO

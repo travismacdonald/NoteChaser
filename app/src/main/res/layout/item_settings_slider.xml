@@ -9,7 +9,7 @@
 
         <variable
             name="obj"
-            type="com.example.notechaser.data.exercisesetup.ExerciseSetupSlider" />
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Slider" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+        app:is_visible="@{obj.isVisible()}">
 
         <TextView
             android:id="@+id/title"

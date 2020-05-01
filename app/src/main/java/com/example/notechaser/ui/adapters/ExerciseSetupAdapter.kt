@@ -3,6 +3,7 @@ package com.example.notechaser.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
 import timber.log.Timber
 
+// TODO: fix gap here
 private const val TYPE_HEADER = 0
 private const val TYPE_SWITCH = 1
 
@@ -17,11 +19,39 @@ private const val TYPE_SINGLE_LIST = 3
 private const val TYPE_MULTI_LIST = 4
 private const val TYPE_SLIDER = 5
 private const val TYPE_RANGE_BAR = 6
+private const val TYPE_BUTTON = 7
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
 class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         ListAdapter<ExerciseSetupItem, RecyclerView.ViewHolder>(ExerciseSettingDiffCallback()) {
+
+    override fun getItemViewType(position: Int): Int {
+
+        return when (getItem(position)) {
+            is ExerciseSetupItem.Header -> TYPE_HEADER
+            is ExerciseSetupItem.Switch -> TYPE_SWITCH
+            is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
+            is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
+            is ExerciseSetupItem.Slider -> TYPE_SLIDER
+            is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
+            is ExerciseSetupItem.Button -> TYPE_BUTTON
+            else -> -1
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_HEADER -> HeaderViewHolder.from(parent)
+            TYPE_SWITCH -> SwitchViewHolder.from(parent)
+            TYPE_SINGLE_LIST -> SingleListViewHolder.from(parent)
+            TYPE_MULTI_LIST -> MultiListViewHolder.from(parent)
+            TYPE_SLIDER -> SliderViewHolder.from(parent)
+            TYPE_RANGE_BAR -> RangeBarViewHolder.from(parent)
+            TYPE_BUTTON -> ButtonViewHolder.from(parent)
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -31,65 +61,33 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             }
             is SwitchViewHolder -> {
                 val switchItem = getItem(position) as ExerciseSetupItem.Switch
-                holder.bind(switchItem.switch)
+                holder.bind(switchItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SingleListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
-                holder.bind(listItem.list)
+                holder.bind(listItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is MultiListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.MultiList
-                holder.bind(listItem.list)
+                holder.bind(listItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SliderViewHolder -> {
                 val sliderItem = getItem(position) as ExerciseSetupItem.Slider
-                holder.bind(sliderItem.slider)
+                holder.bind(sliderItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is RangeBarViewHolder -> {
                 val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
-                holder.bind(rangeBarItem.rangeBar)
+                holder.bind(rangeBarItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_HEADER ->
-                HeaderViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_SWITCH ->
-                SwitchViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_SINGLE_LIST ->
-                SingleListViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_MULTI_LIST ->
-                MultiListViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_SLIDER ->
-                SliderViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_RANGE_BAR ->
-                RangeBarViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            else -> throw IllegalArgumentException("Unknown view type: $viewType")
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is ExerciseSetupItem.Header -> TYPE_HEADER
-            is ExerciseSetupItem.Switch -> TYPE_SWITCH
-            is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
-            is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
-            is ExerciseSetupItem.Slider -> TYPE_SLIDER
-            is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
+            is ButtonViewHolder -> {
+                val buttonItem = getItem(position) as ExerciseSetupItem.Button
+                holder.bind(buttonItem)
+            }
         }
     }
 
@@ -118,10 +116,8 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class SwitchViewHolder private constructor(val binding: ItemSettingsSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(switch: ExerciseSetupSwitch) {
+        fun bind(switch: ExerciseSetupItem.Switch) {
             binding.obj = switch
-            // TODO: Clean this up
-            switch.imgSrc?.let { binding.icon.setImageResource(switch.imgSrc) }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {
@@ -138,7 +134,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class SingleListViewHolder private constructor(val binding: ItemSettingsSingleListBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: ExerciseSetupSingleList) {
+        fun bind(list: ExerciseSetupItem.SingleList) {
             binding.obj = list
         }
         companion object {
@@ -156,7 +152,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class MultiListViewHolder private constructor(val binding: ItemSettingsMultiListBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: ExerciseSetupMultiList) {
+        fun bind(list: ExerciseSetupItem.MultiList) {
             binding.obj = list
         }
         companion object {
@@ -176,13 +172,13 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
         // TODO: Move to databinding if you can
         // TODO: Change some of the naming conventions: kind of confusing
-        fun bind(slider: ExerciseSetupSlider) {
+        fun bind(slider: ExerciseSetupItem.Slider) {
             binding.obj = slider
             binding.slider.valueFrom = slider.valueFrom
             binding.slider.valueTo = slider.valueTo
             binding.slider.stepSize = slider.stepSize
             binding.slider.value = slider.value.value!!.toFloat()
-            binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
+            binding.slider.addOnChangeListener { _, value, _ ->
                 slider.value.value = value.toInt()
             }
 
@@ -204,7 +200,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
         // TODO: Move to databinding if you can
         // TODO: Change some of the naming conventions: kind of confusing
-        fun bind(rangeBar: ExerciseSetupRangeBar) {
+        fun bind(rangeBar: ExerciseSetupItem.RangeBar) {
             binding.obj = rangeBar
             binding.rangeBar.valueFrom = rangeBar.valueFrom
             binding.rangeBar.valueTo = rangeBar.valueTo
@@ -230,15 +226,37 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
+    /**
+     * Setup Button
+     */
+    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
+        // TODO: Clean this up
+        fun bind(buttonItem: ExerciseSetupItem.Button) {
+            binding.obj = buttonItem
+        }
+        companion object {
+            fun from(parent: ViewGroup): ButtonViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemSettingsButtonBinding.inflate(layoutInflater, parent, false)
+                return ButtonViewHolder(binding)
+            }
+        }
+    }
+
 }
 
 // TODO: Probably get rid of this - contents don't change in this adapter
 private class ExerciseSettingDiffCallback : DiffUtil.ItemCallback<ExerciseSetupItem>() {
 
+    // TODO: fix this later
     override fun areContentsTheSame(oldItem: ExerciseSetupItem, newItem: ExerciseSetupItem): Boolean {
-        return oldItem == newItem
+        return false
+//        return oldItem == newItem
     }
 
+    // TODO: fix this later
     override fun areItemsTheSame(oldItem: ExerciseSetupItem, newItem: ExerciseSetupItem): Boolean {
         return false // TODO fix
     }
