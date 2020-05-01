@@ -326,13 +326,21 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
-
-
-        // TODO: session type
-
         // TODO: session timer
 
-        // TODO: num questions
+        val numQuestionsSlider: ExerciseSetupItem =
+                    ExerciseSetupItem.Slider(
+                            // TODO: Extract some of these numbers
+                            getString(R.string.numQuestions_title),
+                            10f,
+                            200f,
+                            viewModel.settings.numQuestions,
+                            Transformations.map(viewModel.settings.numQuestions) { value ->
+                                value.toString()
+                            },
+                            10f
+
+            )
 
         /* Answers */
 
@@ -351,6 +359,7 @@ class ExerciseSetupFragment : Fragment() {
 
         settingItemsArray.add(sessionHeader)
         settingItemsArray.add(sessionLengthSingle)
+        settingItemsArray.add(numQuestionsSlider)
 
 
         // TODO: this is just here to check for blank space at end

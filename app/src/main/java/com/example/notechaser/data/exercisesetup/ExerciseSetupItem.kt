@@ -39,8 +39,16 @@ interface ExerciseSetupItem {
 
 //    data class Switch(val switch: ExerciseSetupSwitch) : ExerciseSetupItem()
 //
-//    data class Slider(val slider: ExerciseSetupSlider) : ExerciseSetupItem()
-//
+    data class Slider(val title: String,
+                      val valueFrom: Float,
+                      val valueTo: Float,
+                      val value: MutableLiveData<Int>,
+                      val displayValue: LiveData<String>,
+                      val stepSize: Float = 1f,
+                      override val isEnabled: MutableLiveData<Boolean> = MutableLiveData(true),
+                      override val isVisible: MutableLiveData<Boolean> = MutableLiveData(true))
+    : ExerciseSetupItem
+
     data class RangeBar(val title: String,
                         val valueFrom: Float,
                         val valueTo: Float,

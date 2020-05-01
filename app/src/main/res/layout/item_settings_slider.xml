@@ -9,7 +9,7 @@
 
         <variable
             name="obj"
-            type="com.example.notechaser.data.exercisesetup.ExerciseSetupSlider" />
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Slider" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

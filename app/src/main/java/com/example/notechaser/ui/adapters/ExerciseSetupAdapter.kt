@@ -32,7 +32,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 //            is ExerciseSetupItem.Switch -> TYPE_SWITCH
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
-//            is ExerciseSetupItem.Slider -> TYPE_SLIDER
+            is ExerciseSetupItem.Slider -> TYPE_SLIDER
             is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
             else -> -1
         }
@@ -50,10 +50,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 }
             TYPE_SINGLE_LIST -> SingleListViewHolder.from(parent)
             TYPE_MULTI_LIST -> MultiListViewHolder.from(parent)
-            TYPE_SLIDER ->
-                SliderViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
+            TYPE_SLIDER -> SliderViewHolder.from(parent)
             TYPE_RANGE_BAR -> RangeBarViewHolder.from(parent)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
@@ -79,10 +76,11 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 holder.bind(listItem)
                 holder.binding.lifecycleOwner = lifecycleOwner
             }
-//            is SliderViewHolder -> {
-//                val sliderItem = getItem(position) as ExerciseSetupItem.Slider
-//                holder.bind(sliderItem.slider)
-//            }
+            is SliderViewHolder -> {
+                val sliderItem = getItem(position) as ExerciseSetupItem.Slider
+                holder.bind(sliderItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
+            }
             is RangeBarViewHolder -> {
                 val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
                 holder.bind(rangeBarItem)
@@ -174,7 +172,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
         // TODO: Move to databinding if you can
         // TODO: Change some of the naming conventions: kind of confusing
-        fun bind(slider: ExerciseSetupSlider) {
+        fun bind(slider: ExerciseSetupItem.Slider) {
             binding.obj = slider
             binding.slider.valueFrom = slider.valueFrom
             binding.slider.valueTo = slider.valueTo
