@@ -21,7 +21,6 @@ import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ExerciseSetupFragment : Fragment() {
@@ -265,7 +264,7 @@ class ExerciseSetupFragment : Fragment() {
 
         val playableRangeBar: ExerciseSetupItem =
                 ExerciseSetupItem.RangeBar(
-                            "Range Bar",
+                            "Question Range",
                             24f,
                             88f,
                             generator.lowerBound,
@@ -370,8 +369,9 @@ class ExerciseSetupFragment : Fragment() {
                         viewModel.settings.matchOctave)
 
         val nextButton: ExerciseSetupItem =
-                ExerciseSetupItem.Button(
-                        "Start"
+                ExerciseSetupItem.Buttons(
+                        "Start",
+                        "Back"
                 )
 
         settingItemsArray.add(questionsHeader)

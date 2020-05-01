@@ -9,7 +9,7 @@
 
         <variable
             name="obj"
-            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Button" />
+            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Buttons" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,12 +19,26 @@
         android:background="@drawable/settings_item_background" >
 
         <Button
-            android:id="@+id/title"
+            android:id="@+id/backButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/rubik"
+            android:text="@{obj.backText}"
+            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
+            android:textSize="@dimen/itemTitleTextSize"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="Back" />
+
+        <Button
+            android:id="@+id/nextButton"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.title}"
+            android:text="@{obj.startText}"
             android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintTop_toTopOf="parent"

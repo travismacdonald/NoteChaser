@@ -3,13 +3,11 @@ package com.example.notechaser.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
-import timber.log.Timber
 
 // TODO: fix gap here
 private const val TYPE_HEADER = 0
@@ -35,7 +33,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
             is ExerciseSetupItem.Slider -> TYPE_SLIDER
             is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
-            is ExerciseSetupItem.Button -> TYPE_BUTTON
+            is ExerciseSetupItem.Buttons -> TYPE_BUTTON
             else -> -1
         }
     }
@@ -85,7 +83,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 holder.binding.lifecycleOwner = lifecycleOwner
             }
             is ButtonViewHolder -> {
-                val buttonItem = getItem(position) as ExerciseSetupItem.Button
+                val buttonItem = getItem(position) as ExerciseSetupItem.Buttons
                 holder.bind(buttonItem)
             }
         }
@@ -229,17 +227,17 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     /**
      * Setup Button
      */
-    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonBinding)
+    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonsBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
         // TODO: Clean this up
-        fun bind(buttonItem: ExerciseSetupItem.Button) {
-            binding.obj = buttonItem
+        fun bind(buttonsItem: ExerciseSetupItem.Buttons) {
+            binding.obj = buttonsItem
         }
         companion object {
             fun from(parent: ViewGroup): ButtonViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemSettingsButtonBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemSettingsButtonsBinding.inflate(layoutInflater, parent, false)
                 return ButtonViewHolder(binding)
             }
         }
