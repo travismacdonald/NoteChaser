@@ -1,10 +1,7 @@
 package com.example.notechaser.data.exercisesetup
 
 
-import androidx.databinding.Bindable
-import androidx.databinding.Observable
 import androidx.lifecycle.MutableLiveData
-import com.example.notechaser.data.exercisesetup.Constants.NOTE_CHOICE_CHROMATIC
 
 class ExerciseSetupSettings {
 
@@ -12,7 +9,7 @@ class ExerciseSetupSettings {
 
     val matchKey = MutableLiveData<Boolean>()
 
-//    val noteChoice = MutableLiveData(NOTE_CHOICE_CHROMATIC)
+    val sessionLength = MutableLiveData(QUESTION_LIMIT)
 
     // 1. Ascending; 2. Descending;
     val playbackTypeMel = MutableLiveData(booleanArrayOf(true, false))
@@ -28,6 +25,12 @@ class ExerciseSetupSettings {
         // TODO: Move these values to constructor call
         playCadence.value = true
         matchKey.value = true
+    }
+
+    companion object {
+        val QUESTION_LIMIT = 0
+        val TIME_LIMIT = 1
+        val UNLIMITED = 2
     }
 
 }

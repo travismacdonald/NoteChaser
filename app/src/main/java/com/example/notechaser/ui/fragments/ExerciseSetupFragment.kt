@@ -134,7 +134,7 @@ class ExerciseSetupFragment : Fragment() {
         val chromaticMulti: ExerciseSetupItem =
             ExerciseSetupItem.MultiList(
                 "Chromatic Intervals",
-                    // TODO: do better
+                    // TODO: write a better summary and extract
                 "Intervals to choose from",
                 MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
                 generator.chromaticDegrees,
@@ -164,7 +164,7 @@ class ExerciseSetupFragment : Fragment() {
         val diatonicMulti: ExerciseSetupItem =
                 ExerciseSetupItem.MultiList(
                         "Diatonic Intervals",
-                        // TODO: do better
+                        // TODO: write a better summary
                         "Intervals to choose from",
                         MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
                         generator.diatonicDegrees,
@@ -270,8 +270,6 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
-
-        // TODO: question range
         val playableRangeBar: ExerciseSetupItem =
                 ExerciseSetupItem.RangeBar(
                             "Range Bar",
@@ -295,7 +293,40 @@ class ExerciseSetupFragment : Fragment() {
 
         /* Session */
 
-        // TODO: header
+        val sessionHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(
+                        ExerciseSetupHeader(getString(R.string.session_header))
+                )
+
+        // TODO: extract hard coded
+        val sessionLengthTitle = "Session Length"
+        // TODO: turn mode and parent scale into one parameter
+        val sessionLengthEntries = arrayOf("Question Limit", "Time Limit", "Unlimited")
+        val sessionLengthValue = viewModel.settings.sessionLength
+        val sessionLengthSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        sessionLengthTitle,
+                        sessionLengthEntries,
+                        sessionLengthValue,
+                        clickListener = View.OnClickListener {
+                            var tempItem = sessionLengthValue.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(modeTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        sessionLengthValue.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(sessionLengthEntries, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
+                )
+
+
 
         // TODO: session type
 
@@ -315,8 +346,11 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(diatonicMulti)
         settingItemsArray.add(questionKeySingle)
         settingItemsArray.add(parentScaleSingle)
-        settingItemsArray.add(playableRangeBar)
         settingItemsArray.add(modeSingle)
+        settingItemsArray.add(playableRangeBar)
+
+        settingItemsArray.add(sessionHeader)
+        settingItemsArray.add(sessionLengthSingle)
 
 
         // TODO: this is just here to check for blank space at end
