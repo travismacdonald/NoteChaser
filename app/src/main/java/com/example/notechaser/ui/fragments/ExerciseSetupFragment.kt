@@ -20,6 +20,8 @@ import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.InjectorUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -211,8 +213,36 @@ class ExerciseSetupFragment : Fragment() {
                 )
 
 
-
         // TODO: question scale (mixo, dorian, etc ... )
+
+        val parentScaleTitle = resources.getString(R.string.parentScale_title)
+        val parentScaleEntries = (MusicTheoryUtils.PARENT_SCALE_BANK.map { it.name }).toTypedArray()
+        val parentScaleValue = Transformations.map(generator.parentScale) { value ->
+            parentScaleEntries.indexOf(value.name)
+        }
+        val parentScaleSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        parentScaleTitle,
+                        parentScaleEntries,
+                        parentScaleValue,
+                        clickListener = View.OnClickListener {
+                            var tempItem = parentScaleValue.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(parentScaleTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.parentScale.value = MusicTheoryUtils.PARENT_SCALE_BANK[tempItem]
+                                    }
+                                    .setSingleChoiceItems(parentScaleEntries, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
+                )
+
 
         // TODO: question range
 
@@ -237,6 +267,7 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(chromaticMulti)
         settingItemsArray.add(diatonicMulti)
         settingItemsArray.add(questionKeySingle)
+        settingItemsArray.add(parentScaleSingle)
 
 
         // TODO: this is just here to check for blank space at end

@@ -1,5 +1,6 @@
 package com.example.notechaser.utilities
 
+import com.example.notechaser.playablegenerator.ParentScale
 import java.lang.IllegalArgumentException
 
 class MusicTheoryUtils {
@@ -101,6 +102,13 @@ class MusicTheoryUtils {
                 "7th"
         )
 
+        // TODO: Replace with actual DB later
+        val PARENT_SCALE_BANK = arrayOf(
+                ParentScale("Major", MAJOR_SCALE_SEQUENCE),
+                ParentScale("Melodic Minor", MELODIC_MINOR_SCALE_SEQUENCE),
+                ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_SEQUENCE)
+        )
+
         fun ixToName(ix: Int): String {
             return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
         }
@@ -121,11 +129,9 @@ class MusicTheoryUtils {
             for (i in modeIx until toReturn.size) {
                 toReturn[counter] = intervals[i] - offset
                 ++counter
-//                toReturn.addInterval(scaleSequence[i] - offset)
             }
             for (i in 0 until modeIx) {
                 toReturn[counter] = intervals[i] + OCTAVE_SIZE - offset
-//                toReturn.addInterval(scaleSequence[i] + MusicTheoryUtils.OCTAVE_SIZE - offset)
                 ++counter
             }
             return toReturn
