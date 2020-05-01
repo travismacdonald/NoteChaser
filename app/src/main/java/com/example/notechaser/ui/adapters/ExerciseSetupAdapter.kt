@@ -29,7 +29,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
         return when (getItem(position)) {
             is ExerciseSetupItem.Header -> TYPE_HEADER
-//            is ExerciseSetupItem.Switch -> TYPE_SWITCH
+            is ExerciseSetupItem.Switch -> TYPE_SWITCH
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
             is ExerciseSetupItem.Slider -> TYPE_SLIDER
@@ -40,14 +40,8 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_HEADER ->
-                HeaderViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
-            TYPE_SWITCH ->
-                SwitchViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
+            TYPE_HEADER -> HeaderViewHolder.from(parent)
+            TYPE_SWITCH -> SwitchViewHolder.from(parent)
             TYPE_SINGLE_LIST -> SingleListViewHolder.from(parent)
             TYPE_MULTI_LIST -> MultiListViewHolder.from(parent)
             TYPE_SLIDER -> SliderViewHolder.from(parent)
@@ -62,10 +56,11 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val headerItem = getItem(position) as ExerciseSetupItem.Header
                 holder.bind(headerItem.header)
             }
-//            is SwitchViewHolder -> {
-//                val switchItem = getItem(position) as ExerciseSetupItem.Switch
-//                holder.bind(switchItem.switch)
-//            }
+            is SwitchViewHolder -> {
+                val switchItem = getItem(position) as ExerciseSetupItem.Switch
+                holder.bind(switchItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
+            }
             is SingleListViewHolder -> {
                 val listItem = getItem(position) as ExerciseSetupItem.SingleList
                 holder.bind(listItem)
@@ -114,10 +109,8 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     class SwitchViewHolder private constructor(val binding: ItemSettingsSwitchBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(switch: ExerciseSetupSwitch) {
+        fun bind(switch: ExerciseSetupItem.Switch) {
             binding.obj = switch
-            // TODO: Clean this up
-            switch.imgSrc?.let { binding.icon.setImageResource(switch.imgSrc) }
         }
         companion object {
             fun from(parent: ViewGroup): SwitchViewHolder {

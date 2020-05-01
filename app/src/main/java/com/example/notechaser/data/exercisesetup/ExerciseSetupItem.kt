@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 
 // TODO: Refactor this so all items are contained in this class
 // TODO: perhaps this can be an interface instead
+// TODO: implement equal and hashFunctions for classes with arrays
+// TODO: make img source an interface field
 interface ExerciseSetupItem {
 
     val isEnabled: LiveData<Boolean>
@@ -37,8 +39,19 @@ interface ExerciseSetupItem {
             override val isVisible: LiveData<Boolean> = MutableLiveData(true)
     ) : ExerciseSetupItem
 
-//    data class Switch(val switch: ExerciseSetupSwitch) : ExerciseSetupItem()
-//
+    data class Switch(
+            val title: String,
+            val summary: String,
+            val isChecked: MutableLiveData<Boolean>,
+            override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
+            override val isVisible: LiveData<Boolean> = MutableLiveData(true),
+            val imgSrc: Int? = null
+    ) : ExerciseSetupItem {
+        fun setIsChecked(value: Boolean) {
+            isChecked.value = value
+        }
+    }
+
     data class Slider(val title: String,
                       val valueFrom: Float,
                       val valueTo: Float,

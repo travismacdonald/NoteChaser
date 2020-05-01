@@ -75,4 +75,6 @@
 
     <string name="session_header">Session Settings</string>
 
+    <string name="answer_header">Answer Settings</string>
+
 </resources>

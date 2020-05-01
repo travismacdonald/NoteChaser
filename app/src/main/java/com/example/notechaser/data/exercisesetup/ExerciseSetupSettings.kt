@@ -11,6 +11,8 @@ class ExerciseSetupSettings {
 
     val sessionLength = MutableLiveData(QUESTION_LIMIT)
 
+    val matchOctave = MutableLiveData(false)
+
     // 1. Ascending; 2. Descending;
     val playbackTypeMel = MutableLiveData(booleanArrayOf(true, false))
 

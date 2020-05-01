@@ -364,9 +364,17 @@ class ExerciseSetupFragment : Fragment() {
 
         /* Answers */
 
-        // TODO: header
+        val answerHeader: ExerciseSetupItem =
+                ExerciseSetupItem.Header(
+                        ExerciseSetupHeader(getString(R.string.answer_header))
+                )
 
         // TODO: match octave
+        val matchOctaveSwitch: ExerciseSetupItem =
+                ExerciseSetupItem.Switch(
+                        getString(R.string.matchOctave_title),
+                        getString(R.string.matchOctave_summary),
+                        viewModel.settings.matchOctave)
 
         settingItemsArray.add(questionsHeader)
         settingItemsArray.add(noteChoiceSingle)
@@ -382,9 +390,8 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(numQuestionsSlider)
         settingItemsArray.add(timerLengthSlider)
 
-
-        // TODO: this is just here to check for blank space at end
-        settingItemsArray.add(questionsHeader)
+        settingItemsArray.add(answerHeader)
+        settingItemsArray.add(matchOctaveSwitch)
 
     }
 
