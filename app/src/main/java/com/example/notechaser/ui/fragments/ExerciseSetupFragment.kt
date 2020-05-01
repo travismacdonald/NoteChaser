@@ -243,6 +243,34 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
+        // TODO: extract hard coded
+        val modeTitle = "Mode"
+        // TODO: turn mode and parent scale into one parameter
+        val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
+        val modeValue = generator.mode
+        val modeSingle: ExerciseSetupItem =
+                ExerciseSetupItem.SingleList(
+                        modeTitle,
+                        modeEntries,
+                        modeValue,
+                        clickListener = View.OnClickListener {
+                            var tempItem = modeValue.value!!
+                            MaterialAlertDialogBuilder(context!!)
+                                    .setTitle(modeTitle)
+                                    .setNegativeButton("Dismiss") { _, _ ->
+                                        // Do nothing
+                                    }
+                                    .setPositiveButton("Confirm") { _, _ ->
+                                        // Commit Changes
+                                        generator.mode.value = tempItem
+                                    }
+                                    .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
+                                        tempItem = which
+                                    }
+                                    .show()
+                        }
+                )
+
 
         // TODO: question range
 
@@ -268,6 +296,7 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(diatonicMulti)
         settingItemsArray.add(questionKeySingle)
         settingItemsArray.add(parentScaleSingle)
+        settingItemsArray.add(modeSingle)
 
 
         // TODO: this is just here to check for blank space at end
