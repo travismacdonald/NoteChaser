@@ -33,7 +33,7 @@ class ExerciseSetupFragment : Fragment() {
     lateinit var binding: FragmentExerciseSetupBinding
     lateinit var adapter: ExerciseSetupAdapter
     lateinit var args: ExerciseSetupFragmentArgs
-    lateinit var settingItemsArray: MutableList<ExerciseSetupItem>
+    private val settingItemsArray: MutableList<ExerciseSetupItem> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -67,7 +67,6 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun makeSingleNoteList() {
 
-        settingItemsArray = arrayListOf()
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
@@ -216,6 +215,9 @@ class ExerciseSetupFragment : Fragment() {
                         parentScaleTitle,
                         parentScaleEntries,
                         parentScaleValue,
+                        isVisible = Transformations.map(generator.noteType) { value ->
+                            value == GeneratorNoteType.DIATONIC
+                        },
                         clickListener = View.OnClickListener {
                             var tempItem = parentScaleValue.value!!
                             MaterialAlertDialogBuilder(context!!)
@@ -244,6 +246,9 @@ class ExerciseSetupFragment : Fragment() {
                         modeTitle,
                         modeEntries,
                         modeValue,
+                        isVisible = Transformations.map(generator.noteType) { value ->
+                            value == GeneratorNoteType.DIATONIC
+                        },
                         clickListener = View.OnClickListener {
                             var tempItem = modeValue.value!!
                             MaterialAlertDialogBuilder(context!!)
@@ -318,8 +323,6 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
-        // TODO: session timer
-
         val numQuestionsSlider: ExerciseSetupItem =
                     ExerciseSetupItem.Slider(
                             // TODO: Extract some of these numbers
@@ -361,7 +364,6 @@ class ExerciseSetupFragment : Fragment() {
                         ExerciseSetupHeader(getString(R.string.answer_header))
                 )
 
-        // TODO: match octave
         val matchOctaveSwitch: ExerciseSetupItem =
                 ExerciseSetupItem.Switch(
                         getString(R.string.matchOctave_title),
