@@ -338,9 +338,29 @@ class ExerciseSetupFragment : Fragment() {
                             Transformations.map(viewModel.settings.numQuestions) { value ->
                                 value.toString()
                             },
-                            10f
+                            10f,
+                            isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                                value == ExerciseSetupSettings.QUESTION_LIMIT
+                            }
 
             )
+
+        val timerLengthSlider: ExerciseSetupItem =
+                ExerciseSetupItem.Slider(
+                        // TODO: Extract some of these numbers
+                        getString(R.string.timerLength_title),
+                        5f,
+                        60f,
+                        viewModel.settings.timerLength,
+                        Transformations.map(viewModel.settings.timerLength) { value ->
+                            value.toString()
+                        },
+                        5f,
+                        isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                            value == ExerciseSetupSettings.TIME_LIMIT
+                        }
+
+                )
 
         /* Answers */
 
@@ -360,6 +380,7 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(sessionHeader)
         settingItemsArray.add(sessionLengthSingle)
         settingItemsArray.add(numQuestionsSlider)
+        settingItemsArray.add(timerLengthSlider)
 
 
         // TODO: this is just here to check for blank space at end

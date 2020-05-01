@@ -19,6 +19,8 @@ class ExerciseSetupSettings {
 
     val numQuestions = MutableLiveData(20)
 
+    val timerLength = MutableLiveData(10)
+
     val maxIntervalInPattern = MutableLiveData(4)
 
     init {
