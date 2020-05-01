@@ -19,6 +19,7 @@ private const val TYPE_SINGLE_LIST = 3
 private const val TYPE_MULTI_LIST = 4
 private const val TYPE_SLIDER = 5
 private const val TYPE_RANGE_BAR = 6
+private const val TYPE_BUTTON = 7
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
@@ -34,6 +35,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
             is ExerciseSetupItem.Slider -> TYPE_SLIDER
             is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
+            is ExerciseSetupItem.Button -> TYPE_BUTTON
             else -> -1
         }
     }
@@ -46,6 +48,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             TYPE_MULTI_LIST -> MultiListViewHolder.from(parent)
             TYPE_SLIDER -> SliderViewHolder.from(parent)
             TYPE_RANGE_BAR -> RangeBarViewHolder.from(parent)
+            TYPE_BUTTON -> ButtonViewHolder.from(parent)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -80,6 +83,10 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
                 holder.bind(rangeBarItem)
                 holder.binding.lifecycleOwner = lifecycleOwner
+            }
+            is ButtonViewHolder -> {
+                val buttonItem = getItem(position) as ExerciseSetupItem.Button
+                holder.bind(buttonItem)
             }
         }
     }
@@ -215,6 +222,25 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemSettingsRangeBarBinding.inflate(layoutInflater, parent, false)
                 return RangeBarViewHolder(binding)
+            }
+        }
+    }
+
+    /**
+     * Setup Button
+     */
+    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
+        // TODO: Clean this up
+        fun bind(buttonItem: ExerciseSetupItem.Button) {
+            binding.obj = buttonItem
+        }
+        companion object {
+            fun from(parent: ViewGroup): ButtonViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemSettingsButtonBinding.inflate(layoutInflater, parent, false)
+                return ButtonViewHolder(binding)
             }
         }
     }

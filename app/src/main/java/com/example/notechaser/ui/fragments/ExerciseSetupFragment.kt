@@ -44,13 +44,6 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        // TODO: Test button here! remove later plz
-//        binding.testButton.setOnClickListener {
-//            Timber.d(
-//                    " \nlower = ${viewModel.generator.lowerBound.value!!}" +
-//                            "\nupper = ${viewModel.generator.upperBound.value!!}")
-//        }
-
         val manager = LinearLayoutManager(activity)
         adapter = ExerciseSetupAdapter(this)
         args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
@@ -376,6 +369,11 @@ class ExerciseSetupFragment : Fragment() {
                         getString(R.string.matchOctave_summary),
                         viewModel.settings.matchOctave)
 
+        val nextButton: ExerciseSetupItem =
+                ExerciseSetupItem.Button(
+                        "Start"
+                )
+
         settingItemsArray.add(questionsHeader)
         settingItemsArray.add(noteChoiceSingle)
         settingItemsArray.add(chromaticMulti)
@@ -392,6 +390,8 @@ class ExerciseSetupFragment : Fragment() {
 
         settingItemsArray.add(answerHeader)
         settingItemsArray.add(matchOctaveSwitch)
+
+        settingItemsArray.add(nextButton)
 
     }
 

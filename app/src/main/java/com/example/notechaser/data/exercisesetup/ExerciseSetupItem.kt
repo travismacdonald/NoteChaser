@@ -74,4 +74,10 @@ interface ExerciseSetupItem {
                         override val isVisible: LiveData<Boolean> = MutableLiveData(true)
     ) : ExerciseSetupItem
 
+    data class Button(
+            val title: String,
+            override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
+            override val isVisible: LiveData<Boolean> = MutableLiveData(true)
+    ) : ExerciseSetupItem
+
 }
