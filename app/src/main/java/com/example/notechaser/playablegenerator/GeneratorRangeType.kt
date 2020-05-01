@@ -1,3 +1,9 @@
 package com.example.notechaser.playablegenerator
 
-enum class GeneratorRangeType { FIXED_STARTING_NOTE, FIXED_ROOT, BOUNDED }
+class GeneratorRangeType {
+    companion object {
+        val BOUNDED = 0
+        val FIXED_STARTING_NOTE = 1
+        val FIXED_ROOT = 2
+    }
+}

@@ -11,6 +11,7 @@ import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
 import timber.log.Timber
 
+// TODO: fix gap here
 private const val TYPE_HEADER = 0
 private const val TYPE_SWITCH = 1
 
@@ -21,7 +22,7 @@ private const val TYPE_RANGE_BAR = 6
 
 // TODO: perhaps? save attribute to shared preferences on every attribute change
 
-class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
+class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         ListAdapter<ExerciseSetupItem, RecyclerView.ViewHolder>(ExerciseSettingDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
@@ -32,7 +33,7 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.SingleList -> TYPE_SINGLE_LIST
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
 //            is ExerciseSetupItem.Slider -> TYPE_SLIDER
-//            is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
+            is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
             else -> -1
         }
     }
@@ -53,10 +54,7 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
                 SliderViewHolder.from(parent).apply {
                     binding.lifecycleOwner = lifecycleOwner
                 }
-            TYPE_RANGE_BAR ->
-                RangeBarViewHolder.from(parent).apply {
-                    binding.lifecycleOwner = lifecycleOwner
-                }
+            TYPE_RANGE_BAR -> RangeBarViewHolder.from(parent)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -85,10 +83,11 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
 //                val sliderItem = getItem(position) as ExerciseSetupItem.Slider
 //                holder.bind(sliderItem.slider)
 //            }
-//            is RangeBarViewHolder -> {
-//                val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
-//                holder.bind(rangeBarItem.rangeBar)
-//            }
+            is RangeBarViewHolder -> {
+                val rangeBarItem = getItem(position) as ExerciseSetupItem.RangeBar
+                holder.bind(rangeBarItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
+            }
         }
     }
 
@@ -181,7 +180,7 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
             binding.slider.valueTo = slider.valueTo
             binding.slider.stepSize = slider.stepSize
             binding.slider.value = slider.value.value!!.toFloat()
-            binding.slider.addOnChangeListener { sliderItem, value, fromUser ->
+            binding.slider.addOnChangeListener { _, value, _ ->
                 slider.value.value = value.toInt()
             }
 
@@ -203,7 +202,7 @@ class ExerciseSetupAdapter(val lifecycleOwner: LifecycleOwner) :
 
         // TODO: Move to databinding if you can
         // TODO: Change some of the naming conventions: kind of confusing
-        fun bind(rangeBar: ExerciseSetupRangeBar) {
+        fun bind(rangeBar: ExerciseSetupItem.RangeBar) {
             binding.obj = rangeBar
             binding.rangeBar.valueFrom = rangeBar.valueFrom
             binding.rangeBar.valueTo = rangeBar.valueTo

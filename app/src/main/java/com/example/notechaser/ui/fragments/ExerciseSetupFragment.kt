@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
@@ -213,8 +214,6 @@ class ExerciseSetupFragment : Fragment() {
                 )
 
 
-        // TODO: question scale (mixo, dorian, etc ... )
-
         val parentScaleTitle = resources.getString(R.string.parentScale_title)
         val parentScaleEntries = (MusicTheoryUtils.PARENT_SCALE_BANK.map { it.name }).toTypedArray()
         val parentScaleValue = Transformations.map(generator.parentScale) { value ->
@@ -273,6 +272,26 @@ class ExerciseSetupFragment : Fragment() {
 
 
         // TODO: question range
+        val playableRangeBar: ExerciseSetupItem =
+                ExerciseSetupItem.RangeBar(
+                            "Range Bar",
+                            24f,
+                            88f,
+                            generator.lowerBound,
+                            generator.upperBound,
+                            displayValue = {
+                                val result = MediatorLiveData<String>()
+                                val updateRange = {
+                                    val lower = MusicTheoryUtils.ixToName(generator.lowerBound.value!!)
+                                    val upper = MusicTheoryUtils.ixToName(generator.upperBound.value!!)
+                                    result.value = "$lower to $upper"
+                                }
+                                result.addSource(generator.lowerBound) { updateRange() }
+                                result.addSource(generator.upperBound) { updateRange() }
+                                result
+                            }.invoke()
+                )
+
 
         /* Session */
 
@@ -296,6 +315,7 @@ class ExerciseSetupFragment : Fragment() {
         settingItemsArray.add(diatonicMulti)
         settingItemsArray.add(questionKeySingle)
         settingItemsArray.add(parentScaleSingle)
+        settingItemsArray.add(playableRangeBar)
         settingItemsArray.add(modeSingle)
 
 
