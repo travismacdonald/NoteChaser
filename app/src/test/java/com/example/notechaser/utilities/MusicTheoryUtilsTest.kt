@@ -2,7 +2,6 @@ package com.example.notechaser.utilities
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class MusicTheoryUtilsTest {

@@ -70,16 +70,33 @@ class SingleNoteGenerator() : PlayableGenerator {
         if (noteType.value == GeneratorNoteType.DIATONIC) {
 
         }
-        // TODO: fix broken algorithm
+        // TODO: i think this algorithm works
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
-            for (i in lowerBound.value!!..upperBound.value!!) {
-                if (chromaticDegrees.value!![((i + questionKey.value!!) % chromaticDegrees.value!!.size)]) {
-                    notePool.add(i)
-                }
+            val intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(chromaticDegrees.value!!, questionKey.value!!)
+            val lower = lowerBound.value!!
+            val startInterval = lower % MusicTheoryUtils.OCTAVE_SIZE
+            val something = lower / MusicTheoryUtils.OCTAVE_SIZE
+            var ix = (something * intervals.size)
+            val greaterThanStart = intervals.filter { it >= startInterval }
+            if (greaterThanStart.isNotEmpty()) {
+                // TODO: can probably make this line better
+                ix += intervals.indexOf(greaterThanStart[0])
             }
+            else {
+                ix += intervals.size
+            }
+            var interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
+            // Inclusive upper bound
+            while (interval <= upperBound.value!!) {
+                notePool.add(interval)
+                ix++
+                interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
+            }
+            Timber.d("intvls: $intervals")
+            Timber.d("bounds: ${lowerBound.value} to ${upperBound.value}")
+            Timber.d("notePool: ${notePool.toString()}")
+            Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
         }
-        Timber.d("notePool: ${notePool.toString()}")
-        Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
     }
 
     override fun generatePlayable(): Playable {

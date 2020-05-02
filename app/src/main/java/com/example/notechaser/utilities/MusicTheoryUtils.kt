@@ -1,8 +1,6 @@
 package com.example.notechaser.utilities
 
 import com.example.notechaser.playablegenerator.ParentScale
-import java.io.ObjectStreamClass
-import java.lang.IllegalArgumentException
 
 class MusicTheoryUtils {
 
@@ -118,7 +116,7 @@ class MusicTheoryUtils {
             if (intervals[0] != 0) {
                 throw IllegalArgumentException(
                         "Cannot use scale when first interval is not zero.\n" +
-                        "Intervals = $intervals")
+                                "Intervals = $intervals")
             }
             // No need to change anything
             if (modeIx == 0) {
@@ -153,7 +151,7 @@ class MusicTheoryUtils {
                         "key must be in range 0 (inclusive) to 11 (inclusive). actual key = $key"
                 )
             }
-            val toReturn = IntArray(chromaticDegrees.count() { it } )
+            val toReturn = IntArray(chromaticDegrees.count() { it })
             var arrayIx = 0
             for (i in OCTAVE_SIZE - key until OCTAVE_SIZE) {
                 if (chromaticDegrees[i]) {
