@@ -267,6 +267,7 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
+        // TODO: change back to 24 and 88
         val playableRangeBar: ExerciseSetupItem =
                 ExerciseSetupItem.RangeBar(
                             "Question Range",
@@ -283,6 +284,19 @@ class ExerciseSetupFragment : Fragment() {
                                 }
                                 result.addSource(generator.lowerBound) { updateRange() }
                                 result.addSource(generator.upperBound) { updateRange() }
+                                result
+                            }.invoke(),
+                            isValid = {
+                                val result = MediatorLiveData<Boolean>()
+                                val isValid = {
+                                    val lower = generator.lowerBound.value!!
+                                    val upper = generator.upperBound.value!!
+                                    val minRange = generator.minRange.value!!
+                                    result.value = upper - lower >= minRange
+                                }
+                                result.addSource(generator.lowerBound) { isValid() }
+                                result.addSource(generator.upperBound) { isValid() }
+                                result.addSource(generator.minRange) { isValid() }
                                 result
                             }.invoke()
                 )

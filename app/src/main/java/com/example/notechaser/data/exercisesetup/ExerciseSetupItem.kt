@@ -70,6 +70,7 @@ interface ExerciseSetupItem {
                         // TODO: See if possible to change to LiveData
                         val displayValue: MutableLiveData<String>,
                         val stepSize: Float = 1f,
+                        val isValid: LiveData<Boolean> = MutableLiveData(true),
                         override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
                         override val isVisible: LiveData<Boolean> = MutableLiveData(true)
     ) : ExerciseSetupItem

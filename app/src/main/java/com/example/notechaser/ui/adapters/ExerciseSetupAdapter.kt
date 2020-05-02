@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notechaser.data.exercisesetup.*
 import com.example.notechaser.databinding.*
+import timber.log.Timber
 
 // TODO: fix gap here
 private const val TYPE_HEADER = 0
@@ -56,6 +57,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is HeaderViewHolder -> {
                 val headerItem = getItem(position) as ExerciseSetupItem.Header
                 holder.bind(headerItem.header)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SwitchViewHolder -> {
                 val switchItem = getItem(position) as ExerciseSetupItem.Switch
@@ -85,6 +87,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ButtonViewHolder -> {
                 val buttonItem = getItem(position) as ExerciseSetupItem.Buttons
                 holder.bind(buttonItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
         }
     }
@@ -179,7 +182,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             binding.slider.addOnChangeListener { _, value, _ ->
                 slider.value.value = value.toInt()
             }
-
         }
         companion object {
             fun from(parent: ViewGroup): SliderViewHolder {
@@ -205,7 +207,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             binding.rangeBar.stepSize = rangeBar.stepSize
             binding.rangeBar.setValues(
                     rangeBar.lowerValue.value!!.toFloat(), rangeBar.upperValue.value!!.toFloat())
-            binding.rangeBar.addOnChangeListener { sliderItem, value, fromUser ->
+            binding.rangeBar.addOnChangeListener { sliderItem, value, _ ->
                 if (sliderItem.activeThumbIndex == 0) {
                     rangeBar.lowerValue.value = value.toInt()
                 }
@@ -213,7 +215,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                     rangeBar.upperValue.value = value.toInt()
                 }
             }
-
         }
         companion object {
             fun from(parent: ViewGroup): RangeBarViewHolder {

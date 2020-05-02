@@ -18,6 +18,9 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     val upperBound = MutableLiveData(48)
 
+    // TODO: change this later when an algorithm is figured out
+    val minRange = MutableLiveData(11)
+
     val noteType = MutableLiveData(GeneratorNoteType.DIATONIC)
 
     val questionKey = MutableLiveData(0)
