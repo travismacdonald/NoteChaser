@@ -32,7 +32,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     // TODO: combine parent scale and mode into single parameter
     val mode = MutableLiveData(0)
 
-    var scale = intArrayOf()
+    lateinit var scale: IntArray
 
     val chromaticDegrees = MutableLiveData(booleanArrayOf(
             true, false, false, false, false, false,
@@ -66,20 +66,20 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     fun setupGenerator() {
 
-        // TODO: Make a better algorithm later
         if (noteType.value == GeneratorNoteType.DIATONIC) {
-
+            scale = MusicTheoryUtils.getModeIntervals(parentScale.value!!.intervals, mode.value!!)
+            val intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(diatonicDegrees.value!!, scale, questionKey.value!!)
+            notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
+            Timber.d("intvls: ${intervals.contentToString()}")
         }
-        // TODO: i think this algorithm works
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
             val intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(chromaticDegrees.value!!, questionKey.value!!)
-            val lower = lowerBound.value!!
             notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
-            Timber.d("intvls: $intervals")
-            Timber.d("bounds: ${lowerBound.value} to ${upperBound.value}")
-            Timber.d("notePool: ${notePool.toString()}")
-            Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
+            Timber.d("intvls: ${intervals.contentToString()}")
         }
+        Timber.d("bounds: ${lowerBound.value} to ${upperBound.value}")
+        Timber.d("notePool: $notePool")
+        Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
     }
 
     override fun generatePlayable(): Playable {
