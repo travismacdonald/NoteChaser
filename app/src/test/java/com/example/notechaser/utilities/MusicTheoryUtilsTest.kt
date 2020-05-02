@@ -127,6 +127,13 @@ class MusicTheoryUtilsTest {
     }
 
     @Test
+    fun `test transpose intervals 0`() {
+        val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
+        val expected = intArrayOf( 0, 2, 4, 5, 7, 9, 11 ) // C Major
+        assertArrayEquals(expected, MusicTheoryUtils.transposeIntervals(cMaj, 0))
+    }
+
+    @Test
     fun `test transpose intervals 1`() {
         val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
         val expected = intArrayOf( 0, 1, 3, 5, 6, 8, 10 ) // Db Major
@@ -138,6 +145,24 @@ class MusicTheoryUtilsTest {
         val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
         val expected = intArrayOf( 1, 3, 4, 6, 8, 10, 11 ) // B Major
         assertArrayEquals(expected, MusicTheoryUtils.transposeIntervals(cMaj, 11))
+    }
+
+    @Test
+    fun `test diatonic degrees 1`() {
+        val seventh = booleanArrayOf(true, false, true, false, true, false, true) // 1 3 5 7
+        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val key = 0 // C
+        val expected = intArrayOf(0, 4, 7, 11) // C E G B
+        assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))
+    }
+
+    @Test
+    fun `test diatonic degrees 2`() {
+        val seventh = booleanArrayOf(true, false, true, false, true, false, true) // 1 3 5 7
+        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val key = 3 // Eb
+        val expected = intArrayOf(2, 3, 7, 10) // D Eb G Bb
+        assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))
     }
 
 }

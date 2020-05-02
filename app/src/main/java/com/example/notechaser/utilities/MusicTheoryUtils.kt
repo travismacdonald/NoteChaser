@@ -180,22 +180,13 @@ class MusicTheoryUtils {
             }
             val toReturn = IntArray(diatonicDegrees.count() { it })
             var arrayIx = 0
-//            for ()
-//
-//
-//            for (i in OCTAVE_SIZE - key until OCTAVE_SIZE) {
-//                if (chromaticDegrees[i]) {
-//                    toReturn[arrayIx] = (i + key) % OCTAVE_SIZE
-//                    arrayIx++
-//                }
-//            }
-//            for (i in 0 until OCTAVE_SIZE - key) {
-//                if (chromaticDegrees[i]) {
-//                    toReturn[arrayIx] = (i + key)
-//                    arrayIx++
-//                }
-//            }
-            return toReturn
+            for (it in diatonicDegrees.withIndex()) {
+                if (it.value) {
+                    toReturn[arrayIx] = scale[it.index]
+                    arrayIx++
+                }
+            }
+            return transposeIntervals(toReturn, key)
         }
 
         /**
