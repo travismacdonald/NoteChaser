@@ -388,10 +388,20 @@ class ExerciseSetupFragment : Fragment() {
                         "Start",
                         "Back",
                         nextClickListener = View.OnClickListener {
-                            generator.setupGenerator()
-                            val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
-                            findNavController().navigate(directions)
-                            Toast.makeText(context, "next", Toast.LENGTH_SHORT).show()
+                            if (!generator.hasValidRange()) {
+                                Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
+                            }
+                            else if (generator.noteType.value!! == GeneratorNoteType.DIATONIC && !generator.diatonicDegrees.value!!.contains(true)) {
+                                Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
+                            }
+                            else if (generator.noteType.value!! == GeneratorNoteType.CHROMATIC && !generator.chromaticDegrees.value!!.contains(true)) {
+                                Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                generator.setupGenerator()
+                                val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
+                                findNavController().navigate(directions)
+                            }
                         },
                         backClickListener = View.OnClickListener {
                             Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()

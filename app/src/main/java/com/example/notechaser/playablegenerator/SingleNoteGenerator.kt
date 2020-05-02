@@ -61,7 +61,7 @@ class SingleNoteGenerator() : PlayableGenerator {
      * TODO: Come back to this later... was it a good decision?
      */
     fun hasValidRange(): Boolean {
-        return (upperBound.value!! - lowerBound.value!! > MusicTheoryUtils.OCTAVE_SIZE)
+        return (upperBound.value!! - lowerBound.value!! > minRange.value!!)
     }
 
     fun setupGenerator() {
