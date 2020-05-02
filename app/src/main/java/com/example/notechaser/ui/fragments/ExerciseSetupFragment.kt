@@ -8,23 +8,22 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.data.exercisesetup.*
+import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
+import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
+import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.playablegenerator.GeneratorNoteType
 import com.example.notechaser.playablegenerator.SingleNoteGenerator
-import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
-import com.example.notechaser.utilities.InjectorUtils
+import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlin.collections.ArrayList
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -389,6 +388,7 @@ class ExerciseSetupFragment : Fragment() {
                         "Start",
                         "Back",
                         nextClickListener = View.OnClickListener {
+                            generator.setupGenerator()
                             val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
                             findNavController().navigate(directions)
                             Toast.makeText(context, "next", Toast.LENGTH_SHORT).show()

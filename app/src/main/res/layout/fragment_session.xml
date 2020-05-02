@@ -6,17 +6,37 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
         tools:context=".ui.fragments.SessionFragment">
-
-        <!-- TODO: Update blank fragment layout -->
+        
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Session Fragment BITCH" />
+            android:id="@+id/playable_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="why no work" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/flat_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="flat" />
+
+        <TextView
+            android:id="@+id/sharp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sharp" />
+
+
+        <Button
+            android:id="@+id/generate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="generate" />
+
+    </LinearLayout>
 </layout>

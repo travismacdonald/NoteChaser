@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import com.example.notechaser.R
 import com.example.notechaser.databinding.FragmentSessionBinding
@@ -25,7 +26,20 @@ class SessionFragment : Fragment() {
                 " \nupper -> ${(viewModel.generator as SingleNoteGenerator).upperBound.value}\n" +
                         "lower -> ${(viewModel.generator as SingleNoteGenerator).lowerBound.value}\n"
         )
-        return inflater.inflate(R.layout.fragment_session, container, false)
+
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_session, container, false
+        )
+        binding.lifecycleOwner = this
+
+        binding.generateButton.setOnClickListener {
+            val playable = viewModel.generator.generatePlayable()
+            binding.playableText.text = playable.toString()
+            binding.flatText.text = playable.toStringFlat()
+            binding.sharpText.text = playable.toStringSharp()
+        }
+
+        return binding.root
     }
 
 }

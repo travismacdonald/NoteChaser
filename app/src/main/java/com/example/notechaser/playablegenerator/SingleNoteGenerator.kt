@@ -2,6 +2,7 @@ package com.example.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
 import com.example.notechaser.utilities.MusicTheoryUtils
+import timber.log.Timber
 import java.lang.IllegalStateException
 import kotlin.random.Random
 
@@ -71,12 +72,13 @@ class SingleNoteGenerator() : PlayableGenerator {
         }
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
             for (i in lowerBound.value!!..upperBound.value!!) {
-                if (chromaticDegrees.value!![i + questionKey.value!!]) {
+                if (chromaticDegrees.value!![((i + questionKey.value!!) % chromaticDegrees.value!!.size)]) {
                     notePool.add(i)
                 }
             }
         }
-
+        Timber.d("notePool: ${notePool.toString()}")
+        Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
     }
 
     override fun generatePlayable(): Playable {
