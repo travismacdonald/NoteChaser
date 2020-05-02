@@ -6,10 +6,8 @@ import com.example.notechaser.viewmodels.ExerciseSetupViewModelFactory
 
 object InjectorUtils {
 
-    fun provideExerciseSetupViewModelFactory(
-            exerciseType: ExerciseType
-    ): ExerciseSetupViewModelFactory {
-        return ExerciseSetupViewModelFactory(exerciseType)
+    fun provideExerciseSetupViewModelFactory(): ExerciseSetupViewModelFactory {
+        return ExerciseSetupViewModelFactory()
     }
 
 }

@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
@@ -28,11 +28,7 @@ import kotlin.collections.ArrayList
 
 class ExerciseSetupFragment : Fragment() {
 
-    val viewModel: ExerciseSetupViewModel by viewModels {
-        InjectorUtils.provideExerciseSetupViewModelFactory(
-                ExerciseSetupFragmentArgs.fromBundle(arguments!!).exerciseType
-        )
-    }
+    val viewModel: ExerciseSetupViewModel by activityViewModels()
     lateinit var binding: FragmentExerciseSetupBinding
     lateinit var adapter: ExerciseSetupAdapter
     lateinit var args: ExerciseSetupFragmentArgs
