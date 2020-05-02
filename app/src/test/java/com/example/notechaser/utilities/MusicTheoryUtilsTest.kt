@@ -2,6 +2,7 @@ package com.example.notechaser.utilities
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class MusicTheoryUtilsTest {
@@ -69,6 +70,60 @@ class MusicTheoryUtilsTest {
         val scale = intArrayOf(0, 2, 4)
         assertFailsWith<ArrayIndexOutOfBoundsException> {
             MusicTheoryUtils.getModeIntervals(scale, -1)
+        }
+    }
+
+    @Test
+    fun `test chromatic degrees transformation C major`() {
+        // C D E F G A B
+        val degrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        // C major
+        val key = 0
+        val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
+        assertArrayEquals(expected, MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key))
+    }
+
+    @Test
+    fun `test chromatic degrees transformation Eb major`() {
+        // C D E F G A B
+        val degrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        // C major
+        val key = 3
+        val expected = intArrayOf(0, 2, 3, 5, 7, 8, 10)
+        assertArrayEquals(expected, MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key))
+    }
+
+    @Test
+    fun `test chromatic degrees transformation throws error with illegal key`() {
+        // C D E F G A B
+        val degrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        // C major
+        val key = 12 // key must be less than or equal to 11
+        assertFailsWith<java.lang.IllegalArgumentException> {
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key)
+        }
+    }
+
+    @Test
+    fun `test chromatic degrees transformation throws error with illegal sized chromatic degrees`() {
+        // Must be size 12
+        val degrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false
+        )
+        // C major
+        val key = 3
+        assertFailsWith<java.lang.IllegalArgumentException> {
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key)
         }
     }
 

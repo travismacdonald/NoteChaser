@@ -1,6 +1,7 @@
 package com.example.notechaser.utilities
 
 import com.example.notechaser.playablegenerator.ParentScale
+import java.io.ObjectStreamClass
 import java.lang.IllegalArgumentException
 
 class MusicTheoryUtils {
@@ -136,6 +137,39 @@ class MusicTheoryUtils {
             }
             return toReturn
         }
+
+        /**
+         * TODO: write function explanation
+         * TODO: make this private, only made it public for testing
+         */
+        fun transformChromaticDegreesToIntervals(chromaticDegrees: BooleanArray, key: Int): IntArray {
+            if (chromaticDegrees.size != OCTAVE_SIZE) {
+                throw IllegalArgumentException(
+                        "chromaticDegrees must have size 12. actual size = ${chromaticDegrees.size}"
+                )
+            }
+            if (key !in 0..11) {
+                throw IllegalArgumentException(
+                        "key must be in range 0 (inclusive) to 11 (inclusive). actual key = $key"
+                )
+            }
+            val toReturn = IntArray(chromaticDegrees.count() { it } )
+            var arrayIx = 0
+            for (i in OCTAVE_SIZE - key until OCTAVE_SIZE) {
+                if (chromaticDegrees[i]) {
+                    toReturn[arrayIx] = (i + key) % OCTAVE_SIZE
+                    arrayIx++
+                }
+            }
+            for (i in 0 until OCTAVE_SIZE - key) {
+                if (chromaticDegrees[i]) {
+                    toReturn[arrayIx] = (i + key)
+                    arrayIx++
+                }
+            }
+            return toReturn
+        }
+
 
     }
 }

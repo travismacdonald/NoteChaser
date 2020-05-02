@@ -70,6 +70,7 @@ class SingleNoteGenerator() : PlayableGenerator {
         if (noteType.value == GeneratorNoteType.DIATONIC) {
 
         }
+        // TODO: fix broken algorithm
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
             for (i in lowerBound.value!!..upperBound.value!!) {
                 if (chromaticDegrees.value!![((i + questionKey.value!!) % chromaticDegrees.value!!.size)]) {
