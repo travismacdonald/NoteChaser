@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- TODO: perhaps make this a list view for better performance -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/settings_list"
             android:layout_width="0dp"

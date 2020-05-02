@@ -41,7 +41,15 @@
         <argument
             android:name="exerciseType"
             app:argType="com.example.notechaser.data.ExerciseType" />
+        <action
+            android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
+            app:destination="@id/sessionFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/sessionFragment"
+        android:name="com.example.notechaser.ui.fragments.SessionFragment"
+        android:label="fragment_session"
+        tools:layout="@layout/fragment_session" />
 
 </navigation>

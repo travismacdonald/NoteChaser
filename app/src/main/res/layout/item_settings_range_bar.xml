@@ -48,7 +48,7 @@
             app:layout_constraintRight_toRightOf="parent"
             tools:text="Maj3" />
 
-
+        <!-- TODO: fix the colors going on here -->
         <com.google.android.material.slider.Slider
             android:id="@+id/rangeBar"
             android:layout_width="match_parent"

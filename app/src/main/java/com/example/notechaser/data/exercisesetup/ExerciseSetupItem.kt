@@ -78,6 +78,8 @@ interface ExerciseSetupItem {
     data class Buttons(
             val startText: String,
             val backText: String,
+            val nextClickListener: View.OnClickListener,
+            val backClickListener: View.OnClickListener,
             override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
             override val isVisible: LiveData<Boolean> = MutableLiveData(true)
     ) : ExerciseSetupItem

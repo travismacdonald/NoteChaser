@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
@@ -267,7 +270,7 @@ class ExerciseSetupFragment : Fragment() {
                         }
                 )
 
-        // TODO: change back to 24 and 88
+        // TODO: make the only selectable values notes that are actually in the scale
         val playableRangeBar: ExerciseSetupItem =
                 ExerciseSetupItem.RangeBar(
                             "Question Range",
@@ -292,6 +295,7 @@ class ExerciseSetupFragment : Fragment() {
                                     val lower = generator.lowerBound.value!!
                                     val upper = generator.upperBound.value!!
                                     val minRange = generator.minRange.value!!
+                                    // Both upper and lower bounds are inclusive
                                     result.value = upper - lower >= minRange
                                 }
                                 result.addSource(generator.lowerBound) { isValid() }
@@ -387,7 +391,15 @@ class ExerciseSetupFragment : Fragment() {
         val nextButton: ExerciseSetupItem =
                 ExerciseSetupItem.Buttons(
                         "Start",
-                        "Back"
+                        "Back",
+                        nextClickListener = View.OnClickListener {
+                            val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
+                            findNavController().navigate(directions)
+                            Toast.makeText(context, "next", Toast.LENGTH_SHORT).show()
+                        },
+                        backClickListener = View.OnClickListener {
+                            Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()
+                        }
                 )
 
         settingItemsArray.add(questionsHeader)
