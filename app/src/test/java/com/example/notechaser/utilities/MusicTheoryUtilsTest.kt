@@ -126,4 +126,18 @@ class MusicTheoryUtilsTest {
         }
     }
 
+    @Test
+    fun `test transpose intervals 1`() {
+        val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
+        val expected = intArrayOf( 0, 1, 3, 5, 6, 8, 10 ) // Db Major
+        assertArrayEquals(expected, MusicTheoryUtils.transposeIntervals(cMaj, 1))
+    }
+
+    @Test
+    fun `test transpose intervals 2`() {
+        val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
+        val expected = intArrayOf( 1, 3, 4, 6, 8, 10, 11 ) // B Major
+        assertArrayEquals(expected, MusicTheoryUtils.transposeIntervals(cMaj, 11))
+    }
+
 }

@@ -13,7 +13,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     /**
      * Note pool that generate will choose from to convert to patterns.
      */
-    private val notePool: MutableList<Int> = mutableListOf()
+    private lateinit var notePool: MutableList<Int>
 
     val lowerBound = MutableLiveData(36)
 
@@ -65,7 +65,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     }
 
     fun setupGenerator() {
-        if (notePool.isNotEmpty()) { notePool.clear() }
+
         // TODO: Make a better algorithm later
         if (noteType.value == GeneratorNoteType.DIATONIC) {
 
@@ -74,24 +74,7 @@ class SingleNoteGenerator() : PlayableGenerator {
         else if (noteType.value == GeneratorNoteType.CHROMATIC) {
             val intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(chromaticDegrees.value!!, questionKey.value!!)
             val lower = lowerBound.value!!
-            val startInterval = lower % MusicTheoryUtils.OCTAVE_SIZE
-            val something = lower / MusicTheoryUtils.OCTAVE_SIZE
-            var ix = (something * intervals.size)
-            val greaterThanStart = intervals.filter { it >= startInterval }
-            if (greaterThanStart.isNotEmpty()) {
-                // TODO: can probably make this line better
-                ix += intervals.indexOf(greaterThanStart[0])
-            }
-            else {
-                ix += intervals.size
-            }
-            var interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
-            // Inclusive upper bound
-            while (interval <= upperBound.value!!) {
-                notePool.add(interval)
-                ix++
-                interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
-            }
+            notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
             Timber.d("intvls: $intervals")
             Timber.d("bounds: ${lowerBound.value} to ${upperBound.value}")
             Timber.d("notePool: ${notePool.toString()}")
@@ -104,6 +87,29 @@ class SingleNoteGenerator() : PlayableGenerator {
         return Playable(
                 ChordTemplate(arrayListOf(0)),
                 notePool[Random.nextInt(notePool.size)])
+    }
+
+    private fun createNotePool(intervals: IntArray, lower: Int, upper: Int): MutableList<Int> {
+        val toReturn = arrayListOf<Int>()
+        val startInterval = lower % MusicTheoryUtils.OCTAVE_SIZE
+        val something = lower / MusicTheoryUtils.OCTAVE_SIZE
+        var ix = (something * intervals.size)
+        val greaterThanStart = intervals.filter { it >= startInterval }
+        if (greaterThanStart.isNotEmpty()) {
+            // TODO: can probably make this line better
+            ix += intervals.indexOf(greaterThanStart[0])
+        }
+        else {
+            ix += intervals.size
+        }
+        var interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
+        // Inclusive upper bound
+        while (interval <= upper) {
+            toReturn.add(interval)
+            ix++
+            interval = intervals[ix % intervals.size] + (MusicTheoryUtils.OCTAVE_SIZE * (ix / intervals.size))
+        }
+        return toReturn
     }
 
 }
