@@ -1,7 +1,6 @@
 package com.example.notechaser.utilities
 
 import com.example.notechaser.playablegenerator.ParentScale
-import java.lang.IllegalArgumentException
 
 class MusicTheoryUtils {
 
@@ -117,7 +116,7 @@ class MusicTheoryUtils {
             if (intervals[0] != 0) {
                 throw IllegalArgumentException(
                         "Cannot use scale when first interval is not zero.\n" +
-                        "Intervals = $intervals")
+                                "Intervals = $intervals")
             }
             // No need to change anything
             if (modeIx == 0) {
@@ -133,6 +132,83 @@ class MusicTheoryUtils {
             for (i in 0 until modeIx) {
                 toReturn[counter] = intervals[i] + OCTAVE_SIZE - offset
                 ++counter
+            }
+            return toReturn
+        }
+
+        /**
+         * TODO: write function explanation
+         */
+        fun transformChromaticDegreesToIntervals(chromaticDegrees: BooleanArray, key: Int): IntArray {
+            if (chromaticDegrees.size != OCTAVE_SIZE) {
+                throw IllegalArgumentException(
+                        "chromaticDegrees must have size 12. actual size = ${chromaticDegrees.size}"
+                )
+            }
+            if (key !in 0..11) {
+                throw IllegalArgumentException(
+                        "key must be in range 0 (inclusive) to 11 (inclusive). actual key = $key"
+                )
+            }
+            val toReturn = IntArray(chromaticDegrees.count() { it })
+            var arrayIx = 0
+            for (it in chromaticDegrees.withIndex()) {
+                if (it.value) {
+                    toReturn[arrayIx] = it.index
+                    arrayIx++
+                }
+            }
+            return transposeIntervals(toReturn, key)
+        }
+
+        /**
+         * TODO: write function explanation
+         */
+        fun transformDiatonicDegreesToIntervals(diatonicDegrees: BooleanArray, scale: IntArray, key: Int): IntArray {
+            if (diatonicDegrees.size != scale.size) {
+                throw IllegalArgumentException(
+                        "diatonicDegrees and scale must have same size.\n " +
+                                "diatonicDegrees size = ${diatonicDegrees.size}\n" +
+                                "scale size = ${scale.size}"
+                )
+            }
+            if (key !in 0..11) {
+                throw IllegalArgumentException(
+                        "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
+                                "actual key = $key"
+                )
+            }
+            val toReturn = IntArray(diatonicDegrees.count() { it })
+            var arrayIx = 0
+            for (it in diatonicDegrees.withIndex()) {
+                if (it.value) {
+                    toReturn[arrayIx] = scale[it.index]
+                    arrayIx++
+                }
+            }
+            return transposeIntervals(toReturn, key)
+        }
+
+        /**
+         * TODO: write function definition
+         */
+        fun transposeIntervals(intervals: IntArray, key: Int): IntArray {
+            if (key !in 0..11) {
+                throw IllegalArgumentException(
+                        "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
+                                "actual key = $key"
+                )
+            }
+            val toReturn = IntArray(intervals.size)
+            var arrayIx = 0
+            val offset = intervals.count { (it + key) < OCTAVE_SIZE }
+            for (i in offset until intervals.size) {
+                toReturn[arrayIx] = (intervals[i] + key) % OCTAVE_SIZE
+                arrayIx++
+            }
+            for (i in 0 until offset) {
+                toReturn[arrayIx] = intervals[i] + key
+                arrayIx++
             }
             return toReturn
         }

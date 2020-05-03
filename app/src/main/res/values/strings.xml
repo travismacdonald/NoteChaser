@@ -64,7 +64,7 @@
     <string name="sessionLength_title">Session Length</string>
 
     <string name="timerLength_key">timerLength</string>
-    <string name="timerLength_title">Timer Length</string>
+    <string name="timerLength_title">Timer Length (minutes)</string>
 
     <string name="numQuestions_key">numQuestions</string>
     <string name="numQuestions_title">Number of Questions</string>
@@ -76,5 +76,8 @@
     <string name="session_header">Session Settings</string>
 
     <string name="answer_header">Answer Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

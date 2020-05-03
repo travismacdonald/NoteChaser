@@ -3,7 +3,6 @@ package com.example.notechaser.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is ExerciseSetupItem.MultiList -> TYPE_MULTI_LIST
             is ExerciseSetupItem.Slider -> TYPE_SLIDER
             is ExerciseSetupItem.RangeBar -> TYPE_RANGE_BAR
-            is ExerciseSetupItem.Button -> TYPE_BUTTON
+            is ExerciseSetupItem.Buttons -> TYPE_BUTTON
             else -> -1
         }
     }
@@ -58,6 +57,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             is HeaderViewHolder -> {
                 val headerItem = getItem(position) as ExerciseSetupItem.Header
                 holder.bind(headerItem.header)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SwitchViewHolder -> {
                 val switchItem = getItem(position) as ExerciseSetupItem.Switch
@@ -85,8 +85,9 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                 holder.binding.lifecycleOwner = lifecycleOwner
             }
             is ButtonViewHolder -> {
-                val buttonItem = getItem(position) as ExerciseSetupItem.Button
+                val buttonItem = getItem(position) as ExerciseSetupItem.Buttons
                 holder.bind(buttonItem)
+                holder.binding.lifecycleOwner = lifecycleOwner
             }
         }
     }
@@ -181,7 +182,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             binding.slider.addOnChangeListener { _, value, _ ->
                 slider.value.value = value.toInt()
             }
-
         }
         companion object {
             fun from(parent: ViewGroup): SliderViewHolder {
@@ -207,7 +207,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
             binding.rangeBar.stepSize = rangeBar.stepSize
             binding.rangeBar.setValues(
                     rangeBar.lowerValue.value!!.toFloat(), rangeBar.upperValue.value!!.toFloat())
-            binding.rangeBar.addOnChangeListener { sliderItem, value, fromUser ->
+            binding.rangeBar.addOnChangeListener { sliderItem, value, _ ->
                 if (sliderItem.activeThumbIndex == 0) {
                     rangeBar.lowerValue.value = value.toInt()
                 }
@@ -215,7 +215,6 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
                     rangeBar.upperValue.value = value.toInt()
                 }
             }
-
         }
         companion object {
             fun from(parent: ViewGroup): RangeBarViewHolder {
@@ -229,17 +228,17 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
     /**
      * Setup Button
      */
-    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonBinding)
+    class ButtonViewHolder private constructor(val binding: ItemSettingsButtonsBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
         // TODO: Clean this up
-        fun bind(buttonItem: ExerciseSetupItem.Button) {
-            binding.obj = buttonItem
+        fun bind(buttonsItem: ExerciseSetupItem.Buttons) {
+            binding.obj = buttonsItem
         }
         companion object {
             fun from(parent: ViewGroup): ButtonViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemSettingsButtonBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemSettingsButtonsBinding.inflate(layoutInflater, parent, false)
                 return ButtonViewHolder(binding)
             }
         }

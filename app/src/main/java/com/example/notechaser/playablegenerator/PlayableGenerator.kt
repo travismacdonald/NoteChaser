@@ -7,4 +7,5 @@ interface PlayableGenerator {
 
     fun generatePlayable(): Playable
 
+    fun setupGenerator()
 }

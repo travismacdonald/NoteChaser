@@ -51,6 +51,10 @@ class TemplatePlayableGenerator() : PlayableGenerator {
         return upperBound.value!! - lowerBound.value!! >= rangeRequired
     }
 
+    override fun setupGenerator() {
+
+    }
+
     /**
      * Function determines if patterns can be safely generated.
      */

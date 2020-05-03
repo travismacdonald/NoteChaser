@@ -1,15 +1,11 @@
 package com.example.notechaser.utilities
 
-import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.viewmodels.ExerciseSetupViewModel
-import com.example.notechaser.viewmodels.ExerciseSetupViewModelFactory
+import com.example.notechaser.viewmodels.ExerciseViewModelFactory
 
 object InjectorUtils {
 
-    fun provideExerciseSetupViewModelFactory(
-            exerciseType: ExerciseType
-    ): ExerciseSetupViewModelFactory {
-        return ExerciseSetupViewModelFactory(exerciseType)
+    fun provideExerciseSetupViewModelFactory(): ExerciseViewModelFactory {
+        return ExerciseViewModelFactory()
     }
 
 }
