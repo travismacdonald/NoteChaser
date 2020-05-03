@@ -15,6 +15,8 @@ import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
 import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.viewmodels.ExerciseViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ticker
 import timber.log.Timber
 
 const val ONE_MINUTE = 60000L
@@ -25,6 +27,7 @@ class SessionFragment : Fragment() {
     val viewModel: ExerciseViewModel by activityViewModels()
     lateinit var binding: FragmentSessionBinding
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -32,6 +35,9 @@ class SessionFragment : Fragment() {
                 " \nupper -> ${(viewModel.generator as SingleNoteGenerator).upperBound.value}\n" +
                         "lower -> ${(viewModel.generator as SingleNoteGenerator).lowerBound.value}\n"
         )
+
+        // TODO: delete this line after testing is done
+        viewModel.settings.timerLength.value = 1
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
@@ -57,22 +63,7 @@ class SessionFragment : Fragment() {
                 })
             }
             ExerciseSetupSettings.TIME_LIMIT -> {
-                viewModel.timer = object: CountDownTimer(
-                        viewModel.settings.timerLength.value!! * ONE_MINUTE, ONE_SECOND
-                ) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        if (viewModel.secondsPassed.value == null) {
-                            viewModel.secondsPassed.value = 0
-                        }
-                        else {
-                            viewModel.secondsPassed.value = viewModel.secondsPassed.value!! + 1
-                        }
-                    }
-                    override fun onFinish() {
-                        viewModel.secondsPassed.value = viewModel.secondsPassed.value!! + 1
-                        Toast.makeText(context, "Session Done", Toast.LENGTH_SHORT).show()
-                    }
-                }.start()
+                viewModel.startTimer()
                 viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
                     binding.sessionLengthText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
                 })

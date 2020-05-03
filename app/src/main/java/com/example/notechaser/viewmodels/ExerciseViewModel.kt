@@ -3,8 +3,12 @@ package com.example.notechaser.viewmodels
 import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.playablegenerator.PlayableGenerator
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class ExerciseViewModel internal constructor() : ViewModel() {
@@ -15,8 +19,20 @@ class ExerciseViewModel internal constructor() : ViewModel() {
 
     val questionsAnswered = MutableLiveData(0)
 
-    val secondsPassed = MutableLiveData<Long>()
+    val secondsPassed = MutableLiveData<Int>()
 
     lateinit var timer: CountDownTimer
+
+    private var timerUpdate: Job? = null
+
+    fun startTimer() {
+        secondsPassed.value = 0
+        timerUpdate = viewModelScope.launch {
+            while(secondsPassed.value!! < settings.timerLength.value!! * 60) {
+                delay(1000)
+                secondsPassed.value = secondsPassed.value!! + 1
+            }
+        }
+    }
 
 }
