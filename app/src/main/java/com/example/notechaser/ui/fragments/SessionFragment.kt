@@ -20,9 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ticker
 import timber.log.Timber
 
-const val ONE_MINUTE = 60000L
-const val ONE_SECOND = 1000L
-
 class SessionFragment : Fragment() {
 
     val viewModel: ExerciseViewModel by activityViewModels()
@@ -37,8 +34,8 @@ class SessionFragment : Fragment() {
                         "lower -> ${(viewModel.generator as SingleNoteGenerator).lowerBound.value}\n"
         )
 
-        // TODO: delete this line after testing is done
-        viewModel.settings.timerLength.value = 1
+//        // TODO: use this line for testing
+//        viewModel.settings.timerLength.value = 1
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
@@ -49,17 +46,6 @@ class SessionFragment : Fragment() {
             viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
         }
 
-        viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
-            if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
-                // TODO: this will navigate to stat page
-                val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
-                findNavController().navigate(directions)
-                Toast.makeText(context, "Session Complete", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                viewModel.generatePlayable()
-            }
-        })
 
         viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
             binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
@@ -68,19 +54,44 @@ class SessionFragment : Fragment() {
         })
 
         when (viewModel.settings.sessionLengthType.value!!) {
+
             ExerciseSetupSettings.QUESTION_LIMIT -> {
+                viewModel.startTimer()
+                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                    binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}"
+                })
                 viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
-                    binding.sessionLengthText.text = "$it/${viewModel.settings.numQuestions.value}"
+                    binding.questionsAnsweredText.text = "$it/${viewModel.settings.numQuestions.value}"
+                    if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
+                        viewModel.stopTimer()
+                        val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
+                        findNavController().navigate(directions)
+                    }
+                    else {
+                        viewModel.generatePlayable()
+                    }
                 })
             }
+
             ExerciseSetupSettings.TIME_LIMIT -> {
                 viewModel.startTimer()
                 viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
-                    binding.sessionLengthText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
+                    binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
+                    if (it == viewModel.settings.timerLength.value!! * 60) {
+                        viewModel.stopTimer()
+                        val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
+                        findNavController().navigate(directions)
+                    }
+                })
+                viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+                    binding.questionsAnsweredText.text = "$it"
+                    viewModel.generatePlayable()
                 })
             }
+
             ExerciseSetupSettings.UNLIMITED -> {
-                binding.sessionLengthText.text = "Unlimited"
+                binding.secondsPassedText.text = "Unlimited"
+                binding.questionsAnsweredText.text = "Unlimited"
             }
         }
 

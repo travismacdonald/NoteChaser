@@ -1,6 +1,5 @@
 package com.example.notechaser.viewmodels
 
-import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,10 +28,16 @@ class ExerciseViewModel internal constructor() : ViewModel() {
     fun startTimer() {
         secondsPassed.value = 0
         timerUpdate = viewModelScope.launch {
-            while(secondsPassed.value!! < settings.timerLength.value!! * 60) {
+            while (true) {
                 delay(1000)
                 secondsPassed.value = secondsPassed.value!! + 1
             }
+        }
+    }
+
+    fun stopTimer() {
+        timerUpdate?.let {
+            it.cancel()
         }
     }
 
