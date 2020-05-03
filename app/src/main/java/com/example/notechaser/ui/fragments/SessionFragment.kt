@@ -44,17 +44,25 @@ class SessionFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        binding.generateButton.setOnClickListener {
-            val playable = viewModel.generator.generatePlayable()
-            binding.playableText.text = playable.toString()
-            binding.flatText.text = playable.toStringFlat()
-            binding.sharpText.text = playable.toStringSharp()
+        binding.answerButton.setOnClickListener {
             viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
-            if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
-                // TODO: actually navigate to stat page after
-                Toast.makeText(context, "Session Over", Toast.LENGTH_SHORT).show()
-            }
         }
+
+        viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+            if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
+                // TODO: this will navigate to stat page
+                Toast.makeText(context, "Session Complete", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                viewModel.generatePlayable()
+            }
+        })
+
+        viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
+            binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
+            binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
+            binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
+        })
 
         when (viewModel.settings.sessionLengthType.value!!) {
             ExerciseSetupSettings.QUESTION_LIMIT -> {

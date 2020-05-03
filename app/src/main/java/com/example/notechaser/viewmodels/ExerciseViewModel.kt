@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
+import com.example.notechaser.playablegenerator.Playable
 import com.example.notechaser.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +22,7 @@ class ExerciseViewModel internal constructor() : ViewModel() {
 
     val secondsPassed = MutableLiveData<Int>()
 
-    lateinit var timer: CountDownTimer
+    val currentPlayable = MutableLiveData<Playable?>()
 
     private var timerUpdate: Job? = null
 
@@ -33,6 +34,10 @@ class ExerciseViewModel internal constructor() : ViewModel() {
                 secondsPassed.value = secondsPassed.value!! + 1
             }
         }
+    }
+
+    fun generatePlayable() {
+        currentPlayable.value = generator.generatePlayable()
     }
 
 }
