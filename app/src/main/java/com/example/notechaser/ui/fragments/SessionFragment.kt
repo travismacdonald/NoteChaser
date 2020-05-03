@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
@@ -51,6 +52,8 @@ class SessionFragment : Fragment() {
         viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
             if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
                 // TODO: this will navigate to stat page
+                val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
+                findNavController().navigate(directions)
                 Toast.makeText(context, "Session Complete", Toast.LENGTH_SHORT).show()
             }
             else {
