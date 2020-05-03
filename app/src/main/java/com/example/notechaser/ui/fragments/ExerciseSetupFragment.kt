@@ -80,6 +80,7 @@ class ExerciseSetupFragment : Fragment() {
         addModeSingle(generator.mode, generator.noteType)
         addPlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
         addSessionHeader()
+        addSessionLengthSingle()
         addNumQuestionsSlider()
         addTimerLengthSlider()
         addAnswerHeader()

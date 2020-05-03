@@ -1,6 +1,7 @@
 package com.example.notechaser.ui.fragments
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,8 @@ import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.viewmodels.ExerciseViewModel
 import timber.log.Timber
 
+const val ONE_MINUTE = 60000L
+const val ONE_SECOND = 1000L
 
 class SessionFragment : Fragment() {
 
@@ -54,7 +57,25 @@ class SessionFragment : Fragment() {
                 })
             }
             ExerciseSetupSettings.TIME_LIMIT -> {
-                binding.sessionLengthText.text = "Time Limit"
+                viewModel.timer = object: CountDownTimer(
+                        viewModel.settings.timerLength.value!! * ONE_MINUTE, ONE_SECOND
+                ) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        if (viewModel.secondsPassed.value == null) {
+                            viewModel.secondsPassed.value = 0
+                        }
+                        else {
+                            viewModel.secondsPassed.value = viewModel.secondsPassed.value!! + 1
+                        }
+                    }
+                    override fun onFinish() {
+                        viewModel.secondsPassed.value = viewModel.secondsPassed.value!! + 1
+                        Toast.makeText(context, "Session Done", Toast.LENGTH_SHORT).show()
+                    }
+                }.start()
+                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                    binding.sessionLengthText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
+                })
             }
             ExerciseSetupSettings.UNLIMITED -> {
                 binding.sessionLengthText.text = "Unlimited"
