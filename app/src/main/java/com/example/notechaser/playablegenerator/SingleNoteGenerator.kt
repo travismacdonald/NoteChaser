@@ -64,7 +64,7 @@ class SingleNoteGenerator() : PlayableGenerator {
         return (upperBound.value!! - lowerBound.value!! > minRange.value!!)
     }
 
-    fun setupGenerator() {
+    override fun setupGenerator() {
 
         if (noteType.value == GeneratorNoteType.DIATONIC) {
             scale = MusicTheoryUtils.getModeIntervals(parentScale.value!!.intervals, mode.value!!)
