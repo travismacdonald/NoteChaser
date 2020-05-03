@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.notechaser.viewmodels.ExerciseViewModel" />
     </data>
 
     <LinearLayout
@@ -30,6 +32,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="sharp" />
+
+        <TextView
+            android:id="@+id/sessionLength_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0/20" />
 
 
         <Button

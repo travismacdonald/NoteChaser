@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.notechaser.viewmodels.ExerciseSetupViewModel" />
+            type="com.example.notechaser.viewmodels.ExerciseViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

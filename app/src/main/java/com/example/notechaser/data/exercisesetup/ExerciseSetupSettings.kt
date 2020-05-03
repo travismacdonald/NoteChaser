@@ -9,7 +9,7 @@ class ExerciseSetupSettings {
 
     val matchKey = MutableLiveData<Boolean>()
 
-    val sessionLength = MutableLiveData(QUESTION_LIMIT)
+    val sessionLengthType = MutableLiveData(QUESTION_LIMIT)
 
     val matchOctave = MutableLiveData(false)
 
@@ -32,9 +32,9 @@ class ExerciseSetupSettings {
     }
 
     companion object {
-        val QUESTION_LIMIT = 0
-        val TIME_LIMIT = 1
-        val UNLIMITED = 2
+        const val QUESTION_LIMIT = 0
+        const val TIME_LIMIT = 1
+        const val UNLIMITED = 2
     }
 
 }

@@ -24,13 +24,12 @@ import com.example.notechaser.playablegenerator.ParentScale
 import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.MusicTheoryUtils
-import com.example.notechaser.viewmodels.ExerciseSetupViewModel
+import com.example.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.ear_training_fragment.*
 
 class ExerciseSetupFragment : Fragment() {
 
-    val viewModel: ExerciseSetupViewModel by activityViewModels()
+    val viewModel: ExerciseViewModel by activityViewModels()
     lateinit var binding: FragmentExerciseSetupBinding
     lateinit var adapter: ExerciseSetupAdapter
     lateinit var args: ExerciseSetupFragmentArgs
@@ -422,7 +421,7 @@ class ExerciseSetupFragment : Fragment() {
         val sessionLengthTitle = "Session Length"
         // TODO: turn mode and parent scale into one parameter
         val sessionLengthEntries = arrayOf("Question Limit", "Time Limit", "Unlimited")
-        val sessionLengthValue = viewModel.settings.sessionLength
+        val sessionLengthValue = viewModel.settings.sessionLengthType
         val sessionLengthSingle: ExerciseSetupItem =
                 ExerciseSetupItem.SingleList(
                         sessionLengthTitle,
@@ -463,7 +462,7 @@ class ExerciseSetupFragment : Fragment() {
                             value.toString()
                         },
                         10f,
-                        isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                        isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
                             value == ExerciseSetupSettings.QUESTION_LIMIT
                         }
 
@@ -486,7 +485,7 @@ class ExerciseSetupFragment : Fragment() {
                             value.toString()
                         },
                         5f,
-                        isVisible = Transformations.map(viewModel.settings.sessionLength) { value ->
+                        isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
                             value == ExerciseSetupSettings.TIME_LIMIT
                         }
 
