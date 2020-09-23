@@ -12,10 +12,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notechaser.R
-import com.example.notechaser.data.ExerciseType
-import com.example.notechaser.data.exercisesetup.ExerciseSetupHeader
 import com.example.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentExerciseSetupBinding
@@ -43,27 +40,34 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        val manager = LinearLayoutManager(activity)
-        adapter = ExerciseSetupAdapter(this)
+//        val manager = LinearLayoutManager(activity)
+//        adapter = ExerciseSetupAdapter(this)
         args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
 
-        // TODO: may have to make this mutable later on
-        when (args.exerciseType) {
-            ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
-            ExerciseType.INTERVALLIC -> makeIntervallicList()
-            ExerciseType.HARMONIC -> makeHarmonicList()
-            ExerciseType.SCALE -> makeScaleList()
-            ExerciseType.MELODIC -> makeMelodicList()
-            else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
-        }
+//        // TODO: may have to make this mutable later on
+//        when (args.exerciseType) {
+//            ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
+//            ExerciseType.INTERVALLIC -> makeIntervallicList()
+//            ExerciseType.HARMONIC -> makeHarmonicList()
+//            ExerciseType.SCALE -> makeScaleList()
+//            ExerciseType.MELODIC -> makeMelodicList()
+//            else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
+//        }
 
-        adapter.submitList(settingItemsArray)
-        binding.settingsList.adapter = adapter
-        binding.settingsList.layoutManager = manager
+//        adapter.submitList(settingItemsArray)
+//        binding.settingsList.adapter = adapter
+//        binding.settingsList.layoutManager = manager
+
+        makeSettingsList();
 
         return binding.root
     }
 
+
+    private fun makeSettingsList() {
+        // todo: question type header
+        binding.noteChoiceHeader.obj = makeQuestionsHeader()
+    }
 
     private fun makeSingleNoteList() {
 
@@ -71,7 +75,7 @@ class ExerciseSetupFragment : Fragment() {
         val generator = viewModel.generator as SingleNoteGenerator
 
         /* Questions */
-        addQuestionsHeader()
+        makeQuestionsHeader()
         addNoteChoiceSingle(generator.noteType)
         addChromaticMulti(generator.chromaticDegrees, generator.noteType)
         addDiatonicMulti(generator.diatonicDegrees, generator.noteType)
@@ -93,35 +97,12 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    // TODO
-    private fun makeIntervallicList(): List<ExerciseSetupItem> {
-        return ArrayList<ExerciseSetupItem>()
-    }
-
-    // TODO
-    private fun makeHarmonicList(): List<ExerciseSetupItem> {
-        return ArrayList<ExerciseSetupItem>()
-    }
-
-    // TODO
-    private fun makeScaleList(): List<ExerciseSetupItem> {
-        return ArrayList<ExerciseSetupItem>()
-    }
-
-    // TODO
-    private fun makeMelodicList(): List<ExerciseSetupItem> {
-        return ArrayList<ExerciseSetupItem>()
-    }
 
     /**
-     * TODO: Function write up
+     * Header for note question related settings.
      */
-    private fun addQuestionsHeader() {
-        val questionsHeader: ExerciseSetupItem =
-                ExerciseSetupItem.Header(
-                        ExerciseSetupHeader(getString(R.string.questions_header))
-                )
-        settingItemsArray.add(questionsHeader)
+    private fun makeQuestionsHeader() : ExerciseSetupItem.Header {
+        return ExerciseSetupItem.Header(getString(R.string.questions_header))
     }
 
     /**
@@ -168,6 +149,7 @@ class ExerciseSetupFragment : Fragment() {
                                         tempItem = which
                                     }
                                     .show()
+
                         }
                 )
         settingItemsArray.add(noteChoiceSingle)
@@ -409,7 +391,7 @@ class ExerciseSetupFragment : Fragment() {
     private fun addSessionHeader() {
         val sessionHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
-                        ExerciseSetupHeader(getString(R.string.session_header))
+                        getString(R.string.session_header)
                 )
         settingItemsArray.add(sessionHeader)
     }
@@ -500,7 +482,7 @@ class ExerciseSetupFragment : Fragment() {
     private fun addAnswerHeader() {
         val answerHeader: ExerciseSetupItem =
                 ExerciseSetupItem.Header(
-                        ExerciseSetupHeader(getString(R.string.answer_header))
+                        getString(R.string.answer_header)
                 )
         settingItemsArray.add(answerHeader)
     }

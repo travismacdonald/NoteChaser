@@ -56,7 +56,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         when (holder) {
             is HeaderViewHolder -> {
                 val headerItem = getItem(position) as ExerciseSetupItem.Header
-                holder.bind(headerItem.header)
+//                holder.bind(headerItem.header) //todo: broken since i changed how ExerciseSetupItem.Header works
                 holder.binding.lifecycleOwner = lifecycleOwner
             }
             is SwitchViewHolder -> {
@@ -99,7 +99,7 @@ class ExerciseSetupAdapter(private val lifecycleOwner: LifecycleOwner) :
         : RecyclerView.ViewHolder(binding.root) {
 
         // TODO: Clean this up
-        fun bind(header: ExerciseSetupHeader) {
+        fun bind(header: ExerciseSetupItem.Header) {
             binding.textview.text = header.text
         }
         companion object {

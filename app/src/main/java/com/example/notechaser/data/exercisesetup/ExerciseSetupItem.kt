@@ -15,7 +15,7 @@ interface ExerciseSetupItem {
     val isVisible: LiveData<Boolean>
 
     data class Header(
-            val header: ExerciseSetupHeader,
+            val text: String,
             override val isEnabled: LiveData<Boolean> = MutableLiveData(true),
             override val isVisible: LiveData<Boolean> = MutableLiveData(true)
     ) : ExerciseSetupItem

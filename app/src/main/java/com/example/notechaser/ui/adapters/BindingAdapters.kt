@@ -12,7 +12,7 @@ fun setLayoutGone(view: View, @Nullable isVisible: LiveData<Boolean>) {
 //    Timber.d("view = ${view.title.text}; val = ${isVisible.value}; oldH = ${view.height}")
     val params = view.layoutParams
     isVisible.value?.let {
-        if (it) params.height = ViewGroup.LayoutParams.WRAP_CONTENT else params.height = 0
+        if (it) params.height = view.height else params.height = 0
     }
     view.layoutParams = params
 //    Timber.d("view = ${view.title.text}; val = ${isVisible.value}; newH = ${view.height}")
