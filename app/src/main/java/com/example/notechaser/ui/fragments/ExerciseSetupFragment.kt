@@ -72,6 +72,10 @@ class ExerciseSetupFragment : Fragment() {
         binding.questionsHeader.obj = makeQuestionsHeader()
         binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
         binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
+        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
+        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
+        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
+        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
     }
 
     @Deprecated("use makeSettingsList instead.")
@@ -81,14 +85,13 @@ class ExerciseSetupFragment : Fragment() {
         val generator = viewModel.generator as SingleNoteGenerator
 
         /* Questions */
-        makeQuestionsHeader()
-        makeNoteChoiceSingle(generator.noteType)
-
-        makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
-        addDiatonicMulti(generator.diatonicDegrees, generator.noteType)
-        addQuestionKeySingle(generator.questionKey)
-        addParentScaleSingle(generator.noteType, generator.parentScale)
-        addModeSingle(generator.mode, generator.noteType)
+//        makeQuestionsHeader()
+//        makeNoteChoiceSingle(generator.noteType)
+//        makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
+//        makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
+//        makeQuestionKeySingle(generator.questionKey)
+//        addParentScaleSingle(generator.noteType, generator.parentScale)
+//        makeModeSingle(generator.mode, generator.noteType)
         addPlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
         addSessionHeader()
         addSessionLengthSingle()
@@ -108,14 +111,14 @@ class ExerciseSetupFragment : Fragment() {
     /**
      * Header for note question related settings.
      */
-    private fun makeQuestionsHeader() : ExerciseSetupItem.Header {
+    private fun makeQuestionsHeader(): ExerciseSetupItem.Header {
         return ExerciseSetupItem.Header(getString(R.string.questions_header))
     }
 
     /**
      * Single list item that allows users to choose between diatonic and chromatic note pool.
      */
-    private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>) : ExerciseSetupItem.SingleList {
+    private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>): ExerciseSetupItem.SingleList {
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val noteChoiceValue = Transformations.map(noteType) { value ->
@@ -128,37 +131,37 @@ class ExerciseSetupFragment : Fragment() {
             res
         }
         return ExerciseSetupItem.SingleList(
-                        noteChoiceTitle,
-                        noteChoiceArray,
-                        noteChoiceValue,
-                        clickListener = View.OnClickListener {
-                            var tempItem = noteChoiceValue.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(noteChoiceTitle)
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
+                noteChoiceTitle,
+                noteChoiceArray,
+                noteChoiceValue,
+                clickListener = View.OnClickListener {
+                    var tempItem = noteChoiceValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(noteChoiceTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                when (tempItem) {
+                                    // TODO: perhaps not the most efficient, but quite readable
+                                    noteChoiceArray.indexOf("Diatonic") -> {
+                                        noteType.value = GeneratorNoteType.DIATONIC
                                     }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        when (tempItem) {
-                                            // TODO: perhaps not the most efficient, but quite readable
-                                            noteChoiceArray.indexOf("Diatonic") -> {
-                                                noteType.value = GeneratorNoteType.DIATONIC
-                                            }
-                                            noteChoiceArray.indexOf("Chromatic") -> {
-                                                noteType.value = GeneratorNoteType.CHROMATIC
-                                            }
-                                            else -> -1
-                                        }
+                                    noteChoiceArray.indexOf("Chromatic") -> {
+                                        noteType.value = GeneratorNoteType.CHROMATIC
                                     }
-                                    .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
+                                    else -> -1
+                                }
+                            }
+                            .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
 
-                        }
-                        // TODO: implement visibility condition
-                )
+                }
+                // TODO: implement visibility condition
+        )
     }
 
     /**
@@ -167,183 +170,173 @@ class ExerciseSetupFragment : Fragment() {
     private fun makeChromaticMulti(
             chromaticDegrees: MutableLiveData<BooleanArray>,
             noteType: MutableLiveData<GeneratorNoteType>
-    ) : ExerciseSetupItem.MultiList {
-        val chromaticMulti =
-                ExerciseSetupItem.MultiList(
-                        "Chromatic Intervals",
-                        // TODO: write a better summary and extract
-                        "Intervals to choose from",
-                        MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-                        chromaticDegrees,
-                        clickListener = View.OnClickListener {
-                            val tempList = chromaticDegrees.value!!.clone()
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle("Chromatic Tones")
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        chromaticDegrees.value = tempList.copyOf()
+    ): ExerciseSetupItem.MultiList {
+        return ExerciseSetupItem.MultiList(
+                "Chromatic Intervals",
+                // TODO: write a better summary and extract
+                "Intervals to choose from",
+                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                chromaticDegrees,
+                clickListener = View.OnClickListener {
+                    val tempList = chromaticDegrees.value!!.clone()
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle("Chromatic Tones")
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                chromaticDegrees.value = tempList.copyOf()
 
-                                    }
-                                    .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-                                        tempList[which] = checked
-                                    }
-                                    .show()
-                        },
-                        isVisible = Transformations.map(noteType) { value ->
-                            value == GeneratorNoteType.CHROMATIC
-                        }
-                )
-        return chromaticMulti
+                            }
+                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                tempList[which] = checked
+                            }
+                            .show()
+                },
+                isVisible = Transformations.map(noteType) { value ->
+                    value == GeneratorNoteType.CHROMATIC
+                }
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addDiatonicMulti(
+    private fun makeDiatonicMulti(
             diatonicDegrees: MutableLiveData<BooleanArray>,
             noteType: MutableLiveData<GeneratorNoteType>
-    ) {
-        val diatonicMulti: ExerciseSetupItem =
-                ExerciseSetupItem.MultiList(
-                        "Diatonic Intervals",
-                        // TODO: write a better summary
-                        "Intervals to choose from",
-                        MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
-                        diatonicDegrees,
-                        clickListener = View.OnClickListener {
-                            val tempList = diatonicDegrees.value!!.clone()
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle("DiatonicTones")
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        diatonicDegrees.value = tempList.copyOf()
-                                    }
-                                    .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-                                        tempList[which] = checked
-                                    }
-                                    .show()
-                        },
-                        isVisible = Transformations.map(noteType) { value ->
-                            value == GeneratorNoteType.DIATONIC
-                        }
-                )
-        settingItemsArray.add(diatonicMulti)
+    ): ExerciseSetupItem.MultiList {
+        return ExerciseSetupItem.MultiList(
+                "Diatonic Intervals",
+                // TODO: write a better summary
+                "Intervals to choose from",
+                MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
+                diatonicDegrees,
+                clickListener = View.OnClickListener {
+                    val tempList = diatonicDegrees.value!!.clone()
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle("DiatonicTones")
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                diatonicDegrees.value = tempList.copyOf()
+                            }
+                            .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+                                tempList[which] = checked
+                            }
+                            .show()
+                },
+                isVisible = Transformations.map(noteType) { value ->
+                    value == GeneratorNoteType.DIATONIC
+                }
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addQuestionKeySingle(questionKey: MutableLiveData<Int>) {
+    private fun makeQuestionKeySingle(questionKey: MutableLiveData<Int>): ExerciseSetupItem.SingleList {
         val questionKeyTitle = resources.getString(R.string.questionKey_title)
-        val questionKeySingle: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(
-                        questionKeyTitle,
-                        MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                        questionKey,
-                        clickListener = View.OnClickListener {
-                            var tempItem = questionKey.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(questionKeyTitle)
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        questionKey.value = tempItem
-                                    }
-                                    .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
-                        }
-                )
-        settingItemsArray.add(questionKeySingle)
+        return ExerciseSetupItem.SingleList(
+                questionKeyTitle,
+                MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
+                questionKey,
+                clickListener = View.OnClickListener {
+                    var tempItem = questionKey.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(questionKeyTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                questionKey.value = tempItem
+                            }
+                            .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addParentScaleSingle(
+    private fun makeParentScaleSingle(
             noteType: MutableLiveData<GeneratorNoteType>,
             parentScale: MutableLiveData<ParentScale>
-    ) {
+    ): ExerciseSetupItem.SingleList {
         val parentScaleTitle = resources.getString(R.string.parentScale_title)
         val parentScaleEntries = (MusicTheoryUtils.PARENT_SCALE_BANK.map { it.name }).toTypedArray()
         val parentScaleValue = Transformations.map(parentScale) { value ->
             parentScaleEntries.indexOf(value.name)
         }
-        val parentScaleSingle: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(
-                        parentScaleTitle,
-                        parentScaleEntries,
-                        parentScaleValue,
-                        isVisible = Transformations.map(noteType) { value ->
-                            value == GeneratorNoteType.DIATONIC
-                        },
-                        clickListener = View.OnClickListener {
-                            var tempItem = parentScaleValue.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(parentScaleTitle)
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        parentScale.value = MusicTheoryUtils.PARENT_SCALE_BANK[tempItem]
-                                    }
-                                    .setSingleChoiceItems(parentScaleEntries, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
-                        }
-                )
-        settingItemsArray.add(parentScaleSingle)
+        return ExerciseSetupItem.SingleList(
+                parentScaleTitle,
+                parentScaleEntries,
+                parentScaleValue,
+                isVisible = Transformations.map(noteType) { value ->
+                    value == GeneratorNoteType.DIATONIC
+                },
+                clickListener = View.OnClickListener {
+                    var tempItem = parentScaleValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(parentScaleTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                parentScale.value = MusicTheoryUtils.PARENT_SCALE_BANK[tempItem]
+                            }
+                            .setSingleChoiceItems(parentScaleEntries, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addModeSingle(
+    private fun makeModeSingle(
             mode: MutableLiveData<Int>,
             noteType: MutableLiveData<GeneratorNoteType>
-    ) {
+    ) : ExerciseSetupItem.SingleList {
         // TODO: extract hard coded
         val modeTitle = "Mode"
         // TODO: turn mode and parent scale into one parameter
         val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
         val modeValue = mode
-        val modeSingle: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(
-                        modeTitle,
-                        modeEntries,
-                        modeValue,
-                        isVisible = Transformations.map(noteType) { value ->
-                            value == GeneratorNoteType.DIATONIC
-                        },
-                        clickListener = View.OnClickListener {
-                            var tempItem = modeValue.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle(modeTitle)
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        mode.value = tempItem
-                                    }
-                                    .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
-                        }
-                )
-        settingItemsArray.add(modeSingle)
+        return ExerciseSetupItem.SingleList(
+                modeTitle,
+                modeEntries,
+                modeValue,
+                isVisible = Transformations.map(noteType) { value ->
+                    value == GeneratorNoteType.DIATONIC
+                },
+                clickListener = View.OnClickListener {
+                    var tempItem = modeValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle(modeTitle)
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                mode.value = tempItem
+                            }
+                            .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+        )
     }
 
     /**

@@ -32,6 +32,22 @@
                 android:id="@+id/chromatic_multi"
                 layout="@layout/item_settings_multi_list" />
 
+            <include
+                android:id="@+id/diatonic_multi"
+                layout="@layout/item_settings_multi_list" />
+
+            <include
+                android:id="@+id/questionKey_single"
+                layout="@layout/item_settings_single_list" />
+
+            <include
+                android:id="@+id/parentScale_single"
+                layout="@layout/item_settings_single_list" />
+
+            <include
+                android:id="@+id/mode_single"
+                layout="@layout/item_settings_single_list" />
+
         </LinearLayout>
 
     </ScrollView>
