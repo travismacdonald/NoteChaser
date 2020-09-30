@@ -58,7 +58,7 @@ class ExerciseSetupFragment : Fragment() {
 //        binding.settingsList.adapter = adapter
 //        binding.settingsList.layoutManager = manager
 
-        makeSettingsList();
+        makeSettingsList()
 
         return binding.root
     }
@@ -66,9 +66,14 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun makeSettingsList() {
         // todo: question type header
-        binding.noteChoiceHeader.obj = makeQuestionsHeader()
+        viewModel.generator = SingleNoteGenerator()
+        val generator = viewModel.generator as SingleNoteGenerator
+
+        binding.questionsHeader.obj = makeQuestionsHeader()
+        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
     }
 
+    @Deprecated("use makeSettingsList instead.")
     private fun makeSingleNoteList() {
 
         viewModel.generator = SingleNoteGenerator()
@@ -76,7 +81,7 @@ class ExerciseSetupFragment : Fragment() {
 
         /* Questions */
         makeQuestionsHeader()
-        addNoteChoiceSingle(generator.noteType)
+        makeNoteChoiceSingle(generator.noteType)
         addChromaticMulti(generator.chromaticDegrees, generator.noteType)
         addDiatonicMulti(generator.diatonicDegrees, generator.noteType)
         addQuestionKeySingle(generator.questionKey)
@@ -106,9 +111,9 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     /**
-     * TODO: Function write up
+     * Single list item that allows users to choose between diatonic and chromatic note pool.
      */
-    private fun addNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>) {
+    private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>) : ExerciseSetupItem.SingleList {
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val noteChoiceValue = Transformations.map(noteType) { value ->
@@ -120,8 +125,7 @@ class ExerciseSetupFragment : Fragment() {
             }
             res
         }
-        val noteChoiceSingle: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(
+        return ExerciseSetupItem.SingleList(
                         noteChoiceTitle,
                         noteChoiceArray,
                         noteChoiceValue,
@@ -151,8 +155,8 @@ class ExerciseSetupFragment : Fragment() {
                                     .show()
 
                         }
+                        // TODO: implement visibility condition
                 )
-        settingItemsArray.add(noteChoiceSingle)
     }
 
     /**

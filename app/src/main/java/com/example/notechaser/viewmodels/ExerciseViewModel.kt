@@ -13,6 +13,12 @@ import kotlinx.coroutines.launch
 
 class ExerciseViewModel internal constructor() : ViewModel() {
 
+    /* Live data wrappers */
+
+
+
+    /* Subclasses */
+
     val settings = ExerciseSetupSettings()
 
     lateinit var generator: PlayableGenerator
