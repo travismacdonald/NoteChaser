@@ -71,6 +71,7 @@ class ExerciseSetupFragment : Fragment() {
 
         binding.questionsHeader.obj = makeQuestionsHeader()
         binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
+        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
     }
 
     @Deprecated("use makeSettingsList instead.")
@@ -82,7 +83,8 @@ class ExerciseSetupFragment : Fragment() {
         /* Questions */
         makeQuestionsHeader()
         makeNoteChoiceSingle(generator.noteType)
-        addChromaticMulti(generator.chromaticDegrees, generator.noteType)
+
+        makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
         addDiatonicMulti(generator.diatonicDegrees, generator.noteType)
         addQuestionKeySingle(generator.questionKey)
         addParentScaleSingle(generator.noteType, generator.parentScale)
@@ -160,13 +162,13 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     /**
-     * TODO: Function write up
+     * Shows user the chromatic tones that they can use for patterns.
      */
-    private fun addChromaticMulti(
+    private fun makeChromaticMulti(
             chromaticDegrees: MutableLiveData<BooleanArray>,
             noteType: MutableLiveData<GeneratorNoteType>
-    ) {
-        val chromaticMulti: ExerciseSetupItem =
+    ) : ExerciseSetupItem.MultiList {
+        val chromaticMulti =
                 ExerciseSetupItem.MultiList(
                         "Chromatic Intervals",
                         // TODO: write a better summary and extract
@@ -194,7 +196,7 @@ class ExerciseSetupFragment : Fragment() {
                             value == GeneratorNoteType.CHROMATIC
                         }
                 )
-        settingItemsArray.add(chromaticMulti)
+        return chromaticMulti
     }
 
     /**

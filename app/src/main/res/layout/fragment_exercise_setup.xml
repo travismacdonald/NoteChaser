@@ -28,6 +28,10 @@
                 android:id="@+id/noteChoice_single"
                 layout="@layout/item_settings_single_list" />
 
+            <include
+                android:id="@+id/chromatic_multi"
+                layout="@layout/item_settings_multi_list" />
+
         </LinearLayout>
 
     </ScrollView>
