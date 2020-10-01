@@ -80,7 +80,15 @@ class ExerciseSetupFragment : Fragment() {
         binding.sessionHeader.obj = makeSessionHeader()
         binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
         binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
-        binding.timerLengthSlider.obj = addTimerLengthSlider()
+        binding.timerLengthSlider.obj = makeTimerLengthSlider()
+        binding.answerHeader.obj = makeAnswerHeader()
+        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
+        binding.nextButtons.obj = makeNextButton(
+                generator.hasValidRange(),
+                generator.noteType,
+                generator.diatonicDegrees,
+                generator.chromaticDegrees
+        )
     }
 
     @Deprecated("use makeSettingsList instead.")
@@ -101,15 +109,15 @@ class ExerciseSetupFragment : Fragment() {
 //        makeSessionHeader()
 //        makeSessionLengthTypeSingle()
 //        makeNumQuestionsSlider()
-        addTimerLengthSlider()
-        addAnswerHeader()
-        addMatchOctaveSwitch()
-        addNextButton(
-                generator.hasValidRange(),
-                generator.noteType,
-                generator.diatonicDegrees,
-                generator.chromaticDegrees
-        )
+//        makeTimerLengthSlider()
+//        makeAnswerHeader()
+//        makeMatchOctaveSwitch()
+//        makeNextButton(
+//                generator.hasValidRange(),
+//                generator.noteType,
+//                generator.diatonicDegrees,
+//                generator.chromaticDegrees
+//        )
     }
 
 
@@ -452,7 +460,7 @@ class ExerciseSetupFragment : Fragment() {
     /**
      * TODO: Function write up
      */
-    private fun addTimerLengthSlider(): ExerciseSetupItem.Slider {
+    private fun makeTimerLengthSlider(): ExerciseSetupItem.Slider {
         return ExerciseSetupItem.Slider(
                 // TODO: Extract some of these numbers
                 getString(R.string.timerLength_title),
@@ -472,60 +480,53 @@ class ExerciseSetupFragment : Fragment() {
     /**
      * TODO: Function write up
      */
-    private fun addAnswerHeader() {
-        val answerHeader: ExerciseSetupItem =
-                ExerciseSetupItem.Header(
-                        getString(R.string.answer_header)
-                )
-        settingItemsArray.add(answerHeader)
+    private fun makeAnswerHeader(): ExerciseSetupItem.Header {
+        return ExerciseSetupItem.Header(getString(R.string.answer_header))
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addMatchOctaveSwitch() {
-        val matchOctaveSwitch: ExerciseSetupItem =
-                ExerciseSetupItem.Switch(
-                        getString(R.string.matchOctave_title),
-                        getString(R.string.matchOctave_summary),
-                        viewModel.settings.matchOctave)
-        settingItemsArray.add(matchOctaveSwitch)
+    private fun makeMatchOctaveSwitch(): ExerciseSetupItem.Switch {
+        return ExerciseSetupItem.Switch(
+                getString(R.string.matchOctave_title),
+                getString(R.string.matchOctave_summary),
+                viewModel.settings.matchOctave)
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addNextButton(
+    private fun makeNextButton(
             hasValidRange: Boolean,
             noteType: MutableLiveData<GeneratorNoteType>,
             diatonicDegrees: MutableLiveData<BooleanArray>,
             chromaticDegrees: MutableLiveData<BooleanArray>
-    ) {
-        val nextButton: ExerciseSetupItem =
-                ExerciseSetupItem.Buttons(
-                        "Start",
-                        "Back",
-                        nextClickListener = View.OnClickListener {
-                            if (!hasValidRange) {
-                                Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                            }
-                            else if (noteType.value!! == GeneratorNoteType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
-                                Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                            }
-                            else if (noteType.value!! == GeneratorNoteType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
-                                Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                            }
-                            else {
-                                viewModel.generator.setupGenerator()
-                                val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
-                                findNavController().navigate(directions)
-                            }
-                        },
-                        backClickListener = View.OnClickListener {
-                            Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()
-                        }
-                )
-        settingItemsArray.add(nextButton)
+    ): ExerciseSetupItem.Buttons {
+        val nextButton = ExerciseSetupItem.Buttons(
+                "Start",
+                "Back",
+                nextClickListener = View.OnClickListener {
+                    if (!hasValidRange) {
+                        Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
+                    }
+                    else if (noteType.value!! == GeneratorNoteType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
+                        Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
+                    }
+                    else if (noteType.value!! == GeneratorNoteType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
+                        Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        viewModel.generator.setupGenerator()
+                        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
+                        findNavController().navigate(directions)
+                    }
+                },
+                backClickListener = View.OnClickListener {
+                    Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()
+                }
+        )
+        return nextButton
     }
 
 }

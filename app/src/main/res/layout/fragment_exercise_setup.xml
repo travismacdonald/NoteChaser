@@ -68,6 +68,18 @@
                 android:id="@+id/timerLengthSlider"
                 layout="@layout/item_settings_slider" />
 
+            <include
+                android:id="@+id/answer_header"
+                layout="@layout/item_settings_header" />
+
+            <include
+                android:id="@+id/matchOctaveSwitch"
+                layout="@layout/item_settings_switch" />
+
+            <include
+                android:id="@+id/next_buttons"
+                layout="@layout/item_settings_buttons" />
+
         </LinearLayout>
 
     </ScrollView>

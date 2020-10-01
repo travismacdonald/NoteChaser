@@ -19,7 +19,7 @@
         android:background="@drawable/settings_item_background"
         android:clickable="@{obj.isEnabled()}"
         android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
-        app:is_visible="@{obj.isVisible()}">
+        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
         <TextView
             android:id="@+id/title"
