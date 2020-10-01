@@ -77,6 +77,10 @@ class ExerciseSetupFragment : Fragment() {
         binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
         binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
         binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
+        binding.sessionHeader.obj = makeSessionHeader()
+        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
+        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
+        binding.timerLengthSlider.obj = addTimerLengthSlider()
     }
 
     @Deprecated("use makeSettingsList instead.")
@@ -93,10 +97,10 @@ class ExerciseSetupFragment : Fragment() {
 //        makeQuestionKeySingle(generator.questionKey)
 //        addParentScaleSingle(generator.noteType, generator.parentScale)
 //        makeModeSingle(generator.mode, generator.noteType)
-        makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
-        addSessionHeader()
-        addSessionLengthSingle()
-        addNumQuestionsSlider()
+//        makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
+//        makeSessionHeader()
+//        makeSessionLengthTypeSingle()
+//        makeNumQuestionsSlider()
         addTimerLengthSlider()
         addAnswerHeader()
         addMatchOctaveSwitch()
@@ -308,7 +312,7 @@ class ExerciseSetupFragment : Fragment() {
     private fun makeModeSingle(
             mode: MutableLiveData<Int>,
             noteType: MutableLiveData<GeneratorNoteType>
-    ) : ExerciseSetupItem.SingleList {
+    ): ExerciseSetupItem.SingleList {
         // TODO: extract hard coded
         val modeTitle = "Mode"
         // TODO: turn mode and parent scale into one parameter
@@ -347,7 +351,7 @@ class ExerciseSetupFragment : Fragment() {
             lowerBound: MutableLiveData<Int>,
             upperBound: MutableLiveData<Int>,
             minRange: MutableLiveData<Int>
-    ) : ExerciseSetupItem.RangeBar {
+    ): ExerciseSetupItem.RangeBar {
         // TODO: make the only selectable values notes that are actually in the scale
         return ExerciseSetupItem.RangeBar(
                 "Question Range",
@@ -386,92 +390,83 @@ class ExerciseSetupFragment : Fragment() {
     /**
      * TODO: Function write up
      */
-    private fun addSessionHeader() {
-        val sessionHeader: ExerciseSetupItem =
-                ExerciseSetupItem.Header(
-                        getString(R.string.session_header)
-                )
-        settingItemsArray.add(sessionHeader)
+    private fun makeSessionHeader(): ExerciseSetupItem.Header {
+        return ExerciseSetupItem.Header(
+                getString(R.string.session_header)
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addSessionLengthSingle() {
+    private fun makeSessionLengthTypeSingle(): ExerciseSetupItem.SingleList {
         // TODO: extract hard coded
         val sessionLengthTitle = "Session Length"
         // TODO: turn mode and parent scale into one parameter
         val sessionLengthEntries = arrayOf("Question Limit", "Time Limit", "Unlimited")
         val sessionLengthValue = viewModel.settings.sessionLengthType
-        val sessionLengthSingle: ExerciseSetupItem =
-                ExerciseSetupItem.SingleList(
-                        sessionLengthTitle,
-                        sessionLengthEntries,
-                        sessionLengthValue,
-                        clickListener = View.OnClickListener {
-                            var tempItem = sessionLengthValue.value!!
-                            MaterialAlertDialogBuilder(context!!)
-                                    .setTitle("Session Type")
-                                    .setNegativeButton("Dismiss") { _, _ ->
-                                        // Do nothing
-                                    }
-                                    .setPositiveButton("Confirm") { _, _ ->
-                                        // Commit Changes
-                                        sessionLengthValue.value = tempItem
-                                    }
-                                    .setSingleChoiceItems(sessionLengthEntries, tempItem) { _, which ->
-                                        tempItem = which
-                                    }
-                                    .show()
-                        }
-                )
-        settingItemsArray.add(sessionLengthSingle)
+        return ExerciseSetupItem.SingleList(
+                sessionLengthTitle,
+                sessionLengthEntries,
+                sessionLengthValue,
+                clickListener = View.OnClickListener {
+                    var tempItem = sessionLengthValue.value!!
+                    MaterialAlertDialogBuilder(context!!)
+                            .setTitle("Session Type")
+                            .setNegativeButton("Dismiss") { _, _ ->
+                                // Do nothing
+                            }
+                            .setPositiveButton("Confirm") { _, _ ->
+                                // Commit Changes
+                                sessionLengthValue.value = tempItem
+                            }
+                            .setSingleChoiceItems(sessionLengthEntries, tempItem) { _, which ->
+                                tempItem = which
+                            }
+                            .show()
+                }
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addNumQuestionsSlider() {
-        val numQuestionsSlider: ExerciseSetupItem =
-                ExerciseSetupItem.Slider(
-                        // TODO: Extract some of these numbers
-                        getString(R.string.numQuestions_title),
-                        10f,
-                        200f,
-                        viewModel.settings.numQuestions,
-                        Transformations.map(viewModel.settings.numQuestions) { value ->
-                            value.toString()
-                        },
-                        10f,
-                        isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-                            value == ExerciseSetupSettings.QUESTION_LIMIT
-                        }
+    private fun makeNumQuestionsSlider(): ExerciseSetupItem.Slider {
+        return ExerciseSetupItem.Slider(
+                // TODO: Extract some of these numbers
+                getString(R.string.numQuestions_title),
+                10f,
+                200f,
+                viewModel.settings.numQuestions,
+                Transformations.map(viewModel.settings.numQuestions) { value ->
+                    value.toString()
+                },
+                10f,
+                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
+                    value == ExerciseSetupSettings.QUESTION_LIMIT
+                }
 
-                )
-        settingItemsArray.add(numQuestionsSlider)
+        )
     }
 
     /**
      * TODO: Function write up
      */
-    private fun addTimerLengthSlider() {
-        val timerLengthSlider: ExerciseSetupItem =
-                ExerciseSetupItem.Slider(
-                        // TODO: Extract some of these numbers
-                        getString(R.string.timerLength_title),
-                        5f,
-                        60f,
-                        viewModel.settings.timerLength,
-                        Transformations.map(viewModel.settings.timerLength) { value ->
-                            value.toString()
-                        },
-                        5f,
-                        isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-                            value == ExerciseSetupSettings.TIME_LIMIT
-                        }
-
-                )
-        settingItemsArray.add(timerLengthSlider)
+    private fun addTimerLengthSlider(): ExerciseSetupItem.Slider {
+        return ExerciseSetupItem.Slider(
+                // TODO: Extract some of these numbers
+                getString(R.string.timerLength_title),
+                5f,
+                60f,
+                viewModel.settings.timerLength,
+                Transformations.map(viewModel.settings.timerLength) { value ->
+                    value.toString()
+                },
+                5f,
+                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
+                    value == ExerciseSetupSettings.TIME_LIMIT
+                }
+        )
     }
 
     /**

@@ -32,3 +32,14 @@ fun setRangeBarValues(rangeBar: Slider, item: ExerciseSetupItem.RangeBar) {
         }
     }
 }
+
+@BindingAdapter("app:sliderValues")
+fun setSliderValues(slider: Slider, item: ExerciseSetupItem.Slider) {
+    slider.valueFrom = item.valueFrom
+    slider.valueTo = item.valueTo
+    slider.stepSize = item.stepSize
+    slider.value = item.value.value!!.toFloat()
+    slider.addOnChangeListener { _, value, _ ->
+        item.value.value = value.toInt()
+    }
+}

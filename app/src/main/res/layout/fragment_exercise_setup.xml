@@ -52,6 +52,22 @@
                 android:id="@+id/playable_rangeBar"
                 layout="@layout/item_settings_range_bar" />
 
+            <include
+                android:id="@+id/session_header"
+                layout="@layout/item_settings_header" />
+
+            <include
+                android:id="@+id/sessionLengthType_single"
+                layout="@layout/item_settings_single_list" />
+
+            <include
+                android:id="@+id/numQuestions_slider"
+                layout="@layout/item_settings_slider" />
+
+            <include
+                android:id="@+id/timerLengthSlider"
+                layout="@layout/item_settings_slider" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
-        app:is_visible="@{obj.isVisible()}">
+        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
         <TextView
             android:id="@+id/title"
@@ -32,7 +32,7 @@
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/slider"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2 + 2 = 5" />
+            tools:text="Slider" />
 
         <TextView
             android:id="@+id/summary"
@@ -46,7 +46,7 @@
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="Maj3" />
+            tools:text="Cur Value" />
 
 
         <com.google.android.material.slider.Slider
@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="58dp"
+            app:sliderValues="@{obj}"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             app:labelBehavior="gone"
