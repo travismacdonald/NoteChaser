@@ -48,6 +48,10 @@
                 android:id="@+id/mode_single"
                 layout="@layout/item_settings_single_list" />
 
+            <include
+                android:id="@+id/playable_rangeBar"
+                layout="@layout/item_settings_range_bar" />
+
         </LinearLayout>
 
     </ScrollView>

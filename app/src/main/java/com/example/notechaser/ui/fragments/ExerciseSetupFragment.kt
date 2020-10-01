@@ -76,6 +76,7 @@ class ExerciseSetupFragment : Fragment() {
         binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
         binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
         binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
+        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
     }
 
     @Deprecated("use makeSettingsList instead.")
@@ -92,7 +93,7 @@ class ExerciseSetupFragment : Fragment() {
 //        makeQuestionKeySingle(generator.questionKey)
 //        addParentScaleSingle(generator.noteType, generator.parentScale)
 //        makeModeSingle(generator.mode, generator.noteType)
-        addPlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
+        makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
         addSessionHeader()
         addSessionLengthSingle()
         addNumQuestionsSlider()
@@ -342,46 +343,44 @@ class ExerciseSetupFragment : Fragment() {
     /**
      * TODO: Function write up
      */
-    private fun addPlayableRangeBar(
+    private fun makePlayableRangeBar(
             lowerBound: MutableLiveData<Int>,
             upperBound: MutableLiveData<Int>,
             minRange: MutableLiveData<Int>
-    ) {
+    ) : ExerciseSetupItem.RangeBar {
         // TODO: make the only selectable values notes that are actually in the scale
-        val playableRangeBar: ExerciseSetupItem =
-                ExerciseSetupItem.RangeBar(
-                        "Question Range",
-                        24f,
-                        88f,
-                        lowerBound,
-                        upperBound,
-                        displayValue = {
-                            val result = MediatorLiveData<String>()
-                            val updateRange = {
-                                val lower = MusicTheoryUtils.ixToName(lowerBound.value!!)
-                                val upper = MusicTheoryUtils.ixToName(upperBound.value!!)
-                                result.value = "$lower to $upper"
-                            }
-                            result.addSource(lowerBound) { updateRange() }
-                            result.addSource(upperBound) { updateRange() }
-                            result
-                        }.invoke(),
-                        isValid = {
-                            val result = MediatorLiveData<Boolean>()
-                            val isValid = {
-                                val lower = lowerBound.value!!
-                                val upper = upperBound.value!!
-                                val minRange = minRange.value!!
-                                // Both upper and lower bounds are inclusive
-                                result.value = upper - lower >= minRange
-                            }
-                            result.addSource(lowerBound) { isValid() }
-                            result.addSource(upperBound) { isValid() }
-                            result.addSource(minRange) { isValid() }
-                            result
-                        }.invoke()
-                )
-        settingItemsArray.add(playableRangeBar)
+        return ExerciseSetupItem.RangeBar(
+                "Question Range",
+                24f,
+                88f,
+                lowerBound,
+                upperBound,
+                displayValue = {
+                    val result = MediatorLiveData<String>()
+                    val updateRange = {
+                        val lower = MusicTheoryUtils.ixToName(lowerBound.value!!)
+                        val upper = MusicTheoryUtils.ixToName(upperBound.value!!)
+                        result.value = "$lower to $upper"
+                    }
+                    result.addSource(lowerBound) { updateRange() }
+                    result.addSource(upperBound) { updateRange() }
+                    result
+                }.invoke(),
+                isValid = {
+                    val result = MediatorLiveData<Boolean>()
+                    val isValid = {
+                        val lower = lowerBound.value!!
+                        val upper = upperBound.value!!
+                        val minRange = minRange.value!!
+                        // Both upper and lower bounds are inclusive
+                        result.value = upper - lower >= minRange
+                    }
+                    result.addSource(lowerBound) { isValid() }
+                    result.addSource(upperBound) { isValid() }
+                    result.addSource(minRange) { isValid() }
+                    result
+                }.invoke()
+        )
     }
 
     /**
