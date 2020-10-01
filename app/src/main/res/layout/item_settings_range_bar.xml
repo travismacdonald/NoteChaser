@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/settings_item_background"
-        app:is_visible="@{obj.isVisible()}">
+        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
 
         <TextView
             android:id="@+id/title"
@@ -32,7 +32,7 @@
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/rangeBar"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2 + 2 = 5" />
+            tools:text="Range Bar" />
 
         <TextView
             android:id="@+id/summary"
@@ -46,7 +46,7 @@
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="Maj3" />
+            tools:text="Cur val" />
 
         <!-- TODO: fix the colors going on here -->
         <com.google.android.material.slider.Slider
@@ -57,11 +57,12 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             app:labelBehavior="gone"
-            app:trackColorActive="@{obj.isValid() ? @color/colorPrimaryDark : @color/invalidPrimaryDark}"
-            app:trackColorInactive="@{obj.isValid() ? @color/colorPrimary : @color/invalidPrimary}"
-            app:thumbColor="@{obj.isValid() ? @color/colorPrimaryDark : @color/invalidPrimaryDark}"
+            app:rangeBarValues="@{obj}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
+            app:thumbColor="@{obj.isValid() ? @color/colorPrimaryDark : @color/invalidPrimaryDark}"
+            app:trackColorActive="@{obj.isValid() ? @color/colorPrimaryDark : @color/invalidPrimaryDark}"
+            app:trackColorInactive="@{obj.isValid() ? @color/colorPrimary : @color/invalidPrimary}"
             tools:text="Lotus Flower" />
 
         <ImageView

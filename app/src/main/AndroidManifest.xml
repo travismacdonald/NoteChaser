@@ -17,10 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.exerciseconfiguration.ExerciseConfigurationActivity"></activity>
-        <activity android:name=".ui.eartraining.EarTrainingActivity" />
-        <activity android:name=".ui.exerciseselection.ExerciseSelectActivity">
-        </activity>
     </application>
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
