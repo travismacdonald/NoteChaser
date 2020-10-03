@@ -1,6 +1,5 @@
 package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
 
 // TODO: remove duplicated equals() and hashCode()
 /**
@@ -12,7 +11,7 @@ class PatternTemplate(_intervals: MutableList<Int> = arrayListOf())
     override val range: Int
         get() {
             return if (_intervals.isEmpty())
-                throw EmptyTemplateException("Cannot get range of empty PlayableTemplate.")
+                throw IllegalStateException("Cannot get range of empty PlayableTemplate.")
             else _intervals.max()!! - _intervals.min()!!
         }
 

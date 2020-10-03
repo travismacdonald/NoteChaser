@@ -1,4 +1,4 @@
-package com.example.notechaser.ui.adapters
+package com.example.notechaser
 
 import android.view.View
 import androidx.databinding.BindingAdapter

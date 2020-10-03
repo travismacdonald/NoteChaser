@@ -1,7 +1,7 @@
 package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.playablegenerator.exceptions.DuplicateIntervalException
-import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
+
+import kotlin.IllegalStateException
 
 // TODO: could override contains to use binary search for val, doesn't really make a performance difference
 class ChordTemplate(_intervals: MutableList<Int> = arrayListOf())
@@ -14,14 +14,14 @@ class ChordTemplate(_intervals: MutableList<Int> = arrayListOf())
     override val range: Int
         get() {
             return if (_intervals.isEmpty())
-                throw EmptyTemplateException("Cannot get range of empty PlayableTemplate.")
+                throw IllegalStateException("Cannot get range of empty PlayableTemplate.")
             // Take advantage of sorted list
             else _intervals[0] - _intervals[size - 1]
         }
 
     override fun addInterval(interval: Int) {
         if (_intervals.contains(interval)) {
-            throw DuplicateIntervalException("Chord template already contains interval $interval")
+            throw IllegalStateException("Chord template already contains interval $interval")
         }
         val insertionIx = -(_intervals.binarySearch(interval) + 1)
         _intervals.add(insertionIx, interval)
