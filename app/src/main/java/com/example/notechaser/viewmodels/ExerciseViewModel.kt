@@ -3,11 +3,11 @@ package com.example.notechaser.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.models.MidiPlayer
+import com.example.notechaser.models.PlayablePlayer
 import com.example.notechaser.playablegenerator.Playable
 import com.example.notechaser.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.GlobalScope
@@ -23,7 +23,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     lateinit var generator: PlayableGenerator
 
-    private lateinit var midiPlayer: MidiPlayer
+    lateinit var playablePlayer: PlayablePlayer
 
     val questionsAnswered = MutableLiveData(0)
 
@@ -41,7 +41,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             val sf = SF2Soundbank(application.assets.open("test_piano.sf2"))
             sfMidiPlayer.sf2 = sf // <-- this is the line that's taking forever ?????
             sfMidiPlayer.setPlugin(0)
-            midiPlayer = sfMidiPlayer
+            playablePlayer = PlayablePlayer(sfMidiPlayer)
             Timber.i("Thread complete")
         }
     }

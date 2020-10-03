@@ -1,12 +1,10 @@
 package com.example.notechaser.ui.fragments
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -16,8 +14,8 @@ import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
 import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.viewmodels.ExerciseViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SessionFragment : Fragment() {
@@ -48,6 +46,9 @@ class SessionFragment : Fragment() {
 
 
         viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
+            GlobalScope.launch {
+                viewModel.playablePlayer.playPlayable(viewModel.currentPlayable.value!!)
+            }
             binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
             binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
             binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
