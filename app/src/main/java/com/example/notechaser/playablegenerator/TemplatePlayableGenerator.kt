@@ -1,8 +1,7 @@
 package com.example.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
-import com.example.notechaser.playablegenerator.exceptions.DuplicateTemplateException
-import java.lang.IllegalStateException
+import kotlin.IllegalStateException
 import kotlin.random.Random
 
 // TODO: Rename Class to something more precise / less ambiguous
@@ -82,7 +81,7 @@ class TemplatePlayableGenerator() : PlayableGenerator {
 
     fun addTemplate(template: PlayableTemplate, ix: Int = numTemplates) {
         if (contains(template)) {
-            throw DuplicateTemplateException("Tried to add equivalent template to _templates.")
+            throw IllegalStateException("Tried to add equivalent template to _templates.")
         }
         _templates.add(ix, template)
         calcRangeRequired()

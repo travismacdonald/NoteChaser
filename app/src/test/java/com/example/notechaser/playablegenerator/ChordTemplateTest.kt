@@ -1,6 +1,5 @@
 package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.playablegenerator.exceptions.DuplicateIntervalException
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -47,7 +46,7 @@ class ChordTemplateTest {
         val template = ChordTemplate()
         template.addInterval(2)
         template.addInterval(5)
-        assertFailsWith<DuplicateIntervalException> { template.addInterval(2) }
+        assertFailsWith<IllegalStateException> { template.addInterval(2) }
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.notechaser.playablegenerator
 
-import com.example.notechaser.playablegenerator.exceptions.EmptyTemplateException
 
 
 /**
@@ -17,7 +16,7 @@ class Playable(template: PlayableTemplate, ix: Int) {
 
     init {
         if (template.isEmpty())
-            throw EmptyTemplateException("Cannot construct Pattern from empty PatternTemplate.")
+            throw IllegalStateException("Cannot construct Pattern from empty PatternTemplate.")
         else notes = template.intervalsTransposed.map { Note(it + ix) }
     }
 
