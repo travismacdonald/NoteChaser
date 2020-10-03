@@ -44,14 +44,13 @@ class SessionFragment : Fragment() {
             viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
         }
 
-
         viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
-            GlobalScope.launch {
-                viewModel.playablePlayer.playPlayable(viewModel.currentPlayable.value!!)
+            if (it != null) {
+                viewModel.handlePlayable(it)
+                binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
+                binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
+                binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
             }
-            binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
-            binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
-            binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
         })
 
         when (viewModel.settings.sessionLengthType.value!!) {

@@ -165,15 +165,15 @@ class MidiPlayer {
 
     private fun sendMidiSetup() {
         if (sf2 != null) {
-            Timber.i("1")
+            Timber.d("1")
             synth.open()
-            Timber.i("2")
+            Timber.d("2")
             synth.loadAllInstruments(sf2!!)
-            Timber.i("3")
+            Timber.d("3")
             synth.channels[0].programChange(0)
-            Timber.i("4")
+            Timber.d("4")
             recv = synth.receiver
-            Timber.i("5")
+            Timber.d("5")
         }
     }
 
