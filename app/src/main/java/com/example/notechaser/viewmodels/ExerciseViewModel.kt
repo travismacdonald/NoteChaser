@@ -80,20 +80,29 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun handlePlayable(playable: Playable) {
         GlobalScope.launch {
             playablePlayer.playPlayable(playable)
-            Timber.d("fuck you")
-
+            Timber.d("playable done")
+            delay(1000)
+            Timber.d("listenenig")
+            startListening()
         }
     }
 
     private fun initPitchProcessingPipeline() {
-        signalProcessor.listener = (SignalProcessorListener { pitch, probability, isPitched ->
-            noteProcessor.onPitchDetected(pitch, probability, isPitched)
+        signalProcessor.listener = (SignalProcessorListener { pitch, _, _ ->
+            noteProcessor.onPitchDetected(pitch)
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
                 Timber.d("Note detected: $note")
             }
         })
+    }
+
+    private fun startListening() {
+        if (signalProcessor.isRunning) {
+            signalProcessor.stop()
+        }
+        signalProcessor.start()
     }
 
 }

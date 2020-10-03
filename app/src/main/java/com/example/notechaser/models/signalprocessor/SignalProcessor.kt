@@ -22,6 +22,8 @@ class SignalProcessor {
     var isRunning = false
         private set
 
+    val isNotRunning = !isRunning
+
     fun start() {
         val handler = PitchDetectionHandler { result: PitchDetectionResult, _: AudioEvent? ->
             val pitchInHz = result.pitch
