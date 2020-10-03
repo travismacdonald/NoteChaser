@@ -6,23 +6,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.ExerciseType
 import com.example.notechaser.databinding.FragmentExerciseSelectionBinding
+import com.example.notechaser.viewmodels.ExerciseViewModel
 
 
 class ExerciseSelectionFragment : Fragment() {
 
+    // TODO: try to figure out a way to init the viewmodel when this activity starts
+    private val viewModel: ExerciseViewModel by viewModels()
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         val binding: FragmentExerciseSelectionBinding =
                 DataBindingUtil.inflate(
                         inflater,
                         R.layout.fragment_exercise_selection,
                         container,
                         false)
+
 
         binding.apply {
             singlenoteButton.setOnClickListener { view ->

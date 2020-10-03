@@ -5,6 +5,7 @@ import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import jp.kshoji.javax.sound.midi.InvalidMidiDataException
 import jp.kshoji.javax.sound.midi.Receiver
 import jp.kshoji.javax.sound.midi.ShortMessage
+import timber.log.Timber
 import java.util.*
 
 // todo: there is likely a bug with muting/unmuting; look into it later if it pops up
@@ -36,7 +37,9 @@ class MidiPlayer {
     var sf2: SF2Soundbank? = null
         set(value) {
             field = value
+
             sendMidiSetup()
+
         }
 
     var isMuted: Boolean = false
@@ -162,10 +165,15 @@ class MidiPlayer {
 
     private fun sendMidiSetup() {
         if (sf2 != null) {
+            Timber.i("1")
             synth.open()
+            Timber.i("2")
             synth.loadAllInstruments(sf2!!)
+            Timber.i("3")
             synth.channels[0].programChange(0)
+            Timber.i("4")
             recv = synth.receiver
+            Timber.i("5")
         }
     }
 
