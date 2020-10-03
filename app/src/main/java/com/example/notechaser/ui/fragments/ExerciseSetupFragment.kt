@@ -19,18 +19,15 @@ import com.example.notechaser.databinding.FragmentExerciseSetupBinding
 import com.example.notechaser.playablegenerator.GeneratorNoteType
 import com.example.notechaser.playablegenerator.ParentScale
 import com.example.notechaser.playablegenerator.SingleNoteGenerator
-import com.example.notechaser.ui.adapters.ExerciseSetupAdapter
 import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ExerciseSetupFragment : Fragment() {
 
-    val viewModel: ExerciseViewModel by activityViewModels()
-    lateinit var binding: FragmentExerciseSetupBinding
-    lateinit var adapter: ExerciseSetupAdapter
-    lateinit var args: ExerciseSetupFragmentArgs
-    private val settingItemsArray: MutableList<ExerciseSetupItem> = arrayListOf()
+    private val viewModel: ExerciseViewModel by activityViewModels()
+    private lateinit var binding: FragmentExerciseSetupBinding
+    private lateinit var args: ExerciseSetupFragmentArgs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,23 +37,7 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-//        val manager = LinearLayoutManager(activity)
-//        adapter = ExerciseSetupAdapter(this)
         args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
-
-//        // TODO: may have to make this mutable later on
-//        when (args.exerciseType) {
-//            ExerciseType.SINGLE_NOTE -> makeSingleNoteList()
-//            ExerciseType.INTERVALLIC -> makeIntervallicList()
-//            ExerciseType.HARMONIC -> makeHarmonicList()
-//            ExerciseType.SCALE -> makeScaleList()
-//            ExerciseType.MELODIC -> makeMelodicList()
-//            else -> throw IllegalArgumentException("Unknown exercise type: ${args.exerciseType}")
-//        }
-
-//        adapter.submitList(settingItemsArray)
-//        binding.settingsList.adapter = adapter
-//        binding.settingsList.layoutManager = manager
 
         makeSettingsList()
 
@@ -65,7 +46,6 @@ class ExerciseSetupFragment : Fragment() {
 
 
     private fun makeSettingsList() {
-        // todo: question type header
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
@@ -90,36 +70,6 @@ class ExerciseSetupFragment : Fragment() {
                 generator.chromaticDegrees
         )
     }
-
-    @Deprecated("use makeSettingsList instead.")
-    private fun makeSingleNoteList() {
-
-        viewModel.generator = SingleNoteGenerator()
-        val generator = viewModel.generator as SingleNoteGenerator
-
-        /* Questions */
-//        makeQuestionsHeader()
-//        makeNoteChoiceSingle(generator.noteType)
-//        makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
-//        makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
-//        makeQuestionKeySingle(generator.questionKey)
-//        addParentScaleSingle(generator.noteType, generator.parentScale)
-//        makeModeSingle(generator.mode, generator.noteType)
-//        makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
-//        makeSessionHeader()
-//        makeSessionLengthTypeSingle()
-//        makeNumQuestionsSlider()
-//        makeTimerLengthSlider()
-//        makeAnswerHeader()
-//        makeMatchOctaveSwitch()
-//        makeNextButton(
-//                generator.hasValidRange(),
-//                generator.noteType,
-//                generator.diatonicDegrees,
-//                generator.chromaticDegrees
-//        )
-    }
-
 
     /**
      * Header for note question related settings.
