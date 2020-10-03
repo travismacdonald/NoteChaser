@@ -11,8 +11,6 @@ class NoteProcessor {
 
     private data class NoteStamp(val note: Int, val timeStamp: Long)
 
-    // todo: tinker with this value
-    private val PROBABILITY_THRESHOLD = 0.0f
     var noteCountThreshold = 0.7f
 
     var listener: NoteProcessorListener? = null
@@ -23,19 +21,10 @@ class NoteProcessor {
     private val noteCounts: MutableMap<Int, Int> = HashMap()
     private var lastPredictedNote = -1
 
-//    private var mPrevNoteHeardIx = -1
-//    private var mPrevHeardTimeStamp: Long = -1
-//    private var mLastDetectedNoteIx = -1
-//    private var mHasNotifiedDetected = false
-//    private var mHasNotifiedUndetected = false
-
-
     // todo: for now, pitch detection is only monophonic;
     //       if polyphonic detection is added in later, then
     //       this will need to be reworked
     fun onPitchDetected(note: Int) {
-        // todo: use other parameters later to better filter out noise / incorrect guesses
-
         // Remove expired notes
         val currentMillis = System.currentTimeMillis()
 //        Timber.d("start: $currentMillis")
@@ -68,27 +57,13 @@ class NoteProcessor {
             listener?.notifyNoteDetected(maxCountNote)
             lastPredictedNote = maxCountNote
         }
-
-//        if (noteIx != mPrevNoteHeardIx) {
-//            mHasNotifiedDetected = false
-//            if (noteIx != -1) {
-//                mPrevHeardTimeStamp = System.currentTimeMillis()
-//            }
-//            mPrevNoteHeardIx = noteIx
-//        }
-//        else if (noteIx != -1 && !mHasNotifiedDetected && hasMetFilterLengthThreshold()) {
-//            if (listener != null) {
-//                listener!!.notifyNoteDetected(noteIx)
-//            }
-//            mLastDetectedNoteIx = noteIx
-//            mHasNotifiedUndetected = false
-//            mHasNotifiedDetected = true
-//        }
     }
 
-//    private fun hasMetFilterLengthThreshold(): Boolean {
-//        return (System.currentTimeMillis() - mPrevHeardTimeStamp).toInt() > millisRequired
-//    }
+    fun clear() {
+        noteQueue.clear()
+        noteCounts.clear()
+        lastPredictedNote = -1
+    }
 
     private fun noteQueuePop() {
         val noteStamp = noteQueue.removeAt(0)

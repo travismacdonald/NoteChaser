@@ -86,7 +86,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             answerChecker.userAnswer.clear()
             playablePlayer.playPlayable(playable)
             Timber.d("playable done")
-            delay(1000)
+            // Wait before listening in case the app listens to itself
+            delay(250)
             Timber.d("listenenig")
             startListening()
         }
@@ -101,7 +102,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                 if (note != -1) {
                     answerChecker.addUserNote(note)
                     if (answerChecker.areAnswersSame()) {
+                        signalProcessor.stop()
+                        noteProcessor.clear()
                         Timber.d("correct!")
+                        generatePlayable()
                     }
                 }
             }
