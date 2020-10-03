@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
+import com.example.notechaser.models.AnswerChecker
 import com.example.notechaser.models.MidiPlayer
 import com.example.notechaser.models.PlayablePlayer
 import com.example.notechaser.models.noteprocessor.NoteProcessor
@@ -32,6 +33,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val signalProcessor = SignalProcessor()
 
     private val noteProcessor = NoteProcessor()
+
+    private val answerChecker = AnswerChecker()
 
     val questionsAnswered = MutableLiveData(0)
 
@@ -79,6 +82,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     // Todo: come up with better function name
     fun handlePlayable(playable: Playable) {
         GlobalScope.launch {
+            answerChecker.targetAnswer = playable
+            answerChecker.userAnswer.clear()
             playablePlayer.playPlayable(playable)
             Timber.d("playable done")
             delay(1000)
@@ -93,7 +98,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                Timber.d("Note detected: $note")
+                if (note != -1) {
+                    answerChecker.addUserNote(note)
+                    if (answerChecker.areAnswersSame()) {
+                        Timber.d("correct!")
+                    }
+                }
             }
         })
     }
