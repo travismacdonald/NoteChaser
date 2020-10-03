@@ -6,14 +6,14 @@ apply plugin: "androidx.navigation.safeargs"
 
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     dataBinding {
         enabled = true
     }
     defaultConfig {
         applicationId "com.example.notechaser"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,9 +31,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-//    testOptions {
-//        unitTests.returnDefaultValues = true
-//    }
 }
 
 dependencies {
@@ -67,6 +64,9 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // MidiDriver Library (supports sf2 files)
+    implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
 }
 repositories {
     mavenCentral()
