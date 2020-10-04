@@ -4,4 +4,6 @@ interface NoteProcessorListener {
 
     fun notifyNoteDetected(note: Int)
 
+    fun notifySilenceDetected()
+
 }

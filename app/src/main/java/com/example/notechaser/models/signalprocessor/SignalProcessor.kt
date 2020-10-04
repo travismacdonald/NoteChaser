@@ -49,11 +49,7 @@ class SignalProcessor {
     }
 
     fun stop() {
-        if (dispatcher == null) {
-            // Todo: throw exception here. ?
-            return
-        }
-        dispatcher!!.stop()
+        dispatcher?.stop()
         dispatcher = null
         isRunning = false
     }

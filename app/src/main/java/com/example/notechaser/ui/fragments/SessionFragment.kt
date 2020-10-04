@@ -26,14 +26,6 @@ class SessionFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        Timber.d(
-                " \nupper -> ${(viewModel.generator as SingleNoteGenerator).upperBound.value}\n" +
-                        "lower -> ${(viewModel.generator as SingleNoteGenerator).lowerBound.value}\n"
-        )
-
-//        // TODO: use this line for testing
-//        viewModel.settings.timerLength.value = 1
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false

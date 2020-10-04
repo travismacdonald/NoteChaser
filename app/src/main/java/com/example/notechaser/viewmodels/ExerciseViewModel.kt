@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.sign
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
@@ -46,14 +47,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     init {
         GlobalScope.launch {
-            Timber.d("Thread started")
+            Timber.d("Midi setup started")
             val sfMidiPlayer = MidiPlayer()
             sfMidiPlayer.setPlugin(0)
             val sf = SF2Soundbank(application.assets.open("test_piano.sf2"))
             sfMidiPlayer.sf2 = sf // <-- this is the line that's taking forever ?????
             sfMidiPlayer.setPlugin(0)
             playablePlayer = PlayablePlayer(sfMidiPlayer)
-            Timber.d("Thread complete")
+            Timber.d("Midi setup complete")
         }
 
         initPitchProcessingPipeline()
@@ -70,9 +71,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun stopTimer() {
-        timerUpdate?.let {
-            it.cancel()
-        }
+        timerUpdate?.cancel()
     }
 
     fun generatePlayable() {
@@ -82,13 +81,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     // Todo: come up with better function name
     fun handlePlayable(playable: Playable) {
         GlobalScope.launch {
+            Timber.d("starting playable")
             answerChecker.targetAnswer = playable
             answerChecker.userAnswer.clear()
             playablePlayer.playPlayable(playable)
-            Timber.d("playable done")
+            Timber.d("done playable")
             // Wait before listening in case the app listens to itself
             delay(250)
-            Timber.d("listenenig")
+            Timber.d("starting pitch processing")
             startListening()
         }
     }
@@ -105,9 +105,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                         signalProcessor.stop()
                         noteProcessor.clear()
                         Timber.d("correct!")
-                        generatePlayable()
+                        questionsAnswered.value = questionsAnswered.value!! + 1
                     }
                 }
+            }
+            override fun notifySilenceDetected() {
+                handlePlayable(currentPlayable.value!!)
             }
         })
     }
