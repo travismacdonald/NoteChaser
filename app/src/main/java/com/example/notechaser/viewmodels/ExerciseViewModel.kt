@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.system.exitProcess
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
@@ -83,6 +84,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             Timber.d("starting playable")
             answerChecker.targetAnswer = playable
             answerChecker.userAnswer.clear()
+            noteProcessor.clear()
             playablePlayer.playPlayable(playable)
             Timber.d("done playable")
             // Wait before listening in case the app listens to itself
@@ -108,7 +110,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                     }
                 }
             }
+
+            override fun notifyNoteUndetected(note: Int) {
+                Timber.d("note undected: $note")
+            }
             override fun notifySilenceDetected() {
+//                exitProcess()
                 signalProcessor.stop()
                 onPlayableChanged(currentPlayable.value!!)
             }
