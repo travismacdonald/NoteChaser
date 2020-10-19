@@ -12,11 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
-import com.example.notechaser.playablegenerator.SingleNoteGenerator
 import com.example.notechaser.viewmodels.ExerciseViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import timber.log.Timber
+
 
 class SessionFragment : Fragment() {
 
@@ -33,16 +30,20 @@ class SessionFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.answerButton.setOnClickListener {
+            // todo: change to ?.let { ... }
             viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
         }
 
         viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                viewModel.handlePlayable(it)
+            it?.let {
+                viewModel.onPlayableChanged(it)
                 binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
                 binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
                 binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
             }
+//            if (it != null) {
+//
+//            }
         })
 
         when (viewModel.settings.sessionLengthType.value!!) {

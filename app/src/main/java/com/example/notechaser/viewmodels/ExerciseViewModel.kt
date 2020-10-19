@@ -20,7 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.math.sign
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
@@ -79,7 +78,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     // Todo: come up with better function name
-    fun handlePlayable(playable: Playable) {
+    fun onPlayableChanged(playable: Playable) {
         GlobalScope.launch {
             Timber.d("starting playable")
             answerChecker.targetAnswer = playable
@@ -110,7 +109,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                 }
             }
             override fun notifySilenceDetected() {
-                handlePlayable(currentPlayable.value!!)
+                signalProcessor.stop()
+                onPlayableChanged(currentPlayable.value!!)
             }
         })
     }

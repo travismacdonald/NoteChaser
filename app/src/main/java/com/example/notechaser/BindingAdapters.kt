@@ -8,16 +8,16 @@ import com.google.android.material.slider.Slider
 import org.jetbrains.annotations.Nullable
 
 
-@BindingAdapter("app:is_visible")
-fun setLayoutGone(view: View, @Nullable isVisible: LiveData<Boolean>) {
-    val params = view.layoutParams
-    isVisible.value?.let {
-        if (it) params.height = view.height else params.height = 0
-    }
-    view.layoutParams = params
-}
+//@BindingAdapter("app:is_visible")
+//fun setLayoutGone(view: View, @Nullable isVisible: LiveData<Boolean>) {
+//    val params = view.layoutParams
+//    isVisible.value?.let {
+//        if (it) params.height = view.height else params.height = 0
+//    }
+//    view.layoutParams = params
+//}
 
-@BindingAdapter("app:rangeBarValues")
+@BindingAdapter("app:nc_rangeBarValues")
 fun setRangeBarValues(rangeBar: Slider, item: ExerciseSetupItem.RangeBar) {
     rangeBar.valueFrom = item.valueFrom
     rangeBar.valueTo = item.valueTo
@@ -33,7 +33,7 @@ fun setRangeBarValues(rangeBar: Slider, item: ExerciseSetupItem.RangeBar) {
     }
 }
 
-@BindingAdapter("app:sliderValues")
+@BindingAdapter("app:nc_sliderValues")
 fun setSliderValues(slider: Slider, item: ExerciseSetupItem.Slider) {
     slider.valueFrom = item.valueFrom
     slider.valueTo = item.valueTo

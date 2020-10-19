@@ -11,6 +11,7 @@ import be.tarsos.dsp.util.PitchConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 // Wrote this class in Kotlin to take advantage of coroutines
 class SignalProcessor {
@@ -22,9 +23,8 @@ class SignalProcessor {
     var isRunning = false
         private set
 
-    val isNotRunning = !isRunning
-
     fun start() {
+        Timber.d("start called")
         val handler = PitchDetectionHandler { result: PitchDetectionResult, _: AudioEvent? ->
             val pitchInHz = result.pitch
             GlobalScope.launch(Dispatchers.Main) {
@@ -49,6 +49,7 @@ class SignalProcessor {
     }
 
     fun stop() {
+        Timber.d("stop called")
         dispatcher?.stop()
         dispatcher = null
         isRunning = false
