@@ -45,6 +45,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private var timerUpdate: Job? = null
 
+    private var initSilenceHeard: Long? = null
+
+    private var silenceThreshold: Long = 1500
+
     init {
         GlobalScope.launch {
             Timber.d("Midi setup started")
@@ -100,7 +104,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
+                // Actual note detected (-1 denotes silence)
                 if (note != -1) {
+                    initSilenceHeard = null
                     answerChecker.addUserNote(note)
                     if (answerChecker.areAnswersSame()) {
                         signalProcessor.stop()
@@ -109,16 +115,31 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                         questionsAnswered.value = questionsAnswered.value!! + 1
                     }
                 }
+                // Silence Detected
+                else {
+                    // TODO bug here because it only gets notified on the first instance of silence
+                    val currentMillis = System.currentTimeMillis()
+                    if (initSilenceHeard == null) {
+                        initSilenceHeard = currentMillis
+                    }
+                    initSilenceHeard?.let {
+                        if ((currentMillis - it) > silenceThreshold) {
+                            signalProcessor.stop()
+                            onPlayableChanged(currentPlayable.value!!)
+                        }
+                    }
+
+                }
             }
 
             override fun notifyNoteUndetected(note: Int) {
-                Timber.d("note undected: $note")
+                initSilenceHeard = null
             }
-            override fun notifySilenceDetected() {
-//                exitProcess()
-                signalProcessor.stop()
-                onPlayableChanged(currentPlayable.value!!)
-            }
+//            override fun notifySilenceDetected() {
+////                exitProcess()
+//                signalProcessor.stop()
+//                onPlayableChanged(currentPlayable.value!!)
+//            }
         })
     }
 

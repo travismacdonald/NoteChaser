@@ -78,6 +78,7 @@ class NoteProcessor {
                     Timber.d("NOTEPRED : note $it undetected")
                     listener?.notifyNoteUndetected(it)
                 }
+                // TODO: move this up in the brackets
                 lastPredictedNote = null
 
             }

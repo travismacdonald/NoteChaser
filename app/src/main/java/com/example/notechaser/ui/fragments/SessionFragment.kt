@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
@@ -20,7 +19,6 @@ class SessionFragment : Fragment() {
     val viewModel: ExerciseViewModel by activityViewModels()
     lateinit var binding: FragmentSessionBinding
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -29,12 +27,12 @@ class SessionFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        binding.answerButton.setOnClickListener {
-            // todo: change to ?.let { ... }
-            viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
-        }
+//        binding.answerButton.setOnClickListener {
+//            // todo: change to ?.let { ... }
+//            viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
+//        }
 
-        viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
+        viewModel.currentPlayable.observe(viewLifecycleOwner, {
             it?.let {
                 viewModel.onPlayableChanged(it)
                 binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
@@ -50,10 +48,10 @@ class SessionFragment : Fragment() {
 
             ExerciseSetupSettings.QUESTION_LIMIT -> {
                 viewModel.startTimer()
-                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                viewModel.secondsPassed.observe(viewLifecycleOwner, {
                     binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}"
                 })
-                viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+                viewModel.questionsAnswered.observe(viewLifecycleOwner, {
                     binding.questionsAnsweredText.text = "$it/${viewModel.settings.numQuestions.value}"
                     if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
                         viewModel.stopTimer()
@@ -68,7 +66,7 @@ class SessionFragment : Fragment() {
 
             ExerciseSetupSettings.TIME_LIMIT -> {
                 viewModel.startTimer()
-                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                viewModel.secondsPassed.observe(viewLifecycleOwner, {
                     binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
                     if (it == viewModel.settings.timerLength.value!! * 60) {
                         viewModel.stopTimer()
@@ -76,7 +74,7 @@ class SessionFragment : Fragment() {
                         findNavController().navigate(directions)
                     }
                 })
-                viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+                viewModel.questionsAnswered.observe(viewLifecycleOwner, {
                     binding.questionsAnsweredText.text = "$it"
                     viewModel.generatePlayable()
                 })

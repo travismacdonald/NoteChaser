@@ -6,7 +6,4 @@ interface NoteProcessorListener {
 
     fun notifyNoteUndetected(note: Int)
 
-    @Deprecated("fuck off, compiler")
-    fun notifySilenceDetected()
-
 }
