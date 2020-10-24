@@ -39,9 +39,6 @@ class SessionFragment : Fragment() {
                 binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
                 binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
             }
-//            if (it != null) {
-//
-//            }
         })
 
         when (viewModel.settings.sessionLengthType.value!!) {

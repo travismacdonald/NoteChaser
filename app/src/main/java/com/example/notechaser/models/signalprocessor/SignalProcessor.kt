@@ -1,5 +1,6 @@
 package com.example.notechaser.models.signalprocessor
 
+import android.util.Log
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
@@ -8,12 +9,10 @@ import be.tarsos.dsp.pitch.PitchDetectionHandler
 import be.tarsos.dsp.pitch.PitchDetectionResult
 import be.tarsos.dsp.pitch.PitchProcessor
 import be.tarsos.dsp.util.PitchConverter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
-// Wrote this class in Kotlin to take advantage of coroutines
+// TODO: small optimization: use a note pool please
 class SignalProcessor {
 
     private var dispatcher: AudioDispatcher? = null
@@ -23,13 +22,21 @@ class SignalProcessor {
     var isRunning = false
         private set
 
-    fun start() {
+    fun start(scope: CoroutineScope) {
         Timber.d("start called")
+
         val handler = PitchDetectionHandler { result: PitchDetectionResult, _: AudioEvent? ->
-            val pitchInHz = result.pitch
-            GlobalScope.launch(Dispatchers.Main) {
+            runBlocking {
+                val pitchInHz = result.pitch
+//            GlobalScope.launch(Dispatchers.Main) {
                 val pitchAsInt = convertPitchToIx(pitchInHz.toDouble())
-                listener?.notifyPitchResult(pitchAsInt, result.probability, result.isPitched)
+                Log.d("THREAD-DBUG", "[0] before listener callback")
+                val curJob = scope.async {
+                    listener?.notifyPitchResult(pitchAsInt, result.probability, result.isPitched)
+                }
+                curJob.await()
+                Log.d("THREAD-DBUG", "---[3] after listener callback")
+                Log.d("THREAD-DBUG", "-----------------------------")
             }
         }
         val pitchProcessor: AudioProcessor = PitchProcessor(

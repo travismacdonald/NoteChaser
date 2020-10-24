@@ -1,6 +1,7 @@
 package com.example.notechaser.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -100,11 +101,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private fun initPitchProcessingPipeline() {
         signalProcessor.listener = (SignalProcessorListener { pitch, _, _ ->
+            Log.d("THREAD-DBUG", "-[1] start listener callback")
             noteProcessor.onPitchDetected(pitch)
+            Log.d("THREAD-DBUG", "--[2] end listener callback")
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                // Actual note detected (-1 denotes silence)
+                // Actual note detected (i.e. -1 denotes silence)
                 if (note != -1) {
                     initSilenceHeard = null
                     answerChecker.addUserNote(note)
@@ -147,7 +150,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         if (signalProcessor.isRunning) {
             signalProcessor.stop()
         }
-        signalProcessor.start()
+        signalProcessor.start(viewModelScope)
     }
 
 }

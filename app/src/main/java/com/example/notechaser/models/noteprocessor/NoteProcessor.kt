@@ -65,7 +65,7 @@ class NoteProcessor {
             // Note change detected, meets probability threshold
             if (maxCountNote != lastPredictedNote && predictionStrength >= notePredictionThreshold) {
                 lastPredictedNote?.let {
-                    Timber.d("NOTEPRED : note $it undetected")
+//                    Timber.d("NOTEPRED : note $it undetected")
                     listener?.notifyNoteUndetected(it)
                 }
                 Timber.d("NOTEPRED : note $maxCountNote prediction = $predictionStrength")
@@ -75,7 +75,7 @@ class NoteProcessor {
             // Junk detected
             else if (predictionStrength < notePredictionThreshold) {
                 lastPredictedNote?.let {
-                    Timber.d("NOTEPRED : note $it undetected")
+//                    Timber.d("NOTEPRED : note $it undetected")
                     listener?.notifyNoteUndetected(it)
                 }
                 // TODO: move this up in the brackets
