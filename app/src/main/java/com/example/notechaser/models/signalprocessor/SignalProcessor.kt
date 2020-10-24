@@ -22,6 +22,8 @@ class SignalProcessor {
     var isRunning = false
         private set
 
+    private var curNoteProcJob: Deferred<Unit?>? = null
+
     fun start(scope: CoroutineScope) {
         Timber.d("start called")
 
@@ -31,10 +33,10 @@ class SignalProcessor {
 //            GlobalScope.launch(Dispatchers.Main) {
                 val pitchAsInt = convertPitchToIx(pitchInHz.toDouble())
                 Log.d("THREAD-DBUG", "[0] before listener callback")
-                val curJob = scope.async {
+                curNoteProcJob = scope.async {
                     listener?.notifyPitchResult(pitchAsInt, result.probability, result.isPitched)
                 }
-                curJob.await()
+                curNoteProcJob?.await()
                 Log.d("THREAD-DBUG", "---[3] after listener callback")
                 Log.d("THREAD-DBUG", "-----------------------------")
             }

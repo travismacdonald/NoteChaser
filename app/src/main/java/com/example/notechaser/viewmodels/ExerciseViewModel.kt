@@ -50,6 +50,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private var silenceThreshold: Long = 1500
 
+    private var replayPlayable: Job? = null
+
     init {
         GlobalScope.launch {
             Timber.d("Midi setup started")
@@ -109,7 +111,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             override fun notifyNoteDetected(note: Int) {
                 // Actual note detected (i.e. -1 denotes silence)
                 if (note != -1) {
-                    initSilenceHeard = null
+//                    initSilenceHeard = null
+                    replayPlayable?.cancel()
                     answerChecker.addUserNote(note)
                     if (answerChecker.areAnswersSame()) {
                         signalProcessor.stop()
@@ -120,17 +123,22 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                 }
                 // Silence Detected
                 else {
+                    replayPlayable = viewModelScope.launch {
+                        delay(silenceThreshold)
+                        signalProcessor.stop()
+                        onPlayableChanged(currentPlayable.value!!)
+                    }
                     // TODO bug here because it only gets notified on the first instance of silence
-                    val currentMillis = System.currentTimeMillis()
-                    if (initSilenceHeard == null) {
-                        initSilenceHeard = currentMillis
-                    }
-                    initSilenceHeard?.let {
-                        if ((currentMillis - it) > silenceThreshold) {
-                            signalProcessor.stop()
-                            onPlayableChanged(currentPlayable.value!!)
-                        }
-                    }
+//                    val currentMillis = System.currentTimeMillis()
+//                    if (initSilenceHeard == null) {
+//                        initSilenceHeard = currentMillis
+//                    }
+//                    initSilenceHeard?.let {
+//                        if ((currentMillis - it) > silenceThreshold) {
+//                            signalProcessor.stop()
+//                            onPlayableChanged(currentPlayable.value!!)
+//                        }
+//                    }
 
                 }
             }
