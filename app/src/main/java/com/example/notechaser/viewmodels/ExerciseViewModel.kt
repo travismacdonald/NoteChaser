@@ -10,6 +10,7 @@ import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.models.AnswerChecker
 import com.example.notechaser.models.MidiPlayer
 import com.example.notechaser.models.PlayablePlayer
+import com.example.notechaser.models.SoundEffectPlayer
 import com.example.notechaser.models.noteprocessor.NoteProcessor
 import com.example.notechaser.models.noteprocessor.NoteProcessorListener
 import com.example.notechaser.models.signalprocessor.SignalProcessor
@@ -37,6 +38,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val noteProcessor = NoteProcessor()
 
     private val answerChecker = AnswerChecker()
+
+    private val soundEffectPlayer = SoundEffectPlayer(application.applicationContext)
 
     val questionsAnswered = MutableLiveData(0)
 
@@ -87,15 +90,16 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     // Todo: come up with better function name
     fun onPlayableChanged(playable: Playable) {
-        GlobalScope.launch {
+        viewModelScope.launch {
             Timber.d("starting playable")
             answerChecker.targetAnswer = playable
             answerChecker.userAnswer.clear()
             noteProcessor.clear()
+            delay(500)
             playablePlayer.playPlayable(playable)
             Timber.d("done playable")
             // Wait before listening in case the app listens to itself
-            delay(250)
+            delay(200)
             Timber.d("starting pitch processing")
             startListening()
         }
@@ -112,12 +116,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                 // Actual note detected (i.e. -1 denotes silence)
                 if (note != -1) {
 //                    initSilenceHeard = null
-                    replayPlayable?.cancel()
+//                    replayPlayable?.cancel() // TODO: i moved to undetected, no bugs hopefully
                     answerChecker.addUserNote(note)
                     if (answerChecker.areAnswersSame()) {
                         signalProcessor.stop()
                         noteProcessor.clear()
                         Timber.d("correct!")
+                        soundEffectPlayer.playCorrectSound()
                         questionsAnswered.value = questionsAnswered.value!! + 1
                     }
                 }

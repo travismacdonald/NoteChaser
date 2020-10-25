@@ -16,7 +16,6 @@ class AnswerChecker {
     fun addUserNote(note: Int) {
         if (targetAnswer != null && userAnswer.size == targetAnswer!!.size) {
             // Pop if user answer is same size
-            Timber.d("made it here")
             userAnswer.removeAt(0)
         }
         userAnswer.add(note)

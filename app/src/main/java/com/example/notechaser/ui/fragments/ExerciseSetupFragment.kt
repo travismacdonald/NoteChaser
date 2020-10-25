@@ -114,7 +114,7 @@ class ExerciseSetupFragment : Fragment() {
                                     noteChoiceArray.indexOf("Chromatic") -> {
                                         noteType.value = GeneratorNoteType.CHROMATIC
                                     }
-                                    else -> -1
+
                                 }
                             }
                             .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
