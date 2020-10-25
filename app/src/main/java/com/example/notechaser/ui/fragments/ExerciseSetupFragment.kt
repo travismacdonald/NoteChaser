@@ -37,7 +37,7 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        args = ExerciseSetupFragmentArgs.fromBundle(arguments!!)
+        args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
         makeSettingsList()
 
@@ -99,7 +99,7 @@ class ExerciseSetupFragment : Fragment() {
                 noteChoiceValue,
                 clickListener = View.OnClickListener {
                     var tempItem = noteChoiceValue.value!!
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle(noteChoiceTitle)
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -142,7 +142,7 @@ class ExerciseSetupFragment : Fragment() {
                 chromaticDegrees,
                 clickListener = View.OnClickListener {
                     val tempList = chromaticDegrees.value!!.clone()
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Chromatic Tones")
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -178,7 +178,7 @@ class ExerciseSetupFragment : Fragment() {
                 diatonicDegrees,
                 clickListener = View.OnClickListener {
                     val tempList = diatonicDegrees.value!!.clone()
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle("DiatonicTones")
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -209,7 +209,7 @@ class ExerciseSetupFragment : Fragment() {
                 questionKey,
                 clickListener = View.OnClickListener {
                     var tempItem = questionKey.value!!
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle(questionKeyTitle)
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -247,7 +247,7 @@ class ExerciseSetupFragment : Fragment() {
                 },
                 clickListener = View.OnClickListener {
                     var tempItem = parentScaleValue.value!!
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle(parentScaleTitle)
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -285,7 +285,7 @@ class ExerciseSetupFragment : Fragment() {
                 },
                 clickListener = View.OnClickListener {
                     var tempItem = modeValue.value!!
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle(modeTitle)
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -369,7 +369,7 @@ class ExerciseSetupFragment : Fragment() {
                 sessionLengthValue,
                 clickListener = View.OnClickListener {
                     var tempItem = sessionLengthValue.value!!
-                    MaterialAlertDialogBuilder(context!!)
+                    MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Session Type")
                             .setNegativeButton("Dismiss") { _, _ ->
                                 // Do nothing
@@ -456,7 +456,7 @@ class ExerciseSetupFragment : Fragment() {
         val nextButton = ExerciseSetupItem.Buttons(
                 "Start",
                 "Back",
-                nextClickListener = View.OnClickListener {
+                nextClickListener = {
                     if (!hasValidRange) {
                         Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
                     }
@@ -472,7 +472,7 @@ class ExerciseSetupFragment : Fragment() {
                         findNavController().navigate(directions)
                     }
                 },
-                backClickListener = View.OnClickListener {
+                backClickListener = {
                     Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()
                 }
         )

@@ -7,38 +7,26 @@ import kotlin.random.Random
 
 class SoundEffectPlayer(val context: Context) {
 
-    val rng = Random(System.currentTimeMillis())
+    private val rng = Random(System.currentTimeMillis())
 
     fun playCorrectSound() {
-        if (rng.nextDouble() < 0.0001) {
+        // lmao
+        if (rng.nextDouble() < 0.001) {
             val mp = MediaPlayer.create(context, R.raw.bababooey)
             mp.start()
-            mp.setOnCompletionListener { mediaPlayer -> mediaPlayer.release() }
+            while (mp.isPlaying) {
+                // TODO: forgive me for this, father
+            }
+            mp.release()
         } else {
             val mp = MediaPlayer.create(context, R.raw.answer_correct)
             mp.start()
-            mp.setOnCompletionListener { mediaPlayer -> mediaPlayer.release() }
+            while (mp.isPlaying) {
+                // TODO: forgive me for this, father
+            }
+            mp.release()
         }
         // todo: release() ?
     }
-
-
-//    fun playFinishedSound() {
-//        val mp = MediaPlayer.create(context, R.raw.beep)
-//        mp.start()
-//        mp.setOnCompletionListener { mediaPlayer -> mediaPlayer.release() }
-//    }
-
-//    fun playMetronomeClack() {
-//        if (metronomeClack.isPlaying) {
-//            Timber.i("seek called")
-//            metronomeClack.seekTo(0)
-//        }
-//        else {
-//            Timber.i("start called")
-//            metronomeClack.start()
-//        }
-//
-//    }
 
 }

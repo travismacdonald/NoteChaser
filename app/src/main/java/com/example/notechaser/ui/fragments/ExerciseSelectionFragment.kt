@@ -83,8 +83,8 @@ class ExerciseSelectionFragment : Fragment() {
 
     // todo: maybe find a way to clean this up; extract hardcoded strings
     private fun requestMicrophonePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!, Manifest.permission.RECORD_AUDIO)) {
-            AlertDialog.Builder(context!!)
+        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
+            AlertDialog.Builder(requireContext())
                     .setTitle("Permission Needed")
                     .setMessage("This permission is needed to process pitch.")
                     .setPositiveButton("ok") { dialog: DialogInterface?, which: Int -> ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_CODE) }
@@ -92,7 +92,7 @@ class ExerciseSelectionFragment : Fragment() {
                     .create().show()
         }
         else {
-            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_CODE)
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_CODE)
         }
     }
 

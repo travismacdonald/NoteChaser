@@ -27,14 +27,9 @@ class SessionFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-//        binding.answerButton.setOnClickListener {
-//            // todo: change to ?.let { ... }
-//            viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
-//        }
-
         viewModel.currentPlayable.observe(viewLifecycleOwner, {
             it?.let {
-                viewModel.onPlayableChanged(it)
+                viewModel.handlePlayable(it)
                 binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
                 binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
                 binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
@@ -51,7 +46,7 @@ class SessionFragment : Fragment() {
                 viewModel.questionsAnswered.observe(viewLifecycleOwner, {
                     binding.questionsAnsweredText.text = "$it/${viewModel.settings.numQuestions.value}"
                     if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
-                        viewModel.stopTimer()
+                        viewModel.finishSession()
                         val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
                         findNavController().navigate(directions)
                     }

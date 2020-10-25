@@ -1,7 +1,6 @@
 package com.example.notechaser.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,12 +16,8 @@ import com.example.notechaser.models.signalprocessor.SignalProcessor
 import com.example.notechaser.models.signalprocessor.SignalProcessorListener
 import com.example.notechaser.playablegenerator.Playable
 import com.example.notechaser.playablegenerator.PlayableGenerator
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
-import kotlin.system.exitProcess
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
@@ -55,6 +50,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private var replayPlayable: Job? = null
 
+    private val pauseAfterPlayableMillis: Long = 250
+
+    private val pauseAfterCorrectSoundMillis: Long = 500
+
     init {
         GlobalScope.launch {
             Timber.d("Midi setup started")
@@ -68,6 +67,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
 
         initPitchProcessingPipeline()
+    }
+
+    fun finishSession() {
+        stopTimer()
     }
 
     fun startTimer() {
@@ -89,41 +92,36 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     // Todo: come up with better function name
-    fun onPlayableChanged(playable: Playable) {
+    fun handlePlayable(playable: Playable) {
         viewModelScope.launch {
-            Timber.d("starting playable")
             answerChecker.targetAnswer = playable
             answerChecker.userAnswer.clear()
             noteProcessor.clear()
-            delay(500)
             playablePlayer.playPlayable(playable)
-            Timber.d("done playable")
-            // Wait before listening in case the app listens to itself
-            delay(200)
-            Timber.d("starting pitch processing")
+            // Wait before beginning pitch processing to avoid
+            // picking up own output as input
+            delay(pauseAfterPlayableMillis)
             startListening()
         }
     }
 
     private fun initPitchProcessingPipeline() {
         signalProcessor.listener = (SignalProcessorListener { pitch, _, _ ->
-            Log.d("THREAD-DBUG", "-[1] start listener callback")
             noteProcessor.onPitchDetected(pitch)
-            Log.d("THREAD-DBUG", "--[2] end listener callback")
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                // Actual note detected (i.e. -1 denotes silence)
+                // Actual note detected (because -1 denotes silence)
                 if (note != -1) {
-//                    initSilenceHeard = null
-//                    replayPlayable?.cancel() // TODO: i moved to undetected, no bugs hopefully
                     answerChecker.addUserNote(note)
                     if (answerChecker.areAnswersSame()) {
                         signalProcessor.stop()
                         noteProcessor.clear()
-                        Timber.d("correct!")
-                        soundEffectPlayer.playCorrectSound()
-                        questionsAnswered.value = questionsAnswered.value!! + 1
+                        viewModelScope.launch {
+                            soundEffectPlayer.playCorrectSound()
+                            delay(pauseAfterCorrectSoundMillis)
+                            questionsAnswered.value = questionsAnswered.value!! + 1
+                        }
                     }
                 }
                 // Silence Detected
@@ -131,31 +129,15 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                     replayPlayable = viewModelScope.launch {
                         delay(silenceThreshold)
                         signalProcessor.stop()
-                        onPlayableChanged(currentPlayable.value!!)
+                        handlePlayable(currentPlayable.value!!)
                     }
-                    // TODO bug here because it only gets notified on the first instance of silence
-//                    val currentMillis = System.currentTimeMillis()
-//                    if (initSilenceHeard == null) {
-//                        initSilenceHeard = currentMillis
-//                    }
-//                    initSilenceHeard?.let {
-//                        if ((currentMillis - it) > silenceThreshold) {
-//                            signalProcessor.stop()
-//                            onPlayableChanged(currentPlayable.value!!)
-//                        }
-//                    }
-
                 }
             }
 
             override fun notifyNoteUndetected(note: Int) {
-                initSilenceHeard = null
+                // Doesn't matter if silence or not is undetected;
+                replayPlayable?.cancel()
             }
-//            override fun notifySilenceDetected() {
-////                exitProcess()
-//                signalProcessor.stop()
-//                onPlayableChanged(currentPlayable.value!!)
-//            }
         })
     }
 
