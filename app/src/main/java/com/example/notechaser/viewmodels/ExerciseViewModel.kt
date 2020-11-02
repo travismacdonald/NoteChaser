@@ -1,15 +1,15 @@
 package com.example.notechaser.viewmodels
 
 import android.app.Application
+import androidx.datastore.DataStore
+
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
+import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
-import com.example.notechaser.models.AnswerChecker
-import com.example.notechaser.models.MidiPlayer
-import com.example.notechaser.models.PlayablePlayer
-import com.example.notechaser.models.SoundEffectPlayer
+import com.example.notechaser.models.*
 import com.example.notechaser.models.noteprocessor.NoteProcessor
 import com.example.notechaser.models.noteprocessor.NoteProcessorListener
 import com.example.notechaser.models.signalprocessor.SignalProcessor
@@ -18,6 +18,7 @@ import com.example.notechaser.playablegenerator.Playable
 import com.example.notechaser.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.util.prefs.Preferences
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
@@ -36,6 +37,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val soundEffectPlayer = SoundEffectPlayer(application.applicationContext)
 
+//    private val ncRepository: NCRepository
+
     val questionsAnswered = MutableLiveData(0)
 
     val secondsPassed = MutableLiveData<Int>()
@@ -47,15 +50,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     // TODO: fix timer bug when ending session
     private var timerUpdate: Job? = null
 
-    private var initSilenceHeard: Long? = null
-
     // The number of millis --- after initially detecting silence ---
     // the app waits before replaying the current playable.
     private var silenceThreshold: Long = 2000
 
     private var replayPlayable: Job? = null
 
-    // TODO: turn into user paramaters
+    // TODO: turn into user parameter
     private var pauseAfterPlayableMillis: Long = 250
 
     // TODO: turn into user parameter
@@ -74,7 +75,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             playablePlayer = PlayablePlayer(sfMidiPlayer)
             Timber.d("Midi setup complete")
         }
-
+//        val dataStore: DataStore<Preferences> = application.applicationContext.createDataStore(
+//                name = application.applicationContext.getString(R.string.dataStore_name)
+//        )
+//        ncRepository = NCRepository(dataStore)
         initPitchProcessingPipeline()
     }
 

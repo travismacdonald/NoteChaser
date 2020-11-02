@@ -1,9 +1,12 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: "androidx.navigation.safeargs"
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-kapt"
+    id "kotlin-android-extensions"
+    id "androidx.navigation.safeargs"
+    id "com.google.protobuf" version "0.8.12"
 
+}
 
 android {
     compileSdkVersion 30
@@ -65,9 +68,32 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha06' // updating this was breaking binding adapters
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // Proto Datastore
+    implementation  "androidx.datastore:datastore-core:1.0.0-alpha02"
+    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+
     // MidiDriver Library (supports sf2 files)
     implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
 }
 repositories {
     mavenCentral()
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }
