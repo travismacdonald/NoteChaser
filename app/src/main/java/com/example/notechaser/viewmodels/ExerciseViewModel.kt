@@ -42,25 +42,34 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     val currentPlayable = MutableLiveData<Playable?>()
 
+    val currentPitchDetected = MutableLiveData(-1)
+
+    // TODO: fix timer bug when ending session
     private var timerUpdate: Job? = null
 
     private var initSilenceHeard: Long? = null
 
-    private var silenceThreshold: Long = 1500
+    // The number of millis --- after initially detecting silence ---
+    // the app waits before replaying the current playable.
+    private var silenceThreshold: Long = 2000
 
     private var replayPlayable: Job? = null
 
-    private val pauseAfterPlayableMillis: Long = 250
+    // TODO: turn into user paramaters
+    private var pauseAfterPlayableMillis: Long = 250
 
-    private val pauseAfterCorrectSoundMillis: Long = 500
+    // TODO: turn into user parameter
+    private var pauseAfterCorrectSoundMillis: Long = 500
 
     init {
-        GlobalScope.launch {
+        viewModelScope.launch {
             Timber.d("Midi setup started")
             val sfMidiPlayer = MidiPlayer()
             sfMidiPlayer.setPlugin(0)
+            // TODO: look into fixing this error?
             val sf = SF2Soundbank(application.assets.open("test_piano.sf2"))
-            sfMidiPlayer.sf2 = sf // <-- this is the line that's taking forever ?????
+            // this is the line that's taking forever for certain sf2 files ?????
+            sfMidiPlayer.sf2 = sf
             sfMidiPlayer.setPlugin(0)
             playablePlayer = PlayablePlayer(sfMidiPlayer)
             Timber.d("Midi setup complete")
@@ -106,11 +115,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun initPitchProcessingPipeline() {
-        signalProcessor.listener = (SignalProcessorListener { pitch, _, _ ->
-            noteProcessor.onPitchDetected(pitch)
+        signalProcessor.listener = (SignalProcessorListener { note, _, _ ->
+            currentPitchDetected.value = note
+            Timber.d(" note: $note")
+            noteProcessor.onPitchDetected(note)
         })
         noteProcessor.listener = (object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
+//                currentPitchDetected.value = note
                 // Actual note detected (because -1 denotes silence)
                 if (note != -1) {
                     answerChecker.addUserNote(note)
@@ -135,6 +147,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             }
 
             override fun notifyNoteUndetected(note: Int) {
+//                currentPitchDetected.value = -1
                 // Doesn't matter if silence or not is undetected;
                 replayPlayable?.cancel()
             }

@@ -108,8 +108,14 @@ class MusicTheoryUtils {
                 ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_SEQUENCE)
         )
 
-        fun ixToName(ix: Int): String {
-            return "${CHROMATIC_SCALE_FLAT[ix % 12]}${(ix / OCTAVE_SIZE) - 1}"
+        /**
+         * TODO: write function description
+         */
+        fun ixToName(ix: Int, asFlat: Boolean = true): String {
+            if (asFlat) {
+                return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
+            }
+            return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
         }
 
         fun getModeIntervals(intervals: IntArray, modeIx: Int): IntArray {

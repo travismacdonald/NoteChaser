@@ -11,25 +11,26 @@ class NoteProcessor {
 
     private data class NoteStamp(val note: Int, val timeStamp: Long)
 
-    // TODO: better var name?
-    // basically, let the note queue fill up before it is analyzed
-    // (otherwise your just analyizing one sample of audio)
+    // Flag that indicating that the note queue is full
+    // (i.e. ready for pitch analysis)
     var initTimeHasPassed: Boolean = false
+
 
     var initTimeMillis: Long? = null
 
-    var notePredictionThreshold = 0.6f
-
-//    var silencePredictionThreshold = 0.9f
+    var notePredictionThreshold = 0.55f
 
     var listener: NoteProcessorListener? = null
 
     // todo: either tinker, or turn this into a parameter
-    var expirationLength = 1000
+    var expirationLength = 750
+
     private val noteQueue: MutableList<NoteStamp> = LinkedList()
+
+    // Store the frequency of each unique note value
     private val noteCounts: MutableMap<Int, Int> = HashMap()
 
-    // Recently changed this to be type 'Int?', with null value representing not yet used
+    // `null` value represents not yet used; `-1` denotes silence
     private var lastPredictedNote: Int? = null
 
     // todo: for now, pitch detection is only monophonic;
@@ -49,9 +50,7 @@ class NoteProcessor {
         // Only analyze the note queue once it has had some time to fill up
         // (otherwise it will analyze 1...n samples)
         if (initTimeHasPassed) {
-            // TODO: find kotlin-ish way to do this
-            // TODO: look into weighing note counts based on how long ago the note was heard
-            // Find most occurring note
+            // Find most frequent note
             var maxCount = -1
             var maxCountNote = -1
             for ((noteIx, count) in noteCounts) {
@@ -65,7 +64,6 @@ class NoteProcessor {
             // Note change detected, meets probability threshold
             if (maxCountNote != lastPredictedNote && predictionStrength >= notePredictionThreshold) {
                 lastPredictedNote?.let {
-//                    Timber.d("NOTEPRED : note $it undetected")
                     listener?.notifyNoteUndetected(it)
                 }
                 Timber.d("NOTEPRED : note $maxCountNote prediction = $predictionStrength")
@@ -75,23 +73,12 @@ class NoteProcessor {
             // Junk detected
             else if (predictionStrength < notePredictionThreshold) {
                 lastPredictedNote?.let {
-//                    Timber.d("NOTEPRED : note $it undetected")
                     listener?.notifyNoteUndetected(it)
                 }
-                // TODO: move this up in the brackets
+                // TODO: move this up in the brackets?
                 lastPredictedNote = null
 
             }
-//            if (maxCountNote != lastPredictedNote && maxCountNote != -1 && predictionStrength > notePredictionThreshold) {
-//                Timber.d("NOTEPRED : note $maxCountNote prediction = $predictionStrength")
-//                listener?.notifyNoteDetected(maxCountNote)
-//                lastPredictedNote = maxCountNote
-//            }
-//
-//            else if (maxCountNote != lastPredictedNote && predictionStrength > silencePredictionThreshold) {
-//                Timber.d("NOTEPRED : note $maxCountNote prediction = $predictionStrength")
-//                listener?.notifySilenceDetected()
-//            }
         }
         else {
             initTimeMillis?.let {

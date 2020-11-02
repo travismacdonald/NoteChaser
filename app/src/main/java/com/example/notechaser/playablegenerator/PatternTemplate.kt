@@ -12,7 +12,7 @@ class PatternTemplate(_intervals: MutableList<Int> = arrayListOf())
         get() {
             return if (_intervals.isEmpty())
                 throw IllegalStateException("Cannot get range of empty PlayableTemplate.")
-            else _intervals.max()!! - _intervals.min()!!
+            else _intervals.maxOrNull()!! - _intervals.minOrNull()!!
         }
 
     override fun addInterval(interval: Int) {

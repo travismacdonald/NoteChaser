@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
+import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.viewmodels.ExerciseViewModel
 
 
@@ -30,9 +31,17 @@ class SessionFragment : Fragment() {
         viewModel.currentPlayable.observe(viewLifecycleOwner, {
             it?.let {
                 viewModel.handlePlayable(it)
-                binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
-                binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
-                binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
+            }
+        })
+
+        viewModel.currentPitchDetected.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it == -1) {
+                    binding.detectedPitchText.text = "..."
+                }
+                else {
+                    binding.detectedPitchText.text = MusicTheoryUtils.ixToName(it)
+                }
             }
         })
 
