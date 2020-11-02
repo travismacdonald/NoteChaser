@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.notechaser.viewmodels.ExerciseViewModel" />
+            type="com.cannonballapps.notechaser.viewmodels.ExerciseViewModel" />
     </data>
 
     <ScrollView
