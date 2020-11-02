@@ -7,64 +7,55 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.notechaser.R
 import com.example.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.example.notechaser.databinding.FragmentSessionBinding
-import com.example.notechaser.playablegenerator.SingleNoteGenerator
+import com.example.notechaser.utilities.MusicTheoryUtils
 import com.example.notechaser.viewmodels.ExerciseViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import timber.log.Timber
+
 
 class SessionFragment : Fragment() {
 
     val viewModel: ExerciseViewModel by activityViewModels()
     lateinit var binding: FragmentSessionBinding
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        Timber.d(
-                " \nupper -> ${(viewModel.generator as SingleNoteGenerator).upperBound.value}\n" +
-                        "lower -> ${(viewModel.generator as SingleNoteGenerator).lowerBound.value}\n"
-        )
-
-//        // TODO: use this line for testing
-//        viewModel.settings.timerLength.value = 1
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
         )
         binding.lifecycleOwner = this
 
-        binding.answerButton.setOnClickListener {
-            viewModel.questionsAnswered.value = viewModel.questionsAnswered.value!! + 1
-        }
-
-
-        viewModel.currentPlayable.observe(viewLifecycleOwner, Observer {
-            GlobalScope.launch {
-                viewModel.playablePlayer.playPlayable(viewModel.currentPlayable.value!!)
+        viewModel.currentPlayable.observe(viewLifecycleOwner, {
+            it?.let {
+                viewModel.handlePlayable(it)
             }
-            binding.playableText.text = viewModel.currentPlayable.value?.toString() ?: "Pattern"
-            binding.flatText.text = viewModel.currentPlayable.value?.toStringFlat() ?: "Flat"
-            binding.sharpText.text = viewModel.currentPlayable.value?.toStringSharp() ?: "Sharp"
+        })
+
+        viewModel.currentPitchDetected.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it == -1) {
+                    binding.detectedPitchText.text = "..."
+                }
+                else {
+                    binding.detectedPitchText.text = MusicTheoryUtils.ixToName(it)
+                }
+            }
         })
 
         when (viewModel.settings.sessionLengthType.value!!) {
 
             ExerciseSetupSettings.QUESTION_LIMIT -> {
                 viewModel.startTimer()
-                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                viewModel.secondsPassed.observe(viewLifecycleOwner, {
                     binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}"
                 })
-                viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+                viewModel.questionsAnswered.observe(viewLifecycleOwner, {
                     binding.questionsAnsweredText.text = "$it/${viewModel.settings.numQuestions.value}"
                     if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
-                        viewModel.stopTimer()
+                        viewModel.finishSession()
                         val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
                         findNavController().navigate(directions)
                     }
@@ -76,7 +67,7 @@ class SessionFragment : Fragment() {
 
             ExerciseSetupSettings.TIME_LIMIT -> {
                 viewModel.startTimer()
-                viewModel.secondsPassed.observe(viewLifecycleOwner, Observer {
+                viewModel.secondsPassed.observe(viewLifecycleOwner, {
                     binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}/${viewModel.settings.timerLength.value}:00"
                     if (it == viewModel.settings.timerLength.value!! * 60) {
                         viewModel.stopTimer()
@@ -84,7 +75,7 @@ class SessionFragment : Fragment() {
                         findNavController().navigate(directions)
                     }
                 })
-                viewModel.questionsAnswered.observe(viewLifecycleOwner, Observer {
+                viewModel.questionsAnswered.observe(viewLifecycleOwner, {
                     binding.questionsAnsweredText.text = "$it"
                     viewModel.generatePlayable()
                 })
