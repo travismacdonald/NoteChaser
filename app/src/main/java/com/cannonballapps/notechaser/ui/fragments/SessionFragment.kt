@@ -20,6 +20,7 @@ class SessionFragment : Fragment() {
     val viewModel: ExerciseViewModel by activityViewModels()
     lateinit var binding: FragmentSessionBinding
 
+    // TODO: check out the code help on return type 'View?'
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -50,9 +51,11 @@ class SessionFragment : Fragment() {
             ExerciseSetupSettings.QUESTION_LIMIT -> {
                 viewModel.startTimer()
                 viewModel.secondsPassed.observe(viewLifecycleOwner, {
+                    // TODO: clean up
                     binding.secondsPassedText.text = "${it / 60}:${(it % 60).toString().padStart(2, '0')}"
                 })
                 viewModel.questionsAnswered.observe(viewLifecycleOwner, {
+                    // TODO: clean up
                     binding.questionsAnsweredText.text = "$it/${viewModel.settings.numQuestions.value}"
                     if (viewModel.questionsAnswered.value!! == viewModel.settings.numQuestions.value!!) {
                         viewModel.finishSession()

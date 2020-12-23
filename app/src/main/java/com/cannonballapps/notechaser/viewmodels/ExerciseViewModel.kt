@@ -1,11 +1,15 @@
 package com.cannonballapps.notechaser.viewmodels
 
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.createDataStore
+import androidx.lifecycle.*
 
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
+import com.cannonballapps.notechaser.UserPrefs
+import com.cannonballapps.notechaser.data.ExerciseType
+import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.data.UserPrefsSerializer
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
@@ -14,11 +18,15 @@ import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableGenerator
+import com.cannonballapps.notechaser.prefsstore.PrefsStoreImpl
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
+
+    // TODO: want two types of settings: 1) global settings (theme, instr, ...), and 2) session (num questions, ..., you know what i mean)
 
     val settings = ExerciseSetupSettings()
 
@@ -34,7 +42,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val soundEffectPlayer = SoundEffectPlayer(application.applicationContext)
 
-//    private val ncRepository: NCRepository
+    private val ncRepository: NcRepository
+
+    private val prefsStore = PrefsStoreImpl(application.applicationContext)
+
+//    private val userPrefsFlow: Flow<UserPrefs>
+//
+//    val notePoolType: LiveData<UserPrefs>
 
     val questionsAnswered = MutableLiveData(0)
 
@@ -62,8 +76,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     init {
         viewModelScope.launch {
+            // TODO: extract this into a method
             Timber.d("Midi setup started")
             val sfMidiPlayer = MidiPlayer()
+
             sfMidiPlayer.setPlugin(0)
             // TODO: look into fixing this error?
             val sf = SF2Soundbank(application.assets.open("test_piano.sf2"))
@@ -73,11 +89,25 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             playablePlayer = PlayablePlayer(sfMidiPlayer)
             Timber.d("Midi setup complete")
         }
-//        val dataStore: DataStore<Preferences> = application.applicationContext.createDataStore(
-//                name = application.applicationContext.getString(R.string.dataStore_name)
-//        )
-//        ncRepository = NCRepository(dataStore)
+
+
+
+        val dataStore: DataStore<UserPrefs> = application.applicationContext.createDataStore(
+                fileName = "user_prefs.pb",
+                serializer = UserPrefsSerializer
+        )
+
+
+        ncRepository = NcRepository(dataStore)
+//        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
+
+
+//        userPrefsFlow = ncRepository
+        print("hi")
+
         initPitchProcessingPipeline()
+
+
     }
 
     fun finishSession() {
@@ -116,6 +146,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun setNotePoolType(exerciseType: ExerciseType, notePoolType: NotePoolType) {
+        // TODO: error checking, but for now I don't give a shit
+        viewModelScope.launch {
+            ncRepository.updateNotePoolType(exerciseType, notePoolType)
+        }
+    }
+
+
     private fun initPitchProcessingPipeline() {
         signalProcessor.listener = (SignalProcessorListener { note, _, _ ->
             currentPitchDetected.value = note
@@ -151,6 +189,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             override fun notifyNoteUndetected(note: Int) {
 //                currentPitchDetected.value = -1
                 // Doesn't matter if silence or not is undetected;
+                // TODO: bad variable name; rename
                 replayPlayable?.cancel()
             }
         })

@@ -29,6 +29,7 @@ class ExerciseSetupFragment : Fragment() {
     private lateinit var binding: FragmentExerciseSetupBinding
     private lateinit var args: ExerciseSetupFragmentArgs
 
+    // TODO: clean up return type
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -395,7 +396,8 @@ class ExerciseSetupFragment : Fragment() {
                 getString(R.string.numQuestions_title),
                 10f,
                 200f,
-                viewModel.settings.numQuestions,
+                // TODO: yikes
+                viewModel.settings.numQuestions as MutableLiveData<Int>,
                 Transformations.map(viewModel.settings.numQuestions) { value ->
                     value.toString()
                 },
