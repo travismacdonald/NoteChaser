@@ -9,7 +9,7 @@
 
         <variable
             name="obj"
-            type="com.example.notechaser.data.exercisesetup.ExerciseSetupItem.Slider" />
+            type="com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem.Slider" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,13 +54,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="58dp"
-            app:nc_sliderValues="@{obj}"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
+
             app:labelBehavior="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="Lotus Flower" />
+            tools:text="Slider" />
 
         <ImageView
             android:id="@+id/icon"

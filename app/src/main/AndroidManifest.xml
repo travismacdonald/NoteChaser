@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notechaser">
+    package="com.cannonballapps.notechaser">
 
     <application
-        android:name=".NoteChaserApplication"
+        android:name="com.cannonballapps.notechaser.NoteChaserApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.HostActivity">
+        <activity android:name="com.cannonballapps.notechaser.ui.HostActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
