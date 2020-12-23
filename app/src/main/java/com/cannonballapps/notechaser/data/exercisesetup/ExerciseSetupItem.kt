@@ -55,7 +55,7 @@ interface ExerciseSetupItem {
     data class Slider(val title: String,
                       val valueFrom: Float,
                       val valueTo: Float,
-                      val value: MutableLiveData<Int>,
+                      val value: LiveData<Int>,
                       val displayValue: LiveData<String>,
                       val stepSize: Float = 1f,
                       override val isEnabled: LiveData<Boolean> = MutableLiveData(true),

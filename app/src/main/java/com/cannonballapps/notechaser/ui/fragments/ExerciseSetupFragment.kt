@@ -29,9 +29,8 @@ class ExerciseSetupFragment : Fragment() {
     private lateinit var binding: FragmentExerciseSetupBinding
     private lateinit var args: ExerciseSetupFragmentArgs
 
-    // TODO: clean up return type
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_exercise_setup, container, false
@@ -40,7 +39,11 @@ class ExerciseSetupFragment : Fragment() {
 
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
+
+        // TODO: use when statement, different functions for creating list
         makeSettingsList()
+
+
 
         return binding.root
     }
@@ -61,7 +64,7 @@ class ExerciseSetupFragment : Fragment() {
         binding.sessionHeader.obj = makeSessionHeader()
         binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
         binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
-        binding.timerLengthSlider.obj = makeTimerLengthSlider()
+//        binding.timerLengthSlider.obj = makeTimerLengthSlider()
         binding.answerHeader.obj = makeAnswerHeader()
         binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
         binding.nextButtons.obj = makeNextButton(
@@ -72,16 +75,10 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * Header for note question related settings.
-     */
     private fun makeQuestionsHeader(): ExerciseSetupItem.Header {
         return ExerciseSetupItem.Header(getString(R.string.questions_header))
     }
 
-    /**
-     * Single list item that allows users to choose between diatonic and chromatic note pool.
-     */
     private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>): ExerciseSetupItem.SingleList {
         val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
@@ -128,9 +125,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * Shows user the chromatic tones that they can use for patterns.
-     */
     private fun makeChromaticMulti(
             chromaticDegrees: MutableLiveData<BooleanArray>,
             noteType: MutableLiveData<GeneratorNoteType>
@@ -164,9 +158,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeDiatonicMulti(
             diatonicDegrees: MutableLiveData<BooleanArray>,
             noteType: MutableLiveData<GeneratorNoteType>
@@ -199,9 +190,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeQuestionKeySingle(questionKey: MutableLiveData<Int>): ExerciseSetupItem.SingleList {
         val questionKeyTitle = resources.getString(R.string.questionKey_title)
         return ExerciseSetupItem.SingleList(
@@ -227,9 +215,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeParentScaleSingle(
             noteType: MutableLiveData<GeneratorNoteType>,
             parentScale: MutableLiveData<ParentScale>
@@ -265,9 +250,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeModeSingle(
             mode: MutableLiveData<Int>,
             noteType: MutableLiveData<GeneratorNoteType>
@@ -303,9 +285,6 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makePlayableRangeBar(
             lowerBound: MutableLiveData<Int>,
             upperBound: MutableLiveData<Int>,
@@ -346,18 +325,12 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeSessionHeader(): ExerciseSetupItem.Header {
         return ExerciseSetupItem.Header(
                 getString(R.string.session_header)
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeSessionLengthTypeSingle(): ExerciseSetupItem.SingleList {
         // TODO: extract hard coded
         val sessionLengthTitle = "Session Length"
@@ -387,17 +360,14 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeNumQuestionsSlider(): ExerciseSetupItem.Slider {
-        return ExerciseSetupItem.Slider(
+        val slider = ExerciseSetupItem.Slider(
                 // TODO: Extract some of these numbers
                 getString(R.string.numQuestions_title),
                 10f,
                 200f,
                 // TODO: yikes
-                viewModel.settings.numQuestions as MutableLiveData<Int>,
+                viewModel.settings.numQuestions,
                 Transformations.map(viewModel.settings.numQuestions) { value ->
                     value.toString()
                 },
@@ -407,11 +377,26 @@ class ExerciseSetupFragment : Fragment() {
                 }
 
         )
+
+        binding.numQuestionsSlider.slider.apply {
+            slider.value.value?.let {
+                value = it.toFloat()
+            }
+//            value = slider.value.value!!.toFloat()
+            valueFrom = slider.valueFrom
+            valueTo = slider.valueTo
+            stepSize = slider.stepSize
+        }
+
+        binding.numQuestionsSlider.slider.addOnChangeListener { _, value, _ ->
+            viewModel.saveNumQuestions(value.toInt())
+        }
+
+        return slider
     }
 
-    /**
-     * TODO: Function write up
-     */
+
+
     private fun makeTimerLengthSlider(): ExerciseSetupItem.Slider {
         return ExerciseSetupItem.Slider(
                 // TODO: Extract some of these numbers
@@ -429,16 +414,10 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeAnswerHeader(): ExerciseSetupItem.Header {
         return ExerciseSetupItem.Header(getString(R.string.answer_header))
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeMatchOctaveSwitch(): ExerciseSetupItem.Switch {
         return ExerciseSetupItem.Switch(
                 getString(R.string.matchOctave_title),
@@ -446,9 +425,6 @@ class ExerciseSetupFragment : Fragment() {
                 viewModel.settings.matchOctave)
     }
 
-    /**
-     * TODO: Function write up
-     */
     private fun makeNextButton(
             hasValidRange: Boolean,
             noteType: MutableLiveData<GeneratorNoteType>,

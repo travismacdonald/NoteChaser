@@ -34,6 +34,8 @@ class ExerciseSetupSettings {
         matchKey.value = true
     }
 
+
+    // TODO: move these somewhere else
     companion object {
         const val QUESTION_LIMIT = 0
         const val TIME_LIMIT = 1

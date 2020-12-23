@@ -22,7 +22,8 @@ class PrefsStoreImpl(context: Context) : PrefsStore {
     override fun getNumQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
         // TODO: save default num questions val as android resource value
@@ -37,7 +38,6 @@ class PrefsStoreImpl(context: Context) : PrefsStore {
     private object PrefKeys {
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }
-
 
 
 }

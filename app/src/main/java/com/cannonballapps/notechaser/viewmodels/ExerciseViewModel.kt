@@ -99,7 +99,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
 
         ncRepository = NcRepository(dataStore)
-//        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
+        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
 
 
 //        userPrefsFlow = ncRepository
@@ -153,6 +153,11 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun saveNumQuestions(numQuestions: Int) {
+        viewModelScope.launch {
+            prefsStore.saveNumQuestions(numQuestions)
+        }
+    }
 
     private fun initPitchProcessingPipeline() {
         signalProcessor.listener = (SignalProcessorListener { note, _, _ ->
