@@ -24,9 +24,9 @@
                 android:id="@+id/questions_header"
                 layout="@layout/item_settings_header" />
 
-<!--            <include-->
-<!--                android:id="@+id/noteChoice_single"-->
-<!--                layout="@layout/item_settings_single_list" />-->
+            <include
+                android:id="@+id/notePoolType_singleList"
+                layout="@layout/item_settings_single_list" />
 
 <!--            <include-->
 <!--                android:id="@+id/chromatic_multi"-->

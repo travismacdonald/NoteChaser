@@ -18,10 +18,6 @@
     <!-- Question Preferences -->
 
 
-
-    <string name="noteChoice_title">Note Choice</string>
-
-
     <!-- Playback Preferences -->
 
     <string name="playback_header">Playback Settings</string>
@@ -78,6 +74,7 @@
     <!-- Exercise Setup Strings -->
 
     <string name="questions_header">Question Settings</string>
+    <string name="notePoolType_title">Note Pool Type</string>
 
     <string name="numQuestions_title">Number of Questions</string>
 

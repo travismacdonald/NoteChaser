@@ -83,7 +83,10 @@ class ExerciseSetupFragment : Fragment() {
         val generator = viewModel.generator as SingleNoteGenerator
 
         bindQuestionsHeader()
+        bindNotePoolTypeChoiceSingleList()
+
 //        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
+
 //        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
 //        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
 //        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
@@ -111,8 +114,22 @@ class ExerciseSetupFragment : Fragment() {
         binding.questionsHeader.title.text = getString(R.string.questions_header)
     }
 
-    private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>): ExerciseSetupItem.SingleList {
-        val noteChoiceTitle = resources.getString(R.string.noteChoice_title)
+    private fun bindNotePoolTypeChoiceSingleList() {
+
+        // TODO:
+        //   - array of strings for user to choose from
+        //   - value gets saved in generator
+        //   - generator that can be customized here
+        //   - generator used in session only has function getPattern and generatePattern
+        //   - need to be able to save and load value from PrefsStore
+
+        binding.notePoolTypeSingleList.apply {
+            title.text = getString(R.string.notePoolType_title)
+        }
+
+
+
+//        val noteChoiceTitle = resources.getString(R.string.notePoolType_title)
         val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
         val noteChoiceValue = Transformations.map(noteType) { value ->
             val res: Int = when (value) {
