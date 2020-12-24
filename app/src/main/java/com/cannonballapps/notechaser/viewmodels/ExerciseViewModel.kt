@@ -20,7 +20,6 @@ import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.prefsstore.PrefsStoreImpl
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -100,11 +99,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
 
         ncRepository = NcRepository(dataStore)
-        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
+
 
 //        userPrefsFlow = ncRepository
         print("hi")
 
+        connectPrefsStoreToRepository()
         initPitchProcessingPipeline()
 
 
@@ -114,8 +114,18 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         stopTimer()
     }
 
+    private fun connectPrefsStoreToRepository() {
+
+        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
+    }
+
+    // TODO: clean up this mess
     suspend fun preloadPrefsStore() {
-        prefsStore.getNumQuestions().first()
+        runBlocking {
+            var blah = prefsStore.getNumQuestions().first()
+            print("hi")
+        }
+        print("hi")
     }
 
     fun startTimer() {

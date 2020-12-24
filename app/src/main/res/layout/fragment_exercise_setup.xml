@@ -20,9 +20,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-<!--            <include-->
-<!--                android:id="@+id/questions_header"-->
-<!--                layout="@layout/item_settings_header" />-->
+            <include
+                android:id="@+id/questions_header"
+                layout="@layout/item_settings_header" />
 
 <!--            <include-->
 <!--                android:id="@+id/noteChoice_single"-->

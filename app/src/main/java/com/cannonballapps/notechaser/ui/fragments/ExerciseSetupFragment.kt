@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
+
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
@@ -25,12 +25,12 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import kotlinx.android.synthetic.main.item_settings_slider.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class ExerciseSetupFragment : Fragment() {
 
-    private val viewModel: ExerciseViewModel by activityViewModels()
+//    private val viewModel: ExerciseViewModel by activityViewModels()
+
+    private lateinit var viewModel: ExerciseViewModel
 
     private lateinit var binding: FragmentExerciseSetupBinding
 
@@ -44,27 +44,39 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
+
+
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
-        lifecycleScope.launch {
-            viewModel.preloadPrefsStore()
+        viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
 
-        }
+//        lifecycleScope.launch {
+//            viewModel.preloadPrefsStore()
+//        }
 
+//        runBlocking {
+//            viewModel.preloadPrefsStore()
+//        }
 
+        subscribeToLiveData()
+
+        makeSettingsList()
         // TODO: use when statement, different functions for creating list
-
 
 
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        makeSettingsList()
+//    override fun onResume() {
+//        super.onResume()
+//
+//
+//    }
 
+
+    private fun subscribeToLiveData() {
+        // todo: who the fuck knows
     }
-
 
     private fun makeSettingsList() {
         viewModel.generator = SingleNoteGenerator()
@@ -381,6 +393,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun makeNumQuestionsSlider() {
+
 //        val slider = ExerciseSetupItem.Slider(
 //                // TODO: Extract some of these numbers
 //                getString(R.string.numQuestions_title),
@@ -398,36 +411,39 @@ class ExerciseSetupFragment : Fragment() {
 //
 //        )
 
-        binding.numQuestionsSlider.apply {
-            // TODO: extract hardcoded values
-            slider.valueFrom = 10f
-            slider.valueTo = 200f
-            // TODO: design slider to have more sparse values as num gets higher (eg 5, 10, 20, 40, 80, ...)
-            slider.stepSize = 5f
-            slider.value = viewModel.settings.numQuestions.value!!.toFloat()
-//            slider.value =
 
-            this.title.text = "Num Questions Slider"
+
+        // This actually only fires once at the first observation.
+        // There is a bug that I couldn't fix otherwise.
+        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
+            if (value != slider.value.toInt()) {
+                binding.numQuestionsSlider.slider.value = value.toFloat()
+                slider.valueFrom = 10f
+                slider.valueTo = 100f
+                slider.stepSize = 5f
+            }
+        }
+
+        binding.numQuestionsSlider.apply {
+            this.title.text = getString(R.string.numQuestions_title)
 
             slider.addOnChangeListener { _, value, _ ->
-//                val valueAsInt = value.toInt()
                 summary.text = value.toInt().toString()
             }
-            // TODO: fix dis shit
+
             slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {
-                    // Responds to when slider's touch event is being started
-                }
+                override fun onStartTrackingTouch(slider: Slider) {}
 
                 override fun onStopTrackingTouch(slider: Slider) {
                     viewModel.saveNumQuestions(slider.value.toInt())
                 }
             })
 
+
         }
-        // TODO: check out this fix
-        // https://developer.android.com/topic/libraries/architecture/datastore#synchronous
-//        viewModel.settings.numQuestions.observe(this) { value ->
+//        // TODO: check out this fix
+//        // https://developer.android.com/topic/libraries/architecture/datastore#synchronous
+//        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
 //            if (value != slider.value.toInt()) {
 //                binding.numQuestionsSlider.slider.value = value.toFloat()
 //            }
@@ -452,7 +468,6 @@ class ExerciseSetupFragment : Fragment() {
 //            viewModel.saveNumQuestions(value.toInt())
 //        }
     }
-
 
 
     private fun makeTimerLengthSlider(): ExerciseSetupItem.Slider {
@@ -495,14 +510,11 @@ class ExerciseSetupFragment : Fragment() {
                 nextClickListener = {
                     if (!hasValidRange) {
                         Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == GeneratorNoteType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
+                    } else if (noteType.value!! == GeneratorNoteType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == GeneratorNoteType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
+                    } else if (noteType.value!! == GeneratorNoteType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
+                    } else {
                         viewModel.generator.setupGenerator()
                         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
                         findNavController().navigate(directions)
