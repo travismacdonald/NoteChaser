@@ -82,7 +82,7 @@ class ExerciseSetupFragment : Fragment() {
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
-//        binding.questionsHeader.obj = makeQuestionsHeader()
+        bindQuestionsHeader()
 //        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
 //        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
 //        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
@@ -94,7 +94,7 @@ class ExerciseSetupFragment : Fragment() {
 //        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
 
 //        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
-        makeNumQuestionsSlider()
+        bindNumQuestionsSlider()
 
 //        binding.timerLengthSlider.obj = makeTimerLengthSlider()
 //        binding.answerHeader.obj = makeAnswerHeader()
@@ -107,8 +107,8 @@ class ExerciseSetupFragment : Fragment() {
 //        )
     }
 
-    private fun makeQuestionsHeader(): ExerciseSetupItem.Header {
-        return ExerciseSetupItem.Header(getString(R.string.questions_header))
+    private fun bindQuestionsHeader() {
+        binding.questionsHeader.title.text = getString(R.string.questions_header)
     }
 
     private fun makeNoteChoiceSingle(noteType: MutableLiveData<GeneratorNoteType>): ExerciseSetupItem.SingleList {
@@ -392,27 +392,7 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    private fun makeNumQuestionsSlider() {
-
-//        val slider = ExerciseSetupItem.Slider(
-//                // TODO: Extract some of these numbers
-//                getString(R.string.numQuestions_title),
-//                10f,
-//                200f,
-//                // TODO: yikes
-//                viewModel.settings.numQuestions,
-//                Transformations.map(viewModel.settings.numQuestions) { value ->
-//                    value.toString()
-//                },
-//                10f,
-//                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-//                    value == ExerciseSetupSettings.QUESTION_LIMIT
-//                }
-//
-//        )
-
-
-
+    private fun bindNumQuestionsSlider() {
         // This actually only fires once (initial observation).
         // There is a bug that I couldn't fix otherwise.
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
@@ -439,9 +419,11 @@ class ExerciseSetupFragment : Fragment() {
                 }
             })
 
-
+            // TODO: visibility livedata observations
+            // isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
+//                    value == ExerciseSetupSettings.QUESTION_LIMIT
+//                }
         }
-
     }
 
 

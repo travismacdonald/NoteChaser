@@ -17,7 +17,7 @@
 
     <!-- Question Preferences -->
 
-    <string name="questions_header">Question Settings</string>
+
 
     <string name="noteChoice_title">Note Choice</string>
 
@@ -76,6 +76,9 @@
     <string name="answer_header">Answer Settings</string>
 
     <!-- Exercise Setup Strings -->
+
+    <string name="questions_header">Question Settings</string>
+
     <string name="numQuestions_title">Number of Questions</string>
 
 </resources>
