@@ -66,7 +66,6 @@
     <string name="timerLength_title">Timer Length (minutes)</string>
 
     <string name="numQuestions_key">numQuestions</string>
-    <string name="numQuestions_title">Number of Questions</string>
 
     <string name="questionKey_title">Question Key</string>
 
@@ -76,7 +75,7 @@
 
     <string name="answer_header">Answer Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Exercise Setup Strings -->
+    <string name="numQuestions_title">Number of Questions</string>
 
 </resources>

@@ -413,14 +413,14 @@ class ExerciseSetupFragment : Fragment() {
 
 
 
-        // This actually only fires once at the first observation.
+        // This actually only fires once (initial observation).
         // There is a bug that I couldn't fix otherwise.
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
             if (value != slider.value.toInt()) {
                 binding.numQuestionsSlider.slider.value = value.toFloat()
-                slider.valueFrom = 10f
-                slider.valueTo = 100f
-                slider.stepSize = 5f
+                slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
+                slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
+                slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
             }
         }
 
@@ -441,32 +441,7 @@ class ExerciseSetupFragment : Fragment() {
 
 
         }
-//        // TODO: check out this fix
-//        // https://developer.android.com/topic/libraries/architecture/datastore#synchronous
-//        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
-//            if (value != slider.value.toInt()) {
-//                binding.numQuestionsSlider.slider.value = value.toFloat()
-//            }
-//        }
 
-        // TODO: consider writing a subscribe function
-//        viewModel.settings.numQuestions.observe(this) { value ->
-//            binding.numQuestionsSlider.summary.text = value.toString()
-//        }
-
-//        binding.numQuestionsSlider.slider.apply {
-//            slider.value.value?.let {
-//                value = it.toFloat()
-//            }
-////            value = slider.value.value!!.toFloat()
-//            valueFrom = slider.valueFrom
-//            valueTo = slider.valueTo
-//            stepSize = slider.stepSize
-//        }
-
-//        binding.numQuestionsSlider.slider.addOnChangeListener { _, value, _ ->
-//            viewModel.saveNumQuestions(value.toInt())
-//        }
     }
 
 
