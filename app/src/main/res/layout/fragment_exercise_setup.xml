@@ -20,65 +20,65 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include
-                android:id="@+id/questions_header"
-                layout="@layout/item_settings_header" />
+<!--            <include-->
+<!--                android:id="@+id/questions_header"-->
+<!--                layout="@layout/item_settings_header" />-->
 
-            <include
-                android:id="@+id/noteChoice_single"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/noteChoice_single"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
-            <include
-                android:id="@+id/chromatic_multi"
-                layout="@layout/item_settings_multi_list" />
+<!--            <include-->
+<!--                android:id="@+id/chromatic_multi"-->
+<!--                layout="@layout/item_settings_multi_list" />-->
 
-            <include
-                android:id="@+id/diatonic_multi"
-                layout="@layout/item_settings_multi_list" />
+<!--            <include-->
+<!--                android:id="@+id/diatonic_multi"-->
+<!--                layout="@layout/item_settings_multi_list" />-->
 
-            <include
-                android:id="@+id/questionKey_single"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/questionKey_single"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
-            <include
-                android:id="@+id/parentScale_single"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/parentScale_single"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
-            <include
-                android:id="@+id/mode_single"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/mode_single"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
-            <include
-                android:id="@+id/playable_rangeBar"
-                layout="@layout/item_settings_range_bar" />
+<!--            <include-->
+<!--                android:id="@+id/playable_rangeBar"-->
+<!--                layout="@layout/item_settings_range_bar" />-->
 
-            <include
-                android:id="@+id/session_header"
-                layout="@layout/item_settings_header" />
+<!--            <include-->
+<!--                android:id="@+id/session_header"-->
+<!--                layout="@layout/item_settings_header" />-->
 
-            <include
-                android:id="@+id/sessionLengthType_single"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/sessionLengthType_single"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
             <include
                 android:id="@+id/numQuestions_slider"
                 layout="@layout/item_settings_slider" />
 
-            <include
-                android:id="@+id/timerLengthSlider"
-                layout="@layout/item_settings_slider" />
+<!--            <include-->
+<!--                android:id="@+id/timerLengthSlider"-->
+<!--                layout="@layout/item_settings_slider" />-->
 
-            <include
-                android:id="@+id/answer_header"
-                layout="@layout/item_settings_header" />
+<!--            <include-->
+<!--                android:id="@+id/answer_header"-->
+<!--                layout="@layout/item_settings_header" />-->
 
-            <include
-                android:id="@+id/matchOctaveSwitch"
-                layout="@layout/item_settings_switch" />
+<!--            <include-->
+<!--                android:id="@+id/matchOctaveSwitch"-->
+<!--                layout="@layout/item_settings_switch" />-->
 
-            <include
-                android:id="@+id/next_buttons"
-                layout="@layout/item_settings_buttons" />
+<!--            <include-->
+<!--                android:id="@+id/next_buttons"-->
+<!--                layout="@layout/item_settings_buttons" />-->
 
         </LinearLayout>
 

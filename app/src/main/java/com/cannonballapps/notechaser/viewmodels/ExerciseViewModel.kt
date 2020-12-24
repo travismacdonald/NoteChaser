@@ -21,6 +21,7 @@ import com.cannonballapps.notechaser.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.prefsstore.PrefsStoreImpl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 
@@ -101,7 +102,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         ncRepository = NcRepository(dataStore)
         settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
 
-
 //        userPrefsFlow = ncRepository
         print("hi")
 
@@ -112,6 +112,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun finishSession() {
         stopTimer()
+    }
+
+    suspend fun preloadPrefsStore() {
+        prefsStore.getNumQuestions().first()
     }
 
     fun startTimer() {

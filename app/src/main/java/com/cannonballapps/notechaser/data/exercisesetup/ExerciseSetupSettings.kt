@@ -22,7 +22,7 @@ class ExerciseSetupSettings {
     // 1. Harmonic; 2. Ascending; 3. Descending;
     val playbackTypeHar = MutableLiveData(booleanArrayOf(true, false, false))
 
-    var numQuestions: LiveData<Int> = MutableLiveData(20)
+    lateinit var numQuestions: LiveData<Int>
 
     val timerLength = MutableLiveData(10)
 

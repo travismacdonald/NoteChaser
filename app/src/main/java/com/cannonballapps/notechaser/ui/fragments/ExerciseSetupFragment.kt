@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
@@ -22,11 +23,17 @@ import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.Slider
+import kotlinx.android.synthetic.main.item_settings_slider.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ExerciseSetupFragment : Fragment() {
 
     private val viewModel: ExerciseViewModel by activityViewModels()
+
     private lateinit var binding: FragmentExerciseSetupBinding
+
     private lateinit var args: ExerciseSetupFragmentArgs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -39,13 +46,23 @@ class ExerciseSetupFragment : Fragment() {
 
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
+        lifecycleScope.launch {
+            viewModel.preloadPrefsStore()
+
+        }
+
 
         // TODO: use when statement, different functions for creating list
-        makeSettingsList()
 
 
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        makeSettingsList()
+
     }
 
 
@@ -53,26 +70,29 @@ class ExerciseSetupFragment : Fragment() {
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
-        binding.questionsHeader.obj = makeQuestionsHeader()
-        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
-        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
-        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
-        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
-        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
-        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
-        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
-        binding.sessionHeader.obj = makeSessionHeader()
-        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
-        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
+//        binding.questionsHeader.obj = makeQuestionsHeader()
+//        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
+//        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
+//        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
+//        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
+//        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
+//        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
+//        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
+//        binding.sessionHeader.obj = makeSessionHeader()
+//        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
+
+//        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
+        makeNumQuestionsSlider()
+
 //        binding.timerLengthSlider.obj = makeTimerLengthSlider()
-        binding.answerHeader.obj = makeAnswerHeader()
-        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
-        binding.nextButtons.obj = makeNextButton(
-                generator.hasValidRange(),
-                generator.noteType,
-                generator.diatonicDegrees,
-                generator.chromaticDegrees
-        )
+//        binding.answerHeader.obj = makeAnswerHeader()
+//        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
+//        binding.nextButtons.obj = makeNextButton(
+//                generator.hasValidRange(),
+//                generator.noteType,
+//                generator.diatonicDegrees,
+//                generator.chromaticDegrees
+//        )
     }
 
     private fun makeQuestionsHeader(): ExerciseSetupItem.Header {
@@ -360,39 +380,77 @@ class ExerciseSetupFragment : Fragment() {
         )
     }
 
-    private fun makeNumQuestionsSlider(): ExerciseSetupItem.Slider {
-        val slider = ExerciseSetupItem.Slider(
-                // TODO: Extract some of these numbers
-                getString(R.string.numQuestions_title),
-                10f,
-                200f,
-                // TODO: yikes
-                viewModel.settings.numQuestions,
-                Transformations.map(viewModel.settings.numQuestions) { value ->
-                    value.toString()
-                },
-                10f,
-                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-                    value == ExerciseSetupSettings.QUESTION_LIMIT
+    private fun makeNumQuestionsSlider() {
+//        val slider = ExerciseSetupItem.Slider(
+//                // TODO: Extract some of these numbers
+//                getString(R.string.numQuestions_title),
+//                10f,
+//                200f,
+//                // TODO: yikes
+//                viewModel.settings.numQuestions,
+//                Transformations.map(viewModel.settings.numQuestions) { value ->
+//                    value.toString()
+//                },
+//                10f,
+//                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
+//                    value == ExerciseSetupSettings.QUESTION_LIMIT
+//                }
+//
+//        )
+
+        binding.numQuestionsSlider.apply {
+            // TODO: extract hardcoded values
+            slider.valueFrom = 10f
+            slider.valueTo = 200f
+            // TODO: design slider to have more sparse values as num gets higher (eg 5, 10, 20, 40, 80, ...)
+            slider.stepSize = 5f
+            slider.value = viewModel.settings.numQuestions.value!!.toFloat()
+//            slider.value =
+
+            this.title.text = "Num Questions Slider"
+
+            slider.addOnChangeListener { _, value, _ ->
+//                val valueAsInt = value.toInt()
+                summary.text = value.toInt().toString()
+            }
+            // TODO: fix dis shit
+            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {
+                    // Responds to when slider's touch event is being started
                 }
 
-        )
+                override fun onStopTrackingTouch(slider: Slider) {
+                    viewModel.saveNumQuestions(slider.value.toInt())
+                }
+            })
 
-        binding.numQuestionsSlider.slider.apply {
-            slider.value.value?.let {
-                value = it.toFloat()
-            }
-//            value = slider.value.value!!.toFloat()
-            valueFrom = slider.valueFrom
-            valueTo = slider.valueTo
-            stepSize = slider.stepSize
         }
+        // TODO: check out this fix
+        // https://developer.android.com/topic/libraries/architecture/datastore#synchronous
+//        viewModel.settings.numQuestions.observe(this) { value ->
+//            if (value != slider.value.toInt()) {
+//                binding.numQuestionsSlider.slider.value = value.toFloat()
+//            }
+//        }
 
-        binding.numQuestionsSlider.slider.addOnChangeListener { _, value, _ ->
-            viewModel.saveNumQuestions(value.toInt())
-        }
+        // TODO: consider writing a subscribe function
+//        viewModel.settings.numQuestions.observe(this) { value ->
+//            binding.numQuestionsSlider.summary.text = value.toString()
+//        }
 
-        return slider
+//        binding.numQuestionsSlider.slider.apply {
+//            slider.value.value?.let {
+//                value = it.toFloat()
+//            }
+////            value = slider.value.value!!.toFloat()
+//            valueFrom = slider.valueFrom
+//            valueTo = slider.valueTo
+//            stepSize = slider.stepSize
+//        }
+
+//        binding.numQuestionsSlider.slider.addOnChangeListener { _, value, _ ->
+//            viewModel.saveNumQuestions(value.toInt())
+//        }
     }
 
 
