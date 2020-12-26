@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModelProvider
 
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
+import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
-import com.cannonballapps.notechaser.playablegenerator.GeneratorNoteType
 import com.cannonballapps.notechaser.playablegenerator.ParentScale
 import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
@@ -25,12 +25,13 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import kotlinx.android.synthetic.main.item_settings_slider.*
+import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
-//    private val viewModel: ExerciseViewModel by activityViewModels()
+    private val viewModel: ExerciseViewModel by activityViewModels()
 
-    private lateinit var viewModel: ExerciseViewModel
+//    private lateinit var viewModel: ExerciseViewModel
 
     private lateinit var binding: FragmentExerciseSetupBinding
 
@@ -48,7 +49,7 @@ class ExerciseSetupFragment : Fragment() {
 
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
-        viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
+//        viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
 
 //        lifecycleScope.launch {
 //            viewModel.preloadPrefsStore()
@@ -75,7 +76,7 @@ class ExerciseSetupFragment : Fragment() {
 
 
     private fun subscribeToLiveData() {
-        // todo: who the fuck knows
+        // todo: who knows
     }
 
     private fun makeSettingsList() {
@@ -115,68 +116,36 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindNotePoolTypeChoiceSingleList() {
+        val notePoolTypeEntries: Array<String> = 
+                NotePoolType.values().map { it.toString() }.toTypedArray()
 
-        // TODO:
-        //   - array of strings for user to choose from
-        //   - value gets saved in generator
-        //   - generator that can be customized here
-        //   - generator used in session only has function getPattern and generatePattern
-        //   - need to be able to save and load value from PrefsStore
+        viewModel.notePoolType.observe(requireActivity()) { type: NotePoolType ->
+            binding.notePoolTypeSingleList.summary.text = type.toString()
+        }
 
         binding.notePoolTypeSingleList.apply {
             title.text = getString(R.string.notePoolType_title)
-        }
-
-
-
-//        val noteChoiceTitle = resources.getString(R.string.notePoolType_title)
-        val noteChoiceArray = resources.getStringArray(R.array.notechoice_entries)
-        val noteChoiceValue = Transformations.map(noteType) { value ->
-            val res: Int = when (value) {
-                // TODO: perhaps not the most efficient, but quite readable
-                GeneratorNoteType.DIATONIC -> noteChoiceArray.indexOf("Diatonic")
-                GeneratorNoteType.CHROMATIC -> noteChoiceArray.indexOf("Chromatic")
-                else -> -1
+            layout.setOnClickListener {
+                var selectedIx: Int = viewModel.notePoolType.value!!.ordinal
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.notePoolType_title))
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                            viewModel.saveNotePoolType(NotePoolType.values()[selectedIx])
+                        }
+                        .setSingleChoiceItems(notePoolTypeEntries, selectedIx) { _, which ->
+                            selectedIx = which
+                        }
+                        .show()
             }
-            res
         }
-        return ExerciseSetupItem.SingleList(
-                noteChoiceTitle,
-                noteChoiceArray,
-                noteChoiceValue,
-                clickListener = View.OnClickListener {
-                    var tempItem = noteChoiceValue.value!!
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(noteChoiceTitle)
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                when (tempItem) {
-                                    // TODO: perhaps not the most efficient, but quite readable
-                                    noteChoiceArray.indexOf("Diatonic") -> {
-                                        noteType.value = GeneratorNoteType.DIATONIC
-                                    }
-                                    noteChoiceArray.indexOf("Chromatic") -> {
-                                        noteType.value = GeneratorNoteType.CHROMATIC
-                                    }
-
-                                }
-                            }
-                            .setSingleChoiceItems(noteChoiceArray, tempItem) { _, which ->
-                                tempItem = which
-                            }
-                            .show()
-
-                }
-                // TODO: implement visibility condition
-        )
     }
 
     private fun makeChromaticMulti(
             chromaticDegrees: MutableLiveData<BooleanArray>,
-            noteType: MutableLiveData<GeneratorNoteType>
+            noteType: MutableLiveData<NotePoolType>
     ): ExerciseSetupItem.MultiList {
         return ExerciseSetupItem.MultiList(
                 "Chromatic Intervals",
@@ -202,14 +171,14 @@ class ExerciseSetupFragment : Fragment() {
                             .show()
                 },
                 isVisible = Transformations.map(noteType) { value ->
-                    value == GeneratorNoteType.CHROMATIC
+                    value == NotePoolType.CHROMATIC
                 }
         )
     }
 
     private fun makeDiatonicMulti(
             diatonicDegrees: MutableLiveData<BooleanArray>,
-            noteType: MutableLiveData<GeneratorNoteType>
+            noteType: MutableLiveData<NotePoolType>
     ): ExerciseSetupItem.MultiList {
         return ExerciseSetupItem.MultiList(
                 "Diatonic Intervals",
@@ -234,7 +203,7 @@ class ExerciseSetupFragment : Fragment() {
                             .show()
                 },
                 isVisible = Transformations.map(noteType) { value ->
-                    value == GeneratorNoteType.DIATONIC
+                    value == NotePoolType.DIATONIC
                 }
         )
     }
@@ -265,7 +234,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun makeParentScaleSingle(
-            noteType: MutableLiveData<GeneratorNoteType>,
+            noteType: MutableLiveData<NotePoolType>,
             parentScale: MutableLiveData<ParentScale>
     ): ExerciseSetupItem.SingleList {
         val parentScaleTitle = resources.getString(R.string.parentScale_title)
@@ -278,7 +247,7 @@ class ExerciseSetupFragment : Fragment() {
                 parentScaleEntries,
                 parentScaleValue,
                 isVisible = Transformations.map(noteType) { value ->
-                    value == GeneratorNoteType.DIATONIC
+                    value == NotePoolType.DIATONIC
                 },
                 clickListener = View.OnClickListener {
                     var tempItem = parentScaleValue.value!!
@@ -301,7 +270,7 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun makeModeSingle(
             mode: MutableLiveData<Int>,
-            noteType: MutableLiveData<GeneratorNoteType>
+            noteType: MutableLiveData<NotePoolType>
     ): ExerciseSetupItem.SingleList {
         // TODO: extract hard coded
         val modeTitle = "Mode"
@@ -313,7 +282,7 @@ class ExerciseSetupFragment : Fragment() {
                 modeEntries,
                 modeValue,
                 isVisible = Transformations.map(noteType) { value ->
-                    value == GeneratorNoteType.DIATONIC
+                    value == NotePoolType.DIATONIC
                 },
                 clickListener = View.OnClickListener {
                     var tempItem = modeValue.value!!
@@ -474,7 +443,7 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun makeNextButton(
             hasValidRange: Boolean,
-            noteType: MutableLiveData<GeneratorNoteType>,
+            noteType: MutableLiveData<NotePoolType>,
             diatonicDegrees: MutableLiveData<BooleanArray>,
             chromaticDegrees: MutableLiveData<BooleanArray>
     ): ExerciseSetupItem.Buttons {
@@ -484,11 +453,14 @@ class ExerciseSetupFragment : Fragment() {
                 nextClickListener = {
                     if (!hasValidRange) {
                         Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                    } else if (noteType.value!! == GeneratorNoteType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
+                    }
+                    else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                    } else if (noteType.value!! == GeneratorNoteType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
+                    }
+                    else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                    } else {
+                    }
+                    else {
                         viewModel.generator.setupGenerator()
                         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
                         findNavController().navigate(directions)

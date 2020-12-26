@@ -1,15 +1,10 @@
 package com.cannonballapps.notechaser.viewmodels
 
 import android.app.Application
-import androidx.datastore.core.DataStore
-import androidx.datastore.createDataStore
 import androidx.lifecycle.*
 
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
-import com.cannonballapps.notechaser.UserPrefs
-import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.NotePoolType
-import com.cannonballapps.notechaser.data.UserPrefsSerializer
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
@@ -18,12 +13,13 @@ import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableGenerator
-import com.cannonballapps.notechaser.prefsstore.PrefsStoreImpl
+import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 
+// TODO: make 2 different viewmodels: 1) one for ex configuration, and 2) for ear training session
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
     // TODO: want two types of settings: 1) global settings (theme, instr, ...), and 2) session (num questions, ..., you know what i mean)
@@ -44,7 +40,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val ncRepository: NcRepository
 
-    private val prefsStore = PrefsStoreImpl(application.applicationContext)
+    private val prefsStore = PrefsStore(application.applicationContext)
 
 //    private val userPrefsFlow: Flow<UserPrefs>
 //
@@ -57,6 +53,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val currentPlayable = MutableLiveData<Playable?>()
 
     val currentPitchDetected = MutableLiveData(-1)
+
+
+    val notePoolType = prefsStore.notePoolType().asLiveData()
 
     // TODO: fix timer bug when ending session
     private var timerUpdate: Job? = null
@@ -92,13 +91,13 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
 
 
-        val dataStore: DataStore<UserPrefs> = application.applicationContext.createDataStore(
-                fileName = "user_prefs.pb",
-                serializer = UserPrefsSerializer
-        )
+//        val dataStore: DataStore<UserPrefs> = application.applicationContext.createDataStore(
+//                fileName = "user_prefs.pb",
+//                serializer = UserPrefsSerializer
+//        )
 
 
-        ncRepository = NcRepository(dataStore)
+        ncRepository = NcRepository()
 
 
 //        userPrefsFlow = ncRepository
@@ -115,14 +114,17 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun connectPrefsStoreToRepository() {
+        settings.numQuestions = prefsStore.numQuestions().asLiveData()
 
-        settings.numQuestions = prefsStore.getNumQuestions().asLiveData()
     }
+
+
+
 
     // TODO: clean up this mess
     suspend fun preloadPrefsStore() {
         runBlocking {
-            var blah = prefsStore.getNumQuestions().first()
+            var blah = prefsStore.numQuestions().first()
             print("hi")
         }
         print("hi")
@@ -160,10 +162,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun setNotePoolType(exerciseType: ExerciseType, notePoolType: NotePoolType) {
-        // TODO: error checking, but for now I don't give a shit
+    fun saveNotePoolType(type: NotePoolType) {
         viewModelScope.launch {
-            ncRepository.updateNotePoolType(exerciseType, notePoolType)
+            prefsStore.saveNotePoolType(type)
         }
     }
 

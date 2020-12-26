@@ -12,7 +12,7 @@ import timber.log.Timber
 import java.io.IOException
 
 class NcRepository(
-        private val dataStore: DataStore<UserPrefs>
+//        private val dataStore: DataStore<UserPrefs>
 ) {
 
     init {
@@ -20,17 +20,17 @@ class NcRepository(
     }
 
     // TODO: possiblly change Flow<Int> to Flow<NotePoolType> when all is said and done
-    val userPrefsFlow: Flow<UserPrefs> = dataStore.data.catch { exception ->
-        // dataStore.data throws an IOException when an error is encountered when reading data
-        if (exception is IOException) {
-            // TODO: figure out how to do this with timber
-            Log.e("fuck_you","Error reading sort order preferences.", exception)
-            emit(UserPrefs.getDefaultInstance())
-        } else {
-            throw exception
-        }
-
-    }
+//    val userPrefsFlow: Flow<UserPrefs> = dataStore.data.catch { exception ->
+//        // dataStore.data throws an IOException when an error is encountered when reading data
+//        if (exception is IOException) {
+//            // TODO: figure out how to do this with timber
+//            Log.e("fuck_you","Error reading sort order preferences.", exception)
+//            emit(UserPrefs.getDefaultInstance())
+//        } else {
+//            throw exception
+//        }
+//
+//    }
 
     // TODO: i just commented out this code
 //    val userPrefsFlow: Flow<UserPrefs> = dataStore.data
@@ -50,20 +50,20 @@ class NcRepository(
 //        }
 //    }
 
-    suspend fun updateNotePoolType(exerciseType: ExerciseType, notePoolType: NotePoolType) {
-        when (exerciseType) {
-            ExerciseType.SINGLE_NOTE -> {
-                dataStore.updateData { preferences ->
-                    preferences.toBuilder().setSingleNotePoolType(notePoolType.ordinal).build()
-                }
-                Timber.d("WROTE ${notePoolType}")
-
-            }
-            else ->
-                throw IllegalArgumentException("Illegal argument: $exerciseType given for exerciseType.")
-        }
-
-    }
+//    suspend fun updateNotePoolType(exerciseType: ExerciseType, notePoolType: NotePoolType) {
+//        when (exerciseType) {
+//            ExerciseType.SINGLE_NOTE -> {
+//                dataStore.updateData { preferences ->
+//                    preferences.toBuilder().setSingleNotePoolType(notePoolType.ordinal).build()
+//                }
+//                Timber.d("WROTE ${notePoolType}")
+//
+//            }
+//            else ->
+//                throw IllegalArgumentException("Illegal argument: $exerciseType given for exerciseType.")
+//        }
+//
+//    }
 
 
     fun getSingleNotePoolType() : Int {

@@ -77,5 +77,7 @@
     <string name="notePoolType_title">Note Pool Type</string>
 
     <string name="numQuestions_title">Number of Questions</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>

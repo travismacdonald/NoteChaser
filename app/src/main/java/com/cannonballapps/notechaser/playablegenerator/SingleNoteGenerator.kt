@@ -1,6 +1,7 @@
 package com.cannonballapps.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
+import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import timber.log.Timber
 import java.lang.IllegalStateException
@@ -22,7 +23,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     // TODO: change this later when an algorithm is figured out
     val minRange = MutableLiveData(11)
 
-    val noteType = MutableLiveData(GeneratorNoteType.DIATONIC)
+    val noteType = MutableLiveData(NotePoolType.DIATONIC)
 
     val questionKey = MutableLiveData(0)
 
@@ -50,8 +51,8 @@ class SingleNoteGenerator() : PlayableGenerator {
     // TODO: Make it so there has to be at least 2 true values in the array
     fun hasSelectedDegrees(): Boolean {
         return when (noteType.value) {
-            GeneratorNoteType.CHROMATIC -> chromaticDegrees.value!!.contains(true)
-            GeneratorNoteType.DIATONIC -> diatonicDegrees.value!!.contains(true)
+            NotePoolType.CHROMATIC -> chromaticDegrees.value!!.contains(true)
+            NotePoolType.DIATONIC -> diatonicDegrees.value!!.contains(true)
             else -> throw IllegalStateException("Invalid generator note type: $noteType")
         }
     }
@@ -66,13 +67,13 @@ class SingleNoteGenerator() : PlayableGenerator {
 
     override fun setupGenerator() {
 
-        if (noteType.value == GeneratorNoteType.DIATONIC) {
+        if (noteType.value == NotePoolType.DIATONIC) {
             scale = MusicTheoryUtils.getModeIntervals(parentScale.value!!.intervals, mode.value!!)
             val intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(diatonicDegrees.value!!, scale, questionKey.value!!)
             notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
             Timber.d("intvls: ${intervals.contentToString()}")
         }
-        else if (noteType.value == GeneratorNoteType.CHROMATIC) {
+        else if (noteType.value == NotePoolType.CHROMATIC) {
             val intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(chromaticDegrees.value!!, questionKey.value!!)
             notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
             Timber.d("intvls: ${intervals.contentToString()}")
