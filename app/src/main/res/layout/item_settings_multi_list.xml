@@ -16,10 +16,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/settings_item_background"
-        android:clickable="@{obj.isEnabled()}"
-        android:onClick="@{obj.clickListener}"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+        android:background="@drawable/settings_item_background" >
 
         <TextView
             android:id="@+id/title"
@@ -29,8 +26,6 @@
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.title}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
             android:textSize="@dimen/itemTitleTextSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,8 +39,6 @@
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
-            android:text="@{obj.summary}"
-            android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
             android:textSize="@dimen/itemSummaryTextSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"

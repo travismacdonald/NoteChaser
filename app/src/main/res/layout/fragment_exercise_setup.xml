@@ -28,9 +28,9 @@
                 android:id="@+id/notePoolType_singleList"
                 layout="@layout/item_settings_single_list" />
 
-<!--            <include-->
-<!--                android:id="@+id/chromatic_multi"-->
-<!--                layout="@layout/item_settings_multi_list" />-->
+            <include
+                android:id="@+id/chromaticDegrees_multiList"
+                layout="@layout/item_settings_multi_list" />
 
 <!--            <include-->
 <!--                android:id="@+id/diatonic_multi"-->

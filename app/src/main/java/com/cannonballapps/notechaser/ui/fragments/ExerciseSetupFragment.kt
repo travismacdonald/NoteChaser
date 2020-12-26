@@ -25,7 +25,6 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import kotlinx.android.synthetic.main.item_settings_slider.*
-import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -77,6 +76,20 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun subscribeToLiveData() {
         // todo: who knows
+
+
+        viewModel.notePoolType.observe(requireActivity()) { type: NotePoolType ->
+            binding.notePoolTypeSingleList.summary.text = type.toString()
+        }
+
+        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
+            if (value != slider.value.toInt()) {
+                binding.numQuestionsSlider.slider.value = value.toFloat()
+                slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
+                slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
+                slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
+            }
+        }
     }
 
     private fun makeSettingsList() {
@@ -85,10 +98,8 @@ class ExerciseSetupFragment : Fragment() {
 
         bindQuestionsHeader()
         bindNotePoolTypeChoiceSingleList()
+        bindChromaticDegreeMultiList()
 
-//        binding.noteChoiceSingle.obj = makeNoteChoiceSingle(generator.noteType)
-
-//        binding.chromaticMulti.obj = makeChromaticMulti(generator.chromaticDegrees, generator.noteType)
 //        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
 //        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
 //        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
@@ -116,12 +127,9 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindNotePoolTypeChoiceSingleList() {
-        val notePoolTypeEntries: Array<String> = 
+        // TODO: font color
+        val notePoolTypeEntries: Array<String> =
                 NotePoolType.values().map { it.toString() }.toTypedArray()
-
-        viewModel.notePoolType.observe(requireActivity()) { type: NotePoolType ->
-            binding.notePoolTypeSingleList.summary.text = type.toString()
-        }
 
         binding.notePoolTypeSingleList.apply {
             title.text = getString(R.string.notePoolType_title)
@@ -143,11 +151,10 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun makeChromaticMulti(
-            chromaticDegrees: MutableLiveData<BooleanArray>,
-            noteType: MutableLiveData<NotePoolType>
-    ): ExerciseSetupItem.MultiList {
-        return ExerciseSetupItem.MultiList(
+    private fun bindChromaticDegreeMultiList() {
+
+
+        ExerciseSetupItem.MultiList(
                 "Chromatic Intervals",
                 // TODO: write a better summary and extract
                 "Intervals to choose from",
@@ -381,14 +388,6 @@ class ExerciseSetupFragment : Fragment() {
     private fun bindNumQuestionsSlider() {
         // This actually only fires once (initial observation).
         // There is a bug that I couldn't fix otherwise.
-        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
-            if (value != slider.value.toInt()) {
-                binding.numQuestionsSlider.slider.value = value.toFloat()
-                slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
-                slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
-                slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
-            }
-        }
 
         binding.numQuestionsSlider.apply {
             this.title.text = getString(R.string.numQuestions_title)
