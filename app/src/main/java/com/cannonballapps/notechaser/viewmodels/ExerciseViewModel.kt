@@ -56,6 +56,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
 
     val notePoolType = prefsStore.notePoolType().asLiveData()
+    val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
+
 
     // TODO: fix timer bug when ending session
     private var timerUpdate: Job? = null
@@ -165,6 +167,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveNotePoolType(type: NotePoolType) {
         viewModelScope.launch {
             prefsStore.saveNotePoolType(type)
+        }
+    }
+
+    fun saveChromaticDegrees(degrees: BooleanArray) {
+        viewModelScope.launch {
+            prefsStore.saveChromaticDegrees(degrees)
         }
     }
 

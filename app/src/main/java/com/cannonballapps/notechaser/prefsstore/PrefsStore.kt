@@ -6,15 +6,17 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import com.cannonballapps.notechaser.data.NotePoolType
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-private const val DEFAULT_NUM_QUESTIONS = 20
-
 private const val STORE_NAME = "notechaser_data_store"
 
+private const val DEFAULT_NUM_QUESTIONS = 20
+private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
+        true, false, false, false, false, false,
+        false, false, false, false, false, false,
+).joinToString(",")
 
 class PrefsStore(context: Context) {
 
@@ -25,8 +27,7 @@ class PrefsStore(context: Context) {
     fun notePoolType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map {
@@ -41,14 +42,32 @@ class PrefsStore(context: Context) {
         }
     }
 
+    fun chromaticDegrees() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map {
+        val serializedChromaticDegrees: String = it[PrefKeys.CHROMATIC_DEGREES] ?: DEFAULT_CHROMATIC_DEGREES
+        deserializeBooleanArray(serializedChromaticDegrees)
+    }
+
+    suspend fun saveChromaticDegrees(degrees: BooleanArray) {
+        dataStore.edit {
+            it[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
+        }
+    }
+
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
-    }.map { it[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS }
+    }.map {
+        it[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS
+    }
 
     suspend fun saveNumQuestions(numQuestions: Int) {
         dataStore.edit {
@@ -58,8 +77,19 @@ class PrefsStore(context: Context) {
 
     private object PrefKeys {
         val NOTE_POOL_TYPE = preferencesKey<Int>("note_pool_type")
+        val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
+
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }
 
+    private fun serializeBooleanArray(array: BooleanArray): String {
+        // [true, false, true] -> "true,false,true"
+        return array.joinToString(separator = ",")
+    }
+
+    private fun deserializeBooleanArray(string: String): BooleanArray {
+        // "true,false,true" -> [true, false, true]
+        return string.split(",").map{ it.toBoolean() }.toBooleanArray()
+    }
 
 }

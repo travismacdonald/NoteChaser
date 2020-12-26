@@ -82,6 +82,24 @@ class ExerciseSetupFragment : Fragment() {
             binding.notePoolTypeSingleList.summary.text = type.toString()
         }
 
+        viewModel.chromaticDegrees.observe(requireActivity()) { degrees ->
+            val activeDegrees = arrayListOf<String>()
+            for (i in degrees.indices) {
+                if (degrees[i]) {
+                    activeDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
+                }
+            }
+            if (activeDegrees.size == 0) {
+                binding.chromaticDegreesMultiList.summary.text = "None selected"
+            }
+            else if (activeDegrees.size == degrees.size) {
+                binding.chromaticDegreesMultiList.summary.text = "All selected"
+            }
+            else {
+                binding.chromaticDegreesMultiList.summary.text = activeDegrees.joinToString(separator = ", ")
+            }
+        }
+
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
             if (value != slider.value.toInt()) {
                 binding.numQuestionsSlider.slider.value = value.toFloat()
@@ -152,35 +170,54 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindChromaticDegreeMultiList() {
+        binding.chromaticDegreesMultiList.apply {
+            title.text = "Chromatic Intervals"
+            summary.text = "Intervals to choose from"
+            layout.setOnClickListener {
+                val selectedIxs = viewModel.chromaticDegrees.value!!.clone()
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Chromatic Tones")
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                            viewModel.saveChromaticDegrees(selectedIxs)
 
+                        }
+                        .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, selectedIxs) { _, ix, isChecked ->
+                            selectedIxs[ix] = isChecked
+                        }
+                        .show()
+            }
+        }
 
-        ExerciseSetupItem.MultiList(
-                "Chromatic Intervals",
-                // TODO: write a better summary and extract
-                "Intervals to choose from",
-                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-                chromaticDegrees,
-                clickListener = View.OnClickListener {
-                    val tempList = chromaticDegrees.value!!.clone()
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Chromatic Tones")
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                chromaticDegrees.value = tempList.copyOf()
-
-                            }
-                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-                                tempList[which] = checked
-                            }
-                            .show()
-                },
-                isVisible = Transformations.map(noteType) { value ->
-                    value == NotePoolType.CHROMATIC
-                }
-        )
+//        ExerciseSetupItem.MultiList(
+//                "Chromatic Intervals",
+//                // TODO: write a better summary and extract
+//                "Intervals to choose from",
+//                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+//                chromaticDegrees,
+//                clickListener = View.OnClickListener {
+//                    val tempList = chromaticDegrees.value!!.clone()
+//                    MaterialAlertDialogBuilder(requireContext())
+//                            .setTitle("Chromatic Tones")
+//                            .setNegativeButton("Dismiss") { _, _ ->
+//                                // Do nothing
+//                            }
+//                            .setPositiveButton("Confirm") { _, _ ->
+//                                // Commit Changes
+//                                chromaticDegrees.value = tempList.copyOf()
+//
+//                            }
+//                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
+//                                tempList[which] = checked
+//                            }
+//                            .show()
+//                },
+//                isVisible = Transformations.map(noteType) { value ->
+//                    value == NotePoolType.CHROMATIC
+//                }
+//        )
     }
 
     private fun makeDiatonicMulti(
@@ -452,14 +489,11 @@ class ExerciseSetupFragment : Fragment() {
                 nextClickListener = {
                     if (!hasValidRange) {
                         Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
+                    } else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
+                    } else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
+                    } else {
                         viewModel.generator.setupGenerator()
                         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
                         findNavController().navigate(directions)
