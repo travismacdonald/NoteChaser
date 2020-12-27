@@ -3,20 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="obj"
-            type="com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem.MultiList" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/settings_item_background" >
+        android:background="@drawable/settings_item_background">
 
         <TextView
             android:id="@+id/title"
@@ -25,8 +16,7 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:fontFamily="@font/rubik"
-            android:textSize="@dimen/itemTitleTextSize"
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toTopOf="@id/summary"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="MultiList (Title)" />
@@ -38,8 +28,7 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
-            android:fontFamily="@font/rubik"
-            android:textSize="@dimen/itemSummaryTextSize"
+            android:theme="@style/itemSummary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="Summary" />

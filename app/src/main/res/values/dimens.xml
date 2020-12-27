@@ -4,8 +4,8 @@
     <dimen name="typeButtonWidth">170dp</dimen>
 
     <!-- Exercise Setup -->
-    <dimen name="itemTitleTextSize">16sp</dimen>
-    <dimen name="itemSummaryTextSize">14sp</dimen>
+    <dimen name="itemTitle_textSize">16sp</dimen>
+    <dimen name="itemSummary_textSize">14sp</dimen>
     <dimen name="itemHeight">72dp</dimen>
     <dimen name="itemSmallMargin">16dp</dimen>
     <dimen name="itemIconSize">40dp</dimen>

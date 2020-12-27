@@ -16,9 +16,7 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:fontFamily="@font/rubik"
-            android:text="text"
-            android:textSize="@dimen/itemTitleTextSize"
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toTopOf="@id/slider"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Slider" />
@@ -29,9 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="22dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
-            android:fontFamily="@font/rubik"
-            android:text="other text"
-            android:textSize="@dimen/itemSummaryTextSize"
+            android:theme="@style/itemSummary"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="Cur Value" />

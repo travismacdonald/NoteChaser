@@ -16,8 +16,7 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:fontFamily="@font/rubik"
-            android:textSize="@dimen/itemTitleTextSize"
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toTopOf="@id/summary"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Single List Title" />
@@ -29,8 +28,7 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
-            android:fontFamily="@font/rubik"
-            android:textSize="@dimen/itemSummaryTextSize"
+            android:theme="@style/itemSummary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="Single List Summary" />

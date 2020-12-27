@@ -67,17 +67,8 @@ class ExerciseSetupFragment : Fragment() {
         return binding.root
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//
-//
-//    }
-
 
     private fun subscribeToLiveData() {
-        // todo: who knows
-
-
         viewModel.notePoolType.observe(requireActivity()) { type: NotePoolType ->
             binding.notePoolTypeSingleList.summary.text = type.toString()
         }
@@ -89,15 +80,18 @@ class ExerciseSetupFragment : Fragment() {
                     activeDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
                 }
             }
-            if (activeDegrees.size == 0) {
-                binding.chromaticDegreesMultiList.summary.text = "None selected"
-            }
-            else if (activeDegrees.size == degrees.size) {
-                binding.chromaticDegreesMultiList.summary.text = "All selected"
-            }
-            else {
-                binding.chromaticDegreesMultiList.summary.text = activeDegrees.joinToString(separator = ", ")
-            }
+            binding.chromaticDegreesMultiList.summary.text =
+                    when (activeDegrees.size) {
+                        0 -> {
+                            getString(R.string.noneSelected)
+                        }
+                        degrees.size -> {
+                            getString(R.string.allSelected)
+                        }
+                        else -> {
+                            activeDegrees.joinToString(separator = ", ")
+                        }
+                    }
         }
 
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
@@ -111,6 +105,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun makeSettingsList() {
+        // TODO: these can probably go
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
 
@@ -171,8 +166,8 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun bindChromaticDegreeMultiList() {
         binding.chromaticDegreesMultiList.apply {
-            title.text = "Chromatic Intervals"
-            summary.text = "Intervals to choose from"
+            title.text = getString(R.string.chromaticDegrees_title)
+//            summary.text = "Intervals to choose from"
             layout.setOnClickListener {
                 val selectedIxs = viewModel.chromaticDegrees.value!!.clone()
                 MaterialAlertDialogBuilder(requireContext())
@@ -191,33 +186,10 @@ class ExerciseSetupFragment : Fragment() {
             }
         }
 
-//        ExerciseSetupItem.MultiList(
-//                "Chromatic Intervals",
-//                // TODO: write a better summary and extract
-//                "Intervals to choose from",
-//                MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-//                chromaticDegrees,
-//                clickListener = View.OnClickListener {
-//                    val tempList = chromaticDegrees.value!!.clone()
-//                    MaterialAlertDialogBuilder(requireContext())
-//                            .setTitle("Chromatic Tones")
-//                            .setNegativeButton("Dismiss") { _, _ ->
-//                                // Do nothing
-//                            }
-//                            .setPositiveButton("Confirm") { _, _ ->
-//                                // Commit Changes
-//                                chromaticDegrees.value = tempList.copyOf()
-//
-//                            }
-//                            .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-//                                tempList[which] = checked
-//                            }
-//                            .show()
-//                },
 //                isVisible = Transformations.map(noteType) { value ->
 //                    value == NotePoolType.CHROMATIC
 //                }
-//        )
+
     }
 
     private fun makeDiatonicMulti(

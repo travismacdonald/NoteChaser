@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="itemTitle">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/itemTitle_textSize</item>
+        <item name="android:textColor">@color/itemTitle_textColor</item>
+    </style>
+
+    <style name="itemSummary">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/itemSummary_textSize</item>
+        <item name="android:textColor">@color/itemSummary_textColor</item>
+    </style>
+
 </resources>

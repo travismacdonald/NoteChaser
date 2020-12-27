@@ -30,8 +30,8 @@
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.title}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
-            android:textSize="@dimen/itemTitleTextSize"
+            android:textColor="@{obj.isEnabled() ? @color/itemTitle_textColor : @color/itemTitle_textColorDisabled}"
+            android:textSize="@dimen/itemTitle_textSize"
             app:layout_constraintBottom_toTopOf="@id/summary"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Paranoid Android" />
@@ -45,8 +45,8 @@
             android:layout_marginBottom="@dimen/itemSmallMargin"
             android:fontFamily="@font/rubik"
             android:text="@{obj.summary}"
-            android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
-            android:textSize="@dimen/itemSummaryTextSize"
+            android:textColor="@{obj.isEnabled() ? @color/itemSummary_textColor : @color/itemSummary_textColorDisabled}"
+            android:textSize="@dimen/itemSummary_textSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="No Surprises" />
