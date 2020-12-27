@@ -33,5 +33,15 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="Single List Summary" />
 
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/summary"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_music_note_black_40dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
