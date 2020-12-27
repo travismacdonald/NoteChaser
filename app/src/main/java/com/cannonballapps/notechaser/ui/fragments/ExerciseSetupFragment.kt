@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -123,6 +124,10 @@ class ExerciseSetupFragment : Fragment() {
                 slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
             }
         }
+
+        // Visibility Live Data Observers
+
+
     }
 
     private fun makeSettingsList() {
@@ -188,7 +193,6 @@ class ExerciseSetupFragment : Fragment() {
     private fun bindChromaticDegreeMultiList() {
         binding.chromaticDegreesMultiList.apply {
             title.text = getString(R.string.chromaticDegrees_title)
-//            summary.text = "Intervals to choose from"
             layout.setOnClickListener {
                 val selectedIxs = viewModel.chromaticDegrees.value!!.clone()
                 MaterialAlertDialogBuilder(requireContext())
@@ -205,12 +209,11 @@ class ExerciseSetupFragment : Fragment() {
                         }
                         .show()
             }
+
+            viewModel.notePoolType.observe(requireActivity()) { type ->
+                layout.isVisible = type == NotePoolType.CHROMATIC
+            }
         }
-
-//                isVisible = Transformations.map(noteType) { value ->
-//                    value == NotePoolType.CHROMATIC
-//                }
-
     }
 
     private fun bindDiatonicDegreesMultiList() {
@@ -231,6 +234,10 @@ class ExerciseSetupFragment : Fragment() {
                             selectedIxs[ix] = isChecked
                         }
                         .show()
+            }
+
+            viewModel.notePoolType.observe(requireActivity()) { type ->
+                layout.isVisible = type == NotePoolType.DIATONIC
             }
         }
 
