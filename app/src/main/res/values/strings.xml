@@ -63,7 +63,6 @@
 
     <string name="numQuestions_key">numQuestions</string>
 
-    <string name="questionKey_title">Question Key</string>
 
     <string name="parentScale_title">Parent Scale</string>
 
@@ -77,6 +76,7 @@
     <string name="notePoolType_title">Note Pool Type</string>
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
     <string name="diatonicDegrees_title">Diatonic Degrees</string>
+    <string name="questionKey_title">Question Key</string>
 
     <string name="numQuestions_title">Number of Questions</string>
 

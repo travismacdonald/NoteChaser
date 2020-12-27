@@ -36,9 +36,9 @@
                 android:id="@+id/diatonicDegrees_multiList"
                 layout="@layout/item_settings_multi_list" />
 
-<!--            <include-->
-<!--                android:id="@+id/questionKey_single"-->
-<!--                layout="@layout/item_settings_single_list" />-->
+            <include
+                android:id="@+id/questionKey_singleList"
+                layout="@layout/item_settings_single_list" />
 
 <!--            <include-->
 <!--                android:id="@+id/parentScale_single"-->

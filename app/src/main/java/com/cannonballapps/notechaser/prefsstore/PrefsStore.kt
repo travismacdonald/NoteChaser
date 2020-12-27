@@ -24,6 +24,8 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
         false, false, false
 ).joinToString(",")
 
+private const val DEFAULT_QUESTION_KEY = 0
+
 class PrefsStore(context: Context) {
 
     private val dataStore = context.createDataStore(
@@ -84,6 +86,22 @@ class PrefsStore(context: Context) {
         }
     }
 
+    fun questionKey() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map {
+        it[PrefKeys.QUESTION_KEY] ?: DEFAULT_QUESTION_KEY
+    }
+
+    suspend fun saveQuestionKey(key: Int) {
+        dataStore.edit {
+            it[PrefKeys.QUESTION_KEY] = key
+        }
+    }
+
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -104,6 +122,7 @@ class PrefsStore(context: Context) {
         val NOTE_POOL_TYPE = preferencesKey<Int>("note_pool_type")
         val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
         val DIATONIC_DEGREES = preferencesKey<String>("diatonic_degrees")
+        val QUESTION_KEY = preferencesKey<Int>("question_key")
 
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }

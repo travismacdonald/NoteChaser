@@ -58,6 +58,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val notePoolType = prefsStore.notePoolType().asLiveData()
     val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
     val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
+    val questionKey = prefsStore.questionKey().asLiveData()
 
 
     // TODO: fix timer bug when ending session
@@ -180,6 +181,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveDiatonicDegrees(degrees: BooleanArray) {
         viewModelScope.launch {
             prefsStore.saveDiatonicDegrees(degrees)
+        }
+    }
+
+    fun saveQuestionKey(key: Int) {
+        viewModelScope.launch {
+            prefsStore.saveQuestionKey(key)
         }
     }
 

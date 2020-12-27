@@ -70,11 +70,11 @@ class ExerciseSetupFragment : Fragment() {
 
 
     private fun subscribeToLiveData() {
-        viewModel.notePoolType.observe(requireActivity()) { type: NotePoolType ->
+        viewModel.notePoolType.observe(viewLifecycleOwner) { type: NotePoolType ->
             binding.notePoolTypeSingleList.summary.text = type.toString()
         }
 
-        viewModel.chromaticDegrees.observe(requireActivity()) { degrees ->
+        viewModel.chromaticDegrees.observe(viewLifecycleOwner) { degrees ->
             val activeDegrees = arrayListOf<String>()
             for (i in degrees.indices) {
                 if (degrees[i]) {
@@ -84,10 +84,10 @@ class ExerciseSetupFragment : Fragment() {
             binding.chromaticDegreesMultiList.summary.text =
                     when (activeDegrees.size) {
                         0 -> {
-                            getString(R.string.noneSelected)
+                            resources.getString(R.string.noneSelected)
                         }
                         degrees.size -> {
-                            getString(R.string.allSelected)
+                            resources.getString(R.string.allSelected)
                         }
                         else -> {
                             activeDegrees.joinToString(separator = ", ")
@@ -95,7 +95,7 @@ class ExerciseSetupFragment : Fragment() {
                     }
         }
 
-        viewModel.diatonicDegrees.observe(requireActivity()) { degrees ->
+        viewModel.diatonicDegrees.observe(viewLifecycleOwner) { degrees ->
             val activeDegrees = arrayListOf<String>()
             for (i in degrees.indices) {
                 if (degrees[i]) {
@@ -125,9 +125,6 @@ class ExerciseSetupFragment : Fragment() {
             }
         }
 
-        // Visibility Live Data Observers
-
-
     }
 
     private fun makeSettingsList() {
@@ -139,8 +136,8 @@ class ExerciseSetupFragment : Fragment() {
         bindNotePoolTypeChoiceSingleList()
         bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
+        bindQuestionKeySingleList()
 
-//        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
 //        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
 //        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
 //        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
@@ -166,7 +163,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindNotePoolTypeChoiceSingleList() {
-        // TODO: font color
         val notePoolTypeEntries: Array<String> =
                 NotePoolType.values().map { it.toString() }.toTypedArray()
 
@@ -180,10 +176,11 @@ class ExerciseSetupFragment : Fragment() {
                             // Do nothing
                         }
                         .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            viewModel.saveNotePoolType(NotePoolType.values()[selectedIx])
+                            val selectedNotePool = NotePoolType.values()[selectedIx]
+                            viewModel.saveNotePoolType(selectedNotePool)
                         }
-                        .setSingleChoiceItems(notePoolTypeEntries, selectedIx) { _, which ->
-                            selectedIx = which
+                        .setSingleChoiceItems(notePoolTypeEntries, selectedIx) { _, ix ->
+                            selectedIx = ix
                         }
                         .show()
             }
@@ -196,7 +193,7 @@ class ExerciseSetupFragment : Fragment() {
             layout.setOnClickListener {
                 val selectedIxs = viewModel.chromaticDegrees.value!!.clone()
                 MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Chromatic Tones")
+                        .setTitle(getString(R.string.chromaticDegrees_title))
                         .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
                             // Do nothing
                         }
@@ -222,7 +219,7 @@ class ExerciseSetupFragment : Fragment() {
             layout.setOnClickListener {
                 val selectedIxs = viewModel.diatonicDegrees.value!!.clone()
                 MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Chromatic Tones")
+                        .setTitle(getString(R.string.diatonicDegrees_title))
                         .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
                             // Do nothing
                         }
@@ -243,29 +240,31 @@ class ExerciseSetupFragment : Fragment() {
 
     }
 
-    private fun makeQuestionKeySingle(questionKey: MutableLiveData<Int>): ExerciseSetupItem.SingleList {
-        val questionKeyTitle = resources.getString(R.string.questionKey_title)
-        return ExerciseSetupItem.SingleList(
-                questionKeyTitle,
-                MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                questionKey,
-                clickListener = View.OnClickListener {
-                    var tempItem = questionKey.value!!
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(questionKeyTitle)
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                questionKey.value = tempItem
-                            }
-                            .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, tempItem) { _, which ->
-                                tempItem = which
-                            }
-                            .show()
-                }
-        )
+    private fun bindQuestionKeySingleList() {
+
+        binding.questionKeySingleList.apply {
+            title.text = getString(R.string.questionKey_title)
+
+            layout.setOnClickListener {
+                var selectedIx: Int = viewModel.questionKey.value!!
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.questionKey_title))
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                            viewModel.saveQuestionKey(selectedIx)
+                        }
+                        .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, selectedIx) { _, ix ->
+                            selectedIx = ix
+                        }
+                        .show()
+            }
+
+            viewModel.questionKey.observe(requireActivity()) { key ->
+                summary.text = MusicTheoryUtils.CHROMATIC_SCALE_FLAT[key]
+            }
+        }
     }
 
     private fun makeParentScaleSingle(
