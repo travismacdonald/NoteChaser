@@ -19,7 +19,7 @@
             android:theme="@style/itemTitle"
             app:layout_constraintBottom_toTopOf="@id/slider"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Slider" />
+            tools:text="Slider Title" />
 
         <TextView
             android:id="@+id/summary"
@@ -30,7 +30,7 @@
             android:theme="@style/itemSummary"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="Cur Value" />
+            tools:text="Current Value" />
 
 
         <com.google.android.material.slider.Slider

@@ -94,6 +94,27 @@ class ExerciseSetupFragment : Fragment() {
                     }
         }
 
+        viewModel.diatonicDegrees.observe(requireActivity()) { degrees ->
+            val activeDegrees = arrayListOf<String>()
+            for (i in degrees.indices) {
+                if (degrees[i]) {
+                    activeDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
+                }
+            }
+            binding.diatonicDegreesMultiList.summary.text =
+                    when (activeDegrees.size) {
+                        0 -> {
+                            getString(R.string.noneSelected)
+                        }
+                        degrees.size -> {
+                            getString(R.string.allSelected)
+                        }
+                        else -> {
+                            activeDegrees.joinToString(separator = ", ")
+                        }
+                    }
+        }
+
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
             if (value != slider.value.toInt()) {
                 binding.numQuestionsSlider.slider.value = value.toFloat()
@@ -111,9 +132,9 @@ class ExerciseSetupFragment : Fragment() {
 
         bindQuestionsHeader()
         bindNotePoolTypeChoiceSingleList()
+        bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
 
-//        binding.diatonicMulti.obj = makeDiatonicMulti(generator.diatonicDegrees, generator.noteType)
 //        binding.questionKeySingle.obj = makeQuestionKeySingle(generator.questionKey)
 //        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
 //        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
@@ -192,36 +213,27 @@ class ExerciseSetupFragment : Fragment() {
 
     }
 
-    private fun makeDiatonicMulti(
-            diatonicDegrees: MutableLiveData<BooleanArray>,
-            noteType: MutableLiveData<NotePoolType>
-    ): ExerciseSetupItem.MultiList {
-        return ExerciseSetupItem.MultiList(
-                "Diatonic Intervals",
-                // TODO: write a better summary
-                "Intervals to choose from",
-                MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
-                diatonicDegrees,
-                clickListener = View.OnClickListener {
-                    val tempList = diatonicDegrees.value!!.clone()
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("DiatonicTones")
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                diatonicDegrees.value = tempList.copyOf()
-                            }
-                            .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, tempList) { _, which, checked ->
-                                tempList[which] = checked
-                            }
-                            .show()
-                },
-                isVisible = Transformations.map(noteType) { value ->
-                    value == NotePoolType.DIATONIC
-                }
-        )
+    private fun bindDiatonicDegreesMultiList() {
+        binding.diatonicDegreesMultiList.apply {
+            title.text = getString(R.string.diatonicDegrees_title)
+            layout.setOnClickListener {
+                val selectedIxs = viewModel.diatonicDegrees.value!!.clone()
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Chromatic Tones")
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                            viewModel.saveDiatonicDegrees(selectedIxs)
+
+                        }
+                        .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, selectedIxs) { _, ix, isChecked ->
+                            selectedIxs[ix] = isChecked
+                        }
+                        .show()
+            }
+        }
+
     }
 
     private fun makeQuestionKeySingle(questionKey: MutableLiveData<Int>): ExerciseSetupItem.SingleList {

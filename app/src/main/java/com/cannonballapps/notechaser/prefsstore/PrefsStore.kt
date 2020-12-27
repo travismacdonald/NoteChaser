@@ -13,9 +13,15 @@ import java.io.IOException
 private const val STORE_NAME = "notechaser_data_store"
 
 private const val DEFAULT_NUM_QUESTIONS = 20
+
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
         true, false, false, false, false, false,
-        false, false, false, false, false, false,
+        false, false, false, false, false, false
+).joinToString(",")
+
+private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
+        true, false, false, false,
+        false, false, false
 ).joinToString(",")
 
 class PrefsStore(context: Context) {
@@ -49,13 +55,32 @@ class PrefsStore(context: Context) {
             throw exception
         }
     }.map {
-        val serializedChromaticDegrees: String = it[PrefKeys.CHROMATIC_DEGREES] ?: DEFAULT_CHROMATIC_DEGREES
+        val serializedChromaticDegrees: String = it[PrefKeys.CHROMATIC_DEGREES]
+                ?: DEFAULT_CHROMATIC_DEGREES
         deserializeBooleanArray(serializedChromaticDegrees)
     }
 
     suspend fun saveChromaticDegrees(degrees: BooleanArray) {
         dataStore.edit {
             it[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
+        }
+    }
+
+    fun diatonicDegrees() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map {
+        val serializedDiatonicDegrees: String = it[PrefKeys.DIATONIC_DEGREES]
+                ?: DEFAULT_DIATONIC_DEGREES
+        deserializeBooleanArray(serializedDiatonicDegrees)
+    }
+
+    suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
+        dataStore.edit {
+            it[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
         }
     }
 
@@ -78,6 +103,7 @@ class PrefsStore(context: Context) {
     private object PrefKeys {
         val NOTE_POOL_TYPE = preferencesKey<Int>("note_pool_type")
         val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
+        val DIATONIC_DEGREES = preferencesKey<String>("diatonic_degrees")
 
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }
@@ -89,7 +115,7 @@ class PrefsStore(context: Context) {
 
     private fun deserializeBooleanArray(string: String): BooleanArray {
         // "true,false,true" -> [true, false, true]
-        return string.split(",").map{ it.toBoolean() }.toBooleanArray()
+        return string.split(",").map { it.toBoolean() }.toBooleanArray()
     }
 
 }

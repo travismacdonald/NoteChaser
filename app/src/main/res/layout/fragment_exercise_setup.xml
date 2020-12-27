@@ -32,9 +32,9 @@
                 android:id="@+id/chromaticDegrees_multiList"
                 layout="@layout/item_settings_multi_list" />
 
-<!--            <include-->
-<!--                android:id="@+id/diatonic_multi"-->
-<!--                layout="@layout/item_settings_multi_list" />-->
+            <include
+                android:id="@+id/diatonicDegrees_multiList"
+                layout="@layout/item_settings_multi_list" />
 
 <!--            <include-->
 <!--                android:id="@+id/questionKey_single"-->

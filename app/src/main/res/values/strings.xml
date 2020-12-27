@@ -76,6 +76,7 @@
     <string name="questions_header">Question Settings</string>
     <string name="notePoolType_title">Note Pool Type</string>
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
+    <string name="diatonicDegrees_title">Diatonic Degrees</string>
 
     <string name="numQuestions_title">Number of Questions</string>
 
