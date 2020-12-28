@@ -13,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.NotePoolType
@@ -26,7 +25,6 @@ import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
-import kotlinx.android.synthetic.main.item_settings_slider.*
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -70,65 +68,10 @@ class ExerciseSetupFragment : Fragment() {
     }
 
 
+    // TODO:
+    // I thought calling these first might cause less UI issues, but maybe they should be moved
+    // to their respective bindings
     private fun subscribeToLiveData() {
-        viewModel.notePoolType.observe(viewLifecycleOwner) { type: NotePoolType ->
-            binding.notePoolTypeSingleList.summary.text = type.toString()
-        }
-
-        viewModel.chromaticDegrees.observe(viewLifecycleOwner) { degrees ->
-            val activeDegrees = arrayListOf<String>()
-            for (i in degrees.indices) {
-                if (degrees[i]) {
-                    activeDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
-                }
-            }
-            binding.chromaticDegreesMultiList.summary.text =
-                    when (activeDegrees.size) {
-                        0 -> {
-                            resources.getString(R.string.noneSelected)
-                        }
-                        degrees.size -> {
-                            resources.getString(R.string.allSelected)
-                        }
-                        else -> {
-                            activeDegrees.joinToString(separator = ", ")
-                        }
-                    }
-        }
-
-        viewModel.diatonicDegrees.observe(viewLifecycleOwner) { degrees ->
-            val activeDegrees = arrayListOf<String>()
-            for (i in degrees.indices) {
-                if (degrees[i]) {
-                    activeDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
-                }
-            }
-            binding.diatonicDegreesMultiList.summary.text =
-                    when (activeDegrees.size) {
-                        0 -> {
-                            getString(R.string.noneSelected)
-                        }
-                        degrees.size -> {
-                            getString(R.string.allSelected)
-                        }
-                        else -> {
-                            activeDegrees.joinToString(separator = ", ")
-                        }
-                    }
-        }
-
-        viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
-            binding.parentScaleSingleList.summary.text = scale.toString()
-        }
-
-        viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
-            if (value != slider.value.toInt()) {
-                binding.numQuestionsSlider.slider.value = value.toFloat()
-                slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
-                slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
-                slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
-            }
-        }
 
     }
 
@@ -172,6 +115,8 @@ class ExerciseSetupFragment : Fragment() {
 
         binding.notePoolTypeSingleList.apply {
             title.text = getString(R.string.notePoolType_title)
+            image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
+
             layout.setOnClickListener {
                 var selectedIx = viewModel.notePoolType.value!!.ordinal
                 MaterialAlertDialogBuilder(requireContext())
@@ -188,7 +133,10 @@ class ExerciseSetupFragment : Fragment() {
                         }
                         .show()
             }
-            image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
+
+            viewModel.notePoolType.observe(viewLifecycleOwner) { type: NotePoolType ->
+                summary.text = type.toString()
+            }
         }
     }
 
@@ -215,6 +163,28 @@ class ExerciseSetupFragment : Fragment() {
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
                 layout.isVisible = type == NotePoolType.CHROMATIC
             }
+
+            viewModel.chromaticDegrees.observe(viewLifecycleOwner) { degrees ->
+                val activeDegrees = arrayListOf<String>()
+                for (i in degrees.indices) {
+                    if (degrees[i]) {
+                        activeDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
+                    }
+                }
+                binding.chromaticDegreesMultiList.summary.text =
+                        when (activeDegrees.size) {
+                            0 -> {
+                                resources.getString(R.string.noneSelected)
+                            }
+                            degrees.size -> {
+                                resources.getString(R.string.allSelected)
+                            }
+                            else -> {
+                                activeDegrees.joinToString(separator = ", ")
+                            }
+                        }
+            }
+
         }
     }
 
@@ -241,8 +211,28 @@ class ExerciseSetupFragment : Fragment() {
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
                 layout.isVisible = type == NotePoolType.DIATONIC
             }
-        }
 
+            viewModel.diatonicDegrees.observe(viewLifecycleOwner) { degrees ->
+                val activeDegrees = arrayListOf<String>()
+                for (i in degrees.indices) {
+                    if (degrees[i]) {
+                        activeDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
+                    }
+                }
+                binding.diatonicDegreesMultiList.summary.text =
+                        when (activeDegrees.size) {
+                            0 -> {
+                                getString(R.string.noneSelected)
+                            }
+                            degrees.size -> {
+                                getString(R.string.allSelected)
+                            }
+                            else -> {
+                                activeDegrees.joinToString(separator = ", ")
+                            }
+                        }
+            }
+        }
     }
 
     private fun bindQuestionKeySingleList() {
@@ -278,7 +268,6 @@ class ExerciseSetupFragment : Fragment() {
             title.text = resources.getString(R.string.parentScale_title)
 
             layout.setOnClickListener {
-
                 var selectedIx = viewModel.parentScale.value!!.ordinal
                 MaterialAlertDialogBuilder(requireContext())
                         .setTitle(getString(R.string.parentScale_title))
@@ -293,6 +282,10 @@ class ExerciseSetupFragment : Fragment() {
                             selectedIx = ix
                         }
                         .show()
+            }
+
+            viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
+                binding.parentScaleSingleList.summary.text = scale.toString()
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
@@ -412,9 +405,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindNumQuestionsSlider() {
-        // This actually only fires once (initial observation).
-        // There is a bug that I couldn't fix otherwise.
-
         binding.numQuestionsSlider.apply {
             this.title.text = getString(R.string.numQuestions_title)
 
@@ -434,6 +424,17 @@ class ExerciseSetupFragment : Fragment() {
             // isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
 //                    value == ExerciseSetupSettings.QUESTION_LIMIT
 //                }
+
+            // Only fires once: first observation
+            viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
+                if (value != slider.value.toInt()) {
+                    binding.numQuestionsSlider.slider.value = value.toFloat()
+                    slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
+                    slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
+                    slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
+                }
+            }
+
         }
     }
 
