@@ -1,14 +1,13 @@
 package com.cannonballapps.notechaser.data
 
 enum class NotePoolType {
+
     DIATONIC {
-        override fun toString(): String {
-            return "Diatonic"
-        }
+        override fun toString() = "Diatonic"
     },
+
     CHROMATIC {
-        override fun toString(): String {
-            return "Chromatic"
-        }
-    }
+        override fun toString() = "Chromatic"
+    },
+
 }
