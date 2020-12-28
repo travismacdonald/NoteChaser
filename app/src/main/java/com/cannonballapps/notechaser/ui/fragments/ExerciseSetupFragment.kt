@@ -85,8 +85,9 @@ class ExerciseSetupFragment : Fragment() {
         bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
         bindQuestionKeySingleList()
-        bindParentScaleSingleList()
-        bindModeSingleList()
+//        bindParentScaleSingleList()
+//        bindModeSingleList()
+        bindScaleSingleList()
 
 //        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
 //        binding.sessionHeader.obj = makeSessionHeader()
@@ -118,20 +119,15 @@ class ExerciseSetupFragment : Fragment() {
             image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
 
             layout.setOnClickListener {
-                var selectedIx = viewModel.notePoolType.value!!.ordinal
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.notePoolType_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
-                        }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                showMaterialDialogSingleList(
+                        title = getString(R.string.notePoolType_title),
+                        entries = notePoolTypeNames,
+                        initSelectedIx = viewModel.notePoolType.value!!.ordinal,
+                        onPositiveButtonClick = { selectedIx ->
                             val selectedNotePool = NotePoolType.values()[selectedIx]
                             viewModel.saveNotePoolType(selectedNotePool)
                         }
-                        .setSingleChoiceItems(notePoolTypeNames, selectedIx) { _, ix ->
-                            selectedIx = ix
-                        }
-                        .show()
+                )
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type: NotePoolType ->
@@ -240,19 +236,14 @@ class ExerciseSetupFragment : Fragment() {
             title.text = getString(R.string.questionKey_title)
 
             layout.setOnClickListener {
-                var selectedIx: Int = viewModel.questionKey.value!!
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.questionKey_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
-                        }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                showMaterialDialogSingleList(
+                        title = getString(R.string.questionKey_title),
+                        entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
+                        initSelectedIx = viewModel.questionKey.value!!,
+                        onPositiveButtonClick = { selectedIx ->
                             viewModel.saveQuestionKey(selectedIx)
                         }
-                        .setSingleChoiceItems(MusicTheoryUtils.CHROMATIC_SCALE_FLAT, selectedIx) { _, ix ->
-                            selectedIx = ix
-                        }
-                        .show()
+                )
             }
 
             viewModel.questionKey.observe(viewLifecycleOwner) { key ->
@@ -261,111 +252,45 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun bindParentScaleSingleList() {
+    private fun bindScaleSingleList() {
         val parentScaleNames = ParentScale2.values().map { it.toString() }.toTypedArray()
 
-        binding.parentScaleSingleList.apply {
-            title.text = resources.getString(R.string.parentScale_title)
+        binding.scaleSingleList.apply {
+            title.text = resources.getString(R.string.scale_title)
 
+            // TODO: this could look better!
             layout.setOnClickListener {
-                var selectedIx = viewModel.parentScale.value!!.ordinal
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.parentScale_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
+
+                showMaterialDialogSingleList(
+                        title = getString(R.string.parentScale_title),
+                        entries = parentScaleNames,
+                        initSelectedIx = viewModel.parentScale.value!!.ordinal,
+
+                        onPositiveButtonClick = { selectedParentScaleIx ->
+                            val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
+
+                            showMaterialDialogSingleList(
+                                    title = getString(R.string.mode_title),
+                                    entries = selectedParentScale.modeNames.toTypedArray(),
+                                    initSelectedIx = 0,
+
+                                    onPositiveButtonClick = { selectedModeIx ->
+                                        viewModel.saveParentScale(selectedParentScale)
+                                        viewModel.saveModeIx(selectedModeIx)
+                                    }
+                            )
                         }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            val selectedParentScale = ParentScale2.values()[selectedIx]
-                            viewModel.saveParentScale(selectedParentScale)
-                        }
-                        .setSingleChoiceItems(parentScaleNames, selectedIx) { _, ix ->
-                            selectedIx = ix
-                        }
-                        .show()
+                )
             }
 
-            viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
-                binding.parentScaleSingleList.summary.text = scale.toString()
+            viewModel.scaleName.observe(viewLifecycleOwner) { scaleName ->
+                summary.text = scaleName
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
                 layout.isVisible = type == NotePoolType.DIATONIC
             }
         }
-    }
-
-    private fun bindModeSingleList() {
-
-//        val parentScaleNames = ParentScale2.values().map { it.toString() }.toTypedArray()
-
-        lateinit var modeNames: Array<String>
-
-        binding.modeSingleList.apply {
-            title.text = resources.getString(R.string.mode_title)
-
-            layout.setOnClickListener {
-                var selectedIx = viewModel.modeIx.value!!
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.mode_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
-                        }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-//                            val selectedParentScale = ParentScale2.values()[selectedIx]
-                            viewModel.saveModeIx(selectedIx)
-                        }
-                        .setSingleChoiceItems(modeNames, selectedIx) { _, ix ->
-                            selectedIx = ix
-                        }
-                        .show()
-            }
-
-            viewModel.modeIx.observe(viewLifecycleOwner) { modeIx ->
-                viewModel.parentScale.value?.let { scale ->
-                    summary.text = scale.modeNames[modeIx]
-                }
-            }
-
-            viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
-                modeNames = scale.modeNames.toTypedArray()
-            }
-
-            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == NotePoolType.DIATONIC
-            }
-        }
-
-
-
-//        // TODO: extract hard coded
-//        val modeTitle = "Mode"
-//        // TODO: turn mode and parent scale into one parameter
-//        val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
-//        val modeValue = mode
-//        ExerciseSetupItem.SingleList(
-//                modeTitle,
-//                modeEntries,
-//                modeValue,
-//                isVisible = Transformations.map(noteType) { value ->
-//                    value == NotePoolType.DIATONIC
-//                },
-//                clickListener = View.OnClickListener {
-//                    var tempItem = modeValue.value!!
-//                    MaterialAlertDialogBuilder(requireContext())
-//                            .setTitle(modeTitle)
-//                            .setNegativeButton("Dismiss") { _, _ ->
-//                                // Do nothing
-//                            }
-//                            .setPositiveButton("Confirm") { _, _ ->
-//                                // Commit Changes
-//                                mode.value = tempItem
-//                            }
-//                            .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
-//                                tempItem = which
-//                            }
-//                            .show()
-//                }
-//        )
     }
 
     private fun makePlayableRangeBar(
@@ -534,5 +459,28 @@ class ExerciseSetupFragment : Fragment() {
         )
         return nextButton
     }
+
+
+    fun showMaterialDialogSingleList(
+            title: String,
+            entries: Array<String>,
+            initSelectedIx: Int,
+            onPositiveButtonClick: ((selectedIx: Int) -> Unit),
+    ) {
+        var curSelectedIx = initSelectedIx
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(title)
+                .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                    // Do nothing
+                }
+                .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                    onPositiveButtonClick(curSelectedIx)
+                }
+                .setSingleChoiceItems(entries, initSelectedIx) { _, ix ->
+                    curSelectedIx = ix
+                }
+                .show()
+    }
+
 
 }

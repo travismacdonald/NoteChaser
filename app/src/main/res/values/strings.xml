@@ -77,6 +77,7 @@
     <string name="questionKey_title">Question Key</string>
     <string name="parentScale_title">Parent Scale</string>
     <string name="mode_title">Mode</string>
+    <string name="scale_title">Scale</string>
 
     <string name="numQuestions_title">Number of Questions</string>
 

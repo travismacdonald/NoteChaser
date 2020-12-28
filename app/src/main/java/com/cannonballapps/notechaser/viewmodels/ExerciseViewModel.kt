@@ -62,6 +62,19 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val parentScale = prefsStore.parentScale().asLiveData()
     val modeIx = prefsStore.modeIx().asLiveData()
 
+    val scaleName = MediatorLiveData<String>().apply {
+        addSource(parentScale) { parentScale ->
+            modeIx.value?.let { modeIx ->
+                this.value = parentScale.modeNames[modeIx]
+            }
+        }
+        addSource(modeIx) { modeIx ->
+            parentScale.value?.let { parentScale ->
+                this.value = parentScale.modeNames[modeIx]
+            }
+        }
+    }
+
 
     // TODO: fix timer bug when ending session
     private var timerUpdate: Job? = null

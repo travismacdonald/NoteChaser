@@ -12,7 +12,7 @@ enum class ParentScale2(val intervals: List<Int>, val modeNames: List<String>) {
         override fun toString() = "Melodic Minor"
     },
 
-    HARMONIC_MINOR(MusicTheoryUtils.HARMONIC_MINOR_SCALE_SEQUENCE.toList(), MusicTheoryUtils.HARMONIC_MAJOR_MODE_NAMES.toList()) {
+    HARMONIC_MINOR(MusicTheoryUtils.HARMONIC_MINOR_SCALE_SEQUENCE.toList(), MusicTheoryUtils.HARMONIC_MINOR_MODE_NAMES.toList()) {
         override fun toString() = "Harmonic Minor"
     },
 

@@ -33,12 +33,16 @@
                 android:id="@+id/questionKey_singleList"
                 layout="@layout/item_settings_single_list" />
 
-            <include
-                android:id="@+id/parentScale_singleList"
-                layout="@layout/item_settings_single_list" />
+<!--            <include-->
+<!--                android:id="@+id/parentScale_singleList"-->
+<!--                layout="@layout/item_settings_single_list" />-->
+
+<!--            <include-->
+<!--                android:id="@+id/mode_singleList"-->
+<!--                layout="@layout/item_settings_single_list" />-->
 
             <include
-                android:id="@+id/mode_singleList"
+                android:id="@+id/scale_singleList"
                 layout="@layout/item_settings_single_list" />
 
 <!--            <include-->
