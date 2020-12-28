@@ -77,6 +77,16 @@ class MusicTheoryUtils {
                 "Altered Diminished"
         )
 
+        val HARMONIC_MAJOR_MODE_NAMES = arrayOf(
+                "Harmonic Major",
+                "Dorian ${FLAT}5",
+                "Phrygian ${FLAT}4",
+                "Lydian ${FLAT}3",
+                "Mixolydian ${FLAT}2",
+                "Lydian Augmented ${SHARP}2",
+                "Lydian ${FLAT}${FLAT}7"
+        )
+
         val CHROMATIC_INTERVAL_NAMES_SINGLE = arrayOf(
                 "P1",
                 "m2",
