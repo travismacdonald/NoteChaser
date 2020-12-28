@@ -2,9 +2,9 @@ package com.cannonballapps.notechaser.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
@@ -59,6 +59,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
     val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
     val questionKey = prefsStore.questionKey().asLiveData()
+    val parentScale = prefsStore.parentScale().asLiveData()
+    val modeIx = prefsStore.modeIx().asLiveData()
 
 
     // TODO: fix timer bug when ending session
@@ -94,7 +96,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
 
 
-
 //        val dataStore: DataStore<UserPrefs> = application.applicationContext.createDataStore(
 //                fileName = "user_prefs.pb",
 //                serializer = UserPrefsSerializer
@@ -121,8 +122,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         settings.numQuestions = prefsStore.numQuestions().asLiveData()
 
     }
-
-
 
 
     // TODO: clean up this mess
@@ -187,6 +186,18 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveQuestionKey(key: Int) {
         viewModelScope.launch {
             prefsStore.saveQuestionKey(key)
+        }
+    }
+
+    fun saveParentScale(scale: ParentScale2) {
+        viewModelScope.launch {
+            prefsStore.saveParentScale(scale)
+        }
+    }
+
+    fun saveModeIx(ix: Int) {
+        viewModelScope.launch {
+            prefsStore.saveModeIx(ix)
         }
     }
 

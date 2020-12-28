@@ -17,10 +17,10 @@ import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
-import com.cannonballapps.notechaser.playablegenerator.ParentScale
 import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
@@ -117,6 +117,10 @@ class ExerciseSetupFragment : Fragment() {
                     }
         }
 
+        viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
+            binding.parentScaleSingleList.summary.text = scale.toString()
+        }
+
         viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
             if (value != slider.value.toInt()) {
                 binding.numQuestionsSlider.slider.value = value.toFloat()
@@ -138,8 +142,8 @@ class ExerciseSetupFragment : Fragment() {
         bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
         bindQuestionKeySingleList()
+        bindParentScaleSingleList()
 
-//        binding.parentScaleSingle.obj = makeParentScaleSingle(generator.noteType, generator.parentScale)
 //        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
 //        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
 //        binding.sessionHeader.obj = makeSessionHeader()
@@ -164,13 +168,12 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindNotePoolTypeChoiceSingleList() {
-        val notePoolTypeEntries: Array<String> =
-                NotePoolType.values().map { it.toString() }.toTypedArray()
+        val notePoolTypeNames = NotePoolType.values().map { it.toString() }.toTypedArray()
 
         binding.notePoolTypeSingleList.apply {
             title.text = getString(R.string.notePoolType_title)
             layout.setOnClickListener {
-                var selectedIx: Int = viewModel.notePoolType.value!!.ordinal
+                var selectedIx = viewModel.notePoolType.value!!.ordinal
                 MaterialAlertDialogBuilder(requireContext())
                         .setTitle(getString(R.string.notePoolType_title))
                         .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
@@ -180,7 +183,7 @@ class ExerciseSetupFragment : Fragment() {
                             val selectedNotePool = NotePoolType.values()[selectedIx]
                             viewModel.saveNotePoolType(selectedNotePool)
                         }
-                        .setSingleChoiceItems(notePoolTypeEntries, selectedIx) { _, ix ->
+                        .setSingleChoiceItems(notePoolTypeNames, selectedIx) { _, ix ->
                             selectedIx = ix
                         }
                         .show()
@@ -209,7 +212,7 @@ class ExerciseSetupFragment : Fragment() {
                         .show()
             }
 
-            viewModel.notePoolType.observe(requireActivity()) { type ->
+            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
                 layout.isVisible = type == NotePoolType.CHROMATIC
             }
         }
@@ -235,7 +238,7 @@ class ExerciseSetupFragment : Fragment() {
                         .show()
             }
 
-            viewModel.notePoolType.observe(requireActivity()) { type ->
+            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
                 layout.isVisible = type == NotePoolType.DIATONIC
             }
         }
@@ -243,7 +246,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindQuestionKeySingleList() {
-
         binding.questionKeySingleList.apply {
             title.text = getString(R.string.questionKey_title)
 
@@ -263,45 +265,40 @@ class ExerciseSetupFragment : Fragment() {
                         .show()
             }
 
-            viewModel.questionKey.observe(requireActivity()) { key ->
+            viewModel.questionKey.observe(viewLifecycleOwner) { key ->
                 summary.text = MusicTheoryUtils.CHROMATIC_SCALE_FLAT[key]
             }
         }
     }
 
-    private fun makeParentScaleSingle(
-            noteType: MutableLiveData<NotePoolType>,
-            parentScale: MutableLiveData<ParentScale>
-    ): ExerciseSetupItem.SingleList {
-        val parentScaleTitle = resources.getString(R.string.parentScale_title)
-        val parentScaleEntries = (MusicTheoryUtils.PARENT_SCALE_BANK.map { it.name }).toTypedArray()
-        val parentScaleValue = Transformations.map(parentScale) { value ->
-            parentScaleEntries.indexOf(value.name)
+    private fun bindParentScaleSingleList() {
+        val parentScaleNames = ParentScale2.values().map { it.toString() }.toTypedArray()
+
+        binding.parentScaleSingleList.apply {
+            title.text = resources.getString(R.string.parentScale_title)
+
+            layout.setOnClickListener {
+
+                var selectedIx = viewModel.parentScale.value!!.ordinal
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.parentScale_title))
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                            val selectedParentScale = ParentScale2.values()[selectedIx]
+                            viewModel.saveParentScale(selectedParentScale)
+                        }
+                        .setSingleChoiceItems(parentScaleNames, selectedIx) { _, ix ->
+                            selectedIx = ix
+                        }
+                        .show()
+            }
+
+            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
+                layout.isVisible = type == NotePoolType.DIATONIC
+            }
         }
-        return ExerciseSetupItem.SingleList(
-                parentScaleTitle,
-                parentScaleEntries,
-                parentScaleValue,
-                isVisible = Transformations.map(noteType) { value ->
-                    value == NotePoolType.DIATONIC
-                },
-                clickListener = View.OnClickListener {
-                    var tempItem = parentScaleValue.value!!
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(parentScaleTitle)
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                parentScale.value = MusicTheoryUtils.PARENT_SCALE_BANK[tempItem]
-                            }
-                            .setSingleChoiceItems(parentScaleEntries, tempItem) { _, which ->
-                                tempItem = which
-                            }
-                            .show()
-                }
-        )
     }
 
     private fun makeModeSingle(

@@ -15,6 +15,7 @@ class MusicTheoryUtils {
         val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
         val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
         val HARMONIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 8, 11)
+        val HARMONIC_MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 8, 11)
 
         val CHROMATIC_SCALE_SHARP = arrayOf(
                 "C",

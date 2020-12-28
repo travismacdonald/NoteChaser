@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.cannonballapps.notechaser.viewmodels.ExerciseViewModel" />
-    </data>
-
     <ScrollView
         android:id="@+id/items_scroll"
         android:layout_width="match_parent"
@@ -40,9 +33,9 @@
                 android:id="@+id/questionKey_singleList"
                 layout="@layout/item_settings_single_list" />
 
-<!--            <include-->
-<!--                android:id="@+id/parentScale_single"-->
-<!--                layout="@layout/item_settings_single_list" />-->
+            <include
+                android:id="@+id/parentScale_singleList"
+                layout="@layout/item_settings_single_list" />
 
 <!--            <include-->
 <!--                android:id="@+id/mode_single"-->
