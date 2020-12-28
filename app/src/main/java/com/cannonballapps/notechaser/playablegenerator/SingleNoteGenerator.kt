@@ -80,7 +80,7 @@ class SingleNoteGenerator() : PlayableGenerator {
         }
         Timber.d("bounds: ${lowerBound.value} to ${upperBound.value}")
         Timber.d("notePool: $notePool")
-        Timber.d("names: ${notePool.map { MusicTheoryUtils.ixToName(it) }}")
+        Timber.d("names: ${notePool.map { MusicTheoryUtils.midiValueToNoteName(it) }}")
     }
 
     override fun generatePlayable(): Playable {

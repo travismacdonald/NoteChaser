@@ -86,8 +86,8 @@ class ExerciseSetupFragment : Fragment() {
         bindChromaticDegreeMultiList()
         bindQuestionKeySingleList()
         bindParentScaleSingleList()
+        bindModeSingleList()
 
-//        binding.modeSingle.obj = makeModeSingle(generator.mode, generator.noteType)
 //        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
 //        binding.sessionHeader.obj = makeSessionHeader()
 //        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
@@ -294,39 +294,78 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun makeModeSingle(
-            mode: MutableLiveData<Int>,
-            noteType: MutableLiveData<NotePoolType>
-    ): ExerciseSetupItem.SingleList {
-        // TODO: extract hard coded
-        val modeTitle = "Mode"
-        // TODO: turn mode and parent scale into one parameter
-        val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
-        val modeValue = mode
-        return ExerciseSetupItem.SingleList(
-                modeTitle,
-                modeEntries,
-                modeValue,
-                isVisible = Transformations.map(noteType) { value ->
-                    value == NotePoolType.DIATONIC
-                },
-                clickListener = View.OnClickListener {
-                    var tempItem = modeValue.value!!
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(modeTitle)
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                mode.value = tempItem
-                            }
-                            .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
-                                tempItem = which
-                            }
-                            .show()
+    private fun bindModeSingleList() {
+
+//        val parentScaleNames = ParentScale2.values().map { it.toString() }.toTypedArray()
+
+        lateinit var modeNames: Array<String>
+
+        binding.modeSingleList.apply {
+            title.text = resources.getString(R.string.mode_title)
+
+            layout.setOnClickListener {
+                var selectedIx = viewModel.modeIx.value!!
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.mode_title))
+                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                            // Do nothing
+                        }
+                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+//                            val selectedParentScale = ParentScale2.values()[selectedIx]
+                            viewModel.saveModeIx(selectedIx)
+                        }
+                        .setSingleChoiceItems(modeNames, selectedIx) { _, ix ->
+                            selectedIx = ix
+                        }
+                        .show()
+            }
+
+            viewModel.modeIx.observe(viewLifecycleOwner) { modeIx ->
+                viewModel.parentScale.value?.let { scale ->
+                    summary.text = scale.modeNames[modeIx]
                 }
-        )
+            }
+
+            viewModel.parentScale.observe(viewLifecycleOwner) { scale ->
+                modeNames = scale.modeNames.toTypedArray()
+            }
+
+            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
+                layout.isVisible = type == NotePoolType.DIATONIC
+            }
+        }
+
+
+
+//        // TODO: extract hard coded
+//        val modeTitle = "Mode"
+//        // TODO: turn mode and parent scale into one parameter
+//        val modeEntries = arrayOf("1 (Root)", "2", "3", "4", "5", "6", "7")
+//        val modeValue = mode
+//        ExerciseSetupItem.SingleList(
+//                modeTitle,
+//                modeEntries,
+//                modeValue,
+//                isVisible = Transformations.map(noteType) { value ->
+//                    value == NotePoolType.DIATONIC
+//                },
+//                clickListener = View.OnClickListener {
+//                    var tempItem = modeValue.value!!
+//                    MaterialAlertDialogBuilder(requireContext())
+//                            .setTitle(modeTitle)
+//                            .setNegativeButton("Dismiss") { _, _ ->
+//                                // Do nothing
+//                            }
+//                            .setPositiveButton("Confirm") { _, _ ->
+//                                // Commit Changes
+//                                mode.value = tempItem
+//                            }
+//                            .setSingleChoiceItems(modeEntries, tempItem) { _, which ->
+//                                tempItem = which
+//                            }
+//                            .show()
+//                }
+//        )
     }
 
     private fun makePlayableRangeBar(
@@ -344,8 +383,8 @@ class ExerciseSetupFragment : Fragment() {
                 displayValue = {
                     val result = MediatorLiveData<String>()
                     val updateRange = {
-                        val lower = MusicTheoryUtils.ixToName(lowerBound.value!!)
-                        val upper = MusicTheoryUtils.ixToName(upperBound.value!!)
+                        val lower = MusicTheoryUtils.midiValueToNoteName(lowerBound.value!!)
+                        val upper = MusicTheoryUtils.midiValueToNoteName(upperBound.value!!)
                         result.value = "$lower to $upper"
                     }
                     result.addSource(lowerBound) { updateRange() }

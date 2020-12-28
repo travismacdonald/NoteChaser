@@ -119,10 +119,7 @@ class MusicTheoryUtils {
                 ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_SEQUENCE)
         )
 
-        /**
-         * TODO: write function description
-         */
-        fun ixToName(ix: Int, asFlat: Boolean = true): String {
+        fun midiValueToNoteName(ix: Int, asFlat: Boolean = true): String {
             if (asFlat) {
                 return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
             }
@@ -153,9 +150,6 @@ class MusicTheoryUtils {
             return toReturn
         }
 
-        /**
-         * TODO: write function explanation
-         */
         fun transformChromaticDegreesToIntervals(chromaticDegrees: BooleanArray, key: Int): IntArray {
             if (chromaticDegrees.size != OCTAVE_SIZE) {
                 throw IllegalArgumentException(

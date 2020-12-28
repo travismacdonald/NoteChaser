@@ -41,7 +41,7 @@ class SessionFragment : Fragment() {
                     binding.detectedPitchText.text = "..."
                 }
                 else {
-                    binding.detectedPitchText.text = MusicTheoryUtils.ixToName(it)
+                    binding.detectedPitchText.text = MusicTheoryUtils.midiValueToNoteName(it)
                 }
             }
         })

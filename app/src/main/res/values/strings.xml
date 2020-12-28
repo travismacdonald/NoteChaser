@@ -44,27 +44,25 @@
 
     <string name="answer_heading">Answer Settings</string>
 
-    <string name="matchOctave_key">matchOctave</string>
+
     <string name="matchOctave_title">Match Octave</string>
     <string name="matchOctave_summary">Answer must be the same octave as pattern</string>
 
-    <string name="cadenceKey_key">cadenceKey</string>
+
     <string name="cadenceKey_title">Cadence Key</string>
 
-    <string name="matchKey_key">matchKey</string>
+
     <string name="matchKey_title">Match Key</string>
     <string name="matchKey_summary">Cadence matches pattern key (recommended)</string>
 
-    <string name="sessionLength_key">sessionLength</string>
+
     <string name="sessionLength_title">Session Length</string>
 
-    <string name="timerLength_key">timerLength</string>
+
     <string name="timerLength_title">Timer Length (minutes)</string>
 
-    <string name="numQuestions_key">numQuestions</string>
 
 
-    <string name="parentScale_title">Parent Scale</string>
 
     <string name="session_header">Session Settings</string>
 
@@ -77,6 +75,8 @@
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
     <string name="diatonicDegrees_title">Diatonic Degrees</string>
     <string name="questionKey_title">Question Key</string>
+    <string name="parentScale_title">Parent Scale</string>
+    <string name="mode_title">Mode</string>
 
     <string name="numQuestions_title">Number of Questions</string>
 
