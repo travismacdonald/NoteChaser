@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.data.ParentScale2
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -38,15 +39,15 @@ class PrefsStore(context: Context) {
         } else {
             throw exception
         }
-    }.map {
-        it[PrefKeys.NOTE_POOL_TYPE] ?: NotePoolType.DIATONIC.ordinal
-    }.map {
-        NotePoolType.values()[it]
+    }.map { prefs ->
+        prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] ?: NotePoolType.DIATONIC.ordinal
+    }.map { ordinal ->
+        NotePoolType.values()[ordinal]
     }
 
     suspend fun saveNotePoolType(type: NotePoolType) {
-        dataStore.edit {
-            it[PrefKeys.NOTE_POOL_TYPE] = type.ordinal
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = type.ordinal
         }
     }
 
@@ -56,15 +57,15 @@ class PrefsStore(context: Context) {
         } else {
             throw exception
         }
-    }.map {
-        val serializedChromaticDegrees: String = it[PrefKeys.CHROMATIC_DEGREES]
+    }.map { prefs ->
+        val serializedChromaticDegrees: String = prefs[PrefKeys.CHROMATIC_DEGREES]
                 ?: DEFAULT_CHROMATIC_DEGREES
         deserializeBooleanArray(serializedChromaticDegrees)
     }
 
     suspend fun saveChromaticDegrees(degrees: BooleanArray) {
-        dataStore.edit {
-            it[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
         }
     }
 
@@ -74,15 +75,15 @@ class PrefsStore(context: Context) {
         } else {
             throw exception
         }
-    }.map {
-        val serializedDiatonicDegrees: String = it[PrefKeys.DIATONIC_DEGREES]
+    }.map { prefs ->
+        val serializedDiatonicDegrees: String = prefs[PrefKeys.DIATONIC_DEGREES]
                 ?: DEFAULT_DIATONIC_DEGREES
         deserializeBooleanArray(serializedDiatonicDegrees)
     }
 
     suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
-        dataStore.edit {
-            it[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
         }
     }
 
@@ -92,13 +93,47 @@ class PrefsStore(context: Context) {
         } else {
             throw exception
         }
-    }.map {
-        it[PrefKeys.QUESTION_KEY] ?: DEFAULT_QUESTION_KEY
+    }.map { prefs ->
+        prefs[PrefKeys.QUESTION_KEY] ?: DEFAULT_QUESTION_KEY
     }
 
     suspend fun saveQuestionKey(key: Int) {
-        dataStore.edit {
-            it[PrefKeys.QUESTION_KEY] = key
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.QUESTION_KEY] = key
+        }
+    }
+
+    fun parentScale() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.PARENT_SCALE_ORDINAL] ?: 0
+    }.map { ordinal ->
+        ParentScale2.values()[ordinal]
+    }
+
+    suspend fun saveParentScale(scale: ParentScale2) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = scale.ordinal
+        }
+    }
+
+    fun modeIx() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.MODE_IX] ?: 0
+    }
+
+    suspend fun saveModeIx(ix: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.MODE_IX] = ix
         }
     }
 
@@ -108,21 +143,23 @@ class PrefsStore(context: Context) {
         } else {
             throw exception
         }
-    }.map {
-        it[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS
+    }.map { prefs ->
+        prefs[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS
     }
 
     suspend fun saveNumQuestions(numQuestions: Int) {
-        dataStore.edit {
-            it[PrefKeys.NUM_QUESTIONS_KEY] = numQuestions
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.NUM_QUESTIONS_KEY] = numQuestions
         }
     }
 
     private object PrefKeys {
-        val NOTE_POOL_TYPE = preferencesKey<Int>("note_pool_type")
+        val NOTE_POOL_TYPE_ORDINAL = preferencesKey<Int>("note_pool_type_ordinal")
         val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
         val DIATONIC_DEGREES = preferencesKey<String>("diatonic_degrees")
         val QUESTION_KEY = preferencesKey<Int>("question_key")
+        val PARENT_SCALE_ORDINAL = preferencesKey<Int>("parent_scale_ordinal")
+        val MODE_IX = preferencesKey<Int>("mode_ix")
 
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }
