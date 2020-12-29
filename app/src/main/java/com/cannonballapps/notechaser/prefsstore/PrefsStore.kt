@@ -26,7 +26,12 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
 ).joinToString(",")
 
 private const val DEFAULT_QUESTION_KEY = 0
+// TODO
+private const val DEFAULT_PLAYABLE_LOWER_BOUND = 48
 
+private const val DEFAULT_PLAYABLE_UPPER_BOUND = 60
+
+// TODO: implement error handling for erronous values (ex: -1 for mode ix)
 class PrefsStore(context: Context) {
 
     private val dataStore = context.createDataStore(
@@ -137,6 +142,38 @@ class PrefsStore(context: Context) {
         }
     }
 
+    fun playableLowerBound() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.PLAYABLE_LOWER_BOUND] ?: DEFAULT_PLAYABLE_LOWER_BOUND
+    }
+
+    suspend fun savePlayableLowerBound(ix: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PLAYABLE_LOWER_BOUND] = ix
+        }
+    }
+
+    fun playableUpperBound() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.PLAYABLE_UPPER_BOUND] ?: DEFAULT_PLAYABLE_UPPER_BOUND
+    }
+
+    suspend fun savePlayableUpperBound(ix: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PLAYABLE_UPPER_BOUND] = ix
+        }
+    }
+
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -160,6 +197,8 @@ class PrefsStore(context: Context) {
         val QUESTION_KEY = preferencesKey<Int>("question_key")
         val PARENT_SCALE_ORDINAL = preferencesKey<Int>("parent_scale_ordinal")
         val MODE_IX = preferencesKey<Int>("mode_ix")
+        val PLAYABLE_LOWER_BOUND = preferencesKey<Int>("playable_lower_bound")
+        val PLAYABLE_UPPER_BOUND = preferencesKey<Int>("playable_upper_bound")
 
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
     }
