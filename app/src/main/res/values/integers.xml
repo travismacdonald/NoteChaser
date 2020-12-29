@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="numQuestions_min">10</integer>
-    <integer name="numQuestions_max">100</integer>
+    <integer name="numQuestions_min">5</integer>
+    <integer name="numQuestions_max">50</integer>
     <integer name="numQuestions_stepSize">5</integer>
 
 </resources>

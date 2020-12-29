@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
@@ -24,7 +23,10 @@ import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
+import kotlinx.android.synthetic.main.item_settings_slider.*
+import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -85,11 +87,8 @@ class ExerciseSetupFragment : Fragment() {
         bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
         bindQuestionKeySingleList()
-//        bindParentScaleSingleList()
-//        bindModeSingleList()
         bindScaleSingleList()
-
-//        binding.playableRangeBar.obj = makePlayableRangeBar(generator.lowerBound, generator.upperBound, generator.minRange)
+        bindPlayableRangeBar()
 //        binding.sessionHeader.obj = makeSessionHeader()
 //        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
 
@@ -293,44 +292,54 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun makePlayableRangeBar(
-            lowerBound: MutableLiveData<Int>,
-            upperBound: MutableLiveData<Int>,
-            minRange: MutableLiveData<Int>
-    ): ExerciseSetupItem.RangeBar {
+    private fun bindPlayableRangeBar() {
         // TODO: make the only selectable values notes that are actually in the scale
-        return ExerciseSetupItem.RangeBar(
-                "Question Range",
-                24f,
-                88f,
-                lowerBound,
-                upperBound,
-                displayValue = {
-                    val result = MediatorLiveData<String>()
-                    val updateRange = {
-                        val lower = MusicTheoryUtils.midiValueToNoteName(lowerBound.value!!)
-                        val upper = MusicTheoryUtils.midiValueToNoteName(upperBound.value!!)
-                        result.value = "$lower to $upper"
+        binding.playableRangeBar.apply {
+            title.text = getString(R.string.questionRange_title)
+
+            rangeSlider.addOnChangeListener { slider, value, _ ->
+                val range = slider.values.joinToString(separator = " - ") { ix ->
+                    MusicTheoryUtils.midiValueToNoteName(ix.toInt())
+                }
+                summary.text = range
+            }
+
+            // TODO: min separation setMinSeparationValue
+//            rangeSlider.minSeparation = 10f
+
+            rangeSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: RangeSlider) {}
+
+                override fun onStopTrackingTouch(slider: RangeSlider) {
+                    if (slider.focusedThumbIndex == 0) {
+                        Timber.d("onStopTrackingTouch called; ix: 0, val: ${slider.values[0]}")
+                        viewModel.savePlayableLowerBound(slider.values[0].toInt())
                     }
-                    result.addSource(lowerBound) { updateRange() }
-                    result.addSource(upperBound) { updateRange() }
-                    result
-                }.invoke(),
-                isValid = {
-                    val result = MediatorLiveData<Boolean>()
-                    val isValid = {
-                        val lower = lowerBound.value!!
-                        val upper = upperBound.value!!
-                        val minRange = minRange.value!!
-                        // Both upper and lower bounds are inclusive
-                        result.value = upper - lower >= minRange
+                    else {
+                        Timber.d("onStopTrackingTouch called; ix: 1, val: ${slider.values[1]}")
+                        viewModel.savePlayableUpperBound(slider.values[1].toInt())
                     }
-                    result.addSource(lowerBound) { isValid() }
-                    result.addSource(upperBound) { isValid() }
-                    result.addSource(minRange) { isValid() }
-                    result
-                }.invoke()
-        )
+                }
+            })
+
+            viewModel.playableBounds.observe(viewLifecycleOwner) { bounds ->
+                Timber.d("playableBounds observed: bounds: $bounds; slider: ${rangeSlider.values}")
+
+//                rangeSlider.
+
+                val boundsAsFloats = bounds.toList().map { it.toFloat() }
+                if (rangeSlider.values != boundsAsFloats) {
+                    Timber.d("slider vals diff")
+                    rangeSlider.values = boundsAsFloats
+                    // todo: extract hardcoded values
+                    rangeSlider.valueFrom = 24f
+                    rangeSlider.valueTo = 88f
+                    rangeSlider.stepSize = 1f
+                }
+            }
+
+        }
+
     }
 
     private fun makeSessionHeader(): ExerciseSetupItem.Header {
@@ -370,7 +379,7 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun bindNumQuestionsSlider() {
         binding.numQuestionsSlider.apply {
-            this.title.text = getString(R.string.numQuestions_title)
+            title.text = getString(R.string.numQuestions_title)
 
             slider.addOnChangeListener { _, value, _ ->
                 summary.text = value.toInt().toString()
@@ -461,7 +470,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
 
-    fun showMaterialDialogSingleList(
+    private fun showMaterialDialogSingleList(
             title: String,
             entries: Array<String>,
             initSelectedIx: Int,
