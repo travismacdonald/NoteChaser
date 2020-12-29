@@ -62,6 +62,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val parentScale = prefsStore.parentScale().asLiveData()
     val modeIx = prefsStore.modeIx().asLiveData()
 
+    // TODO: remove some repeated logic
     val scaleName = MediatorLiveData<String>().apply {
         addSource(parentScale) { parentScale ->
             modeIx.value?.let { modeIx ->
@@ -71,6 +72,29 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         addSource(modeIx) { modeIx ->
             parentScale.value?.let { parentScale ->
                 this.value = parentScale.modeNames[modeIx]
+            }
+        }
+    }
+
+    val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
+    val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
+
+    // TODO: remove some repeated logic
+    val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
+
+        fun updateBounds() {
+
+        }
+
+        addSource(playableLowerBound) { lowerBound ->
+            playableUpperBound.value?.let { upperBound ->
+                this.value = Pair(lowerBound, upperBound)
+            }
+        }
+
+        addSource(playableUpperBound) { upperBound ->
+            playableLowerBound.value?.let { lowerBound ->
+                this.value = Pair(lowerBound, upperBound)
             }
         }
     }
@@ -211,6 +235,18 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveModeIx(ix: Int) {
         viewModelScope.launch {
             prefsStore.saveModeIx(ix)
+        }
+    }
+
+    fun savePlayableLowerBound(ix: Int) {
+        viewModelScope.launch {
+            prefsStore.savePlayableLowerBound(ix)
+        }
+    }
+
+    fun savePlayableUpperBound(ix: Int) {
+        viewModelScope.launch {
+            prefsStore.savePlayableUpperBound(ix)
         }
     }
 
