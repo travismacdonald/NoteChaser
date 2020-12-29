@@ -5,4 +5,8 @@
     <integer name="numQuestions_max">50</integer>
     <integer name="numQuestions_stepSize">5</integer>
 
+    <integer name="playableBound_min">24</integer>
+    <integer name="playableBound_max">88</integer>
+    <integer name="playableBound_stepSize">1</integer>
+
 </resources>

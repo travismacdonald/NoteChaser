@@ -79,22 +79,20 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
     val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
 
-    // TODO: remove some repeated logic
     val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
-
-        fun updateBounds() {
-
-        }
-
-        addSource(playableLowerBound) { lowerBound ->
-            playableUpperBound.value?.let { upperBound ->
-                this.value = Pair(lowerBound, upperBound)
+        fun updateBounds(lower: Int, upper: Int) {
+            if (lower != this.value?.first || upper != this.value?.second) {
+                this.value = Pair(lower, upper)
             }
         }
-
+        addSource(playableLowerBound) { lowerBound ->
+            playableUpperBound.value?.let { upperBound ->
+                updateBounds(lowerBound, upperBound)
+            }
+        }
         addSource(playableUpperBound) { upperBound ->
             playableLowerBound.value?.let { lowerBound ->
-                this.value = Pair(lowerBound, upperBound)
+                updateBounds(lowerBound, upperBound)
             }
         }
     }
@@ -117,6 +115,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private var pauseAfterCorrectSoundMillis: Long = 500
 
     init {
+        Timber.d("init called")
         viewModelScope.launch {
             // TODO: extract this into a method
             Timber.d("Midi setup started")
@@ -239,12 +238,14 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun savePlayableLowerBound(ix: Int) {
+        Timber.d("save lower bound called: $ix")
         viewModelScope.launch {
             prefsStore.savePlayableLowerBound(ix)
         }
     }
 
     fun savePlayableUpperBound(ix: Int) {
+        Timber.d("save upper bound called: $ix")
         viewModelScope.launch {
             prefsStore.savePlayableUpperBound(ix)
         }

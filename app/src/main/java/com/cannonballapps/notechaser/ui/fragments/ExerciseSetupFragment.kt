@@ -25,7 +25,6 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
-import kotlinx.android.synthetic.main.item_settings_slider.*
 import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
@@ -60,7 +59,7 @@ class ExerciseSetupFragment : Fragment() {
 //            viewModel.preloadPrefsStore()
 //        }
 
-        subscribeToLiveData()
+//        subscribeToLiveData()
 
         makeSettingsList()
         // TODO: use when statement, different functions for creating list
@@ -266,6 +265,7 @@ class ExerciseSetupFragment : Fragment() {
                         initSelectedIx = viewModel.parentScale.value!!.ordinal,
 
                         onPositiveButtonClick = { selectedParentScaleIx ->
+
                             val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
 
                             showMaterialDialogSingleList(
@@ -304,42 +304,32 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = range
             }
 
-            // TODO: min separation setMinSeparationValue
-//            rangeSlider.minSeparation = 10f
+            // TODO: validate range
 
             rangeSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
                     if (slider.focusedThumbIndex == 0) {
-                        Timber.d("onStopTrackingTouch called; ix: 0, val: ${slider.values[0]}")
                         viewModel.savePlayableLowerBound(slider.values[0].toInt())
                     }
                     else {
-                        Timber.d("onStopTrackingTouch called; ix: 1, val: ${slider.values[1]}")
                         viewModel.savePlayableUpperBound(slider.values[1].toInt())
                     }
                 }
             })
 
             viewModel.playableBounds.observe(viewLifecycleOwner) { bounds ->
-                Timber.d("playableBounds observed: bounds: $bounds; slider: ${rangeSlider.values}")
-
-//                rangeSlider.
-
                 val boundsAsFloats = bounds.toList().map { it.toFloat() }
+
                 if (rangeSlider.values != boundsAsFloats) {
-                    Timber.d("slider vals diff")
                     rangeSlider.values = boundsAsFloats
-                    // todo: extract hardcoded values
-                    rangeSlider.valueFrom = 24f
-                    rangeSlider.valueTo = 88f
-                    rangeSlider.stepSize = 1f
+                    rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
+                    rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
+                    rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
                 }
             }
-
         }
-
     }
 
     private fun makeSessionHeader(): ExerciseSetupItem.Header {
@@ -452,11 +442,14 @@ class ExerciseSetupFragment : Fragment() {
                 nextClickListener = {
                     if (!hasValidRange) {
                         Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                    } else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
+                    }
+                    else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                    } else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
+                    }
+                    else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
                         Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                    } else {
+                    }
+                    else {
                         viewModel.generator.setupGenerator()
                         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
                         findNavController().navigate(directions)
