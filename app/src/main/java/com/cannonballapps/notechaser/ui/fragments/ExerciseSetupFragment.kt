@@ -35,36 +35,12 @@ class ExerciseSetupFragment : Fragment() {
                 inflater, R.layout.fragment_exercise_setup, container, false
         )
         binding.lifecycleOwner = this
-
-
-
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
-
-//        viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
-
-//        lifecycleScope.launch {
-//            viewModel.preloadPrefsStore()
-//        }
-
-//        runBlocking {
-//            viewModel.preloadPrefsStore()
-//        }
-
-//        subscribeToLiveData()
-
         bindExerciseSetupItemsList()
+
         // TODO: use when statement, different functions for creating list
 
-
         return binding.root
-    }
-
-
-    // TODO:
-    // I thought calling these first might cause less UI issues, but maybe they should be moved
-    // to their respective bindings
-    private fun subscribeToLiveData() {
-
     }
 
     private fun bindExerciseSetupItemsList() {

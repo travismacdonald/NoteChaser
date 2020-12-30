@@ -43,10 +43,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val prefsStore = PrefsStore(application.applicationContext)
 
-//    private val userPrefsFlow: Flow<UserPrefs>
-//
-//    val notePoolType: LiveData<UserPrefs>
-
     val questionsAnswered = MutableLiveData(0)
 
     val secondsPassed = MutableLiveData<Int>()
@@ -117,6 +113,8 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private var pauseAfterCorrectSoundMillis: Long = 500
 
     init {
+        prefetchPrefsStore()
+
         Timber.d("init called")
         viewModelScope.launch {
             // TODO: extract this into a method
@@ -134,17 +132,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
 
 
-//        val dataStore: DataStore<UserPrefs> = application.applicationContext.createDataStore(
-//                fileName = "user_prefs.pb",
-//                serializer = UserPrefsSerializer
-//        )
-
-
         ncRepository = NcRepository()
-
-
-//        userPrefsFlow = ncRepository
-        print("hi")
 
         connectPrefsStoreToRepository()
         initPitchProcessingPipeline()
@@ -161,14 +149,20 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     }
 
-
-    // TODO: clean up this mess
-    suspend fun preloadPrefsStore() {
-        runBlocking {
-            var blah = prefsStore.numQuestions().first()
-            print("hi")
+    private fun prefetchPrefsStore() {
+        viewModelScope.launch {
+            prefsStore.chromaticDegrees().first()
+            prefsStore.diatonicDegrees().first()
+            prefsStore.matchOctave().first()
+            prefsStore.modeIx().first()
+            prefsStore.notePoolType().first()
+            prefsStore.parentScale().first()
+            prefsStore.playableLowerBound().first()
+            prefsStore.playableUpperBound().first()
+            prefsStore.questionKey().first()
+            prefsStore.sessionTimeLimit().first()
+            prefsStore.sessionType().first()
         }
-        print("hi")
     }
 
     fun startTimer() {
