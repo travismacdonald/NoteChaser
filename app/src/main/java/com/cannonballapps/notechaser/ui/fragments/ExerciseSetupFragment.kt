@@ -89,7 +89,7 @@ class ExerciseSetupFragment : Fragment() {
         bindTimerLengthSlider()
 
         bindAnswerSettingsHeader()
-//        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
+        bindMatchOctaveSwitch()
 
 //        binding.nextButtons.obj = makeNextButton(
 //                generator.hasValidRange(),
@@ -344,6 +344,7 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
+    // TODO: make items XML code consistent (eg tools:text, )
     private fun bindNumQuestionsSlider() {
         binding.numQuestionsSlider.apply {
             title.text = getString(R.string.numQuestions_title)
@@ -365,15 +366,14 @@ class ExerciseSetupFragment : Fragment() {
             }
 
             // Only fires once: first observation
-            viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
-                if (value != slider.value.toInt()) {
-                    slider.value = value.toFloat()
+            viewModel.settings.numQuestions.observe(viewLifecycleOwner) { numQuestions ->
+                if (numQuestions != slider.value.toInt()) {
+                    slider.value = numQuestions.toFloat()
                     slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
                     slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
                     slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
                 }
             }
-
         }
     }
 
@@ -414,11 +414,28 @@ class ExerciseSetupFragment : Fragment() {
         binding.answerSettingsHeader.title.text = getString(R.string.answerSettings_header)
     }
 
-    private fun makeMatchOctaveSwitch(): ExerciseSetupItem.Switch {
-        return ExerciseSetupItem.Switch(
-                getString(R.string.matchOctave_title),
-                getString(R.string.matchOctave_summary),
-                viewModel.settings.matchOctave)
+    private fun bindMatchOctaveSwitch() {
+
+        binding.matchOctaveSwitch.apply {
+            title.text = getString(R.string.matchOctave_title)
+            summary.text = getString(R.string.matchOctave_summary)
+            viewModel.matchOctave.observe(viewLifecycleOwner) { matchOctave ->
+                if (matchOctave != switchWidget.isChecked) {
+                    switchWidget.isChecked = matchOctave
+                }
+            }
+
+            switchWidget.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.saveMatchOctave(isChecked)
+            }
+
+        }
+
+
+//        ExerciseSetupItem.Switch(
+//                getString(R.string.matchOctave_title),
+//                getString(R.string.matchOctave_summary),
+//                viewModel.settings.matchOctave)
     }
 
     private fun makeNextButton(

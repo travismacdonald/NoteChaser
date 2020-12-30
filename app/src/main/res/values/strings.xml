@@ -45,10 +45,6 @@
     <string name="answer_heading">Answer Settings</string>
 
 
-    <string name="matchOctave_title">Match Octave</string>
-    <string name="matchOctave_summary">Answer must be the same octave as pattern</string>
-
-
     <string name="cadenceKey_title">Cadence Key</string>
 
 
@@ -62,16 +58,13 @@
     <string name="timerLength_title">Timer Length (minutes)</string>
 
 
-
-
-
-
-
     <!-- Exercise Setup Strings -->
 
     <string name="answerSettings_header">Answer Settings</string>
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
     <string name="diatonicDegrees_title">Diatonic Degrees</string>
+    <string name="matchOctave_summary">Answer must be played in the same octave as the question</string>
+    <string name="matchOctave_title">Match Octave</string>
     <string name="mode_title">Mode</string>
     <string name="notePoolType_title">Note Pool Type</string>
     <string name="numQuestions_title">Number of Questions</string>
@@ -81,6 +74,7 @@
     <string name="questionSettings_header">Question Settings</string>
     <string name="scale_title">Scale</string>
     <string name="sessionSettings_header">Session Settings</string>
+    <string name="sessionTimeLimit_summary">%1$d minutes</string>
     <string name="sessionTimeLimit_title">Time Limit</string>
     <string name="sessionType_title">Session Type</string>
 
@@ -90,6 +84,5 @@
     <string name="allSelected">All selected</string>
     <string name="noneSelected">None selected</string>
 
-    <string name="sessionTimeLimit_summary">%1$d minutes</string>
 
 </resources>

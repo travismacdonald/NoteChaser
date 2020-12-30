@@ -16,10 +16,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/settings_item_background"
-        android:clickable="@{obj.isEnabled()}"
-        android:onClick="@{() -> obj.setIsChecked(!obj.isChecked())}"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+        android:background="@drawable/settings_item_background">
 
         <TextView
             android:id="@+id/title"
@@ -28,13 +25,10 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.title}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitle_textColor : @color/itemTitle_textColorDisabled}"
-            android:textSize="@dimen/itemTitle_textSize"
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toTopOf="@id/summary"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Paranoid Android" />
+            tools:text="Switch Title" />
 
         <TextView
             android:id="@+id/summary"
@@ -43,13 +37,10 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
             android:layout_marginBottom="@dimen/itemSmallMargin"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.summary}"
-            android:textColor="@{obj.isEnabled() ? @color/itemSummary_textColor : @color/itemSummary_textColorDisabled}"
-            android:textSize="@dimen/itemSummary_textSize"
+            android:theme="@style/itemSummary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="No Surprises" />
+            tools:text="Switch Summary" />
 
         <ImageView
             android:id="@+id/icon"
@@ -68,9 +59,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/itemSmallMargin"
-            android:checked="@{obj.isChecked()}"
-            android:clickable="false"
-            android:enabled="@{obj.isEnabled()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
