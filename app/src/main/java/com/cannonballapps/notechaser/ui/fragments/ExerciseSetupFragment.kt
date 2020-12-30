@@ -15,16 +15,15 @@ import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
-import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
-import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
+import com.cannonballapps.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 
 class ExerciseSetupFragment : Fragment() {
 
-    private val viewModel: ExerciseViewModel by activityViewModels()
+    private val viewModel: ExerciseSetupViewModel by activityViewModels()
     private lateinit var binding: FragmentExerciseSetupBinding
     private lateinit var args: ExerciseSetupFragmentArgs
 
@@ -44,10 +43,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindExerciseSetupItemsList() {
-        // TODO: these can probably go
-        viewModel.generator = SingleNoteGenerator()
-        val generator = viewModel.generator as SingleNoteGenerator
-
         bindQuestionsHeader()
         bindNotePoolTypeChoiceSingleList()
         bindDiatonicDegreesMultiList()
@@ -332,7 +327,7 @@ class ExerciseSetupFragment : Fragment() {
             }
 
             // Only fires once: first observation
-            viewModel.settings.numQuestions.observe(viewLifecycleOwner) { numQuestions ->
+            viewModel.numQuestions.observe(viewLifecycleOwner) { numQuestions ->
                 if (numQuestions != slider.value.toInt()) {
                     slider.value = numQuestions.toFloat()
                     slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()

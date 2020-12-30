@@ -41,8 +41,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val ncRepository: NcRepository
 
-    private val prefsStore = PrefsStore(application.applicationContext)
-
     val questionsAnswered = MutableLiveData(0)
 
     val secondsPassed = MutableLiveData<Int>()
@@ -50,50 +48,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val currentPlayable = MutableLiveData<Playable?>()
 
     val currentPitchDetected = MutableLiveData(-1)
-
-    val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
-    val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
-    val matchOctave = prefsStore.matchOctave().asLiveData()
-    val modeIx = prefsStore.modeIx().asLiveData()
-    val notePoolType = prefsStore.notePoolType().asLiveData()
-    val parentScale = prefsStore.parentScale().asLiveData()
-    val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
-    val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
-    val questionKey = prefsStore.questionKey().asLiveData()
-    val sessionTimeLimit = prefsStore.sessionTimeLimit().asLiveData()
-    val sessionType = prefsStore.sessionType().asLiveData()
-
-    // TODO: remove some repeated logic
-    val scaleName = MediatorLiveData<String>().apply {
-        addSource(parentScale) { parentScale ->
-            modeIx.value?.let { modeIx ->
-                this.value = parentScale.modeNames[modeIx]
-            }
-        }
-        addSource(modeIx) { modeIx ->
-            parentScale.value?.let { parentScale ->
-                this.value = parentScale.modeNames[modeIx]
-            }
-        }
-    }
-
-    val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
-        fun updateBounds(lower: Int, upper: Int) {
-            if (lower != this.value?.first || upper != this.value?.second) {
-                this.value = Pair(lower, upper)
-            }
-        }
-        addSource(playableLowerBound) { lowerBound ->
-            playableUpperBound.value?.let { upperBound ->
-                updateBounds(lowerBound, upperBound)
-            }
-        }
-        addSource(playableUpperBound) { upperBound ->
-            playableLowerBound.value?.let { lowerBound ->
-                updateBounds(lowerBound, upperBound)
-            }
-        }
-    }
 
 
     // TODO: fix timer bug when ending session
@@ -113,8 +67,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private var pauseAfterCorrectSoundMillis: Long = 500
 
     init {
-        prefetchPrefsStore()
-
         Timber.d("init called")
         viewModelScope.launch {
             // TODO: extract this into a method
@@ -134,7 +86,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
         ncRepository = NcRepository()
 
-        connectPrefsStoreToRepository()
         initPitchProcessingPipeline()
 
 
@@ -142,27 +93,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun finishSession() {
         stopTimer()
-    }
-
-    private fun connectPrefsStoreToRepository() {
-        settings.numQuestions = prefsStore.numQuestions().asLiveData()
-
-    }
-
-    private fun prefetchPrefsStore() {
-        viewModelScope.launch {
-            prefsStore.chromaticDegrees().first()
-            prefsStore.diatonicDegrees().first()
-            prefsStore.matchOctave().first()
-            prefsStore.modeIx().first()
-            prefsStore.notePoolType().first()
-            prefsStore.parentScale().first()
-            prefsStore.playableLowerBound().first()
-            prefsStore.playableUpperBound().first()
-            prefsStore.questionKey().first()
-            prefsStore.sessionTimeLimit().first()
-            prefsStore.sessionType().first()
-        }
     }
 
     fun startTimer() {
@@ -194,80 +124,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             // picking up own output as input
             delay(pauseAfterPlayableMillis)
             startListening()
-        }
-    }
-
-    fun saveChromaticDegrees(degrees: BooleanArray) {
-        viewModelScope.launch {
-            prefsStore.saveChromaticDegrees(degrees)
-        }
-    }
-
-    fun saveDiatonicDegrees(degrees: BooleanArray) {
-        viewModelScope.launch {
-            prefsStore.saveDiatonicDegrees(degrees)
-        }
-    }
-
-    fun saveMatchOctave(matchOctave: Boolean) {
-        viewModelScope.launch {
-            prefsStore.saveMatchOctave(matchOctave)
-        }
-    }
-
-    fun saveModeIx(ix: Int) {
-        viewModelScope.launch {
-            prefsStore.saveModeIx(ix)
-        }
-    }
-
-    fun saveNotePoolType(type: NotePoolType) {
-        viewModelScope.launch {
-            prefsStore.saveNotePoolType(type)
-        }
-    }
-
-    fun saveNumQuestions(numQuestions: Int) {
-        viewModelScope.launch {
-            prefsStore.saveNumQuestions(numQuestions)
-        }
-    }
-
-    fun saveParentScale(scale: ParentScale2) {
-        viewModelScope.launch {
-            prefsStore.saveParentScale(scale)
-        }
-    }
-
-    fun savePlayableLowerBound(ix: Int) {
-        Timber.d("save lower bound called: $ix")
-        viewModelScope.launch {
-            prefsStore.savePlayableLowerBound(ix)
-        }
-    }
-
-    fun savePlayableUpperBound(ix: Int) {
-        Timber.d("save upper bound called: $ix")
-        viewModelScope.launch {
-            prefsStore.savePlayableUpperBound(ix)
-        }
-    }
-
-    fun saveQuestionKey(key: Int) {
-        viewModelScope.launch {
-            prefsStore.saveQuestionKey(key)
-        }
-    }
-
-    fun saveSessionTimeLimit(len: Int) {
-        viewModelScope.launch {
-            prefsStore.saveSessionTimeLimit(len)
-        }
-    }
-
-    fun saveSessionType(sessionType: SessionType) {
-        viewModelScope.launch {
-            prefsStore.saveSessionType(sessionType)
         }
     }
 
