@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
+import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
@@ -54,13 +55,15 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     val currentPitchDetected = MutableLiveData(-1)
 
-
-    val notePoolType = prefsStore.notePoolType().asLiveData()
     val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
     val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
-    val questionKey = prefsStore.questionKey().asLiveData()
-    val parentScale = prefsStore.parentScale().asLiveData()
     val modeIx = prefsStore.modeIx().asLiveData()
+    val notePoolType = prefsStore.notePoolType().asLiveData()
+    val parentScale = prefsStore.parentScale().asLiveData()
+    val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
+    val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
+    val questionKey = prefsStore.questionKey().asLiveData()
+    val sessionType = prefsStore.sessionType().asLiveData()
 
     // TODO: remove some repeated logic
     val scaleName = MediatorLiveData<String>().apply {
@@ -75,9 +78,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
-
-    val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
-    val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
 
     val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
         fun updateBounds(lower: Int, upper: Int) {
@@ -201,12 +201,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun saveNotePoolType(type: NotePoolType) {
-        viewModelScope.launch {
-            prefsStore.saveNotePoolType(type)
-        }
-    }
-
     fun saveChromaticDegrees(degrees: BooleanArray) {
         viewModelScope.launch {
             prefsStore.saveChromaticDegrees(degrees)
@@ -219,21 +213,27 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun saveQuestionKey(key: Int) {
+    fun saveModeIx(ix: Int) {
         viewModelScope.launch {
-            prefsStore.saveQuestionKey(key)
+            prefsStore.saveModeIx(ix)
+        }
+    }
+
+    fun saveNotePoolType(type: NotePoolType) {
+        viewModelScope.launch {
+            prefsStore.saveNotePoolType(type)
+        }
+    }
+
+    fun saveNumQuestions(numQuestions: Int) {
+        viewModelScope.launch {
+            prefsStore.saveNumQuestions(numQuestions)
         }
     }
 
     fun saveParentScale(scale: ParentScale2) {
         viewModelScope.launch {
             prefsStore.saveParentScale(scale)
-        }
-    }
-
-    fun saveModeIx(ix: Int) {
-        viewModelScope.launch {
-            prefsStore.saveModeIx(ix)
         }
     }
 
@@ -251,9 +251,15 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun saveNumQuestions(numQuestions: Int) {
+    fun saveQuestionKey(key: Int) {
         viewModelScope.launch {
-            prefsStore.saveNumQuestions(numQuestions)
+            prefsStore.saveQuestionKey(key)
+        }
+    }
+
+    fun saveSessionType(sessionType: SessionType) {
+        viewModelScope.launch {
+            prefsStore.saveSessionType(sessionType)
         }
     }
 
