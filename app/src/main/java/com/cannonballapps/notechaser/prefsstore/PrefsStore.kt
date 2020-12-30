@@ -14,8 +14,6 @@ import java.io.IOException
 
 private const val STORE_NAME = "notechaser_data_store"
 
-private const val DEFAULT_NUM_QUESTIONS = 20
-
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
         true, false, false, false, false, false,
         false, false, false, false, false, false
@@ -26,11 +24,15 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
         false, false, false
 ).joinToString(",")
 
-private const val DEFAULT_QUESTION_KEY = 0
-// TODO
+private const val DEFAULT_NUM_QUESTIONS = 20
+
 private const val DEFAULT_PLAYABLE_LOWER_BOUND = 48
 
 private const val DEFAULT_PLAYABLE_UPPER_BOUND = 60
+
+private const val DEFAULT_QUESTION_KEY = 0
+
+private const val DEFAULT_SESSION_TIME_LEN = 10
 
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
 class PrefsStore(context: Context) {
@@ -191,6 +193,22 @@ class PrefsStore(context: Context) {
         }
     }
 
+    fun sessionTimeLen() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        } else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.SESSION_TIME_LEN] ?: DEFAULT_SESSION_TIME_LEN
+    }
+
+    suspend fun saveSessionTimeLen(len: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.SESSION_TIME_LEN] = len
+        }
+    }
+
     fun sessionType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -219,6 +237,7 @@ class PrefsStore(context: Context) {
         val PLAYABLE_LOWER_BOUND = preferencesKey<Int>("playable_lower_bound")
         val PLAYABLE_UPPER_BOUND = preferencesKey<Int>("playable_upper_bound")
         val QUESTION_KEY = preferencesKey<Int>("question_key")
+        val SESSION_TIME_LEN = preferencesKey<Int>("session_time_len")
         val SESSION_TYPE_ORDINAL = preferencesKey<Int>("session_type_ordinal")
     }
 
