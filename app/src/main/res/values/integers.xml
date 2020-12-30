@@ -9,4 +9,8 @@
     <integer name="playableBound_max">88</integer>
     <integer name="playableBound_stepSize">1</integer>
 
+    <integer name="sessionTimeLimit_min">5</integer>
+    <integer name="sessionTimeLimit_max">60</integer>
+    <integer name="sessionTimeLimit_stepSize">5</integer>
+
 </resources>

@@ -57,7 +57,7 @@ class ExerciseSetupFragment : Fragment() {
 
 //        subscribeToLiveData()
 
-        makeSettingsList()
+        bindExerciseSetupItemsList()
         // TODO: use when statement, different functions for creating list
 
 
@@ -72,7 +72,7 @@ class ExerciseSetupFragment : Fragment() {
 
     }
 
-    private fun makeSettingsList() {
+    private fun bindExerciseSetupItemsList() {
         // TODO: these can probably go
         viewModel.generator = SingleNoteGenerator()
         val generator = viewModel.generator as SingleNoteGenerator
@@ -84,13 +84,12 @@ class ExerciseSetupFragment : Fragment() {
         bindQuestionKeySingleList()
         bindScaleSingleList()
         bindPlayableRangeBar()
+
         bindSessionHeader()
         bindSessionTypeSingleList()
-
-//        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
         bindNumQuestionsSlider()
+        bindTimerLengthSlider()
 
-//        binding.timerLengthSlider.obj = makeTimerLengthSlider()
 //        binding.answerHeader.obj = makeAnswerHeader()
 //        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
 //        binding.nextButtons.obj = makeNextButton(
@@ -369,7 +368,7 @@ class ExerciseSetupFragment : Fragment() {
             // Only fires once: first observation
             viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->
                 if (value != slider.value.toInt()) {
-                    binding.numQuestionsSlider.slider.value = value.toFloat()
+                    slider.value = value.toFloat()
                     slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
                     slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
                     slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
@@ -380,21 +379,36 @@ class ExerciseSetupFragment : Fragment() {
     }
 
 
-    private fun makeTimerLengthSlider(): ExerciseSetupItem.Slider {
-        return ExerciseSetupItem.Slider(
-                // TODO: Extract some of these numbers
-                getString(R.string.timerLength_title),
-                5f,
-                60f,
-                viewModel.settings.timerLength,
-                Transformations.map(viewModel.settings.timerLength) { value ->
-                    value.toString()
-                },
-                5f,
-                isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-                    value == ExerciseSetupSettings.TIME_LIMIT
+    private fun bindTimerLengthSlider() {
+        binding.sessionTimeLimitSlider.apply {
+            title.text = getString(R.string.sessionTimeLimit_title)
+
+            slider.addOnChangeListener { _, value, _ ->
+                summary.text = getString(R.string.sessionTimeLimit_summary, value.toInt())
+            }
+
+            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {}
+
+                override fun onStopTrackingTouch(slider: Slider) {
+                    viewModel.saveSessionTimeLimit(slider.value.toInt())
                 }
-        )
+            })
+
+            viewModel.sessionType.observe(viewLifecycleOwner) { type ->
+                layout.isVisible = type == SessionType.TIME_LIMIT
+            }
+
+            // Only fires once: first observation
+            viewModel.sessionTimeLimit.observe(viewLifecycleOwner) { value ->
+                if (value != slider.value.toInt()) {
+                    slider.value = value.toFloat()
+                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
+                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
+                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
+                }
+            }
+        }
     }
 
     private fun makeAnswerHeader(): ExerciseSetupItem.Header {

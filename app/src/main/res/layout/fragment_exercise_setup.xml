@@ -54,9 +54,9 @@
                 android:id="@+id/numQuestions_slider"
                 layout="@layout/item_settings_slider" />
 
-<!--            <include-->
-<!--                android:id="@+id/timerLengthSlider"-->
-<!--                layout="@layout/item_settings_slider" />-->
+            <include
+                android:id="@+id/sessionTimeLimit_slider"
+                layout="@layout/item_settings_slider" />
 
 <!--            <include-->
 <!--                android:id="@+id/answer_header"-->

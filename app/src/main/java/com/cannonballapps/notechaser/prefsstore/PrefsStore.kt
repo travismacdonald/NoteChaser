@@ -193,19 +193,19 @@ class PrefsStore(context: Context) {
         }
     }
 
-    fun sessionTimeLen() = dataStore.data.catch { exception ->
+    fun sessionTimeLimit() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
         } else {
             throw exception
         }
     }.map { prefs ->
-        prefs[PrefKeys.SESSION_TIME_LEN] ?: DEFAULT_SESSION_TIME_LEN
+        prefs[PrefKeys.SESSION_TIME_LIMIT] ?: DEFAULT_SESSION_TIME_LEN
     }
 
-    suspend fun saveSessionTimeLen(len: Int) {
+    suspend fun saveSessionTimeLimit(len: Int) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.SESSION_TIME_LEN] = len
+            prefs[PrefKeys.SESSION_TIME_LIMIT] = len
         }
     }
 
@@ -237,7 +237,7 @@ class PrefsStore(context: Context) {
         val PLAYABLE_LOWER_BOUND = preferencesKey<Int>("playable_lower_bound")
         val PLAYABLE_UPPER_BOUND = preferencesKey<Int>("playable_upper_bound")
         val QUESTION_KEY = preferencesKey<Int>("question_key")
-        val SESSION_TIME_LEN = preferencesKey<Int>("session_time_len")
+        val SESSION_TIME_LIMIT = preferencesKey<Int>("session_time_limit")
         val SESSION_TYPE_ORDINAL = preferencesKey<Int>("session_type_ordinal")
     }
 

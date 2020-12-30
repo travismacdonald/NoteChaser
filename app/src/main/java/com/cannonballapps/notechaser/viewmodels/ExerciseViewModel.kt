@@ -63,7 +63,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
     val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
     val questionKey = prefsStore.questionKey().asLiveData()
-    val sessionTimeLen = prefsStore.sessionTimeLen().asLiveData()
+    val sessionTimeLimit = prefsStore.sessionTimeLimit().asLiveData()
     val sessionType = prefsStore.sessionType().asLiveData()
 
     // TODO: remove some repeated logic
@@ -258,9 +258,9 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun saveSessionTimeLen(len: Int) {
+    fun saveSessionTimeLimit(len: Int) {
         viewModelScope.launch {
-            prefsStore.saveSessionTimeLen(len)
+            prefsStore.saveSessionTimeLimit(len)
         }
     }
 
