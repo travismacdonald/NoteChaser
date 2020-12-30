@@ -137,21 +137,16 @@ class ExerciseSetupFragment : Fragment() {
     private fun bindChromaticDegreeMultiList() {
         binding.chromaticDegreesMultiList.apply {
             title.text = getString(R.string.chromaticDegrees_title)
-            layout.setOnClickListener {
-                val selectedIxs = viewModel.chromaticDegrees.value!!.clone()
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.chromaticDegrees_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
-                        }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            viewModel.saveChromaticDegrees(selectedIxs)
 
+            layout.setOnClickListener {
+                showMaterialDialogMultiList(
+                        title = getString(R.string.chromaticDegrees_title),
+                        entries = MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                        initSelectedIxs = viewModel.chromaticDegrees.value!!,
+                        onPositiveButtonClick = { degrees ->
+                            viewModel.saveChromaticDegrees(degrees)
                         }
-                        .setMultiChoiceItems(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE, selectedIxs) { _, ix, isChecked ->
-                            selectedIxs[ix] = isChecked
-                        }
-                        .show()
+                )
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
@@ -185,21 +180,16 @@ class ExerciseSetupFragment : Fragment() {
     private fun bindDiatonicDegreesMultiList() {
         binding.diatonicDegreesMultiList.apply {
             title.text = getString(R.string.diatonicDegrees_title)
-            layout.setOnClickListener {
-                val selectedIxs = viewModel.diatonicDegrees.value!!.clone()
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.diatonicDegrees_title))
-                        .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                            // Do nothing
-                        }
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            viewModel.saveDiatonicDegrees(selectedIxs)
 
+            layout.setOnClickListener {
+                showMaterialDialogMultiList(
+                        title = getString(R.string.diatonicDegrees_title),
+                        entries = MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
+                        initSelectedIxs = viewModel.diatonicDegrees.value!!,
+                        onPositiveButtonClick = { degrees ->
+                            viewModel.saveDiatonicDegrees(degrees)
                         }
-                        .setMultiChoiceItems(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE, selectedIxs) { _, ix, isChecked ->
-                            selectedIxs[ix] = isChecked
-                        }
-                        .show()
+                )
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
@@ -484,5 +474,25 @@ class ExerciseSetupFragment : Fragment() {
                 .show()
     }
 
+    private fun showMaterialDialogMultiList(
+            title: String,
+            entries: Array<String>,
+            initSelectedIxs: BooleanArray,
+            onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit)
+    ) {
+        val curSelectedIxs = initSelectedIxs.clone()
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(title)
+                .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                    // Do nothing
+                }
+                .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                    onPositiveButtonClick(curSelectedIxs)
+                }
+                .setMultiChoiceItems(entries, curSelectedIxs) { _, ix, isChecked ->
+                    curSelectedIxs[ix] = isChecked
+                }
+                .show()
+    }
 
 }
