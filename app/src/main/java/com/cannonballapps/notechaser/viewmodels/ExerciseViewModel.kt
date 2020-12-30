@@ -57,6 +57,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
     val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
+    val matchOctave = prefsStore.matchOctave().asLiveData()
     val modeIx = prefsStore.modeIx().asLiveData()
     val notePoolType = prefsStore.notePoolType().asLiveData()
     val parentScale = prefsStore.parentScale().asLiveData()
@@ -211,6 +212,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveDiatonicDegrees(degrees: BooleanArray) {
         viewModelScope.launch {
             prefsStore.saveDiatonicDegrees(degrees)
+        }
+    }
+
+    fun saveMatchOctave(matchOctave: Boolean) {
+        viewModelScope.launch {
+            prefsStore.saveMatchOctave(matchOctave)
         }
     }
 
