@@ -63,6 +63,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
     val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
     val questionKey = prefsStore.questionKey().asLiveData()
+    val sessionTimeLen = prefsStore.sessionTimeLen().asLiveData()
     val sessionType = prefsStore.sessionType().asLiveData()
 
     // TODO: remove some repeated logic
@@ -254,6 +255,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun saveQuestionKey(key: Int) {
         viewModelScope.launch {
             prefsStore.saveQuestionKey(key)
+        }
+    }
+
+    fun saveSessionTimeLen(len: Int) {
+        viewModelScope.launch {
+            prefsStore.saveSessionTimeLen(len)
         }
     }
 
