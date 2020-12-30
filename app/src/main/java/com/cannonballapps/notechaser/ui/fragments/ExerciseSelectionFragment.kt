@@ -22,8 +22,8 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 
 class ExerciseSelectionFragment : Fragment() {
 
+    // TODO: change to android integer resource
     private val MICROPHONE_PERMISSION_CODE = 1
-
 
     // TODO: try to figure out a way to init the viewmodel when this activity starts
     private val viewModel: ExerciseViewModel by viewModels()

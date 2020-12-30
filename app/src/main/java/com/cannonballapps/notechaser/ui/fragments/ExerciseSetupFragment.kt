@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
-import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
@@ -90,13 +87,7 @@ class ExerciseSetupFragment : Fragment() {
 
         bindAnswerSettingsHeader()
         bindMatchOctaveSwitch()
-
-//        binding.nextButtons.obj = makeNextButton(
-//                generator.hasValidRange(),
-//                generator.noteType,
-//                generator.diatonicDegrees,
-//                generator.chromaticDegrees
-//        )
+        bindNavigationButtons()
     }
 
     private fun bindQuestionsHeader() {
@@ -167,7 +158,6 @@ class ExerciseSetupFragment : Fragment() {
                             }
                         }
             }
-
         }
     }
 
@@ -377,7 +367,6 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-
     private fun bindTimerLengthSlider() {
         binding.sessionTimeLimitSlider.apply {
             title.text = getString(R.string.sessionTimeLimit_title)
@@ -415,7 +404,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindMatchOctaveSwitch() {
-
         binding.matchOctaveSwitch.apply {
             title.text = getString(R.string.matchOctave_title)
             summary.text = getString(R.string.matchOctave_summary)
@@ -424,50 +412,23 @@ class ExerciseSetupFragment : Fragment() {
                     switchWidget.isChecked = matchOctave
                 }
             }
-
             switchWidget.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.saveMatchOctave(isChecked)
             }
-
         }
-
-
-//        ExerciseSetupItem.Switch(
-//                getString(R.string.matchOctave_title),
-//                getString(R.string.matchOctave_summary),
-//                viewModel.settings.matchOctave)
     }
 
-    private fun makeNextButton(
-            hasValidRange: Boolean,
-            noteType: MutableLiveData<NotePoolType>,
-            diatonicDegrees: MutableLiveData<BooleanArray>,
-            chromaticDegrees: MutableLiveData<BooleanArray>
-    ): ExerciseSetupItem.Buttons {
-        val nextButton = ExerciseSetupItem.Buttons(
-                "Start",
-                "Back",
-                nextClickListener = {
-                    if (!hasValidRange) {
-                        Toast.makeText(context, "Not enough range to generate question", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == NotePoolType.DIATONIC && !diatonicDegrees.value!!.contains(true)) {
-                        Toast.makeText(context, "Must select at least one diatonic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else if (noteType.value!! == NotePoolType.CHROMATIC && !chromaticDegrees.value!!.contains(true)) {
-                        Toast.makeText(context, "Must select at least one chromatic degree", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        viewModel.generator.setupGenerator()
-                        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
-                        findNavController().navigate(directions)
-                    }
-                },
-                backClickListener = {
-                    Toast.makeText(context, "back", Toast.LENGTH_SHORT).show()
-                }
-        )
-        return nextButton
+    private fun bindNavigationButtons() {
+        binding.navigationButtons.apply {
+            startButton.text = getString(R.string.startSession_button)
+            backButton.text = getString(R.string.back_button)
+
+            backButton.setOnClickListener { button ->
+                navigateBackToExerciseTypeMenu(button)
+            }
+        }
+
+        // TODO: validate settings
     }
 
 
@@ -511,6 +472,11 @@ class ExerciseSetupFragment : Fragment() {
                     curSelectedIxs[ix] = isChecked
                 }
                 .show()
+    }
+
+    private fun navigateBackToExerciseTypeMenu(view: View) {
+        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToExerciseSelectionFragment()
+        view.findNavController().navigate(directions)
     }
 
 }

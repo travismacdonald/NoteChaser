@@ -66,9 +66,9 @@
                 android:id="@+id/matchOctave_switch"
                 layout="@layout/item_settings_switch" />
 
-<!--            <include-->
-<!--                android:id="@+id/next_buttons"-->
-<!--                layout="@layout/item_settings_buttons" />-->
+            <include
+                android:id="@+id/navigation_buttons"
+                layout="@layout/item_settings_buttons" />
 
         </LinearLayout>
 

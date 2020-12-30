@@ -3,49 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="obj"
-            type="com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem.Buttons" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@drawable/settings_item_background" >
+        android:background="@drawable/settings_item_background">
 
         <Button
-            android:id="@+id/backButton"
+            android:id="@+id/back_button"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.backText}"
-            android:onClick="@{obj.backClickListener}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitle_textColor : @color/itemTitle_textColorDisabled}"
-            android:textSize="@dimen/itemTitle_textSize"
-            app:layout_constraintTop_toTopOf="parent"
+
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Back" />
 
         <Button
-            android:id="@+id/nextButton"
+            android:id="@+id/start_button"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.startText}"
-            android:onClick="@{obj.nextClickListener}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitle_textColor : @color/itemTitle_textColorDisabled}"
-            android:textSize="@dimen/itemTitle_textSize"
-            app:layout_constraintTop_toTopOf="parent"
+            android:theme="@style/itemTitle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Start" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
