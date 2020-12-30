@@ -25,16 +25,11 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
-import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
     private val viewModel: ExerciseViewModel by activityViewModels()
-
-//    private lateinit var viewModel: ExerciseViewModel
-
     private lateinit var binding: FragmentExerciseSetupBinding
-
     private lateinit var args: ExerciseSetupFragmentArgs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -88,7 +83,7 @@ class ExerciseSetupFragment : Fragment() {
         bindQuestionKeySingleList()
         bindScaleSingleList()
         bindPlayableRangeBar()
-//        binding.sessionHeader.obj = makeSessionHeader()
+        bindSessionHeader()
 //        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
 
 //        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
@@ -106,7 +101,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindQuestionsHeader() {
-        binding.questionsHeader.title.text = getString(R.string.questions_header)
+        binding.questionsHeader.title.text = getString(R.string.questionSettings_header)
     }
 
     private fun bindNotePoolTypeChoiceSingleList() {
@@ -322,10 +317,8 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun makeSessionHeader(): ExerciseSetupItem.Header {
-        return ExerciseSetupItem.Header(
-                getString(R.string.session_header)
-        )
+    private fun bindSessionHeader() {
+        binding.sessionHeader.title.text = getString(R.string.sessionSettings_header)
     }
 
     private fun makeSessionLengthTypeSingle(): ExerciseSetupItem.SingleList {

@@ -42,9 +42,9 @@
                 android:id="@+id/playable_rangeBar"
                 layout="@layout/item_settings_range_bar" />
 
-<!--            <include-->
-<!--                android:id="@+id/session_header"-->
-<!--                layout="@layout/item_settings_header" />-->
+            <include
+                android:id="@+id/session_header"
+                layout="@layout/item_settings_header" />
 
 <!--            <include-->
 <!--                android:id="@+id/sessionLengthType_single"-->
