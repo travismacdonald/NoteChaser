@@ -66,10 +66,10 @@
 
 
 
-    <string name="answer_header">Answer Settings</string>
 
     <!-- Exercise Setup Strings -->
 
+    <string name="answerSettings_header">Answer Settings</string>
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
     <string name="diatonicDegrees_title">Diatonic Degrees</string>
     <string name="mode_title">Mode</string>

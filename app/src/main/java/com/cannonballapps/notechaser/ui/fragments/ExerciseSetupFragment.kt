@@ -11,14 +11,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
-import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.playablegenerator.SingleNoteGenerator
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
@@ -90,8 +88,9 @@ class ExerciseSetupFragment : Fragment() {
         bindNumQuestionsSlider()
         bindTimerLengthSlider()
 
-//        binding.answerHeader.obj = makeAnswerHeader()
+        bindAnswerSettingsHeader()
 //        binding.matchOctaveSwitch.obj = makeMatchOctaveSwitch()
+
 //        binding.nextButtons.obj = makeNextButton(
 //                generator.hasValidRange(),
 //                generator.noteType,
@@ -411,8 +410,8 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun makeAnswerHeader(): ExerciseSetupItem.Header {
-        return ExerciseSetupItem.Header(getString(R.string.answer_header))
+    private fun bindAnswerSettingsHeader() {
+        binding.answerSettingsHeader.title.text = getString(R.string.answerSettings_header)
     }
 
     private fun makeMatchOctaveSwitch(): ExerciseSetupItem.Switch {
