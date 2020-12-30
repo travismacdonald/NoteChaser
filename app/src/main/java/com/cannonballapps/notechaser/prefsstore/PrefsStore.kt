@@ -44,7 +44,8 @@ class PrefsStore(context: Context) {
     fun chromaticDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -62,7 +63,8 @@ class PrefsStore(context: Context) {
     fun diatonicDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -77,10 +79,28 @@ class PrefsStore(context: Context) {
         }
     }
 
+    fun matchOctave() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
+        }
+        else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.MATCH_OCTAVE] ?: false
+    }
+
+    suspend fun saveMatchOctave(matchOctave: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.MATCH_OCTAVE] = matchOctave
+        }
+    }
+
     fun modeIx() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -96,7 +116,8 @@ class PrefsStore(context: Context) {
     fun notePoolType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -114,7 +135,8 @@ class PrefsStore(context: Context) {
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -130,7 +152,8 @@ class PrefsStore(context: Context) {
     fun parentScale() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -148,7 +171,8 @@ class PrefsStore(context: Context) {
     fun playableLowerBound() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -164,7 +188,8 @@ class PrefsStore(context: Context) {
     fun playableUpperBound() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -180,7 +205,8 @@ class PrefsStore(context: Context) {
     fun questionKey() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -196,7 +222,8 @@ class PrefsStore(context: Context) {
     fun sessionTimeLimit() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -212,7 +239,8 @@ class PrefsStore(context: Context) {
     fun sessionType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        } else {
+        }
+        else {
             throw exception
         }
     }.map { prefs ->
@@ -230,6 +258,7 @@ class PrefsStore(context: Context) {
     private object PrefKeys {
         val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
         val DIATONIC_DEGREES = preferencesKey<String>("diatonic_degrees")
+        val MATCH_OCTAVE = preferencesKey<Boolean>("match_octave")
         val MODE_IX = preferencesKey<Int>("mode_ix")
         val NOTE_POOL_TYPE_ORDINAL = preferencesKey<Int>("note_pool_type_ordinal")
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
