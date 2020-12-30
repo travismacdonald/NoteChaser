@@ -46,9 +46,9 @@
                 android:id="@+id/session_header"
                 layout="@layout/item_settings_header" />
 
-<!--            <include-->
-<!--                android:id="@+id/sessionLengthType_single"-->
-<!--                layout="@layout/item_settings_single_list" />-->
+            <include
+                android:id="@+id/sessionType_singleList"
+                layout="@layout/item_settings_single_list" />
 
             <include
                 android:id="@+id/numQuestions_slider"

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
+import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
@@ -84,7 +85,7 @@ class ExerciseSetupFragment : Fragment() {
         bindScaleSingleList()
         bindPlayableRangeBar()
         bindSessionHeader()
-//        binding.sessionLengthTypeSingle.obj = makeSessionLengthTypeSingle()
+        bindSessionTypeSingleList()
 
 //        binding.numQuestionsSlider.obj = makeNumQuestionsSlider()
         bindNumQuestionsSlider()
@@ -123,8 +124,8 @@ class ExerciseSetupFragment : Fragment() {
                 )
             }
 
-            viewModel.notePoolType.observe(viewLifecycleOwner) { type: NotePoolType ->
-                summary.text = type.toString()
+            viewModel.notePoolType.observe(viewLifecycleOwner) { notePoolType ->
+                summary.text = notePoolType.toString()
             }
         }
     }
@@ -321,33 +322,28 @@ class ExerciseSetupFragment : Fragment() {
         binding.sessionHeader.title.text = getString(R.string.sessionSettings_header)
     }
 
-    private fun makeSessionLengthTypeSingle(): ExerciseSetupItem.SingleList {
-        // TODO: extract hard coded
-        val sessionLengthTitle = "Session Length"
-        // TODO: turn mode and parent scale into one parameter
-        val sessionLengthEntries = arrayOf("Question Limit", "Time Limit", "Unlimited")
-        val sessionLengthValue = viewModel.settings.sessionLengthType
-        return ExerciseSetupItem.SingleList(
-                sessionLengthTitle,
-                sessionLengthEntries,
-                sessionLengthValue,
-                clickListener = View.OnClickListener {
-                    var tempItem = sessionLengthValue.value!!
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Session Type")
-                            .setNegativeButton("Dismiss") { _, _ ->
-                                // Do nothing
-                            }
-                            .setPositiveButton("Confirm") { _, _ ->
-                                // Commit Changes
-                                sessionLengthValue.value = tempItem
-                            }
-                            .setSingleChoiceItems(sessionLengthEntries, tempItem) { _, which ->
-                                tempItem = which
-                            }
-                            .show()
-                }
-        )
+    private fun bindSessionTypeSingleList() {
+        val sessionTypeNames = SessionType.values().map { it.toString() }.toTypedArray()
+
+        binding.sessionTypeSingleList.apply {
+            title.text = getString(R.string.sessionType_title)
+
+            layout.setOnClickListener {
+                showMaterialDialogSingleList(
+                        title = getString(R.string.sessionType_title),
+                        entries = sessionTypeNames,
+                        initSelectedIx = viewModel.sessionType.value!!.ordinal,
+                        onPositiveButtonClick = { selectedIx ->
+                            val selectedSessionType = SessionType.values()[selectedIx]
+                            viewModel.saveSessionType(selectedSessionType)
+                        }
+                )
+            }
+
+            viewModel.sessionType.observe(viewLifecycleOwner) { sessionType ->
+                summary.text = sessionType.toString()
+            }
+        }
     }
 
     private fun bindNumQuestionsSlider() {
@@ -366,10 +362,9 @@ class ExerciseSetupFragment : Fragment() {
                 }
             })
 
-            // TODO: visibility livedata observations
-            // isVisible = Transformations.map(viewModel.settings.sessionLengthType) { value ->
-//                    value == ExerciseSetupSettings.QUESTION_LIMIT
-//                }
+            viewModel.sessionType.observe(viewLifecycleOwner) { type ->
+                layout.isVisible = type == SessionType.QUESTION_LIMIT
+            }
 
             // Only fires once: first observation
             viewModel.settings.numQuestions.observe(viewLifecycleOwner) { value ->

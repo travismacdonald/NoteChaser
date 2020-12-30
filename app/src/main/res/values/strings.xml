@@ -81,6 +81,7 @@
     <string name="questionRange_title">Question Range</string>
 
     <string name="sessionSettings_header">Session Settings</string>
+    <string name="sessionType_title">Session Type</string>
     <string name="numQuestions_title">Number of Questions</string>
 
     <string name="confirm">Confirm</string>
