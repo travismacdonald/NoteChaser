@@ -112,6 +112,7 @@ class MusicTheoryUtils {
                 "7th"
         )
 
+        // TODO: delete this
         // TODO: Replace with actual DB later
         val PARENT_SCALE_BANK = arrayOf(
                 ParentScale("Major", MAJOR_SCALE_SEQUENCE),
@@ -123,10 +124,10 @@ class MusicTheoryUtils {
             if (asFlat) {
                 return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
             }
-            return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
+            return "${CHROMATIC_SCALE_SHARP[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
         }
 
-        fun getModeIntervals(intervals: IntArray, modeIx: Int): IntArray {
+        fun getIntervalsForModeAtIx(intervals: IntArray, modeIx: Int): IntArray {
             if (intervals[0] != 0) {
                 throw IllegalArgumentException(
                         "Cannot use scale when first interval is not zero.\n" +
@@ -172,9 +173,6 @@ class MusicTheoryUtils {
             return transposeIntervals(toReturn, key)
         }
 
-        /**
-         * TODO: write function explanation
-         */
         fun transformDiatonicDegreesToIntervals(diatonicDegrees: BooleanArray, scale: IntArray, key: Int): IntArray {
             if (diatonicDegrees.size != scale.size) {
                 throw IllegalArgumentException(
@@ -200,9 +198,7 @@ class MusicTheoryUtils {
             return transposeIntervals(toReturn, key)
         }
 
-        /**
-         * TODO: write function definition
-         */
+        // TODO: better function name
         fun transposeIntervals(intervals: IntArray, key: Int): IntArray {
             if (key !in 0..11) {
                 throw IllegalArgumentException(
@@ -223,6 +219,5 @@ class MusicTheoryUtils {
             }
             return toReturn
         }
-
     }
 }
