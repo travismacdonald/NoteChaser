@@ -69,7 +69,7 @@
     <string name="notePoolType_title">Note Pool Type</string>
     <string name="numQuestions_title">Number of Questions</string>
     <string name="parentScale_title">Parent Scale</string>
-    <string name="questionKey_title">Question Key</string>
+    <string name="questionKey_title">Key</string>
     <string name="questionRange_title">Question Range</string>
     <string name="questionSettings_header">Question Settings</string>
     <string name="scale_title">Scale</string>

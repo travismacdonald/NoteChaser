@@ -11,7 +11,6 @@ import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class ExerciseSetupViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -45,20 +44,27 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
     }
 
     val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
-        fun updateBounds(lower: Int, upper: Int) {
-            if (lower != this.value?.first || upper != this.value?.second) {
-                this.value = Pair(lower, upper)
-            }
-        }
         addSource(playableLowerBound) { lowerBound ->
             playableUpperBound.value?.let { upperBound ->
-                updateBounds(lowerBound, upperBound)
+                updatePlayableBounds(lowerBound, upperBound)
             }
         }
         addSource(playableUpperBound) { upperBound ->
             playableLowerBound.value?.let { lowerBound ->
-                updateBounds(lowerBound, upperBound)
+                updatePlayableBounds(lowerBound, upperBound)
             }
+        }
+    }
+
+    val isValidConfiguration = MediatorLiveData<Boolean>().apply {
+        addSource(notePoolType) { _ ->
+            this.value = hasNotePoolDegreesSelected()
+        }
+        addSource(chromaticDegrees) { _ ->
+            this.value = hasNotePoolDegreesSelected()
+        }
+        addSource(diatonicDegrees) { _ ->
+            this.value = hasNotePoolDegreesSelected()
         }
     }
 
@@ -151,6 +157,26 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
     fun saveSessionType(sessionType: SessionType) {
         viewModelScope.launch {
             prefsStore.saveSessionType(sessionType)
+        }
+    }
+
+    private fun updatePlayableBounds(lower: Int, upper: Int) {
+        if (lower != playableBounds.value?.first || upper != playableBounds.value?.second) {
+            playableBounds.value = Pair(lower, upper)
+        }
+    }
+
+    private fun hasNotePoolDegreesSelected() : Boolean {
+        return when (notePoolType.value) {
+            NotePoolType.DIATONIC -> {
+                diatonicDegrees.value?.contains(true) ?: false
+            }
+            NotePoolType.CHROMATIC -> {
+                chromaticDegrees.value?.contains(true) ?: false
+            }
+            else -> throw IllegalStateException(
+                    "Illegal NotePoolType given: ${notePoolType.value}"
+            )
         }
     }
 

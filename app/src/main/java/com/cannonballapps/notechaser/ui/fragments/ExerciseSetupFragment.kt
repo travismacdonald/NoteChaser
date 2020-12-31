@@ -20,6 +20,7 @@ import com.cannonballapps.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
+import timber.log.Timber
 
 class ExerciseSetupFragment : Fragment() {
 
@@ -243,6 +244,7 @@ class ExerciseSetupFragment : Fragment() {
             title.text = getString(R.string.questionRange_title)
 
             rangeSlider.addOnChangeListener { slider, value, _ ->
+                Timber.d("onChangedCalled")
                 val range = slider.values.joinToString(separator = " - ") { ix ->
                     MusicTheoryUtils.midiValueToNoteName(ix.toInt())
                 }
@@ -268,6 +270,7 @@ class ExerciseSetupFragment : Fragment() {
                 val boundsAsFloats = bounds.toList().map { it.toFloat() }
 
                 if (rangeSlider.values != boundsAsFloats) {
+                    Timber.d("playable bounds observed")
                     rangeSlider.values = boundsAsFloats
                     rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
                     rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
@@ -394,9 +397,19 @@ class ExerciseSetupFragment : Fragment() {
             startButton.text = getString(R.string.startSession_button)
             backButton.text = getString(R.string.back_button)
 
+            startButton.setOnClickListener { button ->
+                navigateToExerciseSession(button)
+            }
+
             backButton.setOnClickListener { button ->
                 navigateBackToExerciseTypeMenu(button)
             }
+
+            viewModel.isValidConfiguration.observe(viewLifecycleOwner) { isValid ->
+                Timber.d("isValidConfiguration observed: $isValid")
+                startButton.isEnabled = isValid
+            }
+
         }
 
         // TODO: validate settings
@@ -447,6 +460,11 @@ class ExerciseSetupFragment : Fragment() {
 
     private fun navigateBackToExerciseTypeMenu(view: View) {
         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToExerciseSelectionFragment()
+        view.findNavController().navigate(directions)
+    }
+
+    private fun navigateToExerciseSession(view: View) {
+        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
         view.findNavController().navigate(directions)
     }
 
