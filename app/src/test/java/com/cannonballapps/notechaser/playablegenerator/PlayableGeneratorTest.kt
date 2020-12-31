@@ -1,9 +1,5 @@
 package com.cannonballapps.notechaser.playablegenerator
 
-import com.cannonballapps.notechaser.playablegenerator.exceptions.DuplicateTemplateException
-import com.cannonballapps.notechaser.playablegenerator.exceptions.EmptyTemplateListException
-import com.cannonballapps.notechaser.playablegenerator.exceptions.InsufficientRangeException
-import com.cannonballapps.notechaser.playablegenerator.exceptions.InvalidRangeException
 
 class PlayableGeneratorTest {
 //

@@ -1,6 +1,6 @@
 package com.cannonballapps.notechaser.playablegenerator
 
-import com.cannonballapps.notechaser.playablegenerator.exceptions.EmptyTemplateException
+
 import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import org.junit.Assert.*
 import org.junit.Test
@@ -29,11 +29,11 @@ class PlayableTest {
         assertEquals(3, pattern.size)
     }
 
-    @Test
-    fun `test pattern constructed with empty template throws exception`() {
-        val template = PatternTemplate(arrayListOf())
-        assertFailsWith<EmptyTemplateException> { val pattern = Playable(template, 4) }
-    }
+//    @Test
+//    fun `test pattern constructed with empty template throws exception`() {
+//        val template = PatternTemplate(arrayListOf())
+//        assertFailsWith<EmptyTemplateException> { val pattern = Playable(template, 4) }
+//    }
 
     @Test
     fun `test equals is true with same notes`() {
