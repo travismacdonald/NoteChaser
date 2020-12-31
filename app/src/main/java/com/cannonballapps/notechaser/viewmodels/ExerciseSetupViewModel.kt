@@ -56,15 +56,20 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    // TODO: clean up; separate hasNotePoolDegrees into func for diatonic and chromatic
     val isValidConfiguration = MediatorLiveData<Boolean>().apply {
-        addSource(notePoolType) { _ ->
+        addSource(notePoolType) {
             this.value = hasNotePoolDegreesSelected()
         }
-        addSource(chromaticDegrees) { _ ->
+        addSource(chromaticDegrees) {
             this.value = hasNotePoolDegreesSelected()
         }
-        addSource(diatonicDegrees) { _ ->
+        addSource(diatonicDegrees) {
             this.value = hasNotePoolDegreesSelected()
+        }
+
+        addSource(playableBounds) { bounds ->
+            this.value = hasSufficientRangeForPlayableGeneration(bounds.first, bounds.second)
         }
     }
 
@@ -166,7 +171,7 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    private fun hasNotePoolDegreesSelected() : Boolean {
+    private fun hasNotePoolDegreesSelected(): Boolean {
         return when (notePoolType.value) {
             NotePoolType.DIATONIC -> {
                 diatonicDegrees.value?.contains(true) ?: false
@@ -178,6 +183,13 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
                     "Illegal NotePoolType given: ${notePoolType.value}"
             )
         }
+    }
+
+    private fun hasSufficientRangeForPlayableGeneration(lower: Int, upper: Int): Boolean {
+        if (notePoolType.value == NotePoolType.CHROMATIC) {
+
+        }
+        return true
     }
 
 }

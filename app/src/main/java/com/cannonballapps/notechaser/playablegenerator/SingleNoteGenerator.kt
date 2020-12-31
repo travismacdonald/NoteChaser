@@ -68,7 +68,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     override fun setupGenerator() {
 
         if (noteType.value == NotePoolType.DIATONIC) {
-            scale = MusicTheoryUtils.getModeIntervals(parentScale.value!!.intervals, mode.value!!)
+            scale = MusicTheoryUtils.getIntervalsForModeAtIx(parentScale.value!!.intervals, mode.value!!)
             val intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(diatonicDegrees.value!!, scale, questionKey.value!!)
             notePool = createNotePool(intervals, lowerBound.value!!, upperBound.value!!)
             Timber.d("intvls: ${intervals.contentToString()}")

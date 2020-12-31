@@ -2,6 +2,8 @@ package com.cannonballapps.notechaser.utilities
 
 import com.cannonballapps.notechaser.playablegenerator.ParentScale
 
+
+// TODO: this whole class can probably be an object
 class MusicTheoryUtils {
 
     companion object {
@@ -219,5 +221,8 @@ class MusicTheoryUtils {
             }
             return toReturn
         }
+
+
+
     }
 }
