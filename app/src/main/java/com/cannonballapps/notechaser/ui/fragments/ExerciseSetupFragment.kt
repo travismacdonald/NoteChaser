@@ -36,9 +36,9 @@ class ExerciseSetupFragment : Fragment() {
         )
         binding.lifecycleOwner = this
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
-        bindExerciseSetupItemsList()
 
         // TODO: use when statement, different functions for creating list
+        bindExerciseSetupItemsList()
 
         return binding.root
     }

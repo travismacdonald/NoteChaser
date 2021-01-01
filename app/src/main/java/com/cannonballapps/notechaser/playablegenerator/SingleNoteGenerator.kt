@@ -28,7 +28,7 @@ class SingleNoteGenerator() : PlayableGenerator {
     val questionKey = MutableLiveData(0)
 
     // TODO: extract hardcoded parent scale
-    val parentScale = MutableLiveData(ParentScale("Major", MusicTheoryUtils.MAJOR_SCALE_SEQUENCE))
+    val parentScale = MutableLiveData(ParentScale("Major", MusicTheoryUtils.MAJOR_SCALE_INTERVALS))
 
     // TODO: combine parent scale and mode into single parameter
     val mode = MutableLiveData(0)

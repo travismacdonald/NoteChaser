@@ -14,10 +14,10 @@ class MusicTheoryUtils {
 
         const val OCTAVE_SIZE = 12
 
-        val MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 9, 11)
-        val MELODIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 9, 11)
-        val HARMONIC_MINOR_SCALE_SEQUENCE = intArrayOf(0, 2, 3, 5, 7, 8, 11)
-        val HARMONIC_MAJOR_SCALE_SEQUENCE = intArrayOf(0, 2, 4, 5, 7, 8, 11)
+        val MAJOR_SCALE_INTERVALS = intArrayOf(0, 2, 4, 5, 7, 9, 11)
+        val MELODIC_MINOR_SCALE_INTERVALS = intArrayOf(0, 2, 3, 5, 7, 9, 11)
+        val HARMONIC_MINOR_SCALE_INTERVALS = intArrayOf(0, 2, 3, 5, 7, 8, 11)
+        val HARMONIC_MAJOR_SCALE_INTERVALS = intArrayOf(0, 2, 4, 5, 7, 8, 11)
 
         val CHROMATIC_SCALE_SHARP = arrayOf(
                 "C",
@@ -117,9 +117,9 @@ class MusicTheoryUtils {
         // TODO: delete this
         // TODO: Replace with actual DB later
         val PARENT_SCALE_BANK = arrayOf(
-                ParentScale("Major", MAJOR_SCALE_SEQUENCE),
-                ParentScale("Melodic Minor", MELODIC_MINOR_SCALE_SEQUENCE),
-                ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_SEQUENCE)
+                ParentScale("Major", MAJOR_SCALE_INTERVALS),
+                ParentScale("Melodic Minor", MELODIC_MINOR_SCALE_INTERVALS),
+                ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_INTERVALS)
         )
 
         fun midiValueToNoteName(ix: Int, asFlat: Boolean = true): String {

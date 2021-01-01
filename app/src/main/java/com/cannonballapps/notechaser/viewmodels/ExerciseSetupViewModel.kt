@@ -69,7 +69,7 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
         }
 
         addSource(playableBounds) { bounds ->
-            this.value = hasSufficientRangeForPlayableGeneration(bounds.first, bounds.second)
+            this.value = hasSufficientRangeForPlayableGeneration()
         }
     }
 
@@ -185,7 +185,22 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    private fun hasSufficientRangeForPlayableGeneration(lower: Int, upper: Int): Boolean {
+    private fun hasSufficientRangeForPlayableGeneration(): Boolean {
+
+        /*
+         * Variables that Depends on:
+         *   Key,
+         *   Intervals,
+         *   Lower bound,
+         *   Upper bound,
+         *
+         * Info used to calculate:
+         *   Range of pattern (i.e. highest - lowest) (e.g. single note playables
+         *  will be 0)
+         *
+         *
+         */
+
         if (notePoolType.value == NotePoolType.CHROMATIC) {
 
         }

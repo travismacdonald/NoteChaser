@@ -12,7 +12,7 @@ class MusicTheoryUtilsTest {
     fun `test ionian mode construction is correct`() {
         val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
 
-        val majorScaleSequence = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val majorScaleSequence = MusicTheoryUtils.MAJOR_SCALE_INTERVALS
         val ionian = MusicTheoryUtils.getIntervalsForModeAtIx(majorScaleSequence, 0)
 
         assertArrayEquals(expected, ionian)
@@ -21,35 +21,35 @@ class MusicTheoryUtilsTest {
     @Test
     fun `test dorian mode construction is correct`() {
         val expected = intArrayOf(0, 2, 3, 5, 7, 9, 10)
-        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MAJOR_SCALE_INTERVALS
         assertArrayEquals(expected, MusicTheoryUtils.getIntervalsForModeAtIx(scale, 1))
     }
 
     @Test
     fun `test locrian mode construction is correct`() {
         val expected = intArrayOf(0, 1, 3, 5, 6, 8, 10)
-        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MAJOR_SCALE_INTERVALS
         assertArrayEquals(expected, MusicTheoryUtils.getIntervalsForModeAtIx(scale, 6))
     }
 
     @Test
     fun `test melodic minor mode construction is correct`() {
         val expected = intArrayOf(0, 2, 3, 5, 7, 9, 11)
-        val scale = MusicTheoryUtils.MELODIC_MINOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MELODIC_MINOR_SCALE_INTERVALS
         assertArrayEquals(expected, MusicTheoryUtils.getIntervalsForModeAtIx(scale, 0))
     }
 
     @Test
     fun `test altered mode construction is correct`() {
         val expected = intArrayOf(0, 1, 3, 4, 6, 8, 10)
-        val scale = MusicTheoryUtils.MELODIC_MINOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MELODIC_MINOR_SCALE_INTERVALS
         assertArrayEquals(expected, MusicTheoryUtils.getIntervalsForModeAtIx(scale, 6))
     }
 
     @Test
     fun `test harmonic minor mode construction is correct`() {
         val expected = intArrayOf(0, 2, 3, 5, 7, 8, 11)
-        val scale = MusicTheoryUtils.HARMONIC_MINOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.HARMONIC_MINOR_SCALE_INTERVALS
         assertArrayEquals(expected, MusicTheoryUtils.getIntervalsForModeAtIx(scale, 0))
     }
 
@@ -155,7 +155,7 @@ class MusicTheoryUtilsTest {
     @Test
     fun `test diatonic degrees 1`() {
         val seventh = booleanArrayOf(true, false, true, false, true, false, true) // 1 3 5 7
-        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MAJOR_SCALE_INTERVALS
         val key = 0 // C
         val expected = intArrayOf(0, 4, 7, 11) // C E G B
         assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))
@@ -164,7 +164,7 @@ class MusicTheoryUtilsTest {
     @Test
     fun `test diatonic degrees 2`() {
         val seventh = booleanArrayOf(true, false, true, false, true, false, true) // 1 3 5 7
-        val scale = MusicTheoryUtils.MAJOR_SCALE_SEQUENCE
+        val scale = MusicTheoryUtils.MAJOR_SCALE_INTERVALS
         val key = 3 // Eb
         val expected = intArrayOf(2, 3, 7, 10) // D Eb G Bb
         assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))

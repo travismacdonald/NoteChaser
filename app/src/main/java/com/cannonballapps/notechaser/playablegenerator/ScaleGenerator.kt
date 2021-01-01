@@ -7,16 +7,16 @@ class ScaleGenerator {
     companion object {
 
         public fun generateMajorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheoryUtils.MAJOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.MAJOR_SCALE_INTERVALS, ix)
 
         }
 
         public fun generateMelodicMinorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheoryUtils.MELODIC_MINOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.MELODIC_MINOR_SCALE_INTERVALS, ix)
         }
 
         public fun generateHarmonicMinorMode(ix: Int): PatternTemplate {
-            return generateMode(MusicTheoryUtils.HARMONIC_MINOR_SCALE_SEQUENCE, ix)
+            return generateMode(MusicTheoryUtils.HARMONIC_MINOR_SCALE_INTERVALS, ix)
         }
 
         /**
