@@ -1,10 +1,8 @@
 package com.cannonballapps.notechaser.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.*
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
@@ -13,11 +11,9 @@ import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class ExerciseSetupViewModel(application: Application) : AndroidViewModel(application) {
-
-
-
-    private val prefsStore = PrefsStore(application.applicationContext)
+class ExerciseSetupViewModel @ViewModelInject constructor(
+        private val prefsStore: PrefsStore
+) : ViewModel() {
 
     lateinit var exerciseType: ExerciseType
 

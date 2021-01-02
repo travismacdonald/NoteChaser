@@ -8,9 +8,11 @@ import androidx.datastore.preferences.createDataStore
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
 
 private const val STORE_NAME = "notechaser_data_store"
 
@@ -35,7 +37,10 @@ private const val DEFAULT_QUESTION_KEY = 0
 private const val DEFAULT_SESSION_TIME_LEN = 10
 
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
-class PrefsStore(context: Context) {
+
+class PrefsStore @Inject constructor(
+        @ApplicationContext context: Context
+) {
 
     private val dataStore = context.createDataStore(
             name = STORE_NAME
