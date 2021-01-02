@@ -33,3 +33,12 @@ enum class ParentScale2(val intervals: List<Int>, val modeNames: List<String>) {
     }
 
 }
+
+fun ParentScale2.getModeAtIx(ix: Int): Scale {
+    val name = modeNames[ix]
+    val intervals = MusicTheoryUtils.getIntervalsForModeAtIx(this.intervals.toIntArray(), ix)
+    return Scale(
+            name,
+            intervals
+    )
+}

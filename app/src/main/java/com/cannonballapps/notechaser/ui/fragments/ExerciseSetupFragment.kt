@@ -32,6 +32,7 @@ class ExerciseSetupFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+        viewModel.prefetchPrefsStore()
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_exercise_setup, container, false
@@ -41,6 +42,7 @@ class ExerciseSetupFragment : Fragment() {
 
         // TODO: use when statement, different functions for creating list
         viewModel.exerciseType = args.exerciseType
+
         bindExerciseSetupItemsList()
 
         return binding.root
@@ -231,8 +233,8 @@ class ExerciseSetupFragment : Fragment() {
                 )
             }
 
-            viewModel.scaleName.observe(viewLifecycleOwner) { scaleName ->
-                summary.text = scaleName
+            viewModel.scale.observe(viewLifecycleOwner) { scale ->
+                summary.text = scale.name
             }
 
             viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
@@ -253,8 +255,6 @@ class ExerciseSetupFragment : Fragment() {
                 }
                 summary.text = range
             }
-
-            // TODO: validate range
 
             rangeSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: RangeSlider) {}

@@ -3,13 +3,13 @@ package com.cannonballapps.notechaser.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.cannonballapps.notechaser.data.ExerciseType
-import com.cannonballapps.notechaser.data.NotePoolType
-import com.cannonballapps.notechaser.data.ParentScale2
-import com.cannonballapps.notechaser.data.SessionType
+import com.cannonballapps.notechaser.data.*
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
+import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.*
 
 class ExerciseSetupViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore
@@ -30,16 +30,17 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
     val sessionTimeLimit = prefsStore.sessionTimeLimit().asLiveData()
     val sessionType = prefsStore.sessionType().asLiveData()
 
-    // TODO: remove some repeated logic
-    val scaleName = MediatorLiveData<String>().apply {
+    private lateinit var chromaticIntervals: IntArray
+
+    val scale = MediatorLiveData<Scale>().apply {
         addSource(parentScale) { parentScale ->
             modeIx.value?.let { modeIx ->
-                this.value = parentScale.modeNames[modeIx]
+                this.value = parentScale.getModeAtIx(modeIx)
             }
         }
         addSource(modeIx) { modeIx ->
             parentScale.value?.let { parentScale ->
-                this.value = parentScale.modeNames[modeIx]
+                this.value = parentScale.getModeAtIx(modeIx)
             }
         }
     }
@@ -74,11 +75,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         }
     }
 
-    init {
-        prefetchPrefsStore()
-    }
-
-    private fun prefetchPrefsStore() {
+    fun prefetchPrefsStore() {
         viewModelScope.launch {
             prefsStore.chromaticDegrees().first()
             prefsStore.diatonicDegrees().first()
@@ -187,24 +184,27 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
     }
 
     private fun hasSufficientRangeForPlayableGeneration(): Boolean {
+        lateinit var intervals: IntArray
+        if (notePoolType.value == NotePoolType.DIATONIC) {
+            intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
+                    diatonicDegrees.value!!,
+                    scale.value!!.intervals,
+                    questionKey.value!!
+            )
+        }
+        else if (notePoolType.value == NotePoolType.CHROMATIC) {
+            intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                    chromaticDegrees.value!!,
+                    questionKey.value!!
+            )
+        }
 
-        /*
-         * Variables that Depends on:
-         *   Key,
-         *   Intervals,
-         *   Lower bound,
-         *   Upper bound,
-         *
-         * Info used to calculate:
-         *   Range of pattern (i.e. highest - lowest) (e.g. single note playables
-         *  will be 0)
-         *
-         *
-         */
-
-
-        if (notePoolType.value == NotePoolType.CHROMATIC) {
-
+        for (interval in intervals) {
+            val lower = playableLowerBound.value!!
+            val upper = playableUpperBound.value!!
+            if (!MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(interval, lower, upper)) {
+                return false
+            }
         }
         return true
     }

@@ -254,6 +254,7 @@ object MusicTheoryUtils {
         return toReturn
     }
 
+    // TODO: update it to use new classes `PitchClass` and `Note`
     fun pitchClassOccursBetweenNoteBounds(
             pitchClass: Int,
             lowerBound: Int,
@@ -273,6 +274,7 @@ object MusicTheoryUtils {
         return false
     }
 
+    // TODO: maybe create a new class called NoteFactory
     fun getNoteInstanceFromMidiNumber(midiNumber: Int): Note {
         assertValidMidiNumber(midiNumber)
         val pitchClass = getPitchClassFromMidiNumber(midiNumber)
