@@ -11,6 +11,94 @@ import kotlin.test.assertTrue
 class MusicTheoryUtilsTest {
 
     @Test
+    fun `test getNoteInstanceFromMidiNumber 60 makes c4`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(60)
+        assertEquals(PitchClass.C, note.pitchClass)
+        assertEquals(4, note.octave)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromMidiNumber 12 makes c0`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(12)
+        assertEquals(PitchClass.C, note.pitchClass)
+        assertEquals(0, note.octave)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromMidiNumber 59 makes b3`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(59)
+        assertEquals(PitchClass.B, note.pitchClass)
+        assertEquals(3, note.octave)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromMidiNumber 0 makes c-1`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
+        assertEquals(PitchClass.C, note.pitchClass)
+        assertEquals(-1, note.octave)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromMidiNumber -1 throws exception`() {
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.getNoteInstanceFromMidiNumber(-1)
+        }
+    }
+
+    @Test
+    fun `test getNoteInstanceFromMidiNumber 109 throws exception`() {
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.getNoteInstanceFromMidiNumber(109)
+        }
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave c4 makes 60`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+                PitchClass.C,
+                4
+        )
+        assertEquals(60, note.midiNumber)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave c0 makes 12`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, 0)
+        assertEquals(12, note.midiNumber)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave b3 makes 59`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+                PitchClass.B,
+                3
+        )
+        assertEquals(59, note.midiNumber)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave c-1 makes 0`() {
+        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, -1)
+        assertEquals(0, note.midiNumber)
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave c-2 throws exception`() {
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, -2)
+        }
+    }
+
+    @Test
+    fun `test getNoteInstanceFromPitchClassAndOctave cSharp8 throws exception`() {
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C_SHARP, 8)
+        }
+    }
+
+
+
+    @Test
     fun `test midiValueToNoteName 60 returns c4`() {
         val c4MidiNum = 60
         val noteName = MusicTheoryUtils.midiValueToNoteName(c4MidiNum)
