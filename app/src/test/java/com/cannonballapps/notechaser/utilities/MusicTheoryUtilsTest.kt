@@ -7,7 +7,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-// TODO: clean up test names; make them more consistent (refer to midiValueToNoteName)
+// TODO: clean up test names; make them more consistent
 class MusicTheoryUtilsTest {
 
     @Test
@@ -95,8 +95,6 @@ class MusicTheoryUtilsTest {
             MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C_SHARP, 8)
         }
     }
-
-
 
     @Test
     fun `test midiValueToNoteName 60 returns c4`() {
