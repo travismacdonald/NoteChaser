@@ -78,56 +78,59 @@ class MusicTheoryUtilsTest {
     }
 
     @Test
-    fun `test chromatic degrees transformation C major`() {
-        // C D E F G A B
-        val degrees = booleanArrayOf(
+    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of C`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
                 true, false, true, false, true, true,
                 false, true, false, true, false, true
         )
-        // C major
-        val key = 0
+        val keyOfC = 0
+        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                majorScaleChromaticDegrees,
+                keyOfC
+        )
+
         val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
-        assertArrayEquals(expected, MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key))
+        assertArrayEquals(expected, actual)
     }
 
     @Test
-    fun `test chromatic degrees transformation Eb major`() {
-        // C D E F G A B
-        val degrees = booleanArrayOf(
+    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of EFlat`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
                 true, false, true, false, true, true,
                 false, true, false, true, false, true
         )
-        // C major
-        val key = 3
+        val keyOfEFlat = 3
+        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                majorScaleChromaticDegrees,
+                keyOfEFlat
+        )
+
         val expected = intArrayOf(0, 2, 3, 5, 7, 8, 10)
-        assertArrayEquals(expected, MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key))
+        assertArrayEquals(expected, actual)
     }
 
     @Test
-    fun `test chromatic degrees transformation throws error with illegal key`() {
-        // C D E F G A B
-        val degrees = booleanArrayOf(
+    fun `test transformChromaticDegreesToIntervals with key of 12 throws IllegalArgumentException`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
                 true, false, true, false, true, true,
                 false, true, false, true, false, true
         )
-        // C major
-        val key = 12 // key must be less than or equal to 11
+        val erroneousKey = 12 // key must be (0 <= key <= 11)
         assertFailsWith<java.lang.IllegalArgumentException> {
-            MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key)
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(majorScaleChromaticDegrees, erroneousKey)
         }
     }
 
     @Test
-    fun `test chromatic degrees transformation throws error with illegal sized chromatic degrees`() {
-        // Must be size 12
-        val degrees = booleanArrayOf(
+    fun `test transformChromaticDegreesToIntervals with degrees of size 11 throws IllegalArgumentException`() {
+        // keys.size must equal 12
+        val degreesOfSizeEleven = booleanArrayOf(
                 true, false, true, false, true, true,
                 false, true, false, true, false
         )
-        // C major
-        val key = 3
+        val keyOfEFlat = 3
         assertFailsWith<java.lang.IllegalArgumentException> {
-            MusicTheoryUtils.transformChromaticDegreesToIntervals(degrees, key)
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(degreesOfSizeEleven, keyOfEFlat)
         }
     }
 
