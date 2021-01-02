@@ -1,5 +1,6 @@
 package com.cannonballapps.notechaser.utilities
 
+import com.cannonballapps.notechaser.data.Note
 import com.cannonballapps.notechaser.playablegenerator.ParentScale
 
 
@@ -224,18 +225,35 @@ object MusicTheoryUtils {
             lowerBound: Int,
             upperBound: Int
     ): Boolean {
-        if (pitchClass < 0 || pitchClass > 11) {
-            throw IllegalArgumentException(
-                    "pitchClass must be between 0 and 11 (both inclusive). " +
-                            "Given interval: $pitchClass"
-            )
-        }
 
-        if (pitchClass in lowerBound..upperBound) {
+        assertValidPitchClass(pitchClass)
+        assertValidBounds(lowerBound, upperBound)
+
+        val numOctavesDisplaced = lowerBound / OCTAVE_SIZE
+        val transposedLower = lowerBound - (OCTAVE_SIZE * numOctavesDisplaced)
+        val transposedUpper = upperBound - (OCTAVE_SIZE * numOctavesDisplaced)
+        if (pitchClass in transposedLower..transposedUpper
+                || pitchClass + OCTAVE_SIZE in transposedLower..transposedUpper) {
             return true
         }
         return false
     }
 
+    private fun assertValidPitchClass(pitchClass: Int) {
+        if (pitchClass < 0 || pitchClass > 11) {
+            throw IllegalArgumentException(
+                    "pitchClass must be between 0 and 11 (both inclusive). " +
+                            "Given pitchClass: $pitchClass"
+            )
+        }
+    }
+
+    private fun assertValidBounds(lowerBound: Int, upperBound: Int) {
+        if (lowerBound > upperBound) {
+            throw IllegalArgumentException(
+                    "lowerBound must be less than or equal to upperBound"
+            )
+        }
+    }
 
 }
