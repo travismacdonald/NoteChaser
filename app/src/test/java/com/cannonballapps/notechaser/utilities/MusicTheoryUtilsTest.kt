@@ -4,9 +4,155 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 // TODO: clean up test names; make them more consistent (refer to midiValueToNoteName)
 class MusicTheoryUtilsTest {
+
+    @Test
+    fun `test midiValueToNoteName 60 returns c4`() {
+        val c4MidiNum = 60
+        val noteName = MusicTheoryUtils.midiValueToNoteName(c4MidiNum)
+        assertEquals("C4", noteName)
+    }
+
+    @Test
+    fun `test midiValueToNoteName 61 returns dFlat4 by default`() {
+        val dFlat4MidiNum = 61
+        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum)
+        assertEquals("D♭4", noteName)
+    }
+
+    @Test
+    fun `test midiValueToNoteName 61 returns dFlat4 when asFlat is true`() {
+        val dFlat4MidiNum = 61
+        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum, asFlat = true)
+        assertEquals("D♭4", noteName)
+    }
+
+    @Test
+    fun `test midiValueToNoteName 61 returns cSharp4 when asFlat is false`() {
+        val cSharp4MidiNum = 61
+        val noteName = MusicTheoryUtils.midiValueToNoteName(cSharp4MidiNum, asFlat = false)
+        assertEquals("C♯4", noteName)
+    }
+
+    @Test
+    fun `test pitchClassOccursBetweenNoteBounds pitchClass less than 0 throws Exception`() {
+        val pitchClass = -1
+        val lowerBound = 36
+        val upperBound = 48
+
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
+                    pitchClass,
+                    lowerBound = lowerBound,
+                    upperBound = upperBound
+            )
+        }
+    }
+
+    @Test
+    fun `test pitchClassOccursBetweenNoteBounds pitchClass greater than 11 throws Exception`() {
+        val pitchClass = 12
+        val lowerBound = 36
+        val upperBound = 48
+
+        assertFailsWith<IllegalArgumentException> {
+            MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
+                    pitchClass,
+                    lowerBound = lowerBound,
+                    upperBound = upperBound
+            )
+        }
+    }
+
+    @Test
+    fun `test pitchClassOccursBetweenNoteBounds C occurs between notes 0 and 0`() {
+        val c = 0
+        val lowerBound = 0
+        val upperBound = 0
+
+        val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
+                pitchClass = c,
+                lowerBound = lowerBound,
+                upperBound = upperBound
+        )
+        assertTrue(occurs)
+    }
+
+    @Test
+    fun `test pitchClassOccursBetweenNoteBounds dFlat does not occur between notes c-1 and c-1`() {
+        val dFlat = 1
+        val lowerBound = 0
+        val upperBound = 0
+
+        val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
+                pitchClass = dFlat,
+                lowerBound = lowerBound,
+                upperBound = upperBound
+        )
+        assertFalse(occurs)
+    }
+
+    @Test
+    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of C`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        val keyOfC = 0
+        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                majorScaleChromaticDegrees,
+                keyOfC
+        )
+
+        val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
+        assertArrayEquals(expected, actual)
+    }
+
+    @Test
+    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of EFlat`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        val keyOfEFlat = 3
+        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                majorScaleChromaticDegrees,
+                keyOfEFlat
+        )
+
+        // Notice that all intervals are (0 <= i <= 11)
+        val expected = intArrayOf(0, 2, 3, 5, 7, 8, 10)
+        assertArrayEquals(expected, actual)
+    }
+
+    @Test
+    fun `test transformChromaticDegreesToIntervals with key of 12 throws IllegalArgumentException`() {
+        val majorScaleChromaticDegrees = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false, true
+        )
+        val erroneousKey = 12 // key must be (0 <= key <= 11)
+        assertFailsWith<java.lang.IllegalArgumentException> {
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(majorScaleChromaticDegrees, erroneousKey)
+        }
+    }
+
+    @Test
+    fun `test transformChromaticDegreesToIntervals with degrees of size 11 throws IllegalArgumentException`() {
+        // keys.size must equal 12
+        val degreesOfSizeEleven = booleanArrayOf(
+                true, false, true, false, true, true,
+                false, true, false, true, false
+        )
+        val keyOfEFlat = 3
+        assertFailsWith<java.lang.IllegalArgumentException> {
+            MusicTheoryUtils.transformChromaticDegreesToIntervals(degreesOfSizeEleven, keyOfEFlat)
+        }
+    }
 
     @Test
     fun `test ionian mode construction is correct`() {
@@ -78,63 +224,6 @@ class MusicTheoryUtilsTest {
     }
 
     @Test
-    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of C`() {
-        val majorScaleChromaticDegrees = booleanArrayOf(
-                true, false, true, false, true, true,
-                false, true, false, true, false, true
-        )
-        val keyOfC = 0
-        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
-                majorScaleChromaticDegrees,
-                keyOfC
-        )
-
-        val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
-        assertArrayEquals(expected, actual)
-    }
-
-    @Test
-    fun `test transformChromaticDegreesToIntervals with major scale sequence in key of EFlat`() {
-        val majorScaleChromaticDegrees = booleanArrayOf(
-                true, false, true, false, true, true,
-                false, true, false, true, false, true
-        )
-        val keyOfEFlat = 3
-        val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
-                majorScaleChromaticDegrees,
-                keyOfEFlat
-        )
-
-        val expected = intArrayOf(0, 2, 3, 5, 7, 8, 10)
-        assertArrayEquals(expected, actual)
-    }
-
-    @Test
-    fun `test transformChromaticDegreesToIntervals with key of 12 throws IllegalArgumentException`() {
-        val majorScaleChromaticDegrees = booleanArrayOf(
-                true, false, true, false, true, true,
-                false, true, false, true, false, true
-        )
-        val erroneousKey = 12 // key must be (0 <= key <= 11)
-        assertFailsWith<java.lang.IllegalArgumentException> {
-            MusicTheoryUtils.transformChromaticDegreesToIntervals(majorScaleChromaticDegrees, erroneousKey)
-        }
-    }
-
-    @Test
-    fun `test transformChromaticDegreesToIntervals with degrees of size 11 throws IllegalArgumentException`() {
-        // keys.size must equal 12
-        val degreesOfSizeEleven = booleanArrayOf(
-                true, false, true, false, true, true,
-                false, true, false, true, false
-        )
-        val keyOfEFlat = 3
-        assertFailsWith<java.lang.IllegalArgumentException> {
-            MusicTheoryUtils.transformChromaticDegreesToIntervals(degreesOfSizeEleven, keyOfEFlat)
-        }
-    }
-
-    @Test
     fun `test transpose intervals 0`() {
         val cMaj = intArrayOf( 0, 2, 4, 5, 7, 9, 11 )
         val expected = intArrayOf( 0, 2, 4, 5, 7, 9, 11 ) // C Major
@@ -171,34 +260,6 @@ class MusicTheoryUtilsTest {
         val key = 3 // Eb
         val expected = intArrayOf(2, 3, 7, 10) // D Eb G Bb
         assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))
-    }
-
-    @Test
-    fun `test midiValueToNoteName 60 returns c4`() {
-        val c4MidiNum = 60
-        val noteName = MusicTheoryUtils.midiValueToNoteName(c4MidiNum)
-        assertEquals("C4", noteName)
-    }
-
-    @Test
-    fun `test midiValueToNoteName 61 returns dFlat4 by default`() {
-        val dFlat4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum)
-        assertEquals("D♭4", noteName)
-    }
-
-    @Test
-    fun `test midiValueToNoteName 61 returns dFlat4 when asFlat is true`() {
-        val dFlat4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum, asFlat = true)
-        assertEquals("D♭4", noteName)
-    }
-
-    @Test
-    fun `test midiValueToNoteName 61 returns cSharp4 when asFlat is false`() {
-        val cSharp4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(cSharp4MidiNum, asFlat = false)
-        assertEquals("C♯4", noteName)
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.cannonballapps.notechaser.playablegenerator.ParentScale
 
 
 object MusicTheoryUtils {
-    
+
     const val SHARP = '\u266F'
     const val FLAT = '\u266d'
     const val NATURAL = '\u266e'
@@ -219,12 +219,11 @@ object MusicTheoryUtils {
         return toReturn
     }
 
-    fun pitchClassHasOccurrenceBetweenNoteBounds(
+    fun pitchClassOccursBetweenNoteBounds(
             pitchClass: Int,
             lowerBound: Int,
             upperBound: Int
     ): Boolean {
-
         if (pitchClass < 0 || pitchClass > 11) {
             throw IllegalArgumentException(
                     "pitchClass must be between 0 and 11 (both inclusive). " +
@@ -232,6 +231,9 @@ object MusicTheoryUtils {
             )
         }
 
+        if (pitchClass in lowerBound..upperBound) {
+            return true
+        }
         return false
     }
 
