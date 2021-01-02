@@ -38,6 +38,7 @@ class ExerciseSetupFragment : Fragment() {
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
 
         // TODO: use when statement, different functions for creating list
+        viewModel.exerciseType = args.exerciseType
         bindExerciseSetupItemsList()
 
         return binding.root

@@ -2,7 +2,6 @@ package com.cannonballapps.notechaser.models
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.cannonballapps.notechaser.UserPrefs
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.NotePoolType
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +15,7 @@ class NcRepository(
 ) {
 
     init {
-        Timber.d("FUCK YOU")
+        Timber.d("i love you")
     }
 
     // TODO: possiblly change Flow<Int> to Flow<NotePoolType> when all is said and done

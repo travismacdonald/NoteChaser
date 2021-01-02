@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
@@ -14,7 +15,11 @@ import kotlinx.coroutines.launch
 
 class ExerciseSetupViewModel(application: Application) : AndroidViewModel(application) {
 
+
+
     private val prefsStore = PrefsStore(application.applicationContext)
+
+    lateinit var exerciseType: ExerciseType
 
     val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
     val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
@@ -200,6 +205,7 @@ class ExerciseSetupViewModel(application: Application) : AndroidViewModel(applic
          *
          *
          */
+
 
         if (notePoolType.value == NotePoolType.CHROMATIC) {
 
