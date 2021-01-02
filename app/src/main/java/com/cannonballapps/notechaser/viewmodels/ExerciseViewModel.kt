@@ -3,7 +3,6 @@ package com.cannonballapps.notechaser.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
-import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessorListener
@@ -20,7 +19,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     // TODO: want two types of settings: 1) global settings (theme, instr, ...), and 2) session (num questions, ..., you know what i mean)
 
-    val settings = ExerciseSetupSettings()
+//    val settings = ExerciseSetupSettings()
 
     lateinit var generator: PlayableGenerator
 

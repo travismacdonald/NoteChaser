@@ -4,10 +4,8 @@ package com.cannonballapps.notechaser.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.cannonballapps.notechaser.data.*
+import com.cannonballapps.notechaser.musicutilities.*
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.Scale
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
