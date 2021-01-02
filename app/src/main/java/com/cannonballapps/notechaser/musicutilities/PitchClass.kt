@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.utilities
+package com.cannonballapps.notechaser.musicutilities
 
 const val SHARP = '\u266F'
 const val FLAT = '\u266d'

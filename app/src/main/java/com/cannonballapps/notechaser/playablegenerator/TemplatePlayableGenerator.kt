@@ -1,6 +1,7 @@
 package com.cannonballapps.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
+import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import kotlin.IllegalStateException
 import kotlin.random.Random
 

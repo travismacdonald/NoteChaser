@@ -1,6 +1,6 @@
 package com.cannonballapps.notechaser.playablegenerator
 
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 
 class ScaleGenerator {
 

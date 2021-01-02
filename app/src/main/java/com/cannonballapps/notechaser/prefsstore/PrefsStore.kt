@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
-import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
 import dagger.hilt.android.qualifiers.ApplicationContext

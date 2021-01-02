@@ -1,8 +1,10 @@
 package com.cannonballapps.notechaser.playablegenerator
 
 import androidx.lifecycle.MutableLiveData
-import com.cannonballapps.notechaser.data.NotePoolType
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
+import com.cannonballapps.notechaser.musicutilities.ChordTemplate
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import timber.log.Timber
 import java.lang.IllegalStateException
 import kotlin.random.Random

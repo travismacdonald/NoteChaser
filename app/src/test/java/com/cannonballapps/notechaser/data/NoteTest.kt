@@ -1,7 +1,7 @@
 package com.cannonballapps.notechaser.data
 
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
-import com.cannonballapps.notechaser.utilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.PitchClass
 import junit.framework.TestCase
 import org.junit.Test
 

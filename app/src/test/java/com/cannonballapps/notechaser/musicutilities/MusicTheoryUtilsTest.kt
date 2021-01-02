@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.utilities
+package com.cannonballapps.notechaser.musicutilities
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test

@@ -1,10 +1,9 @@
 package com.cannonballapps.notechaser.playablegenerator
 
 
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import org.junit.Assert.*
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class PlayableTest {
 

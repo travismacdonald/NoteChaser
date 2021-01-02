@@ -1,6 +1,8 @@
-package com.cannonballapps.notechaser.playablegenerator
+package com.cannonballapps.notechaser.musicutilities
 
 
+import com.cannonballapps.notechaser.playablegenerator.PatternTemplate
+import com.cannonballapps.notechaser.playablegenerator.PlayableTemplate
 import kotlin.IllegalStateException
 
 // TODO: could override contains to use binary search for val, doesn't really make a performance difference

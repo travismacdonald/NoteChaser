@@ -1,6 +1,6 @@
-package com.cannonballapps.notechaser.data
+package com.cannonballapps.notechaser.musicutilities
 
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 
 enum class ParentScale2(val intervals: List<Int>, val modeNames: List<String>) {
 

@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
-import com.cannonballapps.notechaser.data.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.data.ParentScale2
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider

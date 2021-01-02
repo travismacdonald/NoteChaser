@@ -1,8 +1,6 @@
-package com.cannonballapps.notechaser.utilities
+package com.cannonballapps.notechaser.musicutilities
 
-import com.cannonballapps.notechaser.data.Note
 import com.cannonballapps.notechaser.playablegenerator.ParentScale
-import java.io.OutputStream
 
 
 object MusicTheoryUtils {

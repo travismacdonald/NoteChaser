@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
-import com.cannonballapps.notechaser.utilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
 
 

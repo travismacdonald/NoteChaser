@@ -3,9 +3,6 @@ package com.cannonballapps.notechaser.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
-import com.cannonballapps.notechaser.data.NotePoolType
-import com.cannonballapps.notechaser.data.ParentScale2
-import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupSettings
 import com.cannonballapps.notechaser.models.*
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
@@ -13,10 +10,8 @@ import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessorListener
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.playablegenerator.Playable
-import com.cannonballapps.notechaser.playablegenerator.PlayableGenerator
-import com.cannonballapps.notechaser.prefsstore.PrefsStore
+import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 

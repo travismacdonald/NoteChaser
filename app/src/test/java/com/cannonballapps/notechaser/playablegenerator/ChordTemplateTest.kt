@@ -1,5 +1,6 @@
 package com.cannonballapps.notechaser.playablegenerator
 
+import com.cannonballapps.notechaser.musicutilities.ChordTemplate
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.test.assertFailsWith

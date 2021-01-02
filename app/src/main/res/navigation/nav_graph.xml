@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/sessionStatisticsFragment"
-        android:name="com.cannonballapps.notechaser.SessionStatisticsFragment"
+        android:name="com.cannonballapps.notechaser.ui.fragments.SessionStatisticsFragment"
         android:label="fragment_session_statistics"
         tools:layout="@layout/fragment_session_statistics" />
 

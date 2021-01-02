@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.data
+package com.cannonballapps.notechaser.musicutilities
 
 data class Scale(
         val name: String,

@@ -1,14 +1,6 @@
 package com.cannonballapps.notechaser.models
 
-import android.util.Log
-import androidx.datastore.core.DataStore
-import com.cannonballapps.notechaser.data.ExerciseType
-import com.cannonballapps.notechaser.data.NotePoolType
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import java.io.IOException
 
 class NcRepository(
 //        private val dataStore: DataStore<UserPrefs>
