@@ -18,15 +18,23 @@ class SessionFragment : Fragment() {
     val viewModel: SessionViewModel by viewModels()
     lateinit var binding: FragmentSessionBinding
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
+        val args = SessionFragmentArgs.fromBundle(requireArguments())
+        viewModel.initGenerator(args.exerciseType)
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
         )
         binding.lifecycleOwner = this
 
-        return binding.root
+        binding.randomButton.setOnClickListener {
+            val x = viewModel.getNextPlayable()
+//            Timber.d("playable: ${x.notes}")
+        }
 
+        return binding.root
     }
 }

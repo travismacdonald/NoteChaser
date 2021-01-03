@@ -32,6 +32,7 @@ class ExerciseSetupFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
         viewModel.prefetchPrefsStore()
 
         binding = DataBindingUtil.inflate(
