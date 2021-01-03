@@ -2,37 +2,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="viewModel"
-            type="com.cannonballapps.notechaser.viewmodels.ExerciseViewModel" />
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
-        tools:context=".ui.fragments.SessionFragment">
+        android:orientation="vertical"
+        tools:context=".ui.SessionFragment">
 
-        <TextView
-            android:id="@+id/detectedPitch_text"
+        <Button
+            android:id="@+id/randomButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            tools:text="Detected Pitch" />
-
-        <TextView
-            android:id="@+id/questionsAnswered_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="0/20" />
-
-        <TextView
-            android:id="@+id/secondsPassed_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="0/20" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </layout>

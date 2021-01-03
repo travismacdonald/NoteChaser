@@ -11,10 +11,10 @@
     <color name="itemBackground">#FFFFFF</color>
     <color name="itemRipple">#BBBBBB</color>
 
-    <color name="itemTitleText">#000000</color>
-    <color name="itemTitleTextDisabled">#BBBBBB</color>
-    <color name="itemSummaryText">#666666</color>
-    <color name="itemSummaryTextDisabled">#BBBBBB</color>
+    <color name="itemTitle_textColor">#000000</color>
+    <color name="itemTitle_textColorDisabled">#BBBBBB</color>
+    <color name="itemSummary_textColor">#666666</color>
+    <color name="itemSummary_textColorDisabled">#BBBBBB</color>
 
     <!-- Exercise Setup Header -->
     <color name="headerBackground">#DDDDDD</color>

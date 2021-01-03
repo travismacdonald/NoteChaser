@@ -3,23 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="obj"
-            type="com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem.Header" />
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/headerHeight"
-        android:background="@color/headerBackground"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}" >
+        android:background="@color/headerBackground" >
 
         <TextView
-            android:id="@+id/textview"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/itemSmallMargin"
@@ -27,10 +18,9 @@
             android:fontFamily="@font/rubik"
             android:textColor="@color/headerText"
             android:textSize="@dimen/headerTextSize"
-            android:text="@{obj.text}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Header" />
+            tools:text="Title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

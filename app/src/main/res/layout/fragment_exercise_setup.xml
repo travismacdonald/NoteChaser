@@ -2,13 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.cannonballapps.notechaser.viewmodels.ExerciseViewModel" />
-    </data>
-
+    <!-- TODO: Add item separators -->
     <ScrollView
         android:id="@+id/items_scroll"
         android:layout_width="match_parent"
@@ -25,27 +19,23 @@
                 layout="@layout/item_settings_header" />
 
             <include
-                android:id="@+id/noteChoice_single"
+                android:id="@+id/notePoolType_singleList"
                 layout="@layout/item_settings_single_list" />
 
             <include
-                android:id="@+id/chromatic_multi"
+                android:id="@+id/chromaticDegrees_multiList"
                 layout="@layout/item_settings_multi_list" />
 
             <include
-                android:id="@+id/diatonic_multi"
+                android:id="@+id/diatonicDegrees_multiList"
                 layout="@layout/item_settings_multi_list" />
 
             <include
-                android:id="@+id/questionKey_single"
+                android:id="@+id/questionKey_singleList"
                 layout="@layout/item_settings_single_list" />
 
             <include
-                android:id="@+id/parentScale_single"
-                layout="@layout/item_settings_single_list" />
-
-            <include
-                android:id="@+id/mode_single"
+                android:id="@+id/scale_singleList"
                 layout="@layout/item_settings_single_list" />
 
             <include
@@ -57,7 +47,7 @@
                 layout="@layout/item_settings_header" />
 
             <include
-                android:id="@+id/sessionLengthType_single"
+                android:id="@+id/sessionType_singleList"
                 layout="@layout/item_settings_single_list" />
 
             <include
@@ -65,19 +55,19 @@
                 layout="@layout/item_settings_slider" />
 
             <include
-                android:id="@+id/timerLengthSlider"
+                android:id="@+id/sessionTimeLimit_slider"
                 layout="@layout/item_settings_slider" />
 
             <include
-                android:id="@+id/answer_header"
+                android:id="@+id/answerSettings_header"
                 layout="@layout/item_settings_header" />
 
             <include
-                android:id="@+id/matchOctaveSwitch"
+                android:id="@+id/matchOctave_switch"
                 layout="@layout/item_settings_switch" />
 
             <include
-                android:id="@+id/next_buttons"
+                android:id="@+id/navigation_buttons"
                 layout="@layout/item_settings_buttons" />
 
         </LinearLayout>

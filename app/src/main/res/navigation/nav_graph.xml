@@ -7,57 +7,51 @@
 
     <fragment
         android:id="@+id/exerciseSelectionFragment"
-        android:name="com.cannonballapps.notechaser.ui.fragments.ExerciseSelectionFragment"
+        android:name="com.cannonballapps.notechaser.ui.ExerciseSelectionFragment"
         android:label="ExerciseSelectionFragment"
         tools:layout="@layout/fragment_exercise_selection">
 
         <action
-            android:id="@+id/action_exerciseSelectionFragment_to_exerciseConfigurationFragment"
-            app:destination="@id/exerciseConfigurationFragment" />
-        <action
             android:id="@+id/action_exerciseSelectionFragment_to_exerciseSetupFragment"
             app:destination="@id/exerciseSetupFragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/exerciseConfigurationFragment"
-        android:name="com.cannonballapps.notechaser.ui.exerciseconfiguration.ExerciseConfigurationFragment"
-        android:label="exercise_configuration_fragment"
-        tools:layout="@xml/fragment_exercise_configuration" >
-
-        <argument
-            android:name="exerciseType"
-            app:argType="com.cannonballapps.notechaser.data.ExerciseType" />
-
     </fragment>
 
     <fragment
         android:id="@+id/exerciseSetupFragment"
-        android:name="com.cannonballapps.notechaser.ui.fragments.ExerciseSetupFragment"
+        android:name="com.cannonballapps.notechaser.ui.ExerciseSetupFragment"
         android:label="fragment_exercise_setup"
-        tools:layout="@layout/fragment_exercise_setup" >
+        tools:layout="@layout/fragment_exercise_setup">
 
         <argument
             android:name="exerciseType"
             app:argType="com.cannonballapps.notechaser.data.ExerciseType" />
+
         <action
             android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
             app:destination="@id/sessionFragment" />
-
+        <action
+            android:id="@+id/action_exerciseSetupFragment_to_exerciseSelectionFragment"
+            app:popUpTo="@id/exerciseSelectionFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/sessionFragment"
-        android:name="com.cannonballapps.notechaser.ui.fragments.SessionFragment"
+        android:name="com.cannonballapps.notechaser.ui.SessionFragment"
         android:label="fragment_session"
-        tools:layout="@layout/fragment_session" >
+        tools:layout="@layout/fragment_session">
+
+        <argument
+            android:name="exerciseType"
+            app:argType="com.cannonballapps.notechaser.data.ExerciseType" />
+
         <action
             android:id="@+id/action_sessionFragment_to_sessionStatisticsFragment"
             app:destination="@id/sessionStatisticsFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/sessionStatisticsFragment"
-        android:name="com.cannonballapps.notechaser.SessionStatisticsFragment"
+        android:name="com.cannonballapps.notechaser.ui.SessionStatisticsFragment"
         android:label="fragment_session_statistics"
         tools:layout="@layout/fragment_session_statistics" />
 

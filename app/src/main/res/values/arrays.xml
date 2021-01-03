@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Pattern Type -->
-    <string-array name="notechoice_entries">
-        <item>Diatonic</item>
-        <item>Chromatic</item>
-    </string-array>
-
-    <string-array name="notechoice_values">
-        <item>diatonic</item>
-        <item>chromatic</item>
-    </string-array>
-
     <!-- Note Order -->
 
         <!-- NOTE: Two different lists for different playback modes

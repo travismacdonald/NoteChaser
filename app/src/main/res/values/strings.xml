@@ -1,5 +1,45 @@
 <resources>
 
+    <!-- Microphone Permission Dialog -->
+
+    <string name="microphonePermission_title">Permission Needed</string>
+    <string name="microphonePermission_message">This permission is needed to process pitch</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+
+    <!-- Exercise Setup Strings -->
+
+    <string name="answerSettings_header">Answer Settings</string>
+    <string name="chromaticDegrees_title">Chromatic Degrees</string>
+    <string name="diatonicDegrees_title">Diatonic Degrees</string>
+    <string name="matchOctave_summary">User answer must match question octave</string>
+    <string name="matchOctave_title">Match Octave</string>
+    <string name="mode_title">Mode</string>
+    <string name="notePoolType_title">Note Pool Type</string>
+    <string name="numQuestions_title">Number of Questions</string>
+    <string name="parentScale_title">Parent Scale</string>
+    <string name="questionKey_title">Key</string>
+    <string name="questionRange_title">Question Range</string>
+    <string name="questionSettings_header">Question Settings</string>
+    <string name="scale_title">Scale</string>
+    <string name="sessionSettings_header">Session Settings</string>
+    <string name="sessionTimeLimit_summary">%1$d minutes</string>
+    <string name="sessionTimeLimit_title">Time Limit</string>
+    <string name="sessionType_title">Session Type</string>
+
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+
+    <string name="allSelected">All selected</string>
+    <string name="noneSelected">None selected</string>
+
+    <string name="back_button">Back</string>
+    <string name="startSession_button">Start</string>
+
+
+    <!-- TODO: refactor below -->
     <!-- Global Strings -->
 
     <string name="appName">Note Chaser</string>
@@ -16,10 +56,6 @@
 
 
     <!-- Question Preferences -->
-
-    <string name="questions_header">Question Settings</string>
-
-    <string name="noteChoice_title">Note Choice</string>
 
 
     <!-- Playback Preferences -->
@@ -48,35 +84,18 @@
 
     <string name="answer_heading">Answer Settings</string>
 
-    <string name="matchOctave_key">matchOctave</string>
-    <string name="matchOctave_title">Match Octave</string>
-    <string name="matchOctave_summary">Answer must be the same octave as pattern</string>
 
-    <string name="cadenceKey_key">cadenceKey</string>
     <string name="cadenceKey_title">Cadence Key</string>
 
-    <string name="matchKey_key">matchKey</string>
+
     <string name="matchKey_title">Match Key</string>
     <string name="matchKey_summary">Cadence matches pattern key (recommended)</string>
 
-    <string name="sessionLength_key">sessionLength</string>
+
     <string name="sessionLength_title">Session Length</string>
 
-    <string name="timerLength_key">timerLength</string>
+
     <string name="timerLength_title">Timer Length (minutes)</string>
 
-    <string name="numQuestions_key">numQuestions</string>
-    <string name="numQuestions_title">Number of Questions</string>
-
-    <string name="questionKey_title">Question Key</string>
-
-    <string name="parentScale_title">Parent Scale</string>
-
-    <string name="session_header">Session Settings</string>
-
-    <string name="answer_header">Answer Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

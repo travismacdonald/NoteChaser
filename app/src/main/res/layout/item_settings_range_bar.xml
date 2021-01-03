@@ -3,21 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="obj"
-            type="com.cannonballapps.notechaser.data.exercisesetup.ExerciseSetupItem.RangeBar" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/settings_item_background"
-        android:visibility="@{obj.isVisible() ? View.VISIBLE : View.GONE}">
+        android:background="@drawable/settings_item_background">
 
         <TextView
             android:id="@+id/title"
@@ -26,11 +16,8 @@
             android:layout_marginStart="@dimen/itemTextMargin"
             android:layout_marginTop="@dimen/itemSmallMargin"
             android:layout_marginEnd="@dimen/itemTextMargin"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.title}"
-            android:textColor="@{obj.isEnabled() ? @color/itemTitleText : @color/itemTitleTextDisabled}"
-            android:textSize="@dimen/itemTitleTextSize"
-            app:layout_constraintBottom_toTopOf="@id/rangeBar"
+            android:theme="@style/itemTitle"
+            app:layout_constraintBottom_toTopOf="@id/rangeSlider"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Range Bar" />
 
@@ -40,28 +27,24 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="22dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
-            android:fontFamily="@font/rubik"
-            android:text="@{obj.displayValue}"
-            android:textColor="@{obj.isEnabled() ? @color/itemSummaryText : @color/itemSummaryTextDisabled}"
-            android:textSize="@dimen/itemSummaryTextSize"
+            android:theme="@style/itemSummary"
             app:layout_constraintBaseline_toBaselineOf="@id/title"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="Cur val" />
+            tools:text="Value" />
 
         <!-- TODO: fix the colors going on here -->
-        <com.google.android.material.slider.Slider
-            android:id="@+id/rangeBar"
+        <!-- TODO: extract hardcoded dimensions -->
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/rangeSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="58dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="@dimen/itemSmallMargin"
             app:labelBehavior="gone"
-            app:nc_rangeBarValues="@{obj}"
+            app:minSeparation="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
-
-            tools:text="Lotus Flower" />
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
         <ImageView
             android:id="@+id/icon"
