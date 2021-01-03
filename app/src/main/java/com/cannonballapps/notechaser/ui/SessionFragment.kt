@@ -32,7 +32,6 @@ class SessionFragment : Fragment() {
 
         binding.randomButton.setOnClickListener {
             val x = viewModel.getNextPlayable()
-//            Timber.d("playable: ${x.notes}")
         }
 
         return binding.root

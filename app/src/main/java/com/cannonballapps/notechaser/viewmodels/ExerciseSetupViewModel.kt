@@ -41,7 +41,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         }
     }
 
-    val playableBounds = MediatorLiveData<Pair<Int, Int>>().apply {
+    val playableBounds = MediatorLiveData<Pair<Note, Note>>().apply {
         addSource(playableLowerBound) { lowerBound ->
             playableUpperBound.value?.let { upperBound ->
                 updatePlayableBounds(lowerBound, upperBound)
@@ -129,19 +129,19 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         }
     }
 
-    fun savePlayableLowerBound(ix: Int) {
+    fun savePlayableLowerBound(lower: Note) {
         viewModelScope.launch {
-            prefsStore.savePlayableLowerBound(ix)
+            prefsStore.savePlayableLowerBound(lower)
         }
     }
 
-    fun savePlayableUpperBound(ix: Int) {
+    fun savePlayableUpperBound(upper: Note) {
         viewModelScope.launch {
-            prefsStore.savePlayableUpperBound(ix)
+            prefsStore.savePlayableUpperBound(upper)
         }
     }
 
-    fun saveQuestionKey(key: Int) {
+    fun saveQuestionKey(key: PitchClass) {
         viewModelScope.launch {
             prefsStore.saveQuestionKey(key)
         }
@@ -159,7 +159,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun updatePlayableBounds(lower: Int, upper: Int) {
+    private fun updatePlayableBounds(lower: Note, upper: Note) {
         if (lower != playableBounds.value?.first || upper != playableBounds.value?.second) {
             playableBounds.value = Pair(lower, upper)
         }
@@ -185,19 +185,20 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
             intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
                     diatonicDegrees.value!!,
                     scale.value!!.intervals,
-                    questionKey.value!!
+                    questionKey.value!!.value
             )
         }
         else if (notePoolType.value == NotePoolType.CHROMATIC) {
             intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(
                     chromaticDegrees.value!!,
-                    questionKey.value!!
+                    questionKey.value!!.value
             )
         }
         for (interval in intervals) {
             val lower = playableLowerBound.value!!
             val upper = playableUpperBound.value!!
-            if (!MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(interval, lower, upper)) {
+            val pitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[interval]
+            if (!MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(pitchClass, lower, upper)) {
                 return false
             }
         }

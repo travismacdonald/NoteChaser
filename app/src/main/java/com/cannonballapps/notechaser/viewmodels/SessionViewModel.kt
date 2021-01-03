@@ -14,7 +14,6 @@ import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 class SessionViewModel @ViewModelInject constructor(
@@ -27,7 +26,6 @@ class SessionViewModel @ViewModelInject constructor(
 
     fun getNextPlayable(): Playable {
         curPlayable = generator.generatePlayable()
-        Timber.d("playable: ${curPlayable!!.notes.map { it.midiNumber }}")
         return curPlayable!!
     }
 
@@ -56,10 +54,10 @@ class SessionViewModel @ViewModelInject constructor(
             if (notePoolType == NotePoolType.CHROMATIC) {
                 val degrees = prefsStore.chromaticDegrees().first()
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
-                        chromaticDegrees = degrees,
-                        key = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[key],
-                        lowerBound = NoteFactory.makeNoteFromMidiNumber(lowerBound),
-                        upperBound = NoteFactory.makeNoteFromMidiNumber(upperBound)
+                        degrees,
+                        key,
+                        lowerBound,
+                        upperBound
                 )
             }
             else if (notePoolType == NotePoolType.DIATONIC) {
@@ -68,14 +66,13 @@ class SessionViewModel @ViewModelInject constructor(
                 val modeIx = prefsStore.modeIx().first()
                 val scale = parentScale.getModeAtIx(modeIx)
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
-                        diatonicDegrees = degrees,
-                        scale = scale,
-                        key = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[key],
-                        lowerBound = NoteFactory.makeNoteFromMidiNumber(lowerBound),
-                        upperBound = NoteFactory.makeNoteFromMidiNumber(upperBound)
+                        degrees,
+                        scale,
+                        key,
+                        lowerBound,
+                        upperBound
                 )
             }
-            Timber.d("bounds: $lowerBound - $upperBound")
         }
     }
 

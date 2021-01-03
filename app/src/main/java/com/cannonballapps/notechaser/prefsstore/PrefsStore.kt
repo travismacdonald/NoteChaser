@@ -5,9 +5,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.data.SessionType
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -28,11 +27,11 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
 
 private const val DEFAULT_NUM_QUESTIONS = 20
 
-private const val DEFAULT_PLAYABLE_LOWER_BOUND = 48
+private const val DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM = 48
 
-private const val DEFAULT_PLAYABLE_UPPER_BOUND = 60
+private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 60
 
-private const val DEFAULT_QUESTION_KEY = 0
+private const val DEFAULT_QUESTION_KEY_VAL = 0
 
 private const val DEFAULT_SESSION_TIME_LEN = 10
 
@@ -182,12 +181,14 @@ class PrefsStore @Inject constructor(
             throw exception
         }
     }.map { prefs ->
-        prefs[PrefKeys.PLAYABLE_LOWER_BOUND] ?: DEFAULT_PLAYABLE_LOWER_BOUND
+        prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM
+    }.map { midiNumber ->
+        NoteFactory.makeNoteFromMidiNumber(midiNumber)
     }
 
-    suspend fun savePlayableLowerBound(ix: Int) {
+    suspend fun savePlayableLowerBound(note: Note) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_LOWER_BOUND] = ix
+            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = note.midiNumber
         }
     }
 
@@ -199,12 +200,14 @@ class PrefsStore @Inject constructor(
             throw exception
         }
     }.map { prefs ->
-        prefs[PrefKeys.PLAYABLE_UPPER_BOUND] ?: DEFAULT_PLAYABLE_UPPER_BOUND
+        prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM
+    }.map { midiNumber ->
+        NoteFactory.makeNoteFromMidiNumber(midiNumber)
     }
 
-    suspend fun savePlayableUpperBound(ix: Int) {
+    suspend fun savePlayableUpperBound(upperBound: Note) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_UPPER_BOUND] = ix
+            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = upperBound.midiNumber
         }
     }
 
@@ -216,12 +219,14 @@ class PrefsStore @Inject constructor(
             throw exception
         }
     }.map { prefs ->
-        prefs[PrefKeys.QUESTION_KEY] ?: DEFAULT_QUESTION_KEY
+        prefs[PrefKeys.QUESTION_KEY_VAL] ?: DEFAULT_QUESTION_KEY_VAL
+    }.map { keyVal ->
+        MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[keyVal]
     }
 
-    suspend fun saveQuestionKey(key: Int) {
+    suspend fun saveQuestionKey(key: PitchClass) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.QUESTION_KEY] = key
+            prefs[PrefKeys.QUESTION_KEY_VAL] = key.value
         }
     }
 
@@ -269,9 +274,9 @@ class PrefsStore @Inject constructor(
         val NOTE_POOL_TYPE_ORDINAL = preferencesKey<Int>("note_pool_type_ordinal")
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
         val PARENT_SCALE_ORDINAL = preferencesKey<Int>("parent_scale_ordinal")
-        val PLAYABLE_LOWER_BOUND = preferencesKey<Int>("playable_lower_bound")
-        val PLAYABLE_UPPER_BOUND = preferencesKey<Int>("playable_upper_bound")
-        val QUESTION_KEY = preferencesKey<Int>("question_key")
+        val PLAYABLE_LOWER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_lower_bound")
+        val PLAYABLE_UPPER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_upper_bound")
+        val QUESTION_KEY_VAL = preferencesKey<Int>("question_key")
         val SESSION_TIME_LIMIT = preferencesKey<Int>("session_time_limit")
         val SESSION_TYPE_ORDINAL = preferencesKey<Int>("session_type_ordinal")
     }

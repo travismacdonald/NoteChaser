@@ -245,19 +245,18 @@ object MusicTheoryUtils {
 
     // TODO: update it to use new classes `PitchClass` and `Note`
     fun pitchClassOccursBetweenNoteBounds(
-            pitchClass: Int,
-            lowerBound: Int,
-            upperBound: Int
+            pitchClass: PitchClass,
+            lowerBound: Note,
+            upperBound: Note
     ): Boolean {
 
-        assertValidPitchClass(pitchClass)
         assertValidBounds(lowerBound, upperBound)
 
-        val numOctavesDisplaced = lowerBound / OCTAVE_SIZE
-        val transposedLower = lowerBound - (OCTAVE_SIZE * numOctavesDisplaced)
-        val transposedUpper = upperBound - (OCTAVE_SIZE * numOctavesDisplaced)
-        if (pitchClass in transposedLower..transposedUpper ||
-                pitchClass + OCTAVE_SIZE in transposedLower..transposedUpper) {
+        val numOctavesDisplaced = lowerBound.midiNumber / OCTAVE_SIZE
+        val transposedLower = lowerBound.midiNumber - (OCTAVE_SIZE * numOctavesDisplaced)
+        val transposedUpper = upperBound.midiNumber - (OCTAVE_SIZE * numOctavesDisplaced)
+        if (pitchClass.value in transposedLower..transposedUpper ||
+                pitchClass.value + OCTAVE_SIZE in transposedLower..transposedUpper) {
             return true
         }
         return false
@@ -284,7 +283,7 @@ object MusicTheoryUtils {
             lowerBound: Note,
             upperBound: Note
     ): Note? {
-        if (!pitchClassOccursBetweenNoteBounds(pitchClass.value, lowerBound.midiNumber, upperBound.midiNumber)) {
+        if (!pitchClassOccursBetweenNoteBounds(pitchClass, lowerBound, upperBound)) {
             return null
         }
         var curMidiNumber = pitchClass.value
@@ -294,18 +293,7 @@ object MusicTheoryUtils {
         return makeNoteFromMidiNumber(curMidiNumber)
     }
 
-    // TODO: getHighestPitchClassOccurrenceBetweenBounds
-
-    private fun assertValidPitchClass(pitchClass: Int) {
-        if (pitchClass < 0 || pitchClass > 11) {
-            throw IllegalArgumentException(
-                    "pitchClass must be between 0 and 11 (both inclusive). " +
-                            "Given pitchClass: $pitchClass"
-            )
-        }
-    }
-
-    private fun assertValidBounds(lowerBound: Int, upperBound: Int) {
+    private fun assertValidBounds(lowerBound: Note, upperBound: Note) {
         if (lowerBound > upperBound) {
             throw IllegalArgumentException(
                     "lowerBound must be less than or equal to upperBound"

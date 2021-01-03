@@ -15,6 +15,7 @@ import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -189,15 +190,16 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogSingleList(
                         title = getString(R.string.questionKey_title),
                         entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                        initSelectedIx = viewModel.questionKey.value!!,
+                        initSelectedIx = viewModel.questionKey.value!!.value,
                         onPositiveButtonClick = { selectedIx ->
-                            viewModel.saveQuestionKey(selectedIx)
+                            val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
+                            viewModel.saveQuestionKey(selectedPitchClass)
                         }
                 )
             }
 
             viewModel.questionKey.observe(viewLifecycleOwner) { key ->
-                summary.text = MusicTheoryUtils.CHROMATIC_SCALE_FLAT[key]
+                summary.text = key.toString()
             }
         }
     }
@@ -262,19 +264,20 @@ class ExerciseSetupFragment : Fragment() {
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
                     if (slider.focusedThumbIndex == 0) {
-                        viewModel.savePlayableLowerBound(slider.values[0].toInt())
+                        val lower = NoteFactory.makeNoteFromMidiNumber(slider.values[0].toInt())
+                        viewModel.savePlayableLowerBound(lower)
                     }
                     else {
-                        viewModel.savePlayableUpperBound(slider.values[1].toInt())
+                        val upper = NoteFactory.makeNoteFromMidiNumber(slider.values[1].toInt())
+                        viewModel.savePlayableUpperBound(upper)
                     }
                 }
             })
 
             viewModel.playableBounds.observe(viewLifecycleOwner) { bounds ->
-                val boundsAsFloats = bounds.toList().map { it.toFloat() }
+                val boundsAsFloats = bounds.toList().map { it.midiNumber.toFloat() }
 
                 if (rangeSlider.values != boundsAsFloats) {
-                    Timber.d("playable bounds observed")
                     rangeSlider.values = boundsAsFloats
                     rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
                     rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
