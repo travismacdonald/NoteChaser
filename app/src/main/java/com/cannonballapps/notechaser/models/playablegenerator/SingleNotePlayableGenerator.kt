@@ -12,9 +12,9 @@ class SingleNotePlayableGenerator(
         private val pitchClassPool: List<PitchClass>,
         private val lowerBound: Note,
         private val upperBound: Note
-) {
+) : PlayableGenerator {
 
-    fun generatePlayable(): Playable {
+    override fun generatePlayable(): Playable {
         return getRandomPlayable()
     }
 
