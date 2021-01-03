@@ -194,7 +194,6 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
                     questionKey.value!!
             )
         }
-
         for (interval in intervals) {
             val lower = playableLowerBound.value!!
             val upper = playableUpperBound.value!!

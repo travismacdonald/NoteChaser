@@ -10,8 +10,9 @@ import androidx.fragment.app.viewModels
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SessionFragment : Fragment() {
 
     val viewModel: SessionViewModel by viewModels()

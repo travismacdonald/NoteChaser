@@ -57,7 +57,6 @@ class ExerciseSelectionFragment : Fragment() {
             }
         }
 
-
         return binding.root
     }
 
@@ -67,8 +66,7 @@ class ExerciseSelectionFragment : Fragment() {
     }
 
     private fun hasMicrophoneRuntimePermission(): Boolean {
-        return (ContextCompat.checkSelfPermission(
-                binding.getRoot().getContext(), Manifest.permission.RECORD_AUDIO)
+        return (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED)
     }
 
