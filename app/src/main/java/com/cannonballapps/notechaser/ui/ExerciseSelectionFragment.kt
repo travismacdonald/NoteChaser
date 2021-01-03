@@ -1,7 +1,6 @@
 package com.cannonballapps.notechaser.ui
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,21 +11,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSelectionBinding
-import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 
 
 class ExerciseSelectionFragment : Fragment() {
-
-    // TODO: change to android integer resource
-    private val MICROPHONE_PERMISSION_CODE = 1
-
-    // TODO: try to figure out a way to init the viewmodel when this activity starts
-    private val mViewModel: SessionViewModel by viewModels()
 
     private lateinit var binding: FragmentExerciseSelectionBinding
 
@@ -81,18 +72,29 @@ class ExerciseSelectionFragment : Fragment() {
                 == PackageManager.PERMISSION_GRANTED)
     }
 
-    // todo: maybe find a way to clean this up; extract hardcoded strings
     private fun requestMicrophonePermission() {
+        val micPermissionCode = resources.getInteger(R.integer.microphone_permission_code)
         if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
             AlertDialog.Builder(requireContext())
-                    .setTitle("Permission Needed")
-                    .setMessage("This permission is needed to process pitch.")
-                    .setPositiveButton("ok") { dialog: DialogInterface?, which: Int -> ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_CODE) }
-                    .setNegativeButton("cancel") { dialog: DialogInterface, which: Int -> dialog.dismiss() }
+                    .setTitle(getString(R.string.microphonePermission_title))
+                    .setMessage(getString(R.string.microphonePermission_message))
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        ActivityCompat.requestPermissions(
+                                requireActivity(),
+                                arrayOf(Manifest.permission.RECORD_AUDIO),
+                                micPermissionCode
+                        )
+                    }
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
                     .create().show()
         }
         else {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_CODE)
+            ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.RECORD_AUDIO),
+                    micPermissionCode)
         }
     }
 
