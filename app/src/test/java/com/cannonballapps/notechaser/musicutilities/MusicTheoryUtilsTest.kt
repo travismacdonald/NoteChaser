@@ -12,15 +12,15 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull c between 0 and 0 returns c-1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(0)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.C,
                 lower,
                 upper
         )
 
-        val expected = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
                 PitchClass.C,
                 octave = -1
         )
@@ -29,15 +29,15 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull c between 1 and 12 returns c0`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(1)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(12)
+        val lower = NoteFactory.makeNoteFromMidiNumber(1)
+        val upper = NoteFactory.makeNoteFromMidiNumber(12)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.C,
                 lower,
                 upper
         )
 
-        val expected = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
                 PitchClass.C,
                 octave = 0
         )
@@ -46,15 +46,15 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 1 and 12 returns a-1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(1)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(12)
+        val lower = NoteFactory.makeNoteFromMidiNumber(1)
+        val upper = NoteFactory.makeNoteFromMidiNumber(12)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
                 upper
         )
 
-        val expected = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
                 PitchClass.A,
                 octave = -1
         )
@@ -63,15 +63,15 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 10 and 32 returns a0`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(10)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(32)
+        val lower = NoteFactory.makeNoteFromMidiNumber(10)
+        val upper = NoteFactory.makeNoteFromMidiNumber(32)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
                 upper
         )
 
-        val expected = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
+        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
                 PitchClass.A,
                 octave = 0
         )
@@ -80,8 +80,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 10 and 20 returns null`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(10)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(20)
+        val lower = NoteFactory.makeNoteFromMidiNumber(10)
+        val upper = NoteFactory.makeNoteFromMidiNumber(20)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
@@ -92,95 +92,9 @@ class MusicTheoryUtilsTest {
     }
 
     @Test
-    fun `test getNoteInstanceFromMidiNumber 60 makes c4`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(60)
-        assertEquals(PitchClass.C, note.pitchClass)
-        assertEquals(4, note.octave)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber 12 makes c0`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(12)
-        assertEquals(PitchClass.C, note.pitchClass)
-        assertEquals(0, note.octave)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber 59 makes b3`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(59)
-        assertEquals(PitchClass.B, note.pitchClass)
-        assertEquals(3, note.octave)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber 0 makes c-1`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        assertEquals(PitchClass.C, note.pitchClass)
-        assertEquals(-1, note.octave)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber -1 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.getNoteInstanceFromMidiNumber(-1)
-        }
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber 109 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.getNoteInstanceFromMidiNumber(109)
-        }
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave c4 makes 60`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
-                PitchClass.C,
-                4
-        )
-        assertEquals(60, note.midiNumber)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave c0 makes 12`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, 0)
-        assertEquals(12, note.midiNumber)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave b3 makes 59`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(
-                PitchClass.B,
-                3
-        )
-        assertEquals(59, note.midiNumber)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave c-1 makes 0`() {
-        val note = MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, -1)
-        assertEquals(0, note.midiNumber)
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave c-2 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C, -2)
-        }
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave cSharp8 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.getNoteInstanceFromPitchClassAndOctave(PitchClass.C_SHARP, 8)
-        }
-    }
-
-    @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 0 returns 1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(0)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -193,8 +107,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 1 returns 1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(1)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(1)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -207,8 +121,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 12 returns 2`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(12)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(12)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -221,8 +135,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 1 and 23 returns 1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(1)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(23)
+        val lower = NoteFactory.makeNoteFromMidiNumber(1)
+        val upper = NoteFactory.makeNoteFromMidiNumber(23)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -235,8 +149,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 1 and 11 returns 0`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(1)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(11)
+        val lower = NoteFactory.makeNoteFromMidiNumber(1)
+        val upper = NoteFactory.makeNoteFromMidiNumber(11)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -249,8 +163,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 0 and 12 returns 1`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(9)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(9)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
@@ -263,8 +177,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 0 and 0 returns 0`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(0)
+        val lower = NoteFactory.makeNoteFromMidiNumber(0)
+        val upper = NoteFactory.makeNoteFromMidiNumber(0)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
@@ -277,8 +191,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 9 and 21 returns 2`() {
-        val lower = MusicTheoryUtils.getNoteInstanceFromMidiNumber(9)
-        val upper = MusicTheoryUtils.getNoteInstanceFromMidiNumber(21)
+        val lower = NoteFactory.makeNoteFromMidiNumber(9)
+        val upper = NoteFactory.makeNoteFromMidiNumber(21)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
@@ -292,28 +206,28 @@ class MusicTheoryUtilsTest {
     @Test
     fun `test midiValueToNoteName 60 returns c4`() {
         val c4MidiNum = 60
-        val noteName = MusicTheoryUtils.midiValueToNoteName(c4MidiNum)
+        val noteName = MusicTheoryUtils.midiNumberToNoteName(c4MidiNum)
         assertEquals("C4", noteName)
     }
 
     @Test
     fun `test midiValueToNoteName 61 returns dFlat4 by default`() {
         val dFlat4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum)
+        val noteName = MusicTheoryUtils.midiNumberToNoteName(dFlat4MidiNum)
         assertEquals("D♭4", noteName)
     }
 
     @Test
     fun `test midiValueToNoteName 61 returns dFlat4 when asFlat is true`() {
         val dFlat4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(dFlat4MidiNum, asFlat = true)
+        val noteName = MusicTheoryUtils.midiNumberToNoteName(dFlat4MidiNum, asFlat = true)
         assertEquals("D♭4", noteName)
     }
 
     @Test
     fun `test midiValueToNoteName 61 returns cSharp4 when asFlat is false`() {
         val cSharp4MidiNum = 61
-        val noteName = MusicTheoryUtils.midiValueToNoteName(cSharp4MidiNum, asFlat = false)
+        val noteName = MusicTheoryUtils.midiNumberToNoteName(cSharp4MidiNum, asFlat = false)
         assertEquals("C♯4", noteName)
     }
 

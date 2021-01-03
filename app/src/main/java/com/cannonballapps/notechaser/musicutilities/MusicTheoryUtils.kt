@@ -1,5 +1,7 @@
 package com.cannonballapps.notechaser.musicutilities
 
+import com.cannonballapps.notechaser.musicutilities.NoteFactory.makeNoteFromMidiNumber
+
 object MusicTheoryUtils {
 
     const val SHARP = '\u266F'
@@ -141,11 +143,11 @@ object MusicTheoryUtils {
             PitchClass.B
     )
 
-    fun midiValueToNoteName(ix: Int, asFlat: Boolean = true): String {
+    fun midiNumberToNoteName(midiNumber: Int, asFlat: Boolean = true): String {
         if (asFlat) {
-            return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
+            return "${CHROMATIC_SCALE_FLAT[midiNumber % OCTAVE_SIZE]}${(midiNumber / OCTAVE_SIZE) - 1}"
         }
-        return "${CHROMATIC_SCALE_SHARP[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
+        return "${CHROMATIC_SCALE_SHARP[midiNumber % OCTAVE_SIZE]}${(midiNumber / OCTAVE_SIZE) - 1}"
     }
 
     fun getIntervalsForModeAtIx(intervals: IntArray, modeIx: Int): IntArray {
@@ -289,40 +291,10 @@ object MusicTheoryUtils {
         while (curMidiNumber < lowerBound.midiNumber) {
             curMidiNumber += OCTAVE_SIZE
         }
-        return getNoteInstanceFromMidiNumber(curMidiNumber)
+        return makeNoteFromMidiNumber(curMidiNumber)
     }
 
     // TODO: getHighestPitchClassOccurrenceBetweenBounds
-
-    // TODO: maybe create a new class called NoteFactory
-    fun getNoteInstanceFromMidiNumber(midiNumber: Int): Note {
-        assertValidMidiNumber(midiNumber)
-        val pitchClass = getPitchClassFromMidiNumber(midiNumber)
-        val octave = getOctaveFromMidiNumber(midiNumber)
-        return Note(midiNumber, pitchClass, octave)
-    }
-
-    fun getNoteInstanceFromPitchClassAndOctave(pitchClass: PitchClass, octave: Int): Note {
-        val midiNumber = getMidiNumberFromPitchClassAndOctave(pitchClass, octave)
-        assertValidMidiNumber(midiNumber)
-        return Note(midiNumber, pitchClass, octave)
-    }
-
-    private fun getPitchClassFromMidiNumber(midiNumber: Int, preferFlat: Boolean = true): PitchClass {
-        val pitchClassIx = midiNumber % OCTAVE_SIZE
-        return if (preferFlat)
-            CHROMATIC_PITCH_CLASSES_FLAT[pitchClassIx]
-        else
-            CHROMATIC_PITCH_CLASSES_SHARP[pitchClassIx]
-    }
-
-    private fun getOctaveFromMidiNumber(midiNumber: Int): Int {
-        return (midiNumber / OCTAVE_SIZE) - 1
-    }
-
-    private fun getMidiNumberFromPitchClassAndOctave(pitchClass: PitchClass, octave: Int): Int {
-        return ((octave + 1) * OCTAVE_SIZE) + pitchClass.value
-    }
 
     private fun assertValidPitchClass(pitchClass: Int) {
         if (pitchClass < 0 || pitchClass > 11) {
@@ -337,15 +309,6 @@ object MusicTheoryUtils {
         if (lowerBound > upperBound) {
             throw IllegalArgumentException(
                     "lowerBound must be less than or equal to upperBound"
-            )
-        }
-    }
-
-    private fun assertValidMidiNumber(midiNumber: Int) {
-        if (midiNumber !in MIN_MIDI_NUMBER..MAX_MIDI_NUMBER) {
-            throw IllegalArgumentException(
-                    "midiNumber must be between $MIN_MIDI_NUMBER and $MAX_MIDI_NUMBER. " +
-                            "midiNumber given: $midiNumber"
             )
         }
     }

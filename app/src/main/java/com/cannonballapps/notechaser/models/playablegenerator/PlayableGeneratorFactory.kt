@@ -7,7 +7,7 @@ import com.cannonballapps.notechaser.musicutilities.Scale
 
 object PlayableGeneratorFactory {
 
-    fun makeSingleNotePlayableGeneratorFromDiatonicDegrees(
+    fun makeNotePlayableGeneratorFromDiatonicDegrees(
             diatonicDegrees: BooleanArray,
             scale: Scale,
             key: PitchClass,
@@ -22,10 +22,10 @@ object PlayableGeneratorFactory {
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }
-        return SingleNotePlayableGenerator(intervals, lowerBound, upperBound)
+        return NotePlayableGenerator(intervals, lowerBound, upperBound)
     }
 
-    fun makeSingleNotePlayableGeneratorFromChromaticDegrees(
+    fun makeNotePlayableGeneratorFromChromaticDegrees(
             chromaticDegrees: BooleanArray,
             key: PitchClass,
             lowerBound: Note,
@@ -37,7 +37,7 @@ object PlayableGeneratorFactory {
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }
-        return SingleNotePlayableGenerator(intervals, lowerBound, upperBound)
+        return NotePlayableGenerator(intervals, lowerBound, upperBound)
     }
 
 }
