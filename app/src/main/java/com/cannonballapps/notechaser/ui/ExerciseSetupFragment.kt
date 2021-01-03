@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.ui.fragments
+package com.cannonballapps.notechaser.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
@@ -26,7 +26,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ExerciseSetupFragment : Fragment() {
 
-    private val viewModel: ExerciseSetupViewModel by activityViewModels()
+    private val viewModel: ExerciseSetupViewModel by viewModels()
     private lateinit var binding: FragmentExerciseSetupBinding
     private lateinit var args: ExerciseSetupFragmentArgs
 
@@ -251,7 +251,7 @@ class ExerciseSetupFragment : Fragment() {
             rangeSlider.addOnChangeListener { slider, value, _ ->
                 Timber.d("onChangedCalled")
                 val range = slider.values.joinToString(separator = " - ") { ix ->
-                    MusicTheoryUtils.midiValueToNoteName(ix.toInt())
+                    MusicTheoryUtils.midiNumberToNoteName(ix.toInt())
                 }
                 summary.text = range
             }
@@ -467,7 +467,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun navigateToExerciseSession(view: View) {
-        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment()
+        val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment(args.exerciseType)
         view.findNavController().navigate(directions)
     }
 

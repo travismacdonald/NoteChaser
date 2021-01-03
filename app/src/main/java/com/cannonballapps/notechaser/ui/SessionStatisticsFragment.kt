@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.ui.fragments
+package com.cannonballapps.notechaser.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.cannonballapps.notechaser.R
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class SessionStatisticsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

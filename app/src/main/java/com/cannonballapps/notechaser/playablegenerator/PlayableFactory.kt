@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser.playablegenerator
 
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NoteFactory
 

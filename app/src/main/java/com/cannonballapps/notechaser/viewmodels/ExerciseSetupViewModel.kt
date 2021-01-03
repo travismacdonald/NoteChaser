@@ -28,8 +28,6 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
     val sessionTimeLimit = prefsStore.sessionTimeLimit().asLiveData()
     val sessionType = prefsStore.sessionType().asLiveData()
 
-    private lateinit var chromaticIntervals: IntArray
-
     val scale = MediatorLiveData<Scale>().apply {
         addSource(parentScale) { parentScale ->
             modeIx.value?.let { modeIx ->

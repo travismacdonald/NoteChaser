@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        tools:context=".ui.fragments.SessionFragment">
+        tools:context=".ui.SessionFragment">
 
         <TextView
             android:id="@+id/detectedPitch_text"

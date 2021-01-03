@@ -14,8 +14,7 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 
 
-// TODO: make 2 different viewmodels: 1) one for ex configuration, and 2) for ear training session
-class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
+class SessionViewModel(application: Application) : AndroidViewModel(application) {
 
     // TODO: want two types of settings: 1) global settings (theme, instr, ...), and 2) session (num questions, ..., you know what i mean)
 
@@ -29,7 +28,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     private val noteProcessor = NoteProcessor()
 
-    private val answerChecker = AnswerChecker()
+//    private val answerChecker = AnswerChecker()
 
     private val soundEffectPlayer = SoundEffectPlayer(application.applicationContext)
 
@@ -110,10 +109,10 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     // Todo: come up with better function name
     fun handlePlayable(playable: Playable) {
         viewModelScope.launch {
-            answerChecker.targetAnswer = playable
-            answerChecker.userAnswer.clear()
+//            answerChecker.targetAnswer = playable
+//            answerChecker.userAnswer.clear()
             noteProcessor.clear()
-            playablePlayer.playPlayable(playable)
+//            playablePlayer.playPlayable(playable)
             // Wait before beginning pitch processing to avoid
             // picking up own output as input
             delay(pauseAfterPlayableMillis)
@@ -132,16 +131,16 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 //                currentPitchDetected.value = note
                 // Actual note detected (because -1 denotes silence)
                 if (note != -1) {
-                    answerChecker.addUserNote(note)
-                    if (answerChecker.areAnswersSame()) {
-                        signalProcessor.stop()
-                        noteProcessor.clear()
-                        viewModelScope.launch {
-                            soundEffectPlayer.playCorrectSound()
-                            delay(pauseAfterCorrectSoundMillis)
-                            questionsAnswered.value = questionsAnswered.value!! + 1
-                        }
-                    }
+//                    answerChecker.addUserNote(note)
+//                    if (answerChecker.areAnswersSame()) {
+//                        signalProcessor.stop()
+//                        noteProcessor.clear()
+//                        viewModelScope.launch {
+//                            soundEffectPlayer.playCorrectSound()
+//                            delay(pauseAfterCorrectSoundMillis)
+//                            questionsAnswered.value = questionsAnswered.value!! + 1
+//                        }
+//                    }
                 }
                 // Silence Detected
                 else {

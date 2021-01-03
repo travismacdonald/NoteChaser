@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.ui.fragments
+package com.cannonballapps.notechaser.ui
 
 import android.Manifest
 import android.content.DialogInterface
@@ -17,7 +17,7 @@ import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSelectionBinding
-import com.cannonballapps.notechaser.viewmodels.ExerciseViewModel
+import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 
 
 class ExerciseSelectionFragment : Fragment() {
@@ -26,7 +26,7 @@ class ExerciseSelectionFragment : Fragment() {
     private val MICROPHONE_PERMISSION_CODE = 1
 
     // TODO: try to figure out a way to init the viewmodel when this activity starts
-    private val viewModel: ExerciseViewModel by viewModels()
+    private val mViewModel: SessionViewModel by viewModels()
 
     private lateinit var binding: FragmentExerciseSelectionBinding
 
