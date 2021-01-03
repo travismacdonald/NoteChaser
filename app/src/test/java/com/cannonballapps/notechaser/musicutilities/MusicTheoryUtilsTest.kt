@@ -87,7 +87,7 @@ class MusicTheoryUtilsTest {
                 lower,
                 upper
         )
-        
+
         assertEquals(null, note)
     }
 
@@ -531,6 +531,8 @@ class MusicTheoryUtilsTest {
         }
     }
 
+    // TODO: refactor below here
+
     @Test
     fun `test ionian mode construction is correct`() {
         val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
@@ -638,12 +640,5 @@ class MusicTheoryUtilsTest {
         val expected = intArrayOf(2, 3, 7, 10) // D Eb G Bb
         assertArrayEquals(expected, MusicTheoryUtils.transformDiatonicDegreesToIntervals(seventh, scale, key))
     }
-
-    @Test
-    fun `test something`() {
-
-    }
-
-
 
 }
