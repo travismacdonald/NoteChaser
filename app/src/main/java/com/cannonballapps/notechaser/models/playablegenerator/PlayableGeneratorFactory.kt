@@ -27,11 +27,17 @@ object PlayableGeneratorFactory {
 
     fun makeSingleNotePlayableGeneratorFromChromaticDegrees(
             chromaticDegrees: BooleanArray,
-            key: Int,
-            lowerBound: Int,
-            upperBound: Int
+            key: PitchClass,
+            lowerBound: Note,
+            upperBound: Note
     ): PlayableGenerator {
-        TODO()
+        val intervals: List<PitchClass> = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+                chromaticDegrees,
+                key.value
+        ).toList().map {
+            MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
+        }
+        return SingleNotePlayableGenerator(intervals, lowerBound, upperBound)
     }
 
 }
