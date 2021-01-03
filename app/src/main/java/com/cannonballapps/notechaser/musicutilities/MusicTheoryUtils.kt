@@ -1,8 +1,5 @@
 package com.cannonballapps.notechaser.musicutilities
 
-import com.cannonballapps.notechaser.playablegenerator.ParentScale
-
-
 object MusicTheoryUtils {
 
     const val SHARP = '\u266F'
@@ -144,14 +141,6 @@ object MusicTheoryUtils {
             PitchClass.B
     )
 
-    // TODO: delete this
-    // TODO: Replace with actual DB later
-    val PARENT_SCALE_BANK = arrayOf(
-            ParentScale("Major", MAJOR_SCALE_INTERVALS),
-            ParentScale("Melodic Minor", MELODIC_MINOR_SCALE_INTERVALS),
-            ParentScale("Harmonic Minor", HARMONIC_MINOR_SCALE_INTERVALS)
-    )
-
     fun midiValueToNoteName(ix: Int, asFlat: Boolean = true): String {
         if (asFlat) {
             return "${CHROMATIC_SCALE_FLAT[ix % OCTAVE_SIZE]}${(ix / OCTAVE_SIZE) - 1}"
@@ -265,12 +254,45 @@ object MusicTheoryUtils {
         val numOctavesDisplaced = lowerBound / OCTAVE_SIZE
         val transposedLower = lowerBound - (OCTAVE_SIZE * numOctavesDisplaced)
         val transposedUpper = upperBound - (OCTAVE_SIZE * numOctavesDisplaced)
-        if (pitchClass in transposedLower..transposedUpper
-                || pitchClass + OCTAVE_SIZE in transposedLower..transposedUpper) {
+        if (pitchClass in transposedLower..transposedUpper ||
+                pitchClass + OCTAVE_SIZE in transposedLower..transposedUpper) {
             return true
         }
         return false
     }
+
+    fun getNumberOfPitchClassOccurrencesBetweenBounds(
+            pitchClass: PitchClass,
+            lowerBound: Note,
+            upperBound: Note
+    ): Int {
+        var numOccurrences = 0
+        var curMidiNumber = pitchClass.value + (lowerBound.midiNumber / OCTAVE_SIZE) * OCTAVE_SIZE
+        while (curMidiNumber <= upperBound.midiNumber) {
+            if (curMidiNumber >= lowerBound.midiNumber) {
+                numOccurrences++
+            }
+            curMidiNumber += OCTAVE_SIZE
+        }
+        return numOccurrences
+    }
+
+    fun getLowestPitchClassOccurrenceBetweenBoundsOrNull(
+            pitchClass: PitchClass,
+            lowerBound: Note,
+            upperBound: Note
+    ): Note? {
+        if (!pitchClassOccursBetweenNoteBounds(pitchClass.value, lowerBound.midiNumber, upperBound.midiNumber)) {
+            return null
+        }
+        var curMidiNumber = pitchClass.value
+        while (curMidiNumber < lowerBound.midiNumber) {
+            curMidiNumber += OCTAVE_SIZE
+        }
+        return getNoteInstanceFromMidiNumber(curMidiNumber)
+    }
+
+    // TODO: getHighestPitchClassOccurrenceBetweenBounds
 
     // TODO: maybe create a new class called NoteFactory
     fun getNoteInstanceFromMidiNumber(midiNumber: Int): Note {
