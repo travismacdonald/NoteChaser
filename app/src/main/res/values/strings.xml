@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="soundfont_filename">test_piano.sf2</string>
+
     <!-- Microphone Permission Dialog -->
 
     <string name="microphonePermission_title">Permission Needed</string>

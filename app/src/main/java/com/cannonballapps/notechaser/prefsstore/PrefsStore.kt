@@ -36,7 +36,7 @@ private const val DEFAULT_QUESTION_KEY_VAL = 0
 private const val DEFAULT_SESSION_TIME_LEN = 10
 
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
-// TODO: make prefsstore an interface for unit testing
+// TODO: make PrefsStore an interface for easier unit testing
 
 class PrefsStore @Inject constructor(
         @ApplicationContext context: Context

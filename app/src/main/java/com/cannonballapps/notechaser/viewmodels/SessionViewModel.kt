@@ -1,38 +1,47 @@
 package com.cannonballapps.notechaser.viewmodels
 
 
+import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import com.cannonballapps.notechaser.data.ExerciseType
+import com.cannonballapps.notechaser.models.MidiPlayer
+import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGeneratorFactory
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
-import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class SessionViewModel @ViewModelInject constructor(
-        private val prefsStore: PrefsStore
+        private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
+
+    private val _curPlayable = MutableLiveData<Playable>()
+    val curPlayable: LiveData<Playable>
+        get() = _curPlayable
+
     private lateinit var generator: PlayableGenerator
-
-    var curPlayable: Playable? = null
-
-    fun getNextPlayable(): Playable {
-        curPlayable = generator.generatePlayable()
-        return curPlayable!!
-    }
+    lateinit var playablePlayer: PlayablePlayer
 
     fun initGenerator(type: ExerciseType) {
         viewModelScope.launch {
             makePlayableGenerator(type)
         }
+    }
+
+    fun getNextPlayable() {
+        val nextPlayable = generator.generatePlayable()
+        _curPlayable.value = nextPlayable
+        playablePlayer.playPlayable(nextPlayable)
     }
 
     private fun makePlayableGenerator(type: ExerciseType) {

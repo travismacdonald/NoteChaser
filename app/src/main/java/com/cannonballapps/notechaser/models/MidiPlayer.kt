@@ -7,39 +7,36 @@ import jp.kshoji.javax.sound.midi.Receiver
 import jp.kshoji.javax.sound.midi.ShortMessage
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 // todo: there is likely a bug with muting/unmuting; look into it later if it pops up
-class MidiPlayer {
+// TODO: check to see if you can send midi message with time data
 
-    private val START = 0X90
+private const val DEFAULT_VOLUME = 65
+private const val PROGRAM_CHANGE = 0XC0
+private const val START = 0x90
+private const val STOP = 0X80
+private const val VOLUME_OFF = 0
 
-    private val STOP = 0X80
 
-    private val PROGRAM_CHANGE = 0XC0
+class MidiPlayer() {
 
-    private val VOLUME_OFF = 0
-
-    private val DEFAULT_VOLUME = 65
-
-    private var synth: SoftSynthesizer = SoftSynthesizer()
+    private var plugin = 0
 
     private var recv: Receiver? = null
+    private var synth: SoftSynthesizer = SoftSynthesizer()
 
     private val activeNotes: MutableSet<Int> = HashSet()
-
-    private var plugin: Int = -1
 
     private var volume = DEFAULT_VOLUME
 
     var isRunning: Boolean = false
-    private set
+        private set
 
     var sf2: SF2Soundbank? = null
         set(value) {
             field = value
-
             sendMidiSetup()
-
         }
 
     var isMuted: Boolean = false
