@@ -252,7 +252,6 @@ class ExerciseSetupFragment : Fragment() {
             title.text = getString(R.string.questionRange_title)
 
             rangeSlider.addOnChangeListener { slider, value, _ ->
-                Timber.d("onChangedCalled")
                 val range = slider.values.joinToString(separator = " - ") { ix ->
                     MusicTheoryUtils.midiNumberToNoteName(ix.toInt())
                 }
@@ -413,7 +412,6 @@ class ExerciseSetupFragment : Fragment() {
             }
 
             viewModel.isValidConfiguration.observe(viewLifecycleOwner) { isValid ->
-                Timber.d("isValidConfiguration observed: $isValid")
                 startButton.isEnabled = isValid
             }
 

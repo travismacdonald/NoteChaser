@@ -50,6 +50,10 @@ class SessionFragment : Fragment() {
 
         }
 
+        viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
+            binding.pitchTv.text = midiNum.toString()
+        }
+
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
             binding.sessionStateTv.text = state.toString()
         }
