@@ -8,17 +8,16 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
+import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
-import com.cannonballapps.notechaser.models.MidiPlayer
+import com.cannonballapps.notechaser.models.MidiPlayer2
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SessionFragment : Fragment() {
@@ -40,30 +39,42 @@ class SessionFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.randomButton.setOnClickListener {
-            viewModel.getNextPlayable()
+            viewModel.startSession()
+        }
+
+        binding.stopButton.setOnClickListener {
+            viewModel.endSession()
         }
 
         viewModel.curPlayable.observe(viewLifecycleOwner) { playable ->
 
         }
 
-
+        viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+            binding.sessionStateTv.text = state.toString()
+        }
 
         return binding.root
     }
 
+    override fun onStop() {
+        super.onStop()
+    }
+
     // TODO: this lives here for now; should refactor to use Hilt
+    @Suppress("BlockingMethodInNonBlockingContext")
     private fun injectPlayablePlayerIntoViewModel() {
         GlobalScope.launch {
-            Timber.d("Midi setup started")
-            val midiPlayer = MidiPlayer()
-            // TODO: fix this warning
-            val soundFont = SF2Soundbank(requireActivity().application.assets.open(getString(R.string.soundfont_filename)))
-            midiPlayer.sf2 = soundFont
-            midiPlayer.setPlugin(0)
+            val soundBank = SF2Soundbank(
+                    requireActivity().application.assets.open(getString(R.string.soundfont_filename))
+            )
+            val synth = SoftSynthesizer()
+            synth.open()
+            synth.loadAllInstruments(soundBank)
+            synth.channels[0].programChange(0)
+            val midiPlayer = MidiPlayer2(synth)
 
             viewModel.playablePlayer = PlayablePlayer(midiPlayer)
-            Timber.d("Midi setup complete")
         }
     }
 }
