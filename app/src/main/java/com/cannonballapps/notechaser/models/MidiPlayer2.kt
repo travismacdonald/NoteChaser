@@ -21,8 +21,8 @@ class MidiPlayer2(private val synth: Synthesizer) {
     }
 
     fun stop() {
-        curMidiJob?.cancel()
         synth.channels[0].allNotesOff()
+        curMidiJob?.cancel()
     }
 
     suspend fun playChord(chord: List<Int>, chordLenInMillis: Long) {

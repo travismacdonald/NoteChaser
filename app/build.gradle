@@ -88,6 +88,7 @@ dependencies {
     implementation "androidx.datastore:datastore:1.0.0-alpha05"
 
     // MidiDriver Library (supports sf2 files)
+//    implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
     implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
 }
 repositories {
