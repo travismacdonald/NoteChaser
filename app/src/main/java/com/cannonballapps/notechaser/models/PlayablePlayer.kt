@@ -2,44 +2,38 @@ package com.cannonballapps.notechaser.models
 
 
 import com.cannonballapps.notechaser.playablegenerator.Playable
-import kotlinx.coroutines.Job
-import timber.log.Timber
-import javax.inject.Inject
+import kotlinx.coroutines.*
 
+const val NUM_MILLIS_IN_MINUTE = 60000L
+const val REVERB_LEN_MILLIS = 600L
 
-class PlayablePlayer(val midiPlayer: MidiPlayer) {
+class PlayablePlayer(val midiPlayer: MidiPlayer2) {
 
-    var qBpm = 90
+    var quarterNoteBpm = 30
+    private val noteLenInMillis: Long
+        get() = NUM_MILLIS_IN_MINUTE / quarterNoteBpm
 
-    // TODO: keep reference to current coroutine (job i think)
-    val curJob: Job? = null
+    fun playPlayable(playable: Playable): Job {
+        // TODO: fine for now, but have to refactor later when introducing more complex playable
+        val midiNumbers = playable.notes.map { it.midiNumber }
+        return GlobalScope.launch {
+            midiPlayer.playNoteSequence(midiNumbers, noteLenInMillis)
+            // Account for reverb that persists after final note has finished playing
+            delay(REVERB_LEN_MILLIS)
+        }
 
-    fun playPlayable(playable: Playable) {
-        Timber.d("playing playable: ${playable.notes}")
     }
 
-    fun stopCurPlayable() {
-        
+    fun stopCurPlayable(): Job {
+        return GlobalScope.launch {
+            midiPlayer.stop()
+            // Account for reverb that persists after final note has finished playing
+            delay(REVERB_LEN_MILLIS)
+        }
     }
 
-    fun playerIsActive(): Boolean {
-        return true
+    fun isPlaying(): Boolean {
+        return false
     }
-
-//    private val curNotes: MutableSet<Note> = HashSet()
-
-//    suspend fun playPlayable(playable: Playable) {
-//        for (note in playable.notes) {
-//            midiPlayer.playNote(note.ix)
-//            curNotes.add(note)
-//            delay(noteLengthMillis)
-//            midiPlayer.stopNote(note.ix)
-//            curNotes.remove(note)
-//            if (spaceBetweenNotesMillis != 0L) {
-//                delay(spaceBetweenNotesMillis)
-//            }
-//        }
-//    }
-
 
 }
