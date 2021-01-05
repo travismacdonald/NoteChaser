@@ -7,39 +7,55 @@ import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGeneratorFactory
+import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
+import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 
 class SessionViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
-    private val _sessionState = MutableLiveData(SessionState.INACTIVE)
-    val sessionState: LiveData<SessionState>
-        get() = _sessionState
+    private val _curPitchDetectedAsMidiNumber = MutableLiveData<Int>()
+    val curPitchDetectedAsMidiNumber: LiveData<Int>
+        get() = _curPitchDetectedAsMidiNumber
 
     private val _curPlayable = MutableLiveData<Playable>()
     val curPlayable: LiveData<Playable>
         get() = _curPlayable
 
+    private val _sessionState = MutableLiveData(State.INACTIVE)
+    val sessionState: LiveData<State>
+        get() = _sessionState
+
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
+    private var pitchProcessor = SignalProcessor().also {
+        it.listener = SignalProcessorListener { pitch, _, _ ->
+            runBlocking(Dispatchers.Main) {
+                _curPitchDetectedAsMidiNumber.value = pitch
+            }
+        }
+    }
 
     private var sessionJob: Job? = null
-    private var playPlayableJob: Job? = null
-    private var cancelPlayableJob: Job? = null
+    private var playableJob: Job? = null
+    private var processorJob: Job? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        playablePlayer.midiPlayer.stop()
+    }
 
     fun startSession() {
         assertSessionNotStarted()
 
         if (this::playablePlayer.isInitialized) {
-            cancelPlayableJob?.cancel()
             sessionJob = launchSession()
         }
     }
@@ -51,9 +67,13 @@ class SessionViewModel @ViewModelInject constructor(
         sessionJob?.cancel()
         sessionJob = null
 
-        playPlayableJob?.cancel()
-
-        cancelPlayableJob = launchCancelPlayable()
+        if (_sessionState.value == State.PLAYING) {
+            cancelPlayableJob()
+        }
+        else if (_sessionState.value == State.LISTENING) {
+            cancelProcessorJob()
+        }
+        _sessionState.value = State.INACTIVE
     }
 
     fun initGenerator(type: ExerciseType) {
@@ -62,36 +82,47 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        playablePlayer.midiPlayer.stop()
-    }
-
     private fun launchSession(): Job {
         return viewModelScope.launch {
 
             val nextPlayable = generator.generatePlayable()
             _curPlayable.value = nextPlayable
 
-            playPlayableJob = launchPlayableJob(nextPlayable)
-            playPlayableJob?.join()
+            playableJob = launchPlayPlayable(nextPlayable).also {  }
+            playableJob?.join()
 
+            processorJob = launchAnswerProcessing().also {
+                it.join()
+            }
         }
     }
 
-    private fun launchPlayableJob(playable: Playable): Job {
+    private fun launchPlayPlayable(playable: Playable): Job {
         return viewModelScope.launch {
-            _sessionState.value = SessionState.PLAYING
+            _sessionState.value = State.PLAYING
             playablePlayer.playPlayable(playable)
-            _sessionState.value = SessionState.INACTIVE
         }
     }
 
-    private fun launchCancelPlayable(): Job {
-        return viewModelScope.launch {
-            playablePlayer.stopCurPlayable()
-            _sessionState.value = SessionState.INACTIVE
+    private fun launchAnswerProcessing(): Job {
+        return viewModelScope.launch(Dispatchers.IO) {
+            runBlocking(Dispatchers.Main) {
+                _sessionState.value = State.LISTENING
+            }
+            // Check out this variables declaration for how pitch results are handled
+            pitchProcessor.start()
         }
+    }
+
+    private fun cancelPlayableJob() {
+        playableJob?.cancel()
+        playablePlayer.stopCurPlayable()
+    }
+
+    private fun cancelProcessorJob() {
+        pitchProcessor.stop()
+
+        _curPitchDetectedAsMidiNumber.value = -1
     }
 
     private fun makePlayableGenerator(type: ExerciseType) {
@@ -142,12 +173,11 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    enum class SessionState {
+    enum class State {
         LISTENING,
         PLAYING,
         INACTIVE,
     }
-
 
 }
 
