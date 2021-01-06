@@ -5,47 +5,65 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.models.PlayablePlayer
+import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
+import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessorListener
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGeneratorFactory
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
+import kotlin.properties.Delegates
 
 
 class SessionViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
-    private val _curPitchDetectedAsMidiNumber = MutableLiveData<Int>()
-    val curPitchDetectedAsMidiNumber: LiveData<Int>
+    private val _curPitchDetectedAsMidiNumber = MutableLiveData<Int?>(null)
+    val curPitchDetectedAsMidiNumber: LiveData<Int?>
         get() = _curPitchDetectedAsMidiNumber
+
+    private val _curFilteredNoteDetected = MutableLiveData<Note?>(null)
+        val curFilteredNoteDetected: LiveData<Note?>
+        get() = _curFilteredNoteDetected
 
     private val _curPlayable = MutableLiveData<Playable>()
     val curPlayable: LiveData<Playable>
         get() = _curPlayable
 
+    private val _userAnswer = MutableLiveData<List<Note>>()
+    val userAnswer: LiveData<List<Note>>
+        get() = _userAnswer
+
     private val _sessionState = MutableLiveData(State.INACTIVE)
     val sessionState: LiveData<State>
         get() = _sessionState
 
+    private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
+
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
-    private var pitchProcessor = SignalProcessor().also {
-        it.listener = SignalProcessorListener { pitch, _, _ ->
-            runBlocking(Dispatchers.Main) {
-                _curPitchDetectedAsMidiNumber.value = pitch
-            }
-        }
-    }
+    private var pitchProcessor = SignalProcessor()
+    private var noteProcessor = NoteProcessor()
 
     private var sessionJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            answersShouldMatchOctave = prefsStore.matchOctave().first()
+        }
+        setupPitchProcessingCallbacks()
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -57,6 +75,9 @@ class SessionViewModel @ViewModelInject constructor(
 
         if (this::playablePlayer.isInitialized) {
             sessionJob = launchSession()
+        }
+        else {
+            TODO("wait and try again?")
         }
     }
 
@@ -88,7 +109,7 @@ class SessionViewModel @ViewModelInject constructor(
             val nextPlayable = generator.generatePlayable()
             _curPlayable.value = nextPlayable
 
-            playableJob = launchPlayPlayable(nextPlayable).also {  }
+            playableJob = launchPlayPlayable(nextPlayable)
             playableJob?.join()
 
             processorJob = launchAnswerProcessing().also {
@@ -109,7 +130,7 @@ class SessionViewModel @ViewModelInject constructor(
             runBlocking(Dispatchers.Main) {
                 _sessionState.value = State.LISTENING
             }
-            // Check out this variables declaration for how pitch results are handled
+            noteProcessor.clear()
             pitchProcessor.start()
         }
     }
@@ -167,10 +188,38 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun setupPitchProcessingCallbacks() {
+        pitchProcessor.listener = object : SignalProcessorListener {
+            override fun notifyPitchResult(pitchAsMidiNumber: Int?, probability: Float, isPitched: Boolean) {
+                runBlocking(Dispatchers.Main) {
+                    _curPitchDetectedAsMidiNumber.value = pitchAsMidiNumber
+                    noteProcessor.onPitchDetected(pitchAsMidiNumber)
+                }
+            }
+        }
+
+        noteProcessor.listener = object : NoteProcessorListener {
+            override fun notifyNoteDetected(note: Int) {
+                _curFilteredNoteDetected.value = NoteFactory.makeNoteFromMidiNumber(note)
+            }
+            override fun notifyNoteUndetected(note: Int) {
+                _curFilteredNoteDetected.value = null
+            }
+        }
+    }
+
     private fun assertSessionNotStarted() {
         if (sessionJob != null) {
             throw IllegalArgumentException("startSession() called before endSession()")
         }
+    }
+
+    private fun samePatternSameOctave(lhs: List<Note>, rhs: List<Note>) {
+
+    }
+
+    private fun samePatternAnyOctave(lhs: List<Note>, rhs: List<Note>) {
+
     }
 
     enum class State {
