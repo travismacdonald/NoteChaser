@@ -15,6 +15,7 @@ import com.cannonballapps.notechaser.musicutilities.*
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import kotlin.properties.Delegates
@@ -48,7 +49,13 @@ class SessionViewModel @ViewModelInject constructor(
     val sessionState: LiveData<State>
         get() = _sessionState
 
+    private val _timeSpentOnCurrentQuestionInMillis = MutableLiveData<Long>()
+    val timeSpentOnCurrentQuestionInMillis: LiveData<Long>
+        get() = _timeSpentOnCurrentQuestionInMillis
 
+    private val _elapsedSessionTimeInSeconds = MutableLiveData<Int>()
+    val sessionTimeInSeconds: LiveData<Int>
+        get() = _elapsedSessionTimeInSeconds
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
     private val millisInBetweenQuestions = 350L
@@ -61,6 +68,7 @@ class SessionViewModel @ViewModelInject constructor(
     private var sessionJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
+    private var timerJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -74,11 +82,14 @@ class SessionViewModel @ViewModelInject constructor(
         playablePlayer.midiPlayer.stop()
     }
 
+    @ObsoleteCoroutinesApi
     fun startSession() {
         assertSessionNotStarted()
 
         if (this::playablePlayer.isInitialized) {
+            timerJob = launchTimerJob()
             val playable = getNextPlayable()
+
             sessionJob = launchSessionCycle(playable)
         }
         else {
@@ -120,7 +131,6 @@ class SessionViewModel @ViewModelInject constructor(
             processorJob = launchAnswerProcessing().also { job ->
                 job.join()
             }
-            Timber.d("answer processing finished, exiting launchSessionCycle")
         }
     }
 
@@ -273,6 +283,18 @@ class SessionViewModel @ViewModelInject constructor(
         val numOctavesFromZero = lowestNote.midiNumber / MusicTheoryUtils.OCTAVE_SIZE
         val offset = numOctavesFromZero * MusicTheoryUtils.OCTAVE_SIZE
         return notes.map { it.midiNumber - offset }
+    }
+
+    @ObsoleteCoroutinesApi
+    private fun launchTimerJob(): Job {
+        val ticker = ticker(delayMillis = 1000)
+        return viewModelScope.launch {
+            _elapsedSessionTimeInSeconds.value = 0
+            for (tick in ticker) {
+                _elapsedSessionTimeInSeconds.value = _elapsedSessionTimeInSeconds.value!! + 1
+                Timber.d("just ticked!")
+            }
+        }
     }
 
     enum class State {

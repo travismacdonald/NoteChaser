@@ -99,7 +99,6 @@ class NoteProcessor {
         val noteStamp = NoteStamp(note, System.currentTimeMillis())
         noteQueue.add(noteStamp)
         note?.let {
-            Timber.d("added note $note to noteFrequencies")
             noteFrequencies[note] = noteFrequencies[note]!! + 1
         }
     }

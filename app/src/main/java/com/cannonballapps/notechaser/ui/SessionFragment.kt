@@ -18,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SessionFragment : Fragment() {
@@ -70,6 +71,15 @@ class SessionFragment : Fragment() {
 
         viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
             binding.numCorrectAnswers.text = "num correct: $num"
+        }
+
+        viewModel.sessionTimeInSeconds.observe(viewLifecycleOwner) { seconds ->
+            Timber.d("elapsed time observed")
+            binding.totalElapsedTime.text = "total elapsed: $seconds"
+        }
+
+        viewModel.timeSpentOnCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
+            Timber.d("timeSpentOnCurrentQuestionInMillis observed")
         }
 
         return binding.root
