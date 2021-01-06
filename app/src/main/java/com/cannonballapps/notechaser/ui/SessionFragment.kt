@@ -47,11 +47,19 @@ class SessionFragment : Fragment() {
         }
 
         viewModel.curPlayable.observe(viewLifecycleOwner) { playable ->
+            binding.curPlayableText.text = playable.notes.map { it.toString() }.toString()
+        }
 
+        viewModel.userAnswer.observe(viewLifecycleOwner) { answer ->
+            binding.userAnswerText.text = answer.map { it.toString() }.toString()
         }
 
         viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
             binding.pitchTv.text = midiNum.toString()
+        }
+
+        viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
+            binding.filteredNoteTv.text = note.toString()
         }
 
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->

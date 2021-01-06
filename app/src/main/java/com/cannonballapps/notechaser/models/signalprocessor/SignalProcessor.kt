@@ -9,9 +9,9 @@ import be.tarsos.dsp.pitch.PitchDetectionResult
 import be.tarsos.dsp.pitch.PitchProcessor
 import be.tarsos.dsp.util.PitchConverter
 
-const val SAMPLE_RATE = 22050
 const val AUDIO_BUFFER_SIZE = 1024
 const val BUFFER_OVERLAP = 0
+const val SAMPLE_RATE = 22050  // TODO: play around with different sample rates
 
 const val SILENCE_THRESHOLD = -75.0
 
@@ -37,8 +37,6 @@ class SignalProcessor {
                         val midiNumber = PitchConverter.hertzToMidiKey(pitchInHz.toDouble())
                         listener?.notifyPitchResult(midiNumber, result.probability, result.isPitched)
                     }
-
-
                 }
             }
             val pitchProcessor: AudioProcessor = PitchProcessor(
