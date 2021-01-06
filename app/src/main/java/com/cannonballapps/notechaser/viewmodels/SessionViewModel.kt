@@ -11,10 +11,7 @@ import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGeneratorFactory
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
-import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NoteFactory
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.getModeAtIx
+import com.cannonballapps.notechaser.musicutilities.*
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.*
@@ -32,16 +29,20 @@ class SessionViewModel @ViewModelInject constructor(
         get() = _curPitchDetectedAsMidiNumber
 
     private val _curFilteredNoteDetected = MutableLiveData<Note?>(null)
-        val curFilteredNoteDetected: LiveData<Note?>
+    val curFilteredNoteDetected: LiveData<Note?>
         get() = _curFilteredNoteDetected
 
-    private val _curPlayable = MutableLiveData<Playable>()
-    val curPlayable: LiveData<Playable>
+    private val _curPlayable = MutableLiveData<Playable?>(null)
+    val curPlayable: LiveData<Playable?>
         get() = _curPlayable
 
-    private val _userAnswer = MutableLiveData<List<Note>>()
-    val userAnswer: LiveData<List<Note>>
+    private val _userAnswer = MutableLiveData<ArrayList<Note>>(arrayListOf())
+    val userAnswer: LiveData<out List<Note>>
         get() = _userAnswer
+
+    private val _numCorrectAnswers = MutableLiveData(0)
+    val numCorrectAnswers: LiveData<Int>
+        get() = _numCorrectAnswers
 
     private val _sessionState = MutableLiveData(State.INACTIVE)
     val sessionState: LiveData<State>
@@ -200,8 +201,14 @@ class SessionViewModel @ViewModelInject constructor(
 
         noteProcessor.listener = object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                _curFilteredNoteDetected.value = NoteFactory.makeNoteFromMidiNumber(note)
+                val curNote = NoteFactory.makeNoteFromMidiNumber(note)
+                _curFilteredNoteDetected.value = curNote
+                addNoteToUserAnswer(curNote)
+                if (userAnswerIsCorrect()) {
+                    _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
+                }
             }
+
             override fun notifyNoteUndetected(note: Int) {
                 _curFilteredNoteDetected.value = null
             }
@@ -214,12 +221,36 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun samePatternSameOctave(lhs: List<Note>, rhs: List<Note>) {
-
+    private fun addNoteToUserAnswer(note: Note) {
+        val notes = _userAnswer.value!!
+        if (notes.size == _curPlayable.value!!.notes.size) {
+            notes.removeAt(0)
+        }
+        notes.add(note)
+        _userAnswer.value = notes
     }
 
-    private fun samePatternAnyOctave(lhs: List<Note>, rhs: List<Note>) {
+    private fun userAnswerIsCorrect(): Boolean {
+        val actualAnswer = _curPlayable.value!!.notes
+        val userAnswer = _userAnswer.value!!
+        return (answersShouldMatchOctave && isSamePatternSameOctave(actualAnswer, userAnswer) ||
+                !answersShouldMatchOctave && isSamePatternAnyOctave(actualAnswer, userAnswer))
+    }
 
+
+    private fun isSamePatternSameOctave(lhs: List<Note>, rhs: List<Note>): Boolean {
+        return lhs.map { it.midiNumber } == rhs.map { it.midiNumber }
+    }
+
+    private fun isSamePatternAnyOctave(lhs: List<Note>, rhs: List<Note>): Boolean {
+        return transposeNotesToLowestOctave(lhs) == transposeNotesToLowestOctave(rhs)
+    }
+
+    private fun transposeNotesToLowestOctave(notes: List<Note>): List<Int> {
+        val lowestNote = notes.minByOrNull { it.midiNumber }!!
+        val numOctavesFromZero = lowestNote.midiNumber / MusicTheoryUtils.OCTAVE_SIZE
+        val offset = numOctavesFromZero * MusicTheoryUtils.OCTAVE_SIZE
+        return notes.map { it.midiNumber - offset }
     }
 
     enum class State {

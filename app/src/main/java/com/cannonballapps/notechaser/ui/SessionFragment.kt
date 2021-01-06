@@ -47,23 +47,29 @@ class SessionFragment : Fragment() {
         }
 
         viewModel.curPlayable.observe(viewLifecycleOwner) { playable ->
-            binding.curPlayableText.text = playable.notes.map { it.toString() }.toString()
+            playable?.let {
+                binding.curPlayableText.text = "cur question: " + playable.notes.map { it.toString() }.toString()
+            }
         }
 
         viewModel.userAnswer.observe(viewLifecycleOwner) { answer ->
-            binding.userAnswerText.text = answer.map { it.toString() }.toString()
+            binding.userAnswerText.text = "cur ans: " + answer.map { it.toString() }.toString()
         }
 
         viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
-            binding.pitchTv.text = midiNum.toString()
+            binding.pitchTv.text = "pitch: " + midiNum.toString()
         }
 
         viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
-            binding.filteredNoteTv.text = note.toString()
+            binding.filteredNoteTv.text = "filtered: " + note.toString()
         }
 
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
-            binding.sessionStateTv.text = state.toString()
+            binding.sessionStateTv.text = "state: " + state.toString()
+        }
+
+        viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
+            binding.numCorrectAnswers.text = "num correct: $num"
         }
 
         return binding.root
