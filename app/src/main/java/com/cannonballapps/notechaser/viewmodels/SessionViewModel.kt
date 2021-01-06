@@ -78,7 +78,8 @@ class SessionViewModel @ViewModelInject constructor(
         assertSessionNotStarted()
 
         if (this::playablePlayer.isInitialized) {
-            sessionJob = launchSessionCycle()
+            val playable = getNextPlayable()
+            sessionJob = launchSessionCycle(playable)
         }
         else {
             TODO("wait and try again?")
@@ -107,18 +108,13 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun launchSessionCycle(delayBeforeStarting: Long = -1): Job {
+    private fun launchSessionCycle(playable: Playable, delayBeforeStarting: Long = -1): Job {
         return viewModelScope.launch {
-
             if (delayBeforeStarting != -1L) {
                 _sessionState.value = State.WAITING
                 delay(delayBeforeStarting)
             }
-
-            val nextPlayable = generator.generatePlayable()
-            _curPlayable.value = nextPlayable
-
-            playableJob = launchPlayPlayable(nextPlayable).also { job ->
+            playableJob = launchPlayPlayable(playable).also { job ->
                 job.join()
             }
             processorJob = launchAnswerProcessing().also { job ->
@@ -214,8 +210,9 @@ class SessionViewModel @ViewModelInject constructor(
                 addNoteToUserAnswer(curNote)
                 if (userAnswerIsCorrect()) {
                     _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
-                    cancelProcessorJob()
-                    sessionJob = launchSessionCycle(millisInBetweenQuestions)
+                    if (_numCorrectAnswers.value != 10000000) {
+                        startNextCycle()
+                    }
                 }
             }
 
@@ -229,6 +226,16 @@ class SessionViewModel @ViewModelInject constructor(
         if (sessionJob != null) {
             throw IllegalArgumentException("startSession() called before endSession()")
         }
+    }
+
+    private fun startNextCycle() {
+        cancelProcessorJob()
+        noteProcessor.clear()
+        _curFilteredNoteDetected.value = null
+        _curPitchDetectedAsMidiNumber.value = null
+        _userAnswer.value = arrayListOf()
+        val playable = getNextPlayable()
+        sessionJob = launchSessionCycle(playable, millisInBetweenQuestions)
     }
 
     private fun addNoteToUserAnswer(note: Note) {
@@ -247,6 +254,11 @@ class SessionViewModel @ViewModelInject constructor(
                 !answersShouldMatchOctave && isSamePatternAnyOctave(actualAnswer, userAnswer))
     }
 
+    private fun getNextPlayable(): Playable {
+        val nextPlayable = generator.generatePlayable()
+        _curPlayable.value = nextPlayable
+        return nextPlayable
+    }
 
     private fun isSamePatternSameOctave(lhs: List<Note>, rhs: List<Note>): Boolean {
         return lhs.map { it.midiNumber } == rhs.map { it.midiNumber }
