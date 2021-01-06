@@ -48,7 +48,10 @@ class SessionViewModel @ViewModelInject constructor(
     val sessionState: LiveData<State>
         get() = _sessionState
 
+
+
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
+    private val millisInBetweenQuestions = 350L
 
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
@@ -75,7 +78,7 @@ class SessionViewModel @ViewModelInject constructor(
         assertSessionNotStarted()
 
         if (this::playablePlayer.isInitialized) {
-            sessionJob = launchSession()
+            sessionJob = launchSessionCycle()
         }
         else {
             TODO("wait and try again?")
@@ -104,18 +107,24 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun launchSession(): Job {
+    private fun launchSessionCycle(delayBeforeStarting: Long = -1): Job {
         return viewModelScope.launch {
+
+            if (delayBeforeStarting != -1L) {
+                _sessionState.value = State.WAITING
+                delay(delayBeforeStarting)
+            }
 
             val nextPlayable = generator.generatePlayable()
             _curPlayable.value = nextPlayable
 
-            playableJob = launchPlayPlayable(nextPlayable)
-            playableJob?.join()
-
-            processorJob = launchAnswerProcessing().also {
-                it.join()
+            playableJob = launchPlayPlayable(nextPlayable).also { job ->
+                job.join()
             }
+            processorJob = launchAnswerProcessing().also { job ->
+                job.join()
+            }
+            Timber.d("answer processing finished, exiting launchSessionCycle")
         }
     }
 
@@ -143,8 +152,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private fun cancelProcessorJob() {
         pitchProcessor.stop()
-
-        _curPitchDetectedAsMidiNumber.value = -1
+        _curPitchDetectedAsMidiNumber.value = null
     }
 
     private fun makePlayableGenerator(type: ExerciseType) {
@@ -206,6 +214,8 @@ class SessionViewModel @ViewModelInject constructor(
                 addNoteToUserAnswer(curNote)
                 if (userAnswerIsCorrect()) {
                     _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
+                    cancelProcessorJob()
+                    sessionJob = launchSessionCycle(millisInBetweenQuestions)
                 }
             }
 
@@ -256,8 +266,8 @@ class SessionViewModel @ViewModelInject constructor(
     enum class State {
         LISTENING,
         PLAYING,
+        WAITING,
         INACTIVE,
     }
 
 }
-
