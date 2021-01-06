@@ -13,6 +13,8 @@ const val SAMPLE_RATE = 22050
 const val AUDIO_BUFFER_SIZE = 1024
 const val BUFFER_OVERLAP = 0
 
+const val SILENCE_THRESHOLD = -75.0
+
 class SignalProcessor {
 
     private lateinit var dispatcher: AudioDispatcher
@@ -25,11 +27,18 @@ class SignalProcessor {
     fun start() {
         if (!isRunning) {
             val handler = PitchDetectionHandler { result: PitchDetectionResult, event: AudioEvent? ->
-                // TODO: experiment with the dB level from AudioEvent
                 if (isRunning) {
                     val pitchInHz = result.pitch
-                    val pitchMidiNumber = pitchToMidiNumber(pitchInHz.toDouble())
-                    listener?.notifyPitchResult(pitchMidiNumber, result.probability, result.isPitched)
+
+                    if (isSilence(pitchInHz, event)) {
+                        listener?.notifyPitchResult(null, result.probability, result.isPitched)
+                    }
+                    else {
+                        val midiNumber = PitchConverter.hertzToMidiKey(pitchInHz.toDouble())
+                        listener?.notifyPitchResult(midiNumber, result.probability, result.isPitched)
+                    }
+
+
                 }
             }
             val pitchProcessor: AudioProcessor = PitchProcessor(
@@ -55,12 +64,8 @@ class SignalProcessor {
         isRunning = false
     }
 
-    private fun pitchToMidiNumber(pitchInHz: Double): Int {
-        return if (pitchInHz == -1.0) {
-            -1
-        }
-        else PitchConverter.hertzToMidiKey(pitchInHz)
+    private fun isSilence(pitchInHz: Float, event: AudioEvent?): Boolean {
+        return pitchInHz == -1f || event?.isSilence(SILENCE_THRESHOLD) == true
     }
-
 
 }
