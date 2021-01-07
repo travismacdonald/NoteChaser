@@ -8,6 +8,7 @@ import be.tarsos.dsp.pitch.PitchDetectionHandler
 import be.tarsos.dsp.pitch.PitchDetectionResult
 import be.tarsos.dsp.pitch.PitchProcessor
 import be.tarsos.dsp.util.PitchConverter
+import timber.log.Timber
 
 const val AUDIO_BUFFER_SIZE = 1024
 const val BUFFER_OVERLAP = 0
@@ -58,8 +59,11 @@ class SignalProcessor {
     }
 
     fun stop() {
-        dispatcher.stop()
-        isRunning = false
+        Timber.d("stop() called from SignalProcessor")
+        if (isRunning) {
+            dispatcher.stop()
+            isRunning = false
+        }
     }
 
     private fun isSilence(pitchInHz: Float, event: AudioEvent?): Boolean {

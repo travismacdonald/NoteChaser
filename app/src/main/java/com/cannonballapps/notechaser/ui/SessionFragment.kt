@@ -17,9 +17,11 @@ import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@ObsoleteCoroutinesApi
 @AndroidEntryPoint
 class SessionFragment : Fragment() {
 
@@ -82,11 +84,20 @@ class SessionFragment : Fragment() {
             binding.currentQuestionElapsedTime.text = "local time: $millis"
         }
 
+        viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
+            binding.secondsUntilStart.text = "cd: $seconds"
+        }
+
         return binding.root
     }
 
     override fun onStop() {
         super.onStop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startSession()
     }
 
     // TODO: this lives here for now; should refactor to use Hilt

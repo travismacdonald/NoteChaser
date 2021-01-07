@@ -22,6 +22,8 @@ import timber.log.Timber
 import kotlin.properties.Delegates
 
 
+const val COUNTDOWN_SECONDS = 3
+
 @ObsoleteCoroutinesApi
 class SessionViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore,
@@ -51,6 +53,10 @@ class SessionViewModel @ViewModelInject constructor(
     val numRepeatsForCurrentQuestion: LiveData<Int>
         get() = _numRepeatsForCurrentQuestion
 
+    private val _secondsUntilSessionStart = MutableLiveData(0)
+    val secondsUntilSessionStart: LiveData<Int>
+        get() = _secondsUntilSessionStart
+
     private val _sessionState = MutableLiveData(State.INACTIVE)
     val sessionState: LiveData<State>
         get() = _sessionState
@@ -68,7 +74,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
     private val millisInBetweenQuestions = 350L
-    private val silenceThreshold = 2500L
+    private val silenceThreshold = 2750L
 
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
@@ -79,6 +85,7 @@ class SessionViewModel @ViewModelInject constructor(
     private var playableJob: Job? = null
     private var processorJob: Job? = null
 
+    private var countDownJob: Job? = null
     private var sessionTimerJob: Job? = null
     private var currentQuestionTimerJob: Job? = null
     private var repeatPlayableJob: Job? = null
@@ -100,22 +107,39 @@ class SessionViewModel @ViewModelInject constructor(
 
     fun startSession() {
         assertSessionNotStarted()
-
-        if (this::playablePlayer.isInitialized) {
+        countDownJob = viewModelScope.launch {
+            _sessionState.value = State.COUNTDOWN
+            _secondsUntilSessionStart.value = COUNTDOWN_SECONDS
+            repeat(COUNTDOWN_SECONDS) {
+                delay(timeMillis = 1000)
+                if (isActive) {
+                    _secondsUntilSessionStart.value = _secondsUntilSessionStart.value!!.minus(1)
+                }
+            }
             sessionTimerJob = beginSessionTimer()
             startNextCycle()
         }
-        else {
-            TODO("wait and try again?")
-        }
     }
 
+
+    // TODO: this function could use some cleaning up
     fun endSession() {
+        Timber.d("endSession called")
+        if (_sessionState.value == State.COUNTDOWN) {
+            Timber.d("cancelling countdown job")
+            countDownJob?.cancel()
+            _sessionState.value = State.INACTIVE
+            return
+        }
         if (sessionJob == null) {
             return
         }
+        currentQuestionTimerJob?.cancel()
+        repeatPlayableJob?.cancel()
         sessionJob?.cancel()
         sessionJob = null
+        sessionTimerJob?.cancel()
+
 
         if (_sessionState.value == State.PLAYING) {
             cancelPlayableJob()
@@ -308,7 +332,7 @@ class SessionViewModel @ViewModelInject constructor(
         _userAnswer.value = arrayListOf()
         _timeSpentAnsweringCurrentQuestionInMillis.value = 0
         _numRepeatsForCurrentQuestion.value = 0
-//        _curPlayable.value = null
+        _curPlayable.value = null
     }
 
     @ObsoleteCoroutinesApi
@@ -362,12 +386,13 @@ class SessionViewModel @ViewModelInject constructor(
             _elapsedSessionTimeInSeconds.value = 0
             for (tick in ticker) {
                 _elapsedSessionTimeInSeconds.value = _elapsedSessionTimeInSeconds.value!! + 1
-                Timber.d("just ticked!")
+//                Timber.d("just ticked!")
             }
         }
     }
 
     enum class State {
+        COUNTDOWN,
         LISTENING,
         PLAYING,
         WAITING,
