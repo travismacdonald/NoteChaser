@@ -1,7 +1,6 @@
 package com.cannonballapps.notechaser.models.noteprocessor
 
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
-import timber.log.Timber
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -15,7 +14,7 @@ class NoteProcessor {
     private var readyToFilter: Boolean = false
     private var initTimeMillis: Long? = null
 
-    private val noteExpirationLenInMillis = 750L
+    private val noteExpirationLenInMillis = 600L
     private val notePredictionThreshold = 0.45f
 
     private val noteQueue: MutableList<NoteStamp> = LinkedList()

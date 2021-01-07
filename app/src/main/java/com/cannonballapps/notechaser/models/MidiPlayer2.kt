@@ -3,7 +3,7 @@ package com.cannonballapps.notechaser.models
 import jp.kshoji.javax.sound.midi.*
 import kotlinx.coroutines.*
 
-private const val NOTE_ON_VELOCITY = 65
+private const val NOTE_ON_VELOCITY = 70
 private const val NOTE_OFF_VELOCITY = 0
 
 class MidiPlayer2(private val synth: Synthesizer) {
@@ -18,6 +18,7 @@ class MidiPlayer2(private val synth: Synthesizer) {
     fun close() {
         stop()
         synth.close()
+
     }
 
     fun stop() {
@@ -26,6 +27,7 @@ class MidiPlayer2(private val synth: Synthesizer) {
     }
 
     suspend fun playChord(chord: List<Int>, chordLenInMillis: Long) {
+
         if (isRunning) {
             stop()
         }
@@ -39,6 +41,9 @@ class MidiPlayer2(private val synth: Synthesizer) {
     }
 
     suspend fun playNoteSequence(seq: List<Int>, noteLenInMillis: Long) {
+//        synth.channels[0].channelPressure = 50000
+        // TODO: this works, just move it somewheres else
+        synth.channels[0].controlChange(7, 160)
         if (isRunning) {
             stop()
         }

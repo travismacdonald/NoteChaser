@@ -5,7 +5,9 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.QuestionLog
+import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.models.PlayablePlayer
+import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessorListener
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
@@ -73,13 +75,18 @@ class SessionViewModel @ViewModelInject constructor(
         get() = _elapsedSessionTimeInSeconds
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
-    private val millisInBetweenQuestions = 350L
+    private var numQuestions by Delegates.notNull<Int>()
+    private var sessionTimeLenInMinutes by Delegates.notNull<Int>()
+    private lateinit var sessionType: SessionType
+
+    private val millisInBetweenQuestions = 450L
     private val silenceThreshold = 2750L
 
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
     private var pitchProcessor = SignalProcessor()
     private var noteProcessor = NoteProcessor()
+    lateinit var soundEffectPlayer: SoundEffectPlayer
 
     private var sessionJob: Job? = null
     private var playableJob: Job? = null
@@ -95,9 +102,16 @@ class SessionViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             answersShouldMatchOctave = prefsStore.matchOctave().first()
+
+            sessionType = prefsStore.sessionType().first()
+            if (sessionType == SessionType.TIME_LIMIT) {
+                sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
+            }
+            else if (sessionType == SessionType.QUESTION_LIMIT) {
+                numQuestions = prefsStore.numQuestions().first()
+            }
         }
         setupPitchProcessingCallbacks()
-
     }
 
     override fun onCleared() {
@@ -141,7 +155,7 @@ class SessionViewModel @ViewModelInject constructor(
         sessionTimerJob?.cancel()
 
 
-        if (_sessionState.value == State.PLAYING) {
+        if (_sessionState.value == State.PLAYING_QUESTION) {
             cancelPlayableJob()
         }
         else if (_sessionState.value == State.LISTENING) {
@@ -186,7 +200,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private fun launchPlayPlayable(playable: Playable): Job {
         return viewModelScope.launch {
-            _sessionState.value = State.PLAYING
+            _sessionState.value = State.PLAYING_QUESTION
             playablePlayer.playPlayable(playable)
         }
     }
@@ -293,15 +307,34 @@ class SessionViewModel @ViewModelInject constructor(
     private fun onAnswerCorrect() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
+        _sessionState.value = State.PLAYING_CORRECT_SOUND
+        soundEffectPlayer.playCorrectSound()
+        Timber.d("playCorrectSound exited")
         questionLogs.add(makeLogForCurrentQuestion())
         _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
-        if (_numCorrectAnswers.value != 10000000) {
-            startNextCycle()
+        if (isQuestionLimitSession() && questionLimitReached()) {
+            onSessionCompleted()
         }
         else {
-            TODO("go to statistics fragment")
+            startNextCycle()
         }
     }
+
+    private fun sessionIsComplete(): Boolean {
+        return isTimedSession() && timeLimitReached() || isQuestionLimitSession() && questionLimitReached()
+    }
+
+    private fun isTimedSession() =
+            sessionType == SessionType.TIME_LIMIT
+
+    private fun timeLimitReached() =
+            _elapsedSessionTimeInSeconds.value!! == sessionTimeLenInMinutes * 60
+
+    private fun isQuestionLimitSession() =
+            sessionType == SessionType.QUESTION_LIMIT
+
+    private fun questionLimitReached() =
+            _numCorrectAnswers.value!! == numQuestions
 
     @ObsoleteCoroutinesApi
     private fun onSilenceThresholdMet() {
@@ -386,17 +419,24 @@ class SessionViewModel @ViewModelInject constructor(
             _elapsedSessionTimeInSeconds.value = 0
             for (tick in ticker) {
                 _elapsedSessionTimeInSeconds.value = _elapsedSessionTimeInSeconds.value!! + 1
-//                Timber.d("just ticked!")
+                if (isTimedSession() && timeLimitReached()) {
+                    onSessionCompleted()
+                }
             }
         }
     }
 
+    private fun onSessionCompleted() {
+        TODO("nav to statistics fragment")
+    }
+
     enum class State {
-        COUNTDOWN,
-        LISTENING,
-        PLAYING,
-        WAITING,
         INACTIVE,
+        COUNTDOWN,
+        PLAYING_QUESTION,
+        LISTENING,
+        PLAYING_CORRECT_SOUND,
+        WAITING,
     }
 
 }

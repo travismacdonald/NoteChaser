@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.models.MidiPlayer2
 import com.cannonballapps.notechaser.models.PlayablePlayer
+import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,14 +37,15 @@ class SessionFragment : Fragment() {
         val args = SessionFragmentArgs.fromBundle(requireArguments())
         viewModel.initGenerator(args.exerciseType)
         injectPlayablePlayerIntoViewModel()
+        injectSoundEffectPlayer()
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
         )
         binding.lifecycleOwner = this
 
-        binding.randomButton.setOnClickListener {
-            viewModel.startSession()
+        binding.startButton.setOnClickListener {
+
         }
 
         binding.stopButton.setOnClickListener {
@@ -99,7 +102,7 @@ class SessionFragment : Fragment() {
     // TODO: this lives here for now; should refactor to use Hilt
     @Suppress("BlockingMethodInNonBlockingContext")
     private fun injectPlayablePlayerIntoViewModel() {
-        GlobalScope.launch {
+        viewModel.viewModelScope.launch {
             val soundBank = SF2Soundbank(
                     requireActivity().application.assets.open(getString(R.string.soundfont_filename))
             )
@@ -110,6 +113,13 @@ class SessionFragment : Fragment() {
             val midiPlayer = MidiPlayer2(synth)
 
             viewModel.playablePlayer = PlayablePlayer(midiPlayer)
+        }
+    }
+
+    // TODO: bad bad i know
+    private fun injectSoundEffectPlayer() {
+        viewModel.viewModelScope.launch {
+            viewModel.soundEffectPlayer = SoundEffectPlayer(requireContext())
         }
     }
 }
