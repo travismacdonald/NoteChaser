@@ -66,9 +66,7 @@ class SessionFragment : Fragment() {
 
         subscribeToSessionState()
 
-        viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
-            // TODO
-        }
+        subscribeToNumCorrectAnswers()
 
         viewModel.sessionTimeInSeconds.observe(viewLifecycleOwner) { seconds ->
 //            Timber.d("elapsed time observed")
@@ -80,6 +78,12 @@ class SessionFragment : Fragment() {
         }
 
         subscribeToSessionStartCountdown()
+    }
+
+    private fun subscribeToNumCorrectAnswers() {
+        viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
+            binding.questionCounterTv.text = "$num / ${viewModel.numQuestions}"
+        }
     }
 
     private fun subscribeToSessionStartCountdown() {
@@ -97,8 +101,14 @@ class SessionFragment : Fragment() {
 
     private fun subscribeToSessionState() {
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
-            binding.detectedPitchTv.isVisible = state == SessionViewModel.State.LISTENING
+
+
+            binding.detectedPitchTv.visibility =
+                    if (state == SessionViewModel.State.LISTENING) View.VISIBLE else View.INVISIBLE
+
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
+
+
 
             binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
             binding.answerCorrectText.isVisible = state == SessionViewModel.State.WAITING

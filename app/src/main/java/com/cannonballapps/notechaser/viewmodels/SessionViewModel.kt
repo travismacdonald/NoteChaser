@@ -48,7 +48,7 @@ class SessionViewModel @ViewModelInject constructor(
     val userAnswer: LiveData<out List<Note>>
         get() = _userAnswer
 
-    private val _numCorrectAnswers = MutableLiveData(0)
+    private val _numCorrectAnswers = MutableLiveData<Int>()
     val numCorrectAnswers: LiveData<Int>
         get() = _numCorrectAnswers
 
@@ -76,9 +76,9 @@ class SessionViewModel @ViewModelInject constructor(
         get() = _elapsedSessionTimeInSeconds
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
-    private var numQuestions by Delegates.notNull<Int>()
-    private var sessionTimeLenInMinutes by Delegates.notNull<Int>()
-    private lateinit var sessionType: SessionType
+    var numQuestions by Delegates.notNull<Int>()
+    var sessionTimeLenInMinutes by Delegates.notNull<Int>()
+    lateinit var sessionType: SessionType
 
     private val millisInBetweenQuestions = 450L
     private val silenceThreshold = 2750L
@@ -110,6 +110,7 @@ class SessionViewModel @ViewModelInject constructor(
             }
             else if (sessionType == SessionType.QUESTION_LIMIT) {
                 numQuestions = prefsStore.numQuestions().first()
+                Timber.d("num questions fetched: $numQuestions")
             }
         }
         setupPitchProcessingCallbacks()
@@ -131,7 +132,9 @@ class SessionViewModel @ViewModelInject constructor(
                     _secondsUntilSessionStart.value = _secondsUntilSessionStart.value!!.minus(1)
                 }
             }
+            // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
+            _numCorrectAnswers.value = 0
             startNextCycle(-1)
         }
     }
