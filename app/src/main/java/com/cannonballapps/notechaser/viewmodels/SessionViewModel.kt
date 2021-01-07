@@ -4,6 +4,7 @@ package com.cannonballapps.notechaser.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.cannonballapps.notechaser.data.ExerciseType
+import com.cannonballapps.notechaser.data.QuestionLog
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessor
 import com.cannonballapps.notechaser.models.noteprocessor.NoteProcessorListener
@@ -45,15 +46,22 @@ class SessionViewModel @ViewModelInject constructor(
     val numCorrectAnswers: LiveData<Int>
         get() = _numCorrectAnswers
 
+    private val _numRepeatsForCurrentQuestion = MutableLiveData(0)
+    val numRepeatsForCurrentQuestion: LiveData<Int>
+        get() = _numRepeatsForCurrentQuestion
+
     private val _sessionState = MutableLiveData(State.INACTIVE)
     val sessionState: LiveData<State>
         get() = _sessionState
 
-    private val _timeSpentOnCurrentQuestionInMillis = MutableLiveData<Long>()
-    val timeSpentOnCurrentQuestionInMillis: LiveData<Long>
-        get() = _timeSpentOnCurrentQuestionInMillis
+    // This var ONLY records time spent answering question. It does not record the time
+    // in which the question is being played.
+    private val _timeSpentAnsweringCurrentQuestionInMillis = MutableLiveData(0L)
+    val timeSpentAnsweringCurrentQuestionInMillis: LiveData<Long>
+        get() = _timeSpentAnsweringCurrentQuestionInMillis
 
-    private val _elapsedSessionTimeInSeconds = MutableLiveData<Int>()
+    // Elapsed time records time from start of session to end
+    private val _elapsedSessionTimeInSeconds = MutableLiveData(0)
     val sessionTimeInSeconds: LiveData<Int>
         get() = _elapsedSessionTimeInSeconds
 
@@ -68,13 +76,18 @@ class SessionViewModel @ViewModelInject constructor(
     private var sessionJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
-    private var timerJob: Job? = null
+
+    private var sessionTimerJob: Job? = null
+    private var currentQuestionTimerJob: Job? = null
+
+    private val questionLogs: MutableList<QuestionLog> = arrayListOf()
 
     init {
         viewModelScope.launch {
             answersShouldMatchOctave = prefsStore.matchOctave().first()
         }
         setupPitchProcessingCallbacks()
+
     }
 
     override fun onCleared() {
@@ -87,10 +100,8 @@ class SessionViewModel @ViewModelInject constructor(
         assertSessionNotStarted()
 
         if (this::playablePlayer.isInitialized) {
-            timerJob = launchTimerJob()
-            val playable = getNextPlayable()
-
-            sessionJob = launchSessionCycle(playable)
+            sessionTimerJob = beginSessionTimer()
+            startNextCycle()
         }
         else {
             TODO("wait and try again?")
@@ -119,6 +130,7 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
+    @ObsoleteCoroutinesApi
     private fun launchSessionCycle(playable: Playable, delayBeforeStarting: Long = -1): Job {
         return viewModelScope.launch {
             if (delayBeforeStarting != -1L) {
@@ -128,8 +140,21 @@ class SessionViewModel @ViewModelInject constructor(
             playableJob = launchPlayPlayable(playable).also { job ->
                 job.join()
             }
+            currentQuestionTimerJob = timeUserAnswer()
             processorJob = launchAnswerProcessing().also { job ->
                 job.join()
+            }
+        }
+    }
+
+    @ObsoleteCoroutinesApi
+    private fun timeUserAnswer(): Job {
+        val tickLenInMillis = 100L
+        val ticker = ticker(delayMillis = tickLenInMillis)
+        return viewModelScope.launch {
+            for (tick in ticker) {
+                _timeSpentAnsweringCurrentQuestionInMillis.value =
+                        _timeSpentAnsweringCurrentQuestionInMillis.value!!.plus(tickLenInMillis)
             }
         }
     }
@@ -219,10 +244,7 @@ class SessionViewModel @ViewModelInject constructor(
                 _curFilteredNoteDetected.value = curNote
                 addNoteToUserAnswer(curNote)
                 if (userAnswerIsCorrect()) {
-                    _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
-                    if (_numCorrectAnswers.value != 10000000) {
-                        startNextCycle()
-                    }
+                    onAnswerCorrect()
                 }
             }
 
@@ -232,18 +254,47 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
+    // TODO: handle whether it's a timed session or a num questions session
+    private fun onAnswerCorrect() {
+        cancelProcessorJob()
+        currentQuestionTimerJob?.cancel()
+        questionLogs.add(makeLogForCurrentQuestion())
+        _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
+        if (_numCorrectAnswers.value != 10000000) {
+            startNextCycle()
+        }
+        else {
+            TODO("go to statistics fragment")
+        }
+    }
+
     private fun assertSessionNotStarted() {
         if (sessionJob != null) {
             throw IllegalArgumentException("startSession() called before endSession()")
         }
     }
 
-    private fun startNextCycle() {
-        cancelProcessorJob()
+    private fun makeLogForCurrentQuestion(): QuestionLog {
+        return QuestionLog(
+                _curPlayable.value!!,
+                _timeSpentAnsweringCurrentQuestionInMillis.value!!,
+                _numRepeatsForCurrentQuestion.value!!
+        )
+    }
+
+    private fun clearLocalSessionState() {
         noteProcessor.clear()
         _curFilteredNoteDetected.value = null
         _curPitchDetectedAsMidiNumber.value = null
         _userAnswer.value = arrayListOf()
+        _timeSpentAnsweringCurrentQuestionInMillis.value = 0
+        _numRepeatsForCurrentQuestion.value = 0
+//        _curPlayable.value = null
+    }
+
+    @ObsoleteCoroutinesApi
+    private fun startNextCycle() {
+        clearLocalSessionState()
         val playable = getNextPlayable()
         sessionJob = launchSessionCycle(playable, millisInBetweenQuestions)
     }
@@ -286,7 +337,7 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     @ObsoleteCoroutinesApi
-    private fun launchTimerJob(): Job {
+    private fun beginSessionTimer(): Job {
         val ticker = ticker(delayMillis = 1000)
         return viewModelScope.launch {
             _elapsedSessionTimeInSeconds.value = 0

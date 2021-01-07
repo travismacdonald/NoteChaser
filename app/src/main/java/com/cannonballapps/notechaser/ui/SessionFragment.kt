@@ -78,8 +78,8 @@ class SessionFragment : Fragment() {
             binding.totalElapsedTime.text = "total elapsed: $seconds"
         }
 
-        viewModel.timeSpentOnCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
-            Timber.d("timeSpentOnCurrentQuestionInMillis observed")
+        viewModel.timeSpentAnsweringCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
+            binding.currentQuestionElapsedTime.text = "local time: $millis"
         }
 
         return binding.root
