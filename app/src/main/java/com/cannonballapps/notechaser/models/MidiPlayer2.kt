@@ -15,6 +15,12 @@ class MidiPlayer2(private val synth: Synthesizer) {
 
     private val receiver = synth.receiver
 
+    init {
+        // TODO: clean
+        // Sets the gain of the Midi
+        synth.channels[0].controlChange(7, 160)
+    }
+
     fun close() {
         stop()
         synth.close()
@@ -27,7 +33,6 @@ class MidiPlayer2(private val synth: Synthesizer) {
     }
 
     suspend fun playChord(chord: List<Int>, chordLenInMillis: Long) {
-
         if (isRunning) {
             stop()
         }
@@ -41,9 +46,6 @@ class MidiPlayer2(private val synth: Synthesizer) {
     }
 
     suspend fun playNoteSequence(seq: List<Int>, noteLenInMillis: Long) {
-//        synth.channels[0].channelPressure = 50000
-        // TODO: this works, just move it somewheres else
-        synth.channels[0].controlChange(7, 160)
         if (isRunning) {
             stop()
         }
