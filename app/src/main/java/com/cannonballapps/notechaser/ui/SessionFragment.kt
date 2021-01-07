@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
@@ -33,12 +34,12 @@ class SessionFragment : Fragment() {
 
     val viewModel: SessionViewModel by viewModels()
     lateinit var binding: FragmentSessionBinding
-
+    private lateinit var args: SessionFragmentArgs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        val args = SessionFragmentArgs.fromBundle(requireArguments())
+        args = SessionFragmentArgs.fromBundle(requireArguments())
         viewModel.initGenerator(args.exerciseType)
         injectPlayablePlayerIntoViewModel()
         injectSoundEffectPlayer()
@@ -99,9 +100,14 @@ class SessionFragment : Fragment() {
             binding.detectedPitchTv.isVisible = state == SessionViewModel.State.LISTENING
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
 
-
             binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
             binding.answerCorrectText.isVisible = state == SessionViewModel.State.WAITING
+
+            binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
+
+            if (state == SessionViewModel.State.FINISHED) {
+                navigateToStatisticsFragment(binding.root)
+            }
         }
     }
 
@@ -133,4 +139,10 @@ class SessionFragment : Fragment() {
             viewModel.soundEffectPlayer = SoundEffectPlayer(requireContext())
         }
     }
+
+    private fun navigateToStatisticsFragment(view: View) {
+        val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
+        view.findNavController().navigate(directions)
+    }
+
 }

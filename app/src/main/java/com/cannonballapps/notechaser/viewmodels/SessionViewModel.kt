@@ -428,7 +428,13 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     private fun onSessionCompleted() {
-        TODO("nav to statistics fragment")
+        endSession()
+        viewModelScope.launch {
+            _sessionState.value = State.FINISHING
+            // TODO: clean up hardcoded value
+            delay(3000)
+            _sessionState.value = State.FINISHED
+        }
     }
 
     enum class State {
@@ -438,6 +444,8 @@ class SessionViewModel @ViewModelInject constructor(
         LISTENING,
         PLAYING_CORRECT_SOUND,
         WAITING,
+        FINISHING,
+        FINISHED,
     }
 
 }
