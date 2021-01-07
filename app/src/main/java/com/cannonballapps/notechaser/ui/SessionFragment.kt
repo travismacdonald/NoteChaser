@@ -57,10 +57,7 @@ class SessionFragment : Fragment() {
 
     private fun subscribeToLiveData() {
 
-        viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
-            val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
-            binding.detectedPitchTv.text = noteStr
-        }
+        subscribeToDetectedPitch()
 
         viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
             // TODO
@@ -81,17 +78,26 @@ class SessionFragment : Fragment() {
             // TODO?
         }
 
+        subscribeToSessionStartCountdown()
+    }
+
+    private fun subscribeToSessionStartCountdown() {
         viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
-            // TODO
+            binding.sessionCountdownTv.text = seconds.toString()
+        }
+    }
+
+    private fun subscribeToDetectedPitch() {
+        viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
+            val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
+            binding.detectedPitchTv.text = noteStr
         }
     }
 
     private fun subscribeToSessionState() {
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
             binding.detectedPitchTv.isVisible = state == SessionViewModel.State.LISTENING
-            if (state == SessionViewModel.State.LISTENING) {
-                binding.detectedPitchTv.isVisible = true
-            }
+            binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
         }
     }
 

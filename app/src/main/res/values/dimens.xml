@@ -16,5 +16,6 @@
 
     <!-- Exercise Session -->
     <dimen name="pitchTextSize">32sp</dimen>
+    <dimen name="countdownTextSize">48sp</dimen>
 
 </resources>

@@ -24,4 +24,10 @@
         <item name="android:textColor">@color/itemTitle_textColor</item>
     </style>
 
+    <style name="sessionCountdown">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/pitchTextSize</item>
+        <item name="android:textColor">@color/itemTitle_textColor</item>
+    </style>
+
 </resources>
