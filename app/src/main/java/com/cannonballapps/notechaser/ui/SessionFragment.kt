@@ -91,10 +91,6 @@ class SessionFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
     override fun onResume() {
         super.onResume()
         viewModel.startSession()
