@@ -22,6 +22,7 @@ import timber.log.Timber
 import kotlin.properties.Delegates
 
 
+@ObsoleteCoroutinesApi
 class SessionViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore,
 ) : ViewModel() {
@@ -67,6 +68,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
     private val millisInBetweenQuestions = 350L
+    private val silenceThreshold = 2500L
 
     private lateinit var generator: PlayableGenerator
     lateinit var playablePlayer: PlayablePlayer
@@ -79,6 +81,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private var sessionTimerJob: Job? = null
     private var currentQuestionTimerJob: Job? = null
+    private var repeatPlayableJob: Job? = null
 
     private val questionLogs: MutableList<QuestionLog> = arrayListOf()
 
@@ -95,7 +98,6 @@ class SessionViewModel @ViewModelInject constructor(
         playablePlayer.midiPlayer.stop()
     }
 
-    @ObsoleteCoroutinesApi
     fun startSession() {
         assertSessionNotStarted()
 
@@ -130,7 +132,6 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    @ObsoleteCoroutinesApi
     private fun launchSessionCycle(playable: Playable, delayBeforeStarting: Long = -1): Job {
         return viewModelScope.launch {
             if (delayBeforeStarting != -1L) {
@@ -141,13 +142,13 @@ class SessionViewModel @ViewModelInject constructor(
                 job.join()
             }
             currentQuestionTimerJob = timeUserAnswer()
+            repeatPlayableJob = launchRepeatPlayableJob()
             processorJob = launchAnswerProcessing().also { job ->
                 job.join()
             }
         }
     }
 
-    @ObsoleteCoroutinesApi
     private fun timeUserAnswer(): Job {
         val tickLenInMillis = 100L
         val ticker = ticker(delayMillis = tickLenInMillis)
@@ -173,6 +174,13 @@ class SessionViewModel @ViewModelInject constructor(
             }
             noteProcessor.clear()
             pitchProcessor.start()
+        }
+    }
+
+    private fun launchRepeatPlayableJob(): Job {
+        return viewModelScope.launch {
+            delay(silenceThreshold)
+            onSilenceThresholdMet()
         }
     }
 
@@ -240,6 +248,7 @@ class SessionViewModel @ViewModelInject constructor(
 
         noteProcessor.listener = object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
+                repeatPlayableJob?.cancel()
                 val curNote = NoteFactory.makeNoteFromMidiNumber(note)
                 _curFilteredNoteDetected.value = curNote
                 addNoteToUserAnswer(curNote)
@@ -250,11 +259,13 @@ class SessionViewModel @ViewModelInject constructor(
 
             override fun notifyNoteUndetected(note: Int) {
                 _curFilteredNoteDetected.value = null
+                repeatPlayableJob = launchRepeatPlayableJob()
             }
         }
     }
 
     // TODO: handle whether it's a timed session or a num questions session
+    @ObsoleteCoroutinesApi
     private fun onAnswerCorrect() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
@@ -266,6 +277,14 @@ class SessionViewModel @ViewModelInject constructor(
         else {
             TODO("go to statistics fragment")
         }
+    }
+
+    @ObsoleteCoroutinesApi
+    private fun onSilenceThresholdMet() {
+        cancelProcessorJob()
+        currentQuestionTimerJob?.cancel()
+        val playable = _curPlayable.value!!
+        sessionJob = launchSessionCycle(playable)
     }
 
     private fun assertSessionNotStarted() {
