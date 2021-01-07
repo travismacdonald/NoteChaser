@@ -98,6 +98,7 @@
 
 
     <string name="timerLength_title">Timer Length (minutes)</string>
+    <string name="playing_question">Playing Question</string>
 
 
 </resources>

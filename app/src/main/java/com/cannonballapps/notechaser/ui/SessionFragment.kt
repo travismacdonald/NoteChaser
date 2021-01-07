@@ -98,6 +98,10 @@ class SessionFragment : Fragment() {
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
             binding.detectedPitchTv.isVisible = state == SessionViewModel.State.LISTENING
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
+
+
+            binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
+            binding.answerCorrectText.isVisible = state == SessionViewModel.State.WAITING
         }
     }
 

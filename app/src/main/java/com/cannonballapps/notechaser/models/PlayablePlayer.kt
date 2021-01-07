@@ -6,7 +6,7 @@ import kotlinx.coroutines.*
 
 const val NUM_MILLIS_IN_MINUTE = 60000L
 // TODO: this is set at a pretty conservative value right now
-const val REVERB_LEN_MILLIS = 1000L
+const val REVERB_LEN_MILLIS = 600L
 
 class PlayablePlayer(val midiPlayer: MidiPlayer2) {
 

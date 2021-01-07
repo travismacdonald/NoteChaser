@@ -30,4 +30,10 @@
         <item name="android:textColor">@color/itemTitle_textColor</item>
     </style>
 
+    <style name="playingQuestion">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/playingQuestionTextSize</item>
+        <item name="android:textColor">@color/itemTitle_textColor</item>
+    </style>
+
 </resources>

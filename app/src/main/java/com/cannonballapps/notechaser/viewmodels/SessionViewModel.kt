@@ -132,7 +132,7 @@ class SessionViewModel @ViewModelInject constructor(
                 }
             }
             sessionTimerJob = beginSessionTimer()
-            startNextCycle()
+            startNextCycle(-1)
         }
     }
 
@@ -317,7 +317,7 @@ class SessionViewModel @ViewModelInject constructor(
             onSessionCompleted()
         }
         else {
-            startNextCycle()
+            startNextCycle(millisInBetweenQuestions)
         }
     }
 
@@ -370,10 +370,10 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     @ObsoleteCoroutinesApi
-    private fun startNextCycle() {
+    private fun startNextCycle(delayBeforeStarting: Long) {
         clearLocalSessionState()
         val playable = getNextPlayable()
-        sessionJob = launchSessionCycle(playable, millisInBetweenQuestions)
+        sessionJob = launchSessionCycle(playable, delayBeforeStarting)
     }
 
     private fun addNoteToUserAnswer(note: Note) {
