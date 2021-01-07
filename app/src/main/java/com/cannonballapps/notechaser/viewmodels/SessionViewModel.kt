@@ -26,6 +26,7 @@ import kotlin.properties.Delegates
 
 const val COUNTDOWN_SECONDS = 3
 
+// TODO: consistent variable names
 @ObsoleteCoroutinesApi
 class SessionViewModel @ViewModelInject constructor(
         private val prefsStore: PrefsStore,

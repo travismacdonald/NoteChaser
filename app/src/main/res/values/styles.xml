@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -18,6 +16,12 @@
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textSize">@dimen/itemSummary_textSize</item>
         <item name="android:textColor">@color/itemSummary_textColor</item>
+    </style>
+
+    <style name="sessionPitch">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/pitchTextSize</item>
+        <item name="android:textColor">@color/itemTitle_textColor</item>
     </style>
 
 </resources>

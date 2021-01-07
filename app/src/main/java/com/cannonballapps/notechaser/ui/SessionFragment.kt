@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
@@ -15,8 +16,11 @@ import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.models.MidiPlayer2
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.SoundEffectPlayer
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_session.*
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -44,54 +48,51 @@ class SessionFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-        binding.startButton.setOnClickListener {
 
-        }
 
-        binding.stopButton.setOnClickListener {
-            viewModel.endSession()
-        }
+        subscribeToLiveData()
 
-        viewModel.curPlayable.observe(viewLifecycleOwner) { playable ->
-            playable?.let {
-                binding.curPlayableText.text = "cur question: " + playable.notes.map { it.toString() }.toString()
-            }
-        }
+        return binding.root
+    }
 
-        viewModel.userAnswer.observe(viewLifecycleOwner) { answer ->
-            binding.userAnswerText.text = "cur ans: " + answer.map { it.toString() }.toString()
-        }
+    private fun subscribeToLiveData() {
 
         viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
-            binding.pitchTv.text = "pitch: " + midiNum.toString()
+            val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
+            binding.detectedPitchTv.text = noteStr
         }
 
         viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
-            binding.filteredNoteTv.text = "filtered: " + note.toString()
+            // TODO
         }
 
-        viewModel.sessionState.observe(viewLifecycleOwner) { state ->
-            binding.sessionStateTv.text = "state: " + state.toString()
-        }
+        subscribeToSessionState()
 
         viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
-            binding.numCorrectAnswers.text = "num correct: $num"
+            // TODO
         }
 
         viewModel.sessionTimeInSeconds.observe(viewLifecycleOwner) { seconds ->
-            Timber.d("elapsed time observed")
-            binding.totalElapsedTime.text = "total elapsed: $seconds"
+//            Timber.d("elapsed time observed")
+//            binding.totalElapsedTime.text = "total elapsed: $seconds"
         }
 
         viewModel.timeSpentAnsweringCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
-            binding.currentQuestionElapsedTime.text = "local time: $millis"
+            // TODO?
         }
 
         viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
-            binding.secondsUntilStart.text = "cd: $seconds"
+            // TODO
         }
+    }
 
-        return binding.root
+    private fun subscribeToSessionState() {
+        viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+            binding.detectedPitchTv.isVisible = state == SessionViewModel.State.LISTENING
+            if (state == SessionViewModel.State.LISTENING) {
+                binding.detectedPitchTv.isVisible = true
+            }
+        }
     }
 
     override fun onResume() {

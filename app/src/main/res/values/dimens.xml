@@ -14,4 +14,7 @@
     <dimen name="headerTextSize">16sp</dimen>
     <dimen name="headerHeight">56dp</dimen>
 
+    <!-- Exercise Session -->
+    <dimen name="pitchTextSize">32sp</dimen>
+
 </resources>
