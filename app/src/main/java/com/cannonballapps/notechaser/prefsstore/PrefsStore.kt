@@ -22,7 +22,7 @@ private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
         true, false, true, false,
-        false, true, false
+        true, false, false
 ).joinToString(",")
 
 private const val DEFAULT_NUM_QUESTIONS = 20

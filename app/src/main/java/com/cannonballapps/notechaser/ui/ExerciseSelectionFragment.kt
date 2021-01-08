@@ -38,7 +38,12 @@ class ExerciseSelectionFragment : Fragment() {
 
         binding.apply {
             singleNoteButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.SINGLE_NOTE)
+                if (hasMicrophoneRuntimePermission()) {
+                    navToExerciseSelectionFragment(view, ExerciseType.SINGLE_NOTE)
+                }
+                else {
+                    requestMicrophonePermission()
+                }
             }
         }
 
