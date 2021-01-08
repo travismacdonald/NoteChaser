@@ -12,4 +12,8 @@ class SoundEffectPlayer(private val context: Context) {
         mp.start()
     }
 
+    fun playSkippedSound() {
+
+    }
+
 }

@@ -62,22 +62,30 @@
 
         <TextView
             android:id="@+id/questionCounter_tv"
+            style="@style/questionCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            style="@style/questionCounter"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/detectedPitch_tv" />
 
         <TextView
             android:id="@+id/sessionTime_tv"
+            style="@style/questionCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/questionCounter"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/questionCounter_tv" />
+
+        <Button
+            android:id="@+id/skipQuestion_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

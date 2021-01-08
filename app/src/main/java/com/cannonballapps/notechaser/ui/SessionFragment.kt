@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 // TODO: add button to skip question
 // TODO: add button to go to home screen
@@ -49,14 +50,15 @@ class SessionFragment : Fragment() {
         )
         binding.lifecycleOwner = this
 
-
-
         subscribeToLiveData()
 
         return binding.root
     }
 
     private fun subscribeToLiveData() {
+
+        setupSkipQuestionButton()
+        setupQuestionCounterText()
 
         subscribeToDetectedPitch()
 
@@ -66,7 +68,7 @@ class SessionFragment : Fragment() {
 
         subscribeToSessionState()
 
-        subscribeToNumCorrectAnswers()
+//        subscribeToNumCorrectAnswers()
 
         subscribeToSessionElapsedTime()
 
@@ -93,8 +95,8 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun subscribeToNumCorrectAnswers() {
-        viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
+    private fun setupQuestionCounterText() {
+        viewModel.numQuestionsCorrect.observe(viewLifecycleOwner) { num ->
             val questionText = when (viewModel.sessionType) {
                 SessionType.QUESTION_LIMIT -> {
                     getString(
@@ -110,6 +112,7 @@ class SessionFragment : Fragment() {
             binding.questionCounterTv.text = questionText
         }
     }
+
 
     private fun subscribeToSessionStartCountdown() {
         viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
@@ -127,23 +130,33 @@ class SessionFragment : Fragment() {
     private fun subscribeToSessionState() {
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
 
-
             binding.detectedPitchTv.visibility =
                     if (state == SessionViewModel.State.LISTENING) View.VISIBLE else View.INVISIBLE
 
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
-
-
-
             binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
             binding.answerCorrectText.isVisible = state == SessionViewModel.State.WAITING
-
             binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
 
             if (state == SessionViewModel.State.FINISHED) {
                 navigateToStatisticsFragment(binding.root)
             }
         }
+    }
+
+    private fun setupSkipQuestionButton() {
+        binding.skipQuestionButton.apply {
+            viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+                isVisible = state != SessionViewModel.State.COUNTDOWN
+                isEnabled = state == SessionViewModel.State.LISTENING
+            }
+
+            setOnClickListener {
+                viewModel.skipQuestion()
+            }
+
+        }
+
     }
 
     override fun onResume() {
@@ -180,7 +193,7 @@ class SessionFragment : Fragment() {
         view.findNavController().navigate(directions)
     }
 
-    private fun secondsToFormattedTimeString(seconds: Int) : String {
+    private fun secondsToFormattedTimeString(seconds: Int): String {
         val mins = seconds / 60
         val remainingSeconds = seconds % 60
         return "${mins}:${"%02d".format(remainingSeconds)}"

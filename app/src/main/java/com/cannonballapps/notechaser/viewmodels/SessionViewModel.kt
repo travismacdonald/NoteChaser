@@ -48,9 +48,28 @@ class SessionViewModel @ViewModelInject constructor(
     val userAnswer: LiveData<out List<Note>>
         get() = _userAnswer
 
-    private val _numCorrectAnswers = MutableLiveData<Int>()
-    val numCorrectAnswers: LiveData<Int>
-        get() = _numCorrectAnswers
+    private val _numQuestionsCorrect = MutableLiveData<Int>()
+    val numQuestionsCorrect: LiveData<Int>
+        get() = _numQuestionsCorrect
+
+    private val _numQuestionsSkipped = MutableLiveData<Int>()
+    val numQuestionsSkipped: LiveData<Int>
+        get() = _numQuestionsSkipped
+
+    private val _numQuestionsCorrectOrSkipped = MediatorLiveData<Int>().apply {
+        addSource(_numQuestionsSkipped) { numSkipped ->
+            _numQuestionsCorrect.value?.let { numCorrect ->
+                this.value = numSkipped + numCorrect
+            }
+        }
+        addSource(_numQuestionsCorrect) { numCorrect ->
+            _numQuestionsSkipped.value?.let { numSkipped ->
+                this.value = numSkipped + numCorrect
+            }
+        }
+    }
+    val numQuestionsCorrectOrSkipped: LiveData<Int>
+        get() = _numQuestionsCorrectOrSkipped
 
     private val _numRepeatsForCurrentQuestion = MutableLiveData(0)
     val numRepeatsForCurrentQuestion: LiveData<Int>
@@ -133,8 +152,9 @@ class SessionViewModel @ViewModelInject constructor(
             }
             // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
-            _numCorrectAnswers.value = 0
+            _numQuestionsCorrect.value = 0
             _elapsedSessionTimeInSeconds.value = 0
+            _numQuestionsSkipped.value = 0
             startNextCycle(-1)
         }
     }
@@ -166,6 +186,21 @@ class SessionViewModel @ViewModelInject constructor(
             cancelProcessorJob()
         }
         _sessionState.value = State.INACTIVE
+    }
+
+    fun skipQuestion() {
+        repeatPlayableJob?.cancel()
+        cancelProcessorJob()
+        _sessionState.value = State.SKIPPED
+        questionLogs.add(makeLogForCurrentQuestion(skipped = false))
+        _numQuestionsSkipped.value = _numQuestionsSkipped.value!!.plus(1)
+
+        if (isQuestionLimitSession() && questionLimitReached()) {
+            onSessionCompleted()
+        }
+        else {
+            startNextCycle(millisInBetweenQuestions)
+        }
     }
 
     fun initGenerator(type: ExerciseType) {
@@ -313,8 +348,8 @@ class SessionViewModel @ViewModelInject constructor(
         currentQuestionTimerJob?.cancel()
         _sessionState.value = State.PLAYING_CORRECT_SOUND
         soundEffectPlayer.playCorrectSound()
-        questionLogs.add(makeLogForCurrentQuestion())
-        _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
+        questionLogs.add(makeLogForCurrentQuestion(skipped = false))
+        _numQuestionsCorrect.value = _numQuestionsCorrect.value!!.plus(1)
         if (isQuestionLimitSession() && questionLimitReached()) {
             onSessionCompleted()
         }
@@ -331,13 +366,13 @@ class SessionViewModel @ViewModelInject constructor(
             sessionType == SessionType.TIME_LIMIT
 
     private fun timeLimitReached() =
-            _elapsedSessionTimeInSeconds.value!! > sessionTimeLenInMinutes * 60
+            _elapsedSessionTimeInSeconds.value!! >= sessionTimeLenInMinutes * 60
 
     private fun isQuestionLimitSession() =
             sessionType == SessionType.QUESTION_LIMIT
 
     private fun questionLimitReached() =
-            _numCorrectAnswers.value!! == numQuestions
+            _numQuestionsCorrect.value!! == numQuestions
 
     @ObsoleteCoroutinesApi
     private fun onSilenceThresholdMet() {
@@ -353,11 +388,12 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun makeLogForCurrentQuestion(): QuestionLog {
+    private fun makeLogForCurrentQuestion(skipped: Boolean): QuestionLog {
         return QuestionLog(
                 _curPlayable.value!!,
                 _timeSpentAnsweringCurrentQuestionInMillis.value!!,
-                _numRepeatsForCurrentQuestion.value!!
+                _numRepeatsForCurrentQuestion.value!!,
+                skipped
         )
     }
 
@@ -445,6 +481,7 @@ class SessionViewModel @ViewModelInject constructor(
         PLAYING_QUESTION,
         LISTENING,
         PLAYING_CORRECT_SOUND,
+        SKIPPED,
         WAITING,
         FINISHING,
         FINISHED,
