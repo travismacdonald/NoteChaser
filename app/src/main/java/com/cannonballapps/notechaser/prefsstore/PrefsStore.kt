@@ -29,7 +29,7 @@ private const val DEFAULT_NUM_QUESTIONS = 20
 
 private const val DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM = 48
 
-private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 60
+private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 72
 
 private const val DEFAULT_QUESTION_KEY_VAL = 0
 
