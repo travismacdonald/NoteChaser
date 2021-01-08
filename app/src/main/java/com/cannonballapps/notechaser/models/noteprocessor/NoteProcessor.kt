@@ -14,8 +14,8 @@ class NoteProcessor {
     private var readyToFilter: Boolean = false
     private var initTimeMillis: Long? = null
 
-    private val noteExpirationLenInMillis = 600L
-    private val notePredictionThreshold = 0.45f
+    private val noteExpirationLenInMillis = 450L
+    private val notePredictionThreshold = 0.65f
 
     private val noteQueue: MutableList<NoteStamp> = LinkedList()
     private val noteFrequencies: MutableMap<Int, Int> = HashMap()

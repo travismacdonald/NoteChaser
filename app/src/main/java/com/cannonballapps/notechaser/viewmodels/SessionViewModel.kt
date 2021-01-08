@@ -71,8 +71,8 @@ class SessionViewModel @ViewModelInject constructor(
         get() = _timeSpentAnsweringCurrentQuestionInMillis
 
     // Elapsed time records time from start of session to end
-    private val _elapsedSessionTimeInSeconds = MutableLiveData(0)
-    val sessionTimeInSeconds: LiveData<Int>
+    private val _elapsedSessionTimeInSeconds = MutableLiveData<Int>()
+    val elapsedSessionTimeInSeconds: LiveData<Int>
         get() = _elapsedSessionTimeInSeconds
 
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
@@ -110,7 +110,6 @@ class SessionViewModel @ViewModelInject constructor(
             }
             else if (sessionType == SessionType.QUESTION_LIMIT) {
                 numQuestions = prefsStore.numQuestions().first()
-                Timber.d("num questions fetched: $numQuestions")
             }
         }
         setupPitchProcessingCallbacks()
@@ -135,6 +134,7 @@ class SessionViewModel @ViewModelInject constructor(
             // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
             _numCorrectAnswers.value = 0
+            _elapsedSessionTimeInSeconds.value = 0
             startNextCycle(-1)
         }
     }
@@ -313,7 +313,6 @@ class SessionViewModel @ViewModelInject constructor(
         currentQuestionTimerJob?.cancel()
         _sessionState.value = State.PLAYING_CORRECT_SOUND
         soundEffectPlayer.playCorrectSound()
-        Timber.d("playCorrectSound exited")
         questionLogs.add(makeLogForCurrentQuestion())
         _numCorrectAnswers.value = _numCorrectAnswers.value!!.plus(1)
         if (isQuestionLimitSession() && questionLimitReached()) {

@@ -13,20 +13,20 @@ import androidx.navigation.findNavController
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
+import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.models.MidiPlayer2
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.SoundEffectPlayer
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_session.*
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
+// TODO: add button to skip question
+// TODO: add button to go to home screen
 
 @ObsoleteCoroutinesApi
 @AndroidEntryPoint
@@ -68,10 +68,7 @@ class SessionFragment : Fragment() {
 
         subscribeToNumCorrectAnswers()
 
-        viewModel.sessionTimeInSeconds.observe(viewLifecycleOwner) { seconds ->
-//            Timber.d("elapsed time observed")
-//            binding.totalElapsedTime.text = "total elapsed: $seconds"
-        }
+        subscribeToSessionElapsedTime()
 
         viewModel.timeSpentAnsweringCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
             // TODO?
@@ -80,9 +77,33 @@ class SessionFragment : Fragment() {
         subscribeToSessionStartCountdown()
     }
 
+    private fun subscribeToSessionElapsedTime() {
+        viewModel.elapsedSessionTimeInSeconds.observe(viewLifecycleOwner) { totalSeconds ->
+            when (viewModel.sessionType) {
+                SessionType.TIME_LIMIT -> {
+                    val sessionTimeInSeconds = viewModel.sessionTimeLenInMinutes * 60
+                    val timeStr = secondsToFormattedTimeString(sessionTimeInSeconds - totalSeconds)
+                    binding.sessionTimeTv.text = timeStr
+                }
+                SessionType.QUESTION_LIMIT -> {
+                    val timeStr = secondsToFormattedTimeString(totalSeconds)
+                    binding.sessionTimeTv.text = timeStr
+                }
+            }
+        }
+    }
+
     private fun subscribeToNumCorrectAnswers() {
         viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
-            binding.questionCounterTv.text = "$num / ${viewModel.numQuestions}"
+            when (viewModel.sessionType) {
+                SessionType.QUESTION_LIMIT -> {
+                    binding.questionCounterTv.text = "$num / ${viewModel.numQuestions}"
+                }
+                SessionType.TIME_LIMIT -> {
+                    binding.questionCounterTv.text ="Correct answers: $num"
+                }
+            }
+
         }
     }
 
@@ -153,6 +174,12 @@ class SessionFragment : Fragment() {
     private fun navigateToStatisticsFragment(view: View) {
         val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
         view.findNavController().navigate(directions)
+    }
+
+    private fun secondsToFormattedTimeString(seconds: Int) : String {
+        val mins = seconds / 60
+        val remainingSeconds = seconds % 60
+        return "${mins}:${"%02d".format(remainingSeconds)}"
     }
 
 }

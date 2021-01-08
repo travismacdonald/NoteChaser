@@ -10,7 +10,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
-
     <!-- Exercise Setup Strings -->
 
     <string name="answerSettings_header">Answer Settings</string>
@@ -40,6 +39,9 @@
     <string name="back_button">Back</string>
     <string name="startSession_button">Start</string>
 
+
+    <!-- Session Fragment Strings -->
+    <string name="minsAndSeconds">%.2$d:%.2$d</string>
 
     <!-- TODO: refactor below -->
     <!-- Global Strings -->

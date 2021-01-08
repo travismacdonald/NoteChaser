@@ -39,7 +39,7 @@
     <style name="questionCounter">
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textSize">@dimen/questionCounterTextSize</item>
-        <item name="android:textColor">@color/itemTitle_textColor</item>
+        <item name="android:textColor">@color/itemSummary_textColor</item>
     </style>
 
 </resources>
