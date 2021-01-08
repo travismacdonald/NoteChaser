@@ -24,10 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-// TODO: add button to skip question
-// TODO: add button to go to home screen
 
 @ObsoleteCoroutinesApi
 @AndroidEntryPoint
@@ -139,7 +136,7 @@ class SessionFragment : Fragment() {
             binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
 
             if (state == SessionViewModel.State.FINISHED) {
-                navigateToStatisticsFragment(binding.root)
+                navigateToHomeFragment(binding.root)
             }
         }
     }
@@ -188,8 +185,8 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun navigateToStatisticsFragment(view: View) {
-        val directions = SessionFragmentDirections.actionSessionFragmentToSessionStatisticsFragment()
+    private fun navigateToHomeFragment(view: View) {
+        val directions = SessionFragmentDirections.actionSessionToExerciseSelection()
         view.findNavController().navigate(directions)
     }
 
