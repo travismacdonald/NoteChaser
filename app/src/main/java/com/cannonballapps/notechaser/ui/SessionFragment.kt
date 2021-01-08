@@ -95,15 +95,19 @@ class SessionFragment : Fragment() {
 
     private fun subscribeToNumCorrectAnswers() {
         viewModel.numCorrectAnswers.observe(viewLifecycleOwner) { num ->
-            when (viewModel.sessionType) {
+            val questionText = when (viewModel.sessionType) {
                 SessionType.QUESTION_LIMIT -> {
-                    binding.questionCounterTv.text = "$num / ${viewModel.numQuestions}"
+                    getString(
+                            R.string.correctAnswerCounterWithLimit,
+                            num,
+                            viewModel.numQuestions
+                    )
                 }
                 SessionType.TIME_LIMIT -> {
-                    binding.questionCounterTv.text ="Correct answers: $num"
+                    getString(R.string.correctAnswerCounter, num)
                 }
             }
-
+            binding.questionCounterTv.text = questionText
         }
     }
 

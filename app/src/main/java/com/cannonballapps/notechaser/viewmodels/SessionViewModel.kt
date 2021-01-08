@@ -331,7 +331,7 @@ class SessionViewModel @ViewModelInject constructor(
             sessionType == SessionType.TIME_LIMIT
 
     private fun timeLimitReached() =
-            _elapsedSessionTimeInSeconds.value!! == sessionTimeLenInMinutes * 60
+            _elapsedSessionTimeInSeconds.value!! > sessionTimeLenInMinutes * 60
 
     private fun isQuestionLimitSession() =
             sessionType == SessionType.QUESTION_LIMIT
