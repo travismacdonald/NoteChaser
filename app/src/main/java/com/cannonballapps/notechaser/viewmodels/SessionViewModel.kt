@@ -136,7 +136,9 @@ class SessionViewModel @ViewModelInject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        Timber.d("onCleared called")
         playablePlayer.midiPlayer.stop()
+        endSession()
     }
 
     fun startSession() {

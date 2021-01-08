@@ -16,13 +16,13 @@ import javax.inject.Inject
 private const val STORE_NAME = "notechaser_data_store"
 
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
-        true, false, false, false, false, false,
-        false, false, false, false, false, false
+        true, true, true, true, true, true,
+        true, true, true, true, true, true
 ).joinToString(",")
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
-        true, false, false, false,
-        false, false, false
+        true, false, true, false,
+        false, true, false
 ).joinToString(",")
 
 private const val DEFAULT_NUM_QUESTIONS = 20
