@@ -191,7 +191,7 @@ class SessionViewModel @ViewModelInject constructor(
     fun skipQuestion() {
         repeatPlayableJob?.cancel()
         cancelProcessorJob()
-        _sessionState.value = State.SKIPPED
+        _sessionState.value = State.QUESTION_SKIPPED
         questionLogs.add(makeLogForCurrentQuestion(skipped = false))
         _numQuestionsSkipped.value = _numQuestionsSkipped.value!!.plus(1)
 
@@ -212,7 +212,7 @@ class SessionViewModel @ViewModelInject constructor(
     private fun launchSessionCycle(playable: Playable, delayBeforeStarting: Long = -1): Job {
         return viewModelScope.launch {
             if (delayBeforeStarting != -1L) {
-                _sessionState.value = State.WAITING
+//                _sessionState.value = State.WAITING
                 delay(delayBeforeStarting)
             }
             playableJob = launchPlayPlayable(playable).also { job ->
@@ -346,7 +346,7 @@ class SessionViewModel @ViewModelInject constructor(
     private fun onAnswerCorrect() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
-        _sessionState.value = State.PLAYING_CORRECT_SOUND
+        _sessionState.value = State.QUESTION_CORRECT
         soundEffectPlayer.playCorrectSound()
         questionLogs.add(makeLogForCurrentQuestion(skipped = false))
         _numQuestionsCorrect.value = _numQuestionsCorrect.value!!.plus(1)
@@ -480,9 +480,9 @@ class SessionViewModel @ViewModelInject constructor(
         COUNTDOWN,
         PLAYING_QUESTION,
         LISTENING,
-        PLAYING_CORRECT_SOUND,
-        SKIPPED,
-        WAITING,
+        QUESTION_CORRECT,
+        QUESTION_SKIPPED,
+//        WAITING,
         FINISHING,
         FINISHED,
     }

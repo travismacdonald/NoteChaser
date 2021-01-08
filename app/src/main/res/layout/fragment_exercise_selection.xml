@@ -8,46 +8,11 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/singlenote_button"
+            android:id="@+id/singleNote_button"
             android:width="@dimen/typeButtonWidth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/singleNote_button" />
-
-        <Button
-            android:id="@+id/intervallic_button"
-            android:width="@dimen/typeButtonWidth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/intervallic_button" />
-
-        <Button
-            android:id="@+id/harmonic_button"
-            android:width="@dimen/typeButtonWidth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/harmonic_button" />
-
-        <Button
-            android:id="@+id/scale_button"
-            android:width="@dimen/typeButtonWidth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scale_button" />
-
-        <Button
-            android:id="@+id/melodic_button"
-            android:width="@dimen/typeButtonWidth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/melodic_button" />
-
-        <Button
-            android:id="@+id/custom_button"
-            android:width="@dimen/typeButtonWidth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/custom_button" />
+            android:text="Start" />
 
     </LinearLayout>
 

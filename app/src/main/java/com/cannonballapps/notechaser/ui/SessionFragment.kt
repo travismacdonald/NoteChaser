@@ -132,7 +132,8 @@ class SessionFragment : Fragment() {
 
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
             binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
-            binding.answerCorrectText.isVisible = state == SessionViewModel.State.WAITING
+            binding.answerCorrectText.isVisible = state == SessionViewModel.State.QUESTION_CORRECT
+            binding.questionSkippedTv.isVisible = state == SessionViewModel.State.QUESTION_SKIPPED
             binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
 
             if (state == SessionViewModel.State.FINISHED) {

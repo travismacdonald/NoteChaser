@@ -37,23 +37,8 @@ class ExerciseSelectionFragment : Fragment() {
         }
 
         binding.apply {
-            singlenoteButton.setOnClickListener { view ->
+            singleNoteButton.setOnClickListener { view ->
                 navToExerciseSelectionFragment(view, ExerciseType.SINGLE_NOTE)
-            }
-            intervallicButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.INTERVALLIC)
-            }
-            harmonicButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.HARMONIC)
-            }
-            scaleButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.SCALE)
-            }
-            melodicButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.MELODIC)
-            }
-            customButton.setOnClickListener { view ->
-                navToExerciseSelectionFragment(view, ExerciseType.CUSTOM)
             }
         }
 
