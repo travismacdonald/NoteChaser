@@ -18,8 +18,8 @@ android {
         applicationId "com.cannonballapps.notechaser"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0-alpha"
+        versionCode 2
+        versionName "1.02-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
