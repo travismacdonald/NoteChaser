@@ -47,7 +47,6 @@
     <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
     <string name="correctAnswerCounter">Correct answers: %1$d</string>
 
-    <!-- TODO: refactor below -->
     <!-- Global Strings -->
 
     <string name="appName">NoteChaser</string>

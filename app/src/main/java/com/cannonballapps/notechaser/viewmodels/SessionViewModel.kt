@@ -16,6 +16,7 @@ import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.musicutilities.*
 import com.cannonballapps.notechaser.playablegenerator.Playable
+import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ticker
@@ -117,6 +118,9 @@ class SessionViewModel @ViewModelInject constructor(
     private var currentQuestionTimerJob: Job? = null
     private var repeatPlayableJob: Job? = null
 
+    private var playStartingPitch by Delegates.notNull<Boolean>()
+    var referencePitch: Playable? = null
+
     private val questionLogs: MutableList<QuestionLog> = arrayListOf()
 
     init {
@@ -130,6 +134,12 @@ class SessionViewModel @ViewModelInject constructor(
             else if (sessionType == SessionType.QUESTION_LIMIT) {
                 numQuestions = prefsStore.numQuestions().first()
             }
+
+            playStartingPitch = prefsStore.playStartingPitch().first()
+            if (playStartingPitch) {
+                referencePitch = makeStartingPitch()
+            }
+
         }
         setupPitchProcessingCallbacks()
     }
@@ -144,6 +154,7 @@ class SessionViewModel @ViewModelInject constructor(
     fun startSession() {
         assertSessionNotStarted()
         countDownJob = viewModelScope.launch {
+
             _sessionState.value = State.COUNTDOWN
             _secondsUntilSessionStart.value = COUNTDOWN_SECONDS
             repeat(COUNTDOWN_SECONDS) {
@@ -152,6 +163,15 @@ class SessionViewModel @ViewModelInject constructor(
                     _secondsUntilSessionStart.value = _secondsUntilSessionStart.value!!.minus(1)
                 }
             }
+
+            if (playStartingPitch) {
+                Timber.d("should play starting pitch")
+                _sessionState.value = State.PLAYING_STARTING_PITCH
+                playableJob = launchPlayPlayable(referencePitch!!)
+                playableJob?.join()
+                delay(timeMillis = 1000)
+            }
+
             // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
             _numQuestionsCorrect.value = 0
@@ -160,7 +180,6 @@ class SessionViewModel @ViewModelInject constructor(
             startNextCycle(-1)
         }
     }
-
 
     // TODO: this function could use some cleaning up
     fun endSession() {
@@ -194,7 +213,7 @@ class SessionViewModel @ViewModelInject constructor(
         repeatPlayableJob?.cancel()
         cancelProcessorJob()
         _sessionState.value = State.QUESTION_SKIPPED
-        questionLogs.add(makeLogForCurrentQuestion(skipped = false))
+        questionLogs.add(makeLogForCurrentQuestion(skipped = true))
         _numQuestionsSkipped.value = _numQuestionsSkipped.value!!.plus(1)
 
         if (isQuestionLimitSession() && questionLimitReached()) {
@@ -217,6 +236,8 @@ class SessionViewModel @ViewModelInject constructor(
 //                _sessionState.value = State.WAITING
                 delay(delayBeforeStarting)
             }
+
+            _sessionState.value = State.PLAYING_QUESTION
             playableJob = launchPlayPlayable(playable).also { job ->
                 job.join()
             }
@@ -241,7 +262,6 @@ class SessionViewModel @ViewModelInject constructor(
 
     private fun launchPlayPlayable(playable: Playable): Job {
         return viewModelScope.launch {
-            _sessionState.value = State.PLAYING_QUESTION
             playablePlayer.playPlayable(playable)
         }
     }
@@ -386,7 +406,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     private fun assertSessionNotStarted() {
         if (sessionJob != null) {
-            throw IllegalArgumentException("startSession() called before endSession()")
+            throw IllegalStateException("startSession() called before endSession()")
         }
     }
 
@@ -477,14 +497,20 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
+    private suspend fun makeStartingPitch(): Playable {
+        val key = prefsStore.questionKey().first()
+        val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
+        return PlayableFactory.makePlayableFromMidiNumber(keyTransposed)
+    }
+
     enum class State {
         INACTIVE,
         COUNTDOWN,
+        PLAYING_STARTING_PITCH,
         PLAYING_QUESTION,
         LISTENING,
         QUESTION_CORRECT,
         QUESTION_SKIPPED,
-//        WAITING,
         FINISHING,
         FINISHED,
     }

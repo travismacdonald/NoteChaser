@@ -420,6 +420,7 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: validate settings
     }
 
+    // Thanks, u/justjoshingofficial.
     private fun bindPlayStartingPitchSwitch() {
         binding.startingPitchSwitch.apply {
             title.text = getString(R.string.playStartingPitch_title)

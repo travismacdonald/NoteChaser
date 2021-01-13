@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SessionFragment : Fragment() {
 
-    val viewModel: SessionViewModel by viewModels()
+    private val viewModel: SessionViewModel by viewModels()
     lateinit var binding: FragmentSessionBinding
     private lateinit var args: SessionFragmentArgs
 
@@ -131,13 +131,22 @@ class SessionFragment : Fragment() {
                     if (state == SessionViewModel.State.LISTENING) View.VISIBLE else View.INVISIBLE
 
             binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
-            binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION
+            binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION || state == SessionViewModel.State.PLAYING_STARTING_PITCH
             binding.answerCorrectText.isVisible = state == SessionViewModel.State.QUESTION_CORRECT
             binding.questionSkippedTv.isVisible = state == SessionViewModel.State.QUESTION_SKIPPED
             binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
 
             if (state == SessionViewModel.State.FINISHED) {
                 navigateToHomeFragment(binding.root)
+            }
+
+            // TODO
+            if (state == SessionViewModel.State.PLAYING_QUESTION) {
+                binding.playingQuestionText.text = "Playing Question"
+            }
+            else if (state == SessionViewModel.State.PLAYING_STARTING_PITCH) {
+                // TODO
+                binding.playingQuestionText.text = "Reference Pitch: ${viewModel.referencePitch!!.notes[0].pitchClass.toString()}"
             }
         }
     }
