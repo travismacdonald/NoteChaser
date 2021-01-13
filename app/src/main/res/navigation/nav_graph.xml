@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_sessionFragment_to_sessionStatisticsFragment"
             app:destination="@id/sessionStatisticsFragment" />
+        <action
+            android:id="@+id/action_sessionToExerciseSelection"
+            app:destination="@id/exerciseSelectionFragment" />
     </fragment>
 
     <fragment

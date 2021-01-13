@@ -20,5 +20,6 @@
     </application>
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.software.midi" android:required="true"/>
 
 </manifest>

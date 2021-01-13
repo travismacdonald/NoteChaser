@@ -22,7 +22,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ExerciseSetupFragment : Fragment() {
@@ -252,7 +251,6 @@ class ExerciseSetupFragment : Fragment() {
             title.text = getString(R.string.questionRange_title)
 
             rangeSlider.addOnChangeListener { slider, value, _ ->
-                Timber.d("onChangedCalled")
                 val range = slider.values.joinToString(separator = " - ") { ix ->
                     MusicTheoryUtils.midiNumberToNoteName(ix.toInt())
                 }
@@ -413,7 +411,6 @@ class ExerciseSetupFragment : Fragment() {
             }
 
             viewModel.isValidConfiguration.observe(viewLifecycleOwner) { isValid ->
-                Timber.d("isValidConfiguration observed: $isValid")
                 startButton.isEnabled = isValid
             }
 

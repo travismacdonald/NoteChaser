@@ -16,27 +16,27 @@ import javax.inject.Inject
 private const val STORE_NAME = "notechaser_data_store"
 
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
-        true, false, false, false, false, false,
-        false, false, false, false, false, false
+        true, true, true, true, true, true,
+        true, true, true, true, true, true
 ).joinToString(",")
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
-        true, false, false, false,
-        false, false, false
+        true, false, true, false,
+        true, false, false
 ).joinToString(",")
 
 private const val DEFAULT_NUM_QUESTIONS = 20
 
 private const val DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM = 48
 
-private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 60
+private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 72
 
 private const val DEFAULT_QUESTION_KEY_VAL = 0
 
 private const val DEFAULT_SESSION_TIME_LEN = 10
 
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
-// TODO: make prefsstore an interface for unit testing
+// TODO: make PrefsStore an interface for easier unit testing
 
 class PrefsStore @Inject constructor(
         @ApplicationContext context: Context

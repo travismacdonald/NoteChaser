@@ -18,8 +18,8 @@ android {
         applicationId "com.cannonballapps.notechaser"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0-alpha"
+        versionCode 2
+        versionName "1.02-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -88,6 +88,7 @@ dependencies {
     implementation "androidx.datastore:datastore:1.0.0-alpha05"
 
     // MidiDriver Library (supports sf2 files)
+//    implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
     implementation 'com.github.rodydavis:MidiDriver-Android-SF2:v1.1'
 }
 repositories {

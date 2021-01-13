@@ -2,29 +2,29 @@ package com.cannonballapps.notechaser.models
 
 
 import com.cannonballapps.notechaser.playablegenerator.Playable
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 
-class PlayablePlayer(val midiPlayer: MidiPlayer) {
+const val NUM_MILLIS_IN_MINUTE = 60000L
+// TODO: this is set at a pretty conservative value right now
+const val REVERB_LEN_MILLIS = 600L
 
-    var noteLengthMillis: Long = 1000
+class PlayablePlayer(val midiPlayer: MidiPlayer2) {
 
-    var spaceBetweenNotesMillis: Long = 0
+    // TODO: This should be a user parameter.
+    var quarterNoteBpm = 90
+    private val noteLenInMillis: Long
+        get() = NUM_MILLIS_IN_MINUTE / quarterNoteBpm
 
-//    private val curNotes: MutableSet<Note> = HashSet()
+    suspend fun playPlayable(playable: Playable) {
+        // TODO: fine for now, but have to refactor later when introducing more complex playable
+        val midiNumbers = playable.notes.map { it.midiNumber }
 
-//    suspend fun playPlayable(playable: Playable) {
-//        for (note in playable.notes) {
-//            midiPlayer.playNote(note.ix)
-//            curNotes.add(note)
-//            delay(noteLengthMillis)
-//            midiPlayer.stopNote(note.ix)
-//            curNotes.remove(note)
-//            if (spaceBetweenNotesMillis != 0L) {
-//                delay(spaceBetweenNotesMillis)
-//            }
-//        }
-//    }
+        midiPlayer.playNoteSequence(midiNumbers, noteLenInMillis)
+        delay(REVERB_LEN_MILLIS)
+    }
 
-
+    fun stopCurPlayable() {
+        midiPlayer.stop()
+    }
 
 }

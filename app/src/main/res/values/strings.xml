@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="soundfont_filename">test_piano.sf2</string>
+
     <!-- Microphone Permission Dialog -->
 
     <string name="microphonePermission_title">Permission Needed</string>
@@ -7,7 +9,6 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-
 
     <!-- Exercise Setup Strings -->
 
@@ -39,10 +40,15 @@
     <string name="startSession_button">Start</string>
 
 
+    <!-- Session Fragment Strings -->
+    <string name="minsAndSeconds">%.2$d:%.2$d</string>
+    <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
+    <string name="correctAnswerCounter">Correct answers: %1$d</string>
+
     <!-- TODO: refactor below -->
     <!-- Global Strings -->
 
-    <string name="appName">Note Chaser</string>
+    <string name="appName">NoteChaser</string>
 
 
     <!-- Exercise Buttons -->
@@ -96,6 +102,10 @@
 
 
     <string name="timerLength_title">Timer Length (minutes)</string>
+    <string name="playing_question">Playing Question</string>
+    <string name="answerCorrect">Correct!</string>
+    <string name="session_complete">Session complete!</string>
+    <string name="skip_button">Skip</string>
 
 
 </resources>

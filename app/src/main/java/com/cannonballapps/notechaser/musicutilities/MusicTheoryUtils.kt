@@ -8,7 +8,7 @@ object MusicTheoryUtils {
     const val FLAT = '\u266d'
     const val NATURAL = '\u266e'
 
-    const val MAX_MIDI_NUMBER = 108
+    const val MAX_MIDI_NUMBER = 127
     const val MIN_MIDI_NUMBER = 0
 
     const val OCTAVE_SIZE = 12
