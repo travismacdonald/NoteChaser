@@ -90,13 +90,25 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/questionCounter_tv" />
 
-        <Button
+        <ImageView
             android:id="@+id/skipQuestion_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/skip_button"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_skip"
+            android:contentDescription="@string/skipButton_description"
+            app:layout_constraintLeft_toRightOf="@id/replayQuestion_button"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
+
+        <!-- TODO: hardcoded dimension -->
+        <ImageView
+            android:id="@+id/replayQuestion_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/replayButton_description"
+            android:src="@drawable/ic_replay"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/skipQuestion_button"
             app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

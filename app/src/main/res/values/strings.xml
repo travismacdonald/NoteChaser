@@ -47,6 +47,9 @@
     <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
     <string name="correctAnswerCounter">Correct answers: %1$d</string>
 
+    <string name="replayButton_description">Button that, when clicked, replays the current question.</string>
+    <string name="skipButton_description">Button that, when clicked, skips the current question.</string>
+
     <!-- Global Strings -->
 
     <string name="appName">NoteChaser</string>
