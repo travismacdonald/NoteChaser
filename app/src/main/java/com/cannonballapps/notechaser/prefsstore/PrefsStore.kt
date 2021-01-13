@@ -38,9 +38,7 @@ private const val DEFAULT_SESSION_TIME_LEN = 10
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
 // TODO: make PrefsStore an interface for easier unit testing
 
-class PrefsStore @Inject constructor(
-        @ApplicationContext context: Context
-) {
+class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
 
     private val dataStore = context.createDataStore(
             name = STORE_NAME
@@ -59,12 +57,6 @@ class PrefsStore @Inject constructor(
         deserializeBooleanArray(serializedChromaticDegrees)
     }
 
-    suspend fun saveChromaticDegrees(degrees: BooleanArray) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
-        }
-    }
-
     fun diatonicDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -78,12 +70,6 @@ class PrefsStore @Inject constructor(
         deserializeBooleanArray(serializedDiatonicDegrees)
     }
 
-    suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
-        }
-    }
-
     fun matchOctave() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -95,12 +81,6 @@ class PrefsStore @Inject constructor(
         prefs[PrefKeys.MATCH_OCTAVE] ?: false
     }
 
-    suspend fun saveMatchOctave(matchOctave: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.MATCH_OCTAVE] = matchOctave
-        }
-    }
-
     fun modeIx() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -110,12 +90,6 @@ class PrefsStore @Inject constructor(
         }
     }.map { prefs ->
         prefs[PrefKeys.MODE_IX] ?: 0
-    }
-
-    suspend fun saveModeIx(ix: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.MODE_IX] = ix
-        }
     }
 
     fun notePoolType() = dataStore.data.catch { exception ->
@@ -131,12 +105,6 @@ class PrefsStore @Inject constructor(
         NotePoolType.values()[ordinal]
     }
 
-    suspend fun saveNotePoolType(type: NotePoolType) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = type.ordinal
-        }
-    }
-
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -146,12 +114,6 @@ class PrefsStore @Inject constructor(
         }
     }.map { prefs ->
         prefs[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS
-    }
-
-    suspend fun saveNumQuestions(numQuestions: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.NUM_QUESTIONS_KEY] = numQuestions
-        }
     }
 
     fun parentScale() = dataStore.data.catch { exception ->
@@ -167,10 +129,15 @@ class PrefsStore @Inject constructor(
         ParentScale2.values()[ordinal]
     }
 
-    suspend fun saveParentScale(scale: ParentScale2) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = scale.ordinal
+    fun playStartingPitch() = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            emit(emptyPreferences())
         }
+        else {
+            throw exception
+        }
+    }.map { prefs ->
+        prefs[PrefKeys.PLAY_STARTING_PITCH] ?: true
     }
 
     fun playableLowerBound() = dataStore.data.catch { exception ->
@@ -186,12 +153,6 @@ class PrefsStore @Inject constructor(
         NoteFactory.makeNoteFromMidiNumber(midiNumber)
     }
 
-    suspend fun savePlayableLowerBound(note: Note) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = note.midiNumber
-        }
-    }
-
     fun playableUpperBound() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -203,12 +164,6 @@ class PrefsStore @Inject constructor(
         prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM
     }.map { midiNumber ->
         NoteFactory.makeNoteFromMidiNumber(midiNumber)
-    }
-
-    suspend fun savePlayableUpperBound(upperBound: Note) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = upperBound.midiNumber
-        }
     }
 
     fun questionKey() = dataStore.data.catch { exception ->
@@ -224,12 +179,6 @@ class PrefsStore @Inject constructor(
         MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[keyVal]
     }
 
-    suspend fun saveQuestionKey(key: PitchClass) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.QUESTION_KEY_VAL] = key.value
-        }
-    }
-
     fun sessionTimeLimit() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -239,12 +188,6 @@ class PrefsStore @Inject constructor(
         }
     }.map { prefs ->
         prefs[PrefKeys.SESSION_TIME_LIMIT] ?: DEFAULT_SESSION_TIME_LEN
-    }
-
-    suspend fun saveSessionTimeLimit(len: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.SESSION_TIME_LIMIT] = len
-        }
     }
 
     fun sessionType() = dataStore.data.catch { exception ->
@@ -258,6 +201,79 @@ class PrefsStore @Inject constructor(
         prefs[PrefKeys.SESSION_TYPE_ORDINAL] ?: 0
     }.map { ordinal ->
         SessionType.values()[ordinal]
+    }
+
+    suspend fun saveChromaticDegrees(degrees: BooleanArray) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
+        }
+    }
+
+    suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
+        }
+    }
+
+    suspend fun saveMatchOctave(matchOctave: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.MATCH_OCTAVE] = matchOctave
+        }
+    }
+
+
+    suspend fun saveModeIx(ix: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.MODE_IX] = ix
+        }
+    }
+
+    suspend fun saveNotePoolType(type: NotePoolType) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = type.ordinal
+        }
+    }
+
+    suspend fun saveNumQuestions(numQuestions: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.NUM_QUESTIONS_KEY] = numQuestions
+        }
+    }
+
+    suspend fun saveParentScale(scale: ParentScale2) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = scale.ordinal
+        }
+    }
+
+    suspend fun savePlayStartingPitch(playPitch: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PLAY_STARTING_PITCH] = playPitch
+        }
+    }
+
+    suspend fun savePlayableLowerBound(note: Note) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = note.midiNumber
+        }
+    }
+
+    suspend fun savePlayableUpperBound(upperBound: Note) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = upperBound.midiNumber
+        }
+    }
+
+    suspend fun saveQuestionKey(key: PitchClass) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.QUESTION_KEY_VAL] = key.value
+        }
+    }
+
+    suspend fun saveSessionTimeLimit(len: Int) {
+        dataStore.edit { prefs ->
+            prefs[PrefKeys.SESSION_TIME_LIMIT] = len
+        }
     }
 
     suspend fun saveSessionType(type: SessionType) {
@@ -274,6 +290,7 @@ class PrefsStore @Inject constructor(
         val NOTE_POOL_TYPE_ORDINAL = preferencesKey<Int>("note_pool_type_ordinal")
         val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
         val PARENT_SCALE_ORDINAL = preferencesKey<Int>("parent_scale_ordinal")
+        val PLAY_STARTING_PITCH = preferencesKey<Boolean>("play_starting_pitch")
         val PLAYABLE_LOWER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_lower_bound")
         val PLAYABLE_UPPER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_upper_bound")
         val QUESTION_KEY_VAL = preferencesKey<Int>("question_key")
