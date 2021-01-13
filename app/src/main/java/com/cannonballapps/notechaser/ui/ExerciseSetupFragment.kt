@@ -65,6 +65,7 @@ class ExerciseSetupFragment : Fragment() {
 
         bindAnswerSettingsHeader()
         bindMatchOctaveSwitch()
+        bindPlayStartingPitchSwitch()
         bindNavigationButtons()
     }
 
@@ -417,6 +418,21 @@ class ExerciseSetupFragment : Fragment() {
         }
 
         // TODO: validate settings
+    }
+
+    private fun bindPlayStartingPitchSwitch() {
+        binding.startingPitchSwitch.apply {
+            title.text = getString(R.string.playStartingPitch_title)
+            summary.text = getString(R.string.playStartingPitch_summary)
+            viewModel.playStartingPitch.observe(viewLifecycleOwner) { playPitch ->
+                if (playPitch != switchWidget.isChecked) {
+                    switchWidget.isChecked = playPitch
+                }
+            }
+            switchWidget.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.savePlayStartingPitch(isChecked)
+            }
+        }
     }
 
 
