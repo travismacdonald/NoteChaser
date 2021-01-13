@@ -22,6 +22,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
     val notePoolType = prefsStore.notePoolType().asLiveData()
     val numQuestions = prefsStore.numQuestions().asLiveData()
     val parentScale = prefsStore.parentScale().asLiveData()
+    val playStartingPitch = prefsStore.playStartingPitch().asLiveData()
     val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
     val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
     val questionKey = prefsStore.questionKey().asLiveData()
@@ -79,6 +80,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
             prefsStore.modeIx().first()
             prefsStore.notePoolType().first()
             prefsStore.parentScale().first()
+            prefsStore.playStartingPitch().first()
             prefsStore.playableLowerBound().first()
             prefsStore.playableUpperBound().first()
             prefsStore.questionKey().first()
@@ -126,6 +128,12 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
     fun saveParentScale(scale: ParentScale2) {
         viewModelScope.launch {
             prefsStore.saveParentScale(scale)
+        }
+    }
+
+    fun savePlayStartingPitch(playPitch: Boolean) {
+        viewModelScope.launch {
+            prefsStore.savePlayStartingPitch(playPitch)
         }
     }
 
