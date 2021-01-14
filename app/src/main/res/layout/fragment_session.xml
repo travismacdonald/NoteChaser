@@ -90,26 +90,44 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/questionCounter_tv" />
 
-        <ImageView
-            android:id="@+id/skipQuestion_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_skip"
-            android:contentDescription="@string/skipButton_description"
-            app:layout_constraintLeft_toRightOf="@id/replayQuestion_button"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
-
-        <!-- TODO: hardcoded dimension -->
-        <ImageView
-            android:id="@+id/replayQuestion_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:contentDescription="@string/replayButton_description"
-            android:src="@drawable/ic_replay"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/playableAction_buttonContainers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/skipQuestion_button"
-            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv">
+
+            <Button
+                android:id="@+id/skipQuestion_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="@dimen/playableAction_buttonWidth"
+                android:layout_height="@dimen/playableAction_buttonHeight"
+                android:contentDescription="@string/skipButton_description"
+                android:text="@string/skipButton_text"
+                app:icon="@drawable/ic_skip"
+                app:iconSize="@dimen/playableAction_iconSize"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/replayQuestion_button"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/replayQuestion_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="@dimen/playableAction_buttonWidth"
+                android:layout_height="@dimen/playableAction_buttonHeight"
+                android:contentDescription="@string/replayButton_description"
+                android:text="@string/replayButton_text"
+                app:icon="@drawable/ic_replay"
+                app:iconSize="@dimen/playableAction_iconSize"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/skipQuestion_button"
+                app:layout_constraintTop_toTopOf="parent" />
+            
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
