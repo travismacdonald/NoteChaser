@@ -6,6 +6,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Exercise Setup Items -->
+
     <style name="itemTitle">
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textSize">@dimen/itemTitle_textSize</item>
@@ -40,6 +42,16 @@
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textSize">@dimen/questionCounterTextSize</item>
         <item name="android:textColor">@color/itemSummary_textColor</item>
+    </style>
+
+    <!-- Session Items -->
+
+    <style name="playableActionButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="android:layout_height">@dimen/playableActionButton_height</item>
+        <item name="android:layout_width">@dimen/playableActionButton_width</item>
+        <item name="iconSize">@dimen/playableActionButton_iconSize</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/textSize_small</item>
     </style>
 
 </resources>

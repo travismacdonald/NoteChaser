@@ -21,6 +21,7 @@ import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_session.view.*
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
@@ -57,6 +58,7 @@ class SessionFragment : Fragment() {
         setupSkipQuestionButton()
         setupQuestionCounterText()
 
+
         subscribeToDetectedPitch()
 
         viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
@@ -74,6 +76,8 @@ class SessionFragment : Fragment() {
         }
 
         subscribeToSessionStartCountdown()
+
+//        binding.playableActionButtonsContainer.isVisible = false
     }
 
     private fun subscribeToSessionElapsedTime() {
@@ -152,7 +156,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun setupSkipQuestionButton() {
-        binding.skipQuestionButton.apply {
+        binding.playableActionButtonsContainer.skipQuestion_button.apply {
             viewModel.sessionState.observe(viewLifecycleOwner) { state ->
                 isVisible = state != SessionViewModel.State.COUNTDOWN
                 isEnabled = state == SessionViewModel.State.LISTENING

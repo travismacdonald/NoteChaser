@@ -21,8 +21,12 @@
     <dimen name="playingQuestionTextSize">24sp</dimen>
     <dimen name="questionCounterTextSize">20sp</dimen>
 
-    <dimen name="playableAction_buttonWidth">140dp</dimen>
-    <dimen name="playableAction_buttonHeight">64dp</dimen>
-    <dimen name="playableAction_iconSize">32dp</dimen>
+    <dimen name="playableActionButton_width">140dp</dimen>
+    <dimen name="playableActionButton_height">64dp</dimen>
+    <dimen name="playableActionButton_iconSize">32dp</dimen>
+    <dimen name="playableActionButton_textSize">16sp</dimen>
+
+    <dimen name="textSize_small">16sp</dimen>
+    <dimen name="textSize_medium">24sp</dimen>
 
 </resources>
