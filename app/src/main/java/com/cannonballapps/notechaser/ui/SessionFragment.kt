@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
@@ -50,12 +49,6 @@ class SessionFragment : Fragment() {
             showEndSessionDialog()
         }
 
-
-        args = SessionFragmentArgs.fromBundle(requireArguments())
-        viewModel.initGenerator(args.exerciseType)
-        injectPlayablePlayerIntoViewModel()
-        injectSoundEffectPlayer()
-
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
         )
@@ -63,28 +56,17 @@ class SessionFragment : Fragment() {
 
         subscribeToLiveData()
 
+        // TODO: feels kind of hacky to have all these calls here
+        if (!viewModel.sessionHasStarted) {
+            args = SessionFragmentArgs.fromBundle(requireArguments())
+            viewModel.initGenerator(args.exerciseType)
+            injectPlayablePlayerIntoViewModel()
+            injectSoundEffectPlayer()
+
+            viewModel.startSession()
+        }
+
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        viewModel.startSession()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.pauseSession()
-        Timber.d("on paused called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (requireActivity().isFinishing) {
-            Timber.d("finishing!")
-        }
-        else {
-            Timber.d("not finishing!")
-        }
     }
 
     private fun subscribeToLiveData() {

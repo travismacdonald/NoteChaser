@@ -22,7 +22,7 @@
     <string name="numQuestions_title">Number of Questions</string>
     <string name="parentScale_title">Parent Scale</string>
     <string name="playStartingPitch_title">Starting Pitch</string>
-    <string name="playStartingPitch_summary">Play reference pitch, matching selected key, upon session start.</string>
+    <string name="playStartingPitch_summary">Play reference pitch (matching selected key) upon session start.</string>
     <string name="questionKey_title">Key</string>
     <string name="questionRange_title">Question Range</string>
     <string name="questionSettings_header">Question Settings</string>
@@ -60,7 +60,7 @@
     <string name="skipButton_text">Skip</string>
 
     <string name="endSessionDialog_title">End session?</string>
-    <string name="endSessionDialog_message">All of your progress will be lost.</string>
+    <string name="endSessionDialog_message">This ear training session\'s progress will be lost.</string>
     <string name="endSessionDialog_resume">Resume</string>
     <string name="endSessionDialog_end">End</string>
 

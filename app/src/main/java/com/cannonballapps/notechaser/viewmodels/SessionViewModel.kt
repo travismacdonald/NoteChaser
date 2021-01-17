@@ -99,6 +99,8 @@ class SessionViewModel @ViewModelInject constructor(
     var numQuestions by Delegates.notNull<Int>()
     var sessionTimeLenInMinutes by Delegates.notNull<Int>()
     lateinit var sessionType: SessionType
+    var sessionHasStarted = false
+        private set
 
     private val millisInBetweenQuestions = 450L
     private val silenceThreshold = 2750L
@@ -153,6 +155,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     fun startSession() {
         assertSessionNotStarted()
+        sessionHasStarted = true
         countDownJob = viewModelScope.launch {
 
             _sessionState.value = State.COUNTDOWN
