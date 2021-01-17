@@ -50,7 +50,6 @@
     <string name="sessionComplete">Session complete!</string>
 
 
-
     <string name="minsAndSeconds">%.2$d:%.2$d</string>
     <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
     <string name="correctAnswerCounter">Correct answers: %1$d</string>
@@ -59,6 +58,11 @@
     <string name="replayButton_text">Replay</string>
     <string name="skipButton_description">Button that, when clicked, skips the current question.</string>
     <string name="skipButton_text">Skip</string>
+
+    <string name="endSessionDialog_title">End session?</string>
+    <string name="endSessionDialog_message">All of your progress will be lost.</string>
+    <string name="endSessionDialog_resume">Resume</string>
+    <string name="endSessionDialog_end">End</string>
 
     <!-- Global Strings -->
 

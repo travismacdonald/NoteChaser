@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
@@ -21,11 +22,13 @@ import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_session.view.*
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @ObsoleteCoroutinesApi
@@ -38,6 +41,15 @@ class SessionFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
+        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
+
+
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            viewModel.pauseSession()
+            showEndSessionDialog()
+        }
+
 
         args = SessionFragmentArgs.fromBundle(requireArguments())
         viewModel.initGenerator(args.exerciseType)
@@ -56,7 +68,23 @@ class SessionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.startSession()
+//        viewModel.startSession()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.pauseSession()
+        Timber.d("on paused called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (requireActivity().isFinishing) {
+            Timber.d("finishing!")
+        }
+        else {
+            Timber.d("not finishing!")
+        }
     }
 
     private fun subscribeToLiveData() {
@@ -138,7 +166,8 @@ class SessionFragment : Fragment() {
                 setupStatusMessageForFinishing()
             }
             SessionViewModel.State.FINISHED -> {
-                navigateToHomeFragment(binding.root)
+                viewModel.endSession()
+                navigateToHomeFragment()
             }
             else -> {
                 // TODO Nothing
@@ -276,9 +305,9 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun navigateToHomeFragment(view: View) {
+    private fun navigateToHomeFragment() {
         val directions = SessionFragmentDirections.actionSessionToExerciseSelection()
-        view.findNavController().navigate(directions)
+        binding.root.findNavController().navigate(directions)
     }
 
     private fun secondsToFormattedTimeString(seconds: Int): String {
@@ -286,6 +315,23 @@ class SessionFragment : Fragment() {
         val remainingSeconds = seconds % 60
         return "${mins}:${"%02d".format(remainingSeconds)}"
     }
+
+    private fun showEndSessionDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.endSessionDialog_title))
+                .setMessage(resources.getString(R.string.endSessionDialog_message))
+                .setNegativeButton(resources.getString(R.string.endSessionDialog_resume)) { _, _ ->
+                    Timber.d("session resumed!")
+                    viewModel.resumeSession()
+                }
+                .setPositiveButton(resources.getString(R.string.endSessionDialog_end)) { _, _ ->
+                    Timber.d("session ended!")
+                    viewModel.endSession()
+                    navigateToHomeFragment()
+                }
+                .show()
+    }
+
 
     private fun removeStatusMessageObservers() {
         viewModel.secondsUntilSessionStart.removeObservers(viewLifecycleOwner)

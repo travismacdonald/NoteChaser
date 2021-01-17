@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSelectionBinding
+import timber.log.Timber
 
 
 class ExerciseSelectionFragment : Fragment() {
@@ -24,6 +25,9 @@ class ExerciseSelectionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
+
+        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
         binding = DataBindingUtil.inflate(
                 inflater,

@@ -22,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ExerciseSetupFragment : Fragment() {
@@ -32,6 +33,8 @@ class ExerciseSetupFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
+        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
         viewModel.prefetchPrefsStore()
 

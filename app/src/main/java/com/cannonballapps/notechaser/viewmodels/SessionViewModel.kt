@@ -207,7 +207,6 @@ class SessionViewModel @ViewModelInject constructor(
         sessionJob = null
         sessionTimerJob?.cancel()
 
-
         if (_sessionState.value == State.PLAYING_QUESTION) {
             cancelPlayableJob()
         }
