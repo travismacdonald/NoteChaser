@@ -43,6 +43,14 @@
 
 
     <!-- Session Fragment Strings -->
+    <string name="referencePitch">Reference Pitch: %1$s</string>
+    <string name="playingQuestion">Playing Question</string>
+    <string name="answerCorrect">Correct!</string>
+    <string name="questionSkipped">Question Skipped!</string>
+    <string name="sessionComplete">Session complete!</string>
+
+
+
     <string name="minsAndSeconds">%.2$d:%.2$d</string>
     <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
     <string name="correctAnswerCounter">Correct answers: %1$d</string>
@@ -109,8 +117,6 @@
 
     <string name="timerLength_title">Timer Length (minutes)</string>
     <string name="playing_question">Playing Question</string>
-    <string name="answerCorrect">Correct!</string>
-    <string name="session_complete">Session complete!</string>
     <string name="skip_button">Skip</string>
 
 

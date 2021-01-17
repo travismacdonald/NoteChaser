@@ -181,6 +181,14 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
+    fun resumeSession() {
+        // TODO
+    }
+
+    fun pauseSession() {
+        // TODO
+    }
+
     // TODO: this function could use some cleaning up
     fun endSession() {
         Timber.d("endSession called")
@@ -222,6 +230,10 @@ class SessionViewModel @ViewModelInject constructor(
         else {
             startNextCycle(millisInBetweenQuestions)
         }
+    }
+
+    fun replayQuestion() {
+        // TODO
     }
 
     fun initGenerator(type: ExerciseType) {
@@ -368,7 +380,7 @@ class SessionViewModel @ViewModelInject constructor(
     private fun onAnswerCorrect() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
-        _sessionState.value = State.QUESTION_CORRECT
+        _sessionState.value = State.ANSWER_CORRECT
         soundEffectPlayer.playCorrectSound()
         questionLogs.add(makeLogForCurrentQuestion(skipped = false))
         _numQuestionsCorrect.value = _numQuestionsCorrect.value!!.plus(1)
@@ -509,7 +521,7 @@ class SessionViewModel @ViewModelInject constructor(
         PLAYING_STARTING_PITCH,
         PLAYING_QUESTION,
         LISTENING,
-        QUESTION_CORRECT,
+        ANSWER_CORRECT,
         QUESTION_SKIPPED,
         FINISHING,
         FINISHED,

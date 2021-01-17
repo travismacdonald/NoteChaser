@@ -23,10 +23,12 @@
 
     <dimen name="playableActionButton_width">140dp</dimen>
     <dimen name="playableActionButton_height">64dp</dimen>
-    <dimen name="playableActionButton_iconSize">32dp</dimen>
+    <dimen name="playableActionButton_iconSize">28dp</dimen>
     <dimen name="playableActionButton_textSize">16sp</dimen>
 
-    <dimen name="textSize_small">16sp</dimen>
-    <dimen name="textSize_medium">24sp</dimen>
+    <dimen name="sessionText_small">20sp</dimen>
+    <dimen name="sessionText_medium">24sp</dimen>
+    <dimen name="sessionText_large">32sp</dimen>
+    <dimen name="sessionText_huge">48sp</dimen>
 
 </resources>
