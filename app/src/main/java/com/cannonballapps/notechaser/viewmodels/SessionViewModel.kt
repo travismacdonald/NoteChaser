@@ -99,6 +99,8 @@ class SessionViewModel @ViewModelInject constructor(
     var numQuestions by Delegates.notNull<Int>()
     var sessionTimeLenInMinutes by Delegates.notNull<Int>()
     lateinit var sessionType: SessionType
+    var sessionHasStarted = false
+        private set
 
     private val millisInBetweenQuestions = 450L
     private val silenceThreshold = 2750L
@@ -110,36 +112,24 @@ class SessionViewModel @ViewModelInject constructor(
     lateinit var soundEffectPlayer: SoundEffectPlayer
 
     private var sessionJob: Job? = null
+
+    private var countDownJob: Job? = null
+    private var referencePitchJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
 
-    private var countDownJob: Job? = null
+    private var silenceThresholdJob: Job? = null
     private var sessionTimerJob: Job? = null
     private var currentQuestionTimerJob: Job? = null
-    private var repeatPlayableJob: Job? = null
 
-    private var playStartingPitch by Delegates.notNull<Boolean>()
-    var referencePitch: Playable? = null
+    private var shouldPlayReferencePitchOnStart by Delegates.notNull<Boolean>()
+    var referencePitch: Note? = null
 
     private val questionLogs: MutableList<QuestionLog> = arrayListOf()
 
     init {
         viewModelScope.launch {
-            answersShouldMatchOctave = prefsStore.matchOctave().first()
-
-            sessionType = prefsStore.sessionType().first()
-            if (sessionType == SessionType.TIME_LIMIT) {
-                sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
-            }
-            else if (sessionType == SessionType.QUESTION_LIMIT) {
-                numQuestions = prefsStore.numQuestions().first()
-            }
-
-            playStartingPitch = prefsStore.playStartingPitch().first()
-            if (playStartingPitch) {
-                referencePitch = makeStartingPitch()
-            }
-
+            fetchPrefStoreData()
         }
         setupPitchProcessingCallbacks()
     }
@@ -153,6 +143,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     fun startSession() {
         assertSessionNotStarted()
+        sessionHasStarted = true
         countDownJob = viewModelScope.launch {
 
             _sessionState.value = State.COUNTDOWN
@@ -164,21 +155,27 @@ class SessionViewModel @ViewModelInject constructor(
                 }
             }
 
-            if (playStartingPitch) {
-                Timber.d("should play starting pitch")
+            if (shouldPlayReferencePitchOnStart) {
                 _sessionState.value = State.PLAYING_STARTING_PITCH
-                playableJob = launchPlayPlayable(referencePitch!!)
+                val refPitchPlayable = PlayableFactory.makePlayableFromNote(referencePitch!!)
+                playableJob = launchPlayPlayable(refPitchPlayable)
                 playableJob?.join()
                 delay(timeMillis = 1000)
             }
 
             // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
-            _numQuestionsCorrect.value = 0
-            _elapsedSessionTimeInSeconds.value = 0
-            _numQuestionsSkipped.value = 0
+            initSessionVariables()
             startNextCycle(-1)
         }
+    }
+
+    fun resumeSession() {
+        // TODO
+    }
+
+    fun pauseSession() {
+        // TODO
     }
 
     // TODO: this function could use some cleaning up
@@ -194,11 +191,10 @@ class SessionViewModel @ViewModelInject constructor(
             return
         }
         currentQuestionTimerJob?.cancel()
-        repeatPlayableJob?.cancel()
+        silenceThresholdJob?.cancel()
         sessionJob?.cancel()
         sessionJob = null
         sessionTimerJob?.cancel()
-
 
         if (_sessionState.value == State.PLAYING_QUESTION) {
             cancelPlayableJob()
@@ -210,7 +206,7 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     fun skipQuestion() {
-        repeatPlayableJob?.cancel()
+        silenceThresholdJob?.cancel()
         cancelProcessorJob()
         _sessionState.value = State.QUESTION_SKIPPED
         questionLogs.add(makeLogForCurrentQuestion(skipped = true))
@@ -222,6 +218,14 @@ class SessionViewModel @ViewModelInject constructor(
         else {
             startNextCycle(millisInBetweenQuestions)
         }
+    }
+
+    fun replayQuestion() {
+        silenceThresholdJob?.cancel()
+        cancelProcessorJob()
+        currentQuestionTimerJob?.cancel()
+        val playable = _curPlayable.value!!
+        sessionJob = launchSessionCycle(playable)
     }
 
     fun initGenerator(type: ExerciseType) {
@@ -242,7 +246,7 @@ class SessionViewModel @ViewModelInject constructor(
                 job.join()
             }
             currentQuestionTimerJob = timeUserAnswer()
-            repeatPlayableJob = launchRepeatPlayableJob()
+            silenceThresholdJob = launchRepeatPlayableJob()
             processorJob = launchAnswerProcessing().also { job ->
                 job.join()
             }
@@ -347,7 +351,7 @@ class SessionViewModel @ViewModelInject constructor(
 
         noteProcessor.listener = object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                repeatPlayableJob?.cancel()
+                silenceThresholdJob?.cancel()
                 val curNote = NoteFactory.makeNoteFromMidiNumber(note)
                 _curFilteredNoteDetected.value = curNote
                 addNoteToUserAnswer(curNote)
@@ -358,7 +362,7 @@ class SessionViewModel @ViewModelInject constructor(
 
             override fun notifyNoteUndetected(note: Int) {
                 _curFilteredNoteDetected.value = null
-                repeatPlayableJob = launchRepeatPlayableJob()
+                silenceThresholdJob = launchRepeatPlayableJob()
             }
         }
     }
@@ -368,7 +372,7 @@ class SessionViewModel @ViewModelInject constructor(
     private fun onAnswerCorrect() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
-        _sessionState.value = State.QUESTION_CORRECT
+        _sessionState.value = State.ANSWER_CORRECT
         soundEffectPlayer.playCorrectSound()
         questionLogs.add(makeLogForCurrentQuestion(skipped = false))
         _numQuestionsCorrect.value = _numQuestionsCorrect.value!!.plus(1)
@@ -396,7 +400,6 @@ class SessionViewModel @ViewModelInject constructor(
     private fun questionLimitReached() =
             _numQuestionsCorrect.value!! == numQuestions
 
-    @ObsoleteCoroutinesApi
     private fun onSilenceThresholdMet() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
@@ -497,10 +500,33 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private suspend fun makeStartingPitch(): Playable {
+    private suspend fun makeStartingPitch(): Note {
         val key = prefsStore.questionKey().first()
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
-        return PlayableFactory.makePlayableFromMidiNumber(keyTransposed)
+        return NoteFactory.makeNoteFromMidiNumber(keyTransposed)
+    }
+
+    private suspend fun fetchPrefStoreData() {
+        answersShouldMatchOctave = prefsStore.matchOctave().first()
+
+        sessionType = prefsStore.sessionType().first()
+        if (sessionType == SessionType.TIME_LIMIT) {
+            sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
+        }
+        else if (sessionType == SessionType.QUESTION_LIMIT) {
+            numQuestions = prefsStore.numQuestions().first()
+        }
+
+        shouldPlayReferencePitchOnStart = prefsStore.playStartingPitch().first()
+        if (shouldPlayReferencePitchOnStart) {
+            referencePitch = makeStartingPitch()
+        }
+    }
+
+    private fun initSessionVariables() {
+        _numQuestionsCorrect.value = 0
+        _elapsedSessionTimeInSeconds.value = 0
+        _numQuestionsSkipped.value = 0
     }
 
     enum class State {
@@ -509,7 +535,7 @@ class SessionViewModel @ViewModelInject constructor(
         PLAYING_STARTING_PITCH,
         PLAYING_QUESTION,
         LISTENING,
-        QUESTION_CORRECT,
+        ANSWER_CORRECT,
         QUESTION_SKIPPED,
         FINISHING,
         FINISHED,

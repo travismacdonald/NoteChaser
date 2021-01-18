@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/exerciseSelectionFragment"
         android:name="com.cannonballapps.notechaser.ui.ExerciseSelectionFragment"
-        android:label="ExerciseSelectionFragment"
+        android:label="fragment_exercise_selection"
         tools:layout="@layout/fragment_exercise_selection">
 
         <action
@@ -28,7 +28,8 @@
 
         <action
             android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
-            app:destination="@id/sessionFragment" />
+            app:destination="@id/sessionFragment"
+            app:popUpTo="@id/exerciseSelectionFragment" />
         <action
             android:id="@+id/action_exerciseSetupFragment_to_exerciseSelectionFragment"
             app:popUpTo="@id/exerciseSelectionFragment" />
@@ -49,7 +50,7 @@
             app:destination="@id/sessionStatisticsFragment" />
         <action
             android:id="@+id/action_sessionToExerciseSelection"
-            app:destination="@id/exerciseSelectionFragment" />
+            app:popUpTo="@id/exerciseSelectionFragment" />
     </fragment>
 
     <fragment

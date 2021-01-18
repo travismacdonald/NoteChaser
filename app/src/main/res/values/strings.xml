@@ -22,7 +22,7 @@
     <string name="numQuestions_title">Number of Questions</string>
     <string name="parentScale_title">Parent Scale</string>
     <string name="playStartingPitch_title">Starting Pitch</string>
-    <string name="playStartingPitch_summary">Play reference pitch, matching selected key, upon session start.</string>
+    <string name="playStartingPitch_summary">Play reference pitch (matching selected key) upon session start.</string>
     <string name="questionKey_title">Key</string>
     <string name="questionRange_title">Question Range</string>
     <string name="questionSettings_header">Question Settings</string>
@@ -43,9 +43,26 @@
 
 
     <!-- Session Fragment Strings -->
+    <string name="referencePitch">Reference Pitch: %1$s</string>
+    <string name="playingQuestion">Playing Question</string>
+    <string name="answerCorrect">Correct!</string>
+    <string name="questionSkipped">Question Skipped!</string>
+    <string name="sessionComplete">Session complete!</string>
+
+
     <string name="minsAndSeconds">%.2$d:%.2$d</string>
     <string name="correctAnswerCounterWithLimit">Question %1$d/%2$d</string>
     <string name="correctAnswerCounter">Correct answers: %1$d</string>
+
+    <string name="replayButton_description">Button that, when clicked, replays the current question.</string>
+    <string name="replayButton_text">Replay</string>
+    <string name="skipButton_description">Button that, when clicked, skips the current question.</string>
+    <string name="skipButton_text">Skip</string>
+
+    <string name="endSessionDialog_title">End session?</string>
+    <string name="endSessionDialog_message">This ear training session\'s progress will be lost.</string>
+    <string name="endSessionDialog_resume">Resume</string>
+    <string name="endSessionDialog_end">End</string>
 
     <!-- Global Strings -->
 
@@ -104,8 +121,6 @@
 
     <string name="timerLength_title">Timer Length (minutes)</string>
     <string name="playing_question">Playing Question</string>
-    <string name="answerCorrect">Correct!</string>
-    <string name="session_complete">Session complete!</string>
     <string name="skip_button">Skip</string>
 
 

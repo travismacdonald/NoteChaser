@@ -14,10 +14,21 @@
     <dimen name="headerTextSize">16sp</dimen>
     <dimen name="headerHeight">56dp</dimen>
 
+    <!-- TODO: refactor these var names -->
     <!-- Exercise Session -->
     <dimen name="pitchTextSize">32sp</dimen>
     <dimen name="countdownTextSize">48sp</dimen>
     <dimen name="playingQuestionTextSize">24sp</dimen>
     <dimen name="questionCounterTextSize">20sp</dimen>
+
+    <dimen name="playableActionButton_width">140dp</dimen>
+    <dimen name="playableActionButton_height">64dp</dimen>
+    <dimen name="playableActionButton_iconSize">28dp</dimen>
+    <dimen name="playableActionButton_textSize">16sp</dimen>
+
+    <dimen name="sessionText_small">20sp</dimen>
+    <dimen name="sessionText_medium">24sp</dimen>
+    <dimen name="sessionText_large">32sp</dimen>
+    <dimen name="sessionText_huge">48sp</dimen>
 
 </resources>

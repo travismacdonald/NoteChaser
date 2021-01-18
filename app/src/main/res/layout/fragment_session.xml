@@ -7,69 +7,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- TODO hardcoded dimen -->
         <TextView
-            android:id="@+id/detectedPitch_tv"
-            style="@style/sessionPitch"
+            android:id="@+id/sessionStatusMessage_tv"
+            style="@style/sessionStatusMessage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="140dp"
+            android:layout_marginBottom="180dp"
+            android:gravity="bottom|center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sessionCountdown_tv"
-            style="@style/sessionCountdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/playingQuestion_text"
-            style="@style/playingQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/playing_question"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/answerCorrect_text"
-            style="@style/playingQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/answerCorrect"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/questionSkipped_tv"
-            style="@style/playingQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Skipped!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sessionFinished_text"
-            style="@style/playingQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/session_complete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Status Message" />
 
         <TextView
             android:id="@+id/questionCounter_tv"
@@ -79,7 +29,7 @@
             android:layout_marginTop="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detectedPitch_tv" />
+            app:layout_constraintTop_toBottomOf="@id/sessionStatusMessage_tv" />
 
         <TextView
             android:id="@+id/sessionTime_tv"
@@ -90,14 +40,39 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/questionCounter_tv" />
 
-        <Button
-            android:id="@+id/skipQuestion_button"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/playableAction_buttonsContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/skip_button"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv" />
+            app:layout_constraintTop_toBottomOf="@id/sessionTime_tv">
+
+            <!-- TODO: text size & font -->
+            <Button
+                android:id="@+id/skipQuestion_button"
+                style="@style/playableActionButton"
+                android:contentDescription="@string/skipButton_description"
+                android:text="@string/skipButton_text"
+                app:icon="@drawable/ic_skip"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/replayQuestion_button"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/replayQuestion_button"
+                style="@style/playableActionButton"
+                android:contentDescription="@string/replayButton_description"
+                android:text="@string/replayButton_text"
+                app:icon="@drawable/ic_replay"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/skipQuestion_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

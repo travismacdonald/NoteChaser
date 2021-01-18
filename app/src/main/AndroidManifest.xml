@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cannonballapps.notechaser">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:name="com.cannonballapps.notechaser.NoteChaserApplication"
         android:allowBackup="true"
@@ -17,9 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-feature android:name="android.software.midi" android:required="true"/>
+    </application>
 
 </manifest>

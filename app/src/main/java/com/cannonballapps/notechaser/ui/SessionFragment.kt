@@ -1,11 +1,12 @@
 package com.cannonballapps.notechaser.ui
 
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
@@ -20,10 +21,13 @@ import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_session.view.*
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @ObsoleteCoroutinesApi
@@ -37,10 +41,13 @@ class SessionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        args = SessionFragmentArgs.fromBundle(requireArguments())
-        viewModel.initGenerator(args.exerciseType)
-        injectPlayablePlayerIntoViewModel()
-        injectSoundEffectPlayer()
+        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
+
+
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            viewModel.pauseSession()
+            showEndSessionDialog()
+        }
 
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_session, container, false
@@ -49,50 +56,50 @@ class SessionFragment : Fragment() {
 
         subscribeToLiveData()
 
+        // TODO: feels kind of hacky to have all these calls here
+        if (!viewModel.sessionHasStarted) {
+            args = SessionFragmentArgs.fromBundle(requireArguments())
+            viewModel.initGenerator(args.exerciseType)
+            injectPlayablePlayerIntoViewModel()
+            injectSoundEffectPlayer()
+
+            viewModel.startSession()
+        }
+
         return binding.root
     }
 
     private fun subscribeToLiveData() {
-
+        setupSessionStatusMessage()
+        setupSessionQuestionCounter()
+        setupSessionTimer()
         setupSkipQuestionButton()
-        setupQuestionCounterText()
-
-        subscribeToDetectedPitch()
-
-        viewModel.curFilteredNoteDetected.observe(viewLifecycleOwner) { note ->
-            // TODO
-        }
-
-        subscribeToSessionState()
-
-//        subscribeToNumCorrectAnswers()
-
-        subscribeToSessionElapsedTime()
-
-        viewModel.timeSpentAnsweringCurrentQuestionInMillis.observe(viewLifecycleOwner) { millis ->
-            // TODO?
-        }
-
-        subscribeToSessionStartCountdown()
+        setupReplayQuestionButton()
     }
 
-    private fun subscribeToSessionElapsedTime() {
-        viewModel.elapsedSessionTimeInSeconds.observe(viewLifecycleOwner) { totalSeconds ->
-            when (viewModel.sessionType) {
-                SessionType.TIME_LIMIT -> {
-                    val sessionTimeInSeconds = viewModel.sessionTimeLenInMinutes * 60
-                    val timeStr = secondsToFormattedTimeString(sessionTimeInSeconds - totalSeconds)
-                    binding.sessionTimeTv.text = timeStr
-                }
-                SessionType.QUESTION_LIMIT -> {
-                    val timeStr = secondsToFormattedTimeString(totalSeconds)
-                    binding.sessionTimeTv.text = timeStr
-                }
+    private fun setupSkipQuestionButton() {
+        binding.playableActionButtonsContainer.skipQuestion_button.apply {
+            viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+                isEnabled = questionButtonsShouldBeEnabled(state)
+            }
+            setOnClickListener {
+                viewModel.skipQuestion()
             }
         }
     }
 
-    private fun setupQuestionCounterText() {
+    private fun setupReplayQuestionButton() {
+        binding.playableActionButtonsContainer.replayQuestion_button.apply {
+            viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+                isEnabled = questionButtonsShouldBeEnabled(state)
+            }
+            setOnClickListener {
+                viewModel.replayQuestion()
+            }
+        }
+    }
+
+    private fun setupSessionQuestionCounter() {
         viewModel.numQuestionsCorrect.observe(viewLifecycleOwner) { num ->
             val questionText = when (viewModel.sessionType) {
                 SessionType.QUESTION_LIMIT -> {
@@ -110,65 +117,149 @@ class SessionFragment : Fragment() {
         }
     }
 
-
-    private fun subscribeToSessionStartCountdown() {
-        viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
-            binding.sessionCountdownTv.text = seconds.toString()
-        }
-    }
-
-    private fun subscribeToDetectedPitch() {
-        viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
-            val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
-            binding.detectedPitchTv.text = noteStr
-        }
-    }
-
-    private fun subscribeToSessionState() {
+    private fun setupSessionStatusMessage() {
         viewModel.sessionState.observe(viewLifecycleOwner) { state ->
+            updateStatusMessageForState(state)
+        }
+    }
 
-            binding.detectedPitchTv.visibility =
-                    if (state == SessionViewModel.State.LISTENING) View.VISIBLE else View.INVISIBLE
-
-            binding.sessionCountdownTv.isVisible = state == SessionViewModel.State.COUNTDOWN
-            binding.playingQuestionText.isVisible = state == SessionViewModel.State.PLAYING_QUESTION || state == SessionViewModel.State.PLAYING_STARTING_PITCH
-            binding.answerCorrectText.isVisible = state == SessionViewModel.State.QUESTION_CORRECT
-            binding.questionSkippedTv.isVisible = state == SessionViewModel.State.QUESTION_SKIPPED
-            binding.sessionFinishedText.isVisible = state == SessionViewModel.State.FINISHING
-
-            if (state == SessionViewModel.State.FINISHED) {
-                navigateToHomeFragment(binding.root)
+    private fun updateStatusMessageForState(state: SessionViewModel.State) {
+        removeStatusMessageObservers()
+        when (state) {
+            SessionViewModel.State.COUNTDOWN -> {
+                setupStatusMessageForCountdown()
             }
-
-            // TODO
-            if (state == SessionViewModel.State.PLAYING_QUESTION) {
-                binding.playingQuestionText.text = "Playing Question"
+            SessionViewModel.State.PLAYING_STARTING_PITCH -> {
+                setupStatusMessageForStartingPitch()
             }
-            else if (state == SessionViewModel.State.PLAYING_STARTING_PITCH) {
-                // TODO
-                binding.playingQuestionText.text = "Reference Pitch: ${viewModel.referencePitch!!.notes[0].pitchClass.toString()}"
+            SessionViewModel.State.PLAYING_QUESTION -> {
+                setupStatusMessageForPlayingQuestion()
+            }
+            SessionViewModel.State.LISTENING -> {
+                setupStatusMessageForListening()
+            }
+            SessionViewModel.State.ANSWER_CORRECT -> {
+                setupStatusMessageForAnswerCorrect()
+            }
+            SessionViewModel.State.QUESTION_SKIPPED -> {
+                setupStatusMessageForQuestionSkipped()
+            }
+            SessionViewModel.State.FINISHING -> {
+                setupStatusMessageForFinishing()
+            }
+            SessionViewModel.State.FINISHED -> {
+                viewModel.endSession()
+                navigateToHomeFragment()
+            }
+            else -> {
+                // TODO Nothing
             }
         }
     }
 
-    private fun setupSkipQuestionButton() {
-        binding.skipQuestionButton.apply {
-            viewModel.sessionState.observe(viewLifecycleOwner) { state ->
-                isVisible = state != SessionViewModel.State.COUNTDOWN
-                isEnabled = state == SessionViewModel.State.LISTENING
-            }
-
-            setOnClickListener {
-                viewModel.skipQuestion()
-            }
-
+    private fun setupStatusMessageForAnswerCorrect() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            text = getString(R.string.answerCorrect)
         }
-
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.startSession()
+    private fun setupStatusMessageForCountdown() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_huge)
+            )
+
+            viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
+                text = seconds.toString()
+            }
+        }
+    }
+
+
+    private fun setupStatusMessageForFinishing() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            text = getString(R.string.sessionComplete)
+        }
+    }
+
+    private fun setupStatusMessageForListening() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_large)
+            )
+
+            viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
+                // TODO: refactor
+                val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
+                text = noteStr
+            }
+        }
+    }
+
+    private fun setupStatusMessageForPlayingQuestion() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            text = getString(R.string.playingQuestion)
+        }
+    }
+
+    private fun setupStatusMessageForQuestionSkipped() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            text = getString(R.string.questionSkipped)
+        }
+    }
+
+    private fun setupStatusMessageForStartingPitch() {
+        binding.sessionStatusMessageTv.apply {
+            setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    resources.getDimension(R.dimen.sessionText_medium)
+            )
+            val pitchClass = viewModel.referencePitch!!.pitchClass
+            text = getString(R.string.referencePitch, pitchClass)
+        }
+    }
+
+    private fun questionButtonsShouldBeEnabled(state: SessionViewModel.State?) =
+            state == SessionViewModel.State.LISTENING
+
+    private fun setupSessionTimer() {
+        binding.sessionTimeTv.apply {
+            viewModel.elapsedSessionTimeInSeconds.observe(viewLifecycleOwner) { totalSeconds ->
+                text = when (viewModel.sessionType) {
+                    SessionType.TIME_LIMIT -> {
+                        val sessionTimeInSeconds = viewModel.sessionTimeLenInMinutes * 60
+                        val timeStr = secondsToFormattedTimeString(sessionTimeInSeconds - totalSeconds)
+                        timeStr
+                    }
+                    SessionType.QUESTION_LIMIT -> {
+                        val timeStr = secondsToFormattedTimeString(totalSeconds)
+                        timeStr
+                    }
+                }
+            }
+        }
     }
 
     // TODO: this lives here for now; should refactor to use Hilt
@@ -195,15 +286,37 @@ class SessionFragment : Fragment() {
         }
     }
 
-    private fun navigateToHomeFragment(view: View) {
+    private fun navigateToHomeFragment() {
         val directions = SessionFragmentDirections.actionSessionToExerciseSelection()
-        view.findNavController().navigate(directions)
+        binding.root.findNavController().navigate(directions)
     }
 
     private fun secondsToFormattedTimeString(seconds: Int): String {
         val mins = seconds / 60
         val remainingSeconds = seconds % 60
         return "${mins}:${"%02d".format(remainingSeconds)}"
+    }
+
+    private fun showEndSessionDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.endSessionDialog_title))
+                .setMessage(resources.getString(R.string.endSessionDialog_message))
+                .setNegativeButton(resources.getString(R.string.endSessionDialog_resume)) { _, _ ->
+                    Timber.d("session resumed!")
+                    viewModel.resumeSession()
+                }
+                .setPositiveButton(resources.getString(R.string.endSessionDialog_end)) { _, _ ->
+                    Timber.d("session ended!")
+                    viewModel.endSession()
+                    navigateToHomeFragment()
+                }
+                .show()
+    }
+
+
+    private fun removeStatusMessageObservers() {
+        viewModel.secondsUntilSessionStart.removeObservers(viewLifecycleOwner)
+        viewModel.curPitchDetectedAsMidiNumber.removeObservers(viewLifecycleOwner)
     }
 
 }
