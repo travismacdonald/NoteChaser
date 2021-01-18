@@ -236,8 +236,7 @@ class SessionFragment : Fragment() {
                     TypedValue.COMPLEX_UNIT_PX,
                     resources.getDimension(R.dimen.sessionText_medium)
             )
-            // TODO: viewModel.referencePitch should be type `Note`, not `Playable`
-            val pitchClass = viewModel.referencePitch!!.notes[0].pitchClass.toString()
+            val pitchClass = viewModel.referencePitch!!.pitchClass
             text = getString(R.string.referencePitch, pitchClass)
         }
     }

@@ -112,16 +112,17 @@ class SessionViewModel @ViewModelInject constructor(
     lateinit var soundEffectPlayer: SoundEffectPlayer
 
     private var sessionJob: Job? = null
+
+    private var countDownJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
 
-    private var countDownJob: Job? = null
+    private var silenceThresholdJob: Job? = null
     private var sessionTimerJob: Job? = null
     private var currentQuestionTimerJob: Job? = null
-    private var repeatPlayableJob: Job? = null
 
-    private var playStartingPitch by Delegates.notNull<Boolean>()
-    var referencePitch: Playable? = null
+    private var shouldPlayReferencePitchOnStart by Delegates.notNull<Boolean>()
+    var referencePitch: Note? = null
 
     private val questionLogs: MutableList<QuestionLog> = arrayListOf()
 
@@ -137,8 +138,8 @@ class SessionViewModel @ViewModelInject constructor(
                 numQuestions = prefsStore.numQuestions().first()
             }
 
-            playStartingPitch = prefsStore.playStartingPitch().first()
-            if (playStartingPitch) {
+            shouldPlayReferencePitchOnStart = prefsStore.playStartingPitch().first()
+            if (shouldPlayReferencePitchOnStart) {
                 referencePitch = makeStartingPitch()
             }
 
@@ -167,10 +168,11 @@ class SessionViewModel @ViewModelInject constructor(
                 }
             }
 
-            if (playStartingPitch) {
+            if (shouldPlayReferencePitchOnStart) {
                 Timber.d("should play starting pitch")
                 _sessionState.value = State.PLAYING_STARTING_PITCH
-                playableJob = launchPlayPlayable(referencePitch!!)
+                val refPitchPlayable = PlayableFactory.makePlayableFromNote(referencePitch!!)
+                playableJob = launchPlayPlayable(refPitchPlayable)
                 playableJob?.join()
                 delay(timeMillis = 1000)
             }
@@ -205,7 +207,7 @@ class SessionViewModel @ViewModelInject constructor(
             return
         }
         currentQuestionTimerJob?.cancel()
-        repeatPlayableJob?.cancel()
+        silenceThresholdJob?.cancel()
         sessionJob?.cancel()
         sessionJob = null
         sessionTimerJob?.cancel()
@@ -220,7 +222,7 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     fun skipQuestion() {
-        repeatPlayableJob?.cancel()
+        silenceThresholdJob?.cancel()
         cancelProcessorJob()
         _sessionState.value = State.QUESTION_SKIPPED
         questionLogs.add(makeLogForCurrentQuestion(skipped = true))
@@ -256,7 +258,7 @@ class SessionViewModel @ViewModelInject constructor(
                 job.join()
             }
             currentQuestionTimerJob = timeUserAnswer()
-            repeatPlayableJob = launchRepeatPlayableJob()
+            silenceThresholdJob = launchRepeatPlayableJob()
             processorJob = launchAnswerProcessing().also { job ->
                 job.join()
             }
@@ -361,7 +363,7 @@ class SessionViewModel @ViewModelInject constructor(
 
         noteProcessor.listener = object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
-                repeatPlayableJob?.cancel()
+                silenceThresholdJob?.cancel()
                 val curNote = NoteFactory.makeNoteFromMidiNumber(note)
                 _curFilteredNoteDetected.value = curNote
                 addNoteToUserAnswer(curNote)
@@ -372,7 +374,7 @@ class SessionViewModel @ViewModelInject constructor(
 
             override fun notifyNoteUndetected(note: Int) {
                 _curFilteredNoteDetected.value = null
-                repeatPlayableJob = launchRepeatPlayableJob()
+                silenceThresholdJob = launchRepeatPlayableJob()
             }
         }
     }
@@ -511,10 +513,10 @@ class SessionViewModel @ViewModelInject constructor(
         }
     }
 
-    private suspend fun makeStartingPitch(): Playable {
+    private suspend fun makeStartingPitch(): Note {
         val key = prefsStore.questionKey().first()
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
-        return PlayableFactory.makePlayableFromMidiNumber(keyTransposed)
+        return NoteFactory.makeNoteFromMidiNumber(keyTransposed)
     }
 
     enum class State {
