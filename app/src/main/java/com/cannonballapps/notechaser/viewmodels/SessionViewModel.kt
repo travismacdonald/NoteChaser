@@ -114,6 +114,7 @@ class SessionViewModel @ViewModelInject constructor(
     private var sessionJob: Job? = null
 
     private var countDownJob: Job? = null
+    private var referencePitchJob: Job? = null
     private var playableJob: Job? = null
     private var processorJob: Job? = null
 
@@ -128,21 +129,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            answersShouldMatchOctave = prefsStore.matchOctave().first()
-
-            sessionType = prefsStore.sessionType().first()
-            if (sessionType == SessionType.TIME_LIMIT) {
-                sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
-            }
-            else if (sessionType == SessionType.QUESTION_LIMIT) {
-                numQuestions = prefsStore.numQuestions().first()
-            }
-
-            shouldPlayReferencePitchOnStart = prefsStore.playStartingPitch().first()
-            if (shouldPlayReferencePitchOnStart) {
-                referencePitch = makeStartingPitch()
-            }
-
+            fetchPrefStoreData()
         }
         setupPitchProcessingCallbacks()
     }
@@ -169,7 +156,6 @@ class SessionViewModel @ViewModelInject constructor(
             }
 
             if (shouldPlayReferencePitchOnStart) {
-                Timber.d("should play starting pitch")
                 _sessionState.value = State.PLAYING_STARTING_PITCH
                 val refPitchPlayable = PlayableFactory.makePlayableFromNote(referencePitch!!)
                 playableJob = launchPlayPlayable(refPitchPlayable)
@@ -179,9 +165,7 @@ class SessionViewModel @ViewModelInject constructor(
 
             // TODO: refactor function: initSessionVariables
             sessionTimerJob = beginSessionTimer()
-            _numQuestionsCorrect.value = 0
-            _elapsedSessionTimeInSeconds.value = 0
-            _numQuestionsSkipped.value = 0
+            initSessionVariables()
             startNextCycle(-1)
         }
     }
@@ -237,7 +221,11 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     fun replayQuestion() {
-        // TODO
+        silenceThresholdJob?.cancel()
+        cancelProcessorJob()
+        currentQuestionTimerJob?.cancel()
+        val playable = _curPlayable.value!!
+        sessionJob = launchSessionCycle(playable)
     }
 
     fun initGenerator(type: ExerciseType) {
@@ -412,7 +400,6 @@ class SessionViewModel @ViewModelInject constructor(
     private fun questionLimitReached() =
             _numQuestionsCorrect.value!! == numQuestions
 
-    @ObsoleteCoroutinesApi
     private fun onSilenceThresholdMet() {
         cancelProcessorJob()
         currentQuestionTimerJob?.cancel()
@@ -517,6 +504,29 @@ class SessionViewModel @ViewModelInject constructor(
         val key = prefsStore.questionKey().first()
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
         return NoteFactory.makeNoteFromMidiNumber(keyTransposed)
+    }
+
+    private suspend fun fetchPrefStoreData() {
+        answersShouldMatchOctave = prefsStore.matchOctave().first()
+
+        sessionType = prefsStore.sessionType().first()
+        if (sessionType == SessionType.TIME_LIMIT) {
+            sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
+        }
+        else if (sessionType == SessionType.QUESTION_LIMIT) {
+            numQuestions = prefsStore.numQuestions().first()
+        }
+
+        shouldPlayReferencePitchOnStart = prefsStore.playStartingPitch().first()
+        if (shouldPlayReferencePitchOnStart) {
+            referencePitch = makeStartingPitch()
+        }
+    }
+
+    private fun initSessionVariables() {
+        _numQuestionsCorrect.value = 0
+        _elapsedSessionTimeInSeconds.value = 0
+        _numQuestionsSkipped.value = 0
     }
 
     enum class State {
