@@ -35,20 +35,6 @@ class NoteFactoryTest : TestCase() {
     }
 
     @Test
-    fun `test getNoteInstanceFromMidiNumber -1 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            Note(1)
-        }
-    }
-
-    @Test
-    fun `test getNoteInstanceFromMidiNumber 109 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            Note(109)
-        }
-    }
-
-    @Test
     fun `test getNoteInstanceFromPitchClassAndOctave c4 makes 60`() {
         val note = Note(
                 PitchClass.C,
@@ -82,13 +68,6 @@ class NoteFactoryTest : TestCase() {
     fun `test getNoteInstanceFromPitchClassAndOctave c-2 throws exception`() {
         assertFailsWith<IllegalArgumentException> {
             Note(PitchClass.C, -2)
-        }
-    }
-
-    @Test
-    fun `test getNoteInstanceFromPitchClassAndOctave cSharp8 throws exception`() {
-        assertFailsWith<IllegalArgumentException> {
-            Note(PitchClass.C_SHARP, 8)
         }
     }
 
