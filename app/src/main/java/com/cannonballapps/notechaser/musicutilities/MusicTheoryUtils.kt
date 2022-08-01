@@ -1,15 +1,12 @@
 package com.cannonballapps.notechaser.musicutilities
 
-import com.cannonballapps.notechaser.musicutilities.NoteFactory.makeNoteFromMidiNumber
 
+// TODO maybe split this file into smaller util files
 object MusicTheoryUtils {
 
     const val SHARP = '\u266F'
     const val FLAT = '\u266d'
     const val NATURAL = '\u266e'
-
-    const val MAX_MIDI_NUMBER = 127
-    const val MIN_MIDI_NUMBER = 0
 
     const val OCTAVE_SIZE = 12
 
@@ -143,12 +140,42 @@ object MusicTheoryUtils {
             PitchClass.B
     )
 
+    /**
+     * All music theory utils derive note bounds from [MIN_MIDI_NUMBER] and [MAX_MIDI_NUMBER].
+     */
+    const val MAX_MIDI_NUMBER = 127
+    const val MIN_MIDI_NUMBER = 0
+
+    val MAX_PITCH_CLASS = midiNumberToPitchClass(MAX_MIDI_NUMBER)
+    val MIN_PITCH_CLASS = midiNumberToPitchClass(MIN_MIDI_NUMBER)
+
+    val MAX_OCTAVE = midiNumberToOctave(MAX_MIDI_NUMBER)
+    val MIN_OCTAVE = midiNumberToOctave(MIN_MIDI_NUMBER)
+
     fun midiNumberToNoteName(midiNumber: Int, asFlat: Boolean = true): String {
         if (asFlat) {
             return "${CHROMATIC_SCALE_FLAT[midiNumber % OCTAVE_SIZE]}${(midiNumber / OCTAVE_SIZE) - 1}"
         }
         return "${CHROMATIC_SCALE_SHARP[midiNumber % OCTAVE_SIZE]}${(midiNumber / OCTAVE_SIZE) - 1}"
     }
+
+    fun midiNumberToPitchClass(midiNumber: Int, preferFlat: Boolean = true): PitchClass {
+        val pitchClassIx = midiNumber % OCTAVE_SIZE
+        return if (preferFlat)
+            CHROMATIC_PITCH_CLASSES_FLAT[pitchClassIx]
+        else
+            CHROMATIC_PITCH_CLASSES_SHARP[pitchClassIx]
+    }
+
+    fun pitchClassAndOctaveToMidiNumber(pitchClass: PitchClass, octave: Int): Int {
+        return ((octave + 1) * OCTAVE_SIZE) + pitchClass.value
+    }
+
+    fun midiNumberToOctave(midiNumber: Int): Int {
+        return (midiNumber / OCTAVE_SIZE) - 1
+    }
+
+    fun isValidMidiNumber(midiNumber: Int) = midiNumber in MIN_MIDI_NUMBER..MAX_MIDI_NUMBER
 
     fun getIntervalsForModeAtIx(intervals: IntArray, modeIx: Int): IntArray {
         if (intervals[0] != 0) {
@@ -290,7 +317,7 @@ object MusicTheoryUtils {
         while (curMidiNumber < lowerBound.midiNumber) {
             curMidiNumber += OCTAVE_SIZE
         }
-        return makeNoteFromMidiNumber(curMidiNumber)
+        return Note(curMidiNumber)
     }
 
     private fun assertValidBounds(lowerBound: Note, upperBound: Note) {

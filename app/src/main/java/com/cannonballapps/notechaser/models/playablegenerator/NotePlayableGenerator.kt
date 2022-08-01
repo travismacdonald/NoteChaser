@@ -2,7 +2,6 @@ package com.cannonballapps.notechaser.models.playablegenerator
 
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NoteFactory
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
@@ -44,7 +43,7 @@ class NotePlayableGenerator(
         val numOctavesOffset = Random.nextInt(numOccurrences)
         val midiNum = lowestOccurrence!!.midiNumber + (numOctavesOffset * MusicTheoryUtils.OCTAVE_SIZE)
 
-        return NoteFactory.makeNoteFromMidiNumber(midiNum)
+        return Note(midiNum)
     }
 
 }

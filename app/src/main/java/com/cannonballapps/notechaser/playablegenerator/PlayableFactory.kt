@@ -1,7 +1,6 @@
 package com.cannonballapps.notechaser.playablegenerator
 
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NoteFactory
 
 object PlayableFactory {
 
@@ -10,7 +9,7 @@ object PlayableFactory {
     }
 
     fun makePlayableFromMidiNumber(midiNumber: Int): Playable {
-        val note = NoteFactory.makeNoteFromMidiNumber(midiNumber)
+        val note = Note(midiNumber)
         return Playable(arrayListOf(note), PlaybackType.HARMONIC)
     }
 

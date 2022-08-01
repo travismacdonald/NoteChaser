@@ -352,7 +352,7 @@ class SessionViewModel @ViewModelInject constructor(
         noteProcessor.listener = object : NoteProcessorListener {
             override fun notifyNoteDetected(note: Int) {
                 silenceThresholdJob?.cancel()
-                val curNote = NoteFactory.makeNoteFromMidiNumber(note)
+                val curNote = Note(note)
                 _curFilteredNoteDetected.value = curNote
                 addNoteToUserAnswer(curNote)
                 if (userAnswerIsCorrect()) {
@@ -503,7 +503,7 @@ class SessionViewModel @ViewModelInject constructor(
     private suspend fun makeStartingPitch(): Note {
         val key = prefsStore.questionKey().first()
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
-        return NoteFactory.makeNoteFromMidiNumber(keyTransposed)
+        return Note(keyTransposed)
     }
 
     private suspend fun fetchPrefStoreData() {

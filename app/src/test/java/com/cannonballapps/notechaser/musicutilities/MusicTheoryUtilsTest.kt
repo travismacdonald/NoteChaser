@@ -4,23 +4,21 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 // TODO: clean up test names; make them more consistent
 class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull c between 0 and 0 returns c-1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(0)
+        val lower = Note(0)
+        val upper = Note(0)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.C,
                 lower,
                 upper
         )
 
-        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
+        val expected = Note(
                 PitchClass.C,
                 octave = -1
         )
@@ -29,15 +27,15 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull c between 1 and 12 returns c0`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(1)
-        val upper = NoteFactory.makeNoteFromMidiNumber(12)
+        val lower = Note(1)
+        val upper = Note(12)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.C,
                 lower,
                 upper
         )
 
-        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
+        val expected = Note(
                 PitchClass.C,
                 octave = 0
         )
@@ -46,32 +44,32 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 1 and 12 returns a-1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(1)
-        val upper = NoteFactory.makeNoteFromMidiNumber(12)
+        val lower = Note(midiNumber = 1)
+        val upper = Note(midiNumber = 12)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
                 upper
         )
 
-        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
-                PitchClass.A,
-                octave = -1
+        val expected = Note(
+            pitchClass = PitchClass.A,
+            octave = -1
         )
         assertEquals(expected, note)
     }
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 10 and 32 returns a0`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(10)
-        val upper = NoteFactory.makeNoteFromMidiNumber(32)
+        val lower = Note(10)
+        val upper = Note(32)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
                 upper
         )
 
-        val expected = NoteFactory.makeNoteFromPitchClassAndOctave(
+        val expected = Note(
                 PitchClass.A,
                 octave = 0
         )
@@ -80,8 +78,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getLowestPitchClassOccurrenceBetweenBoundsOrNull a between 10 and 20 returns null`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(10)
-        val upper = NoteFactory.makeNoteFromMidiNumber(20)
+        val lower = Note(10)
+        val upper = Note(20)
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
                 PitchClass.A,
                 lower,
@@ -93,8 +91,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 0 returns 1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(0)
+        val lower = Note(0)
+        val upper = Note(0)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -107,8 +105,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 1 returns 1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(1)
+        val lower = Note(0)
+        val upper = Note(1)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -121,8 +119,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 0 and 12 returns 2`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(12)
+        val lower = Note(0)
+        val upper = Note(12)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -135,8 +133,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 1 and 23 returns 1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(1)
-        val upper = NoteFactory.makeNoteFromMidiNumber(23)
+        val lower = Note(1)
+        val upper = Note(23)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -149,8 +147,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds C between 1 and 11 returns 0`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(1)
-        val upper = NoteFactory.makeNoteFromMidiNumber(11)
+        val lower = Note(1)
+        val upper = Note(11)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.C,
@@ -163,8 +161,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 0 and 12 returns 1`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(9)
+        val lower = Note(0)
+        val upper = Note(9)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
@@ -177,8 +175,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 0 and 0 returns 0`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(0)
-        val upper = NoteFactory.makeNoteFromMidiNumber(0)
+        val lower = Note(0)
+        val upper = Note(0)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
@@ -191,8 +189,8 @@ class MusicTheoryUtilsTest {
 
     @Test
     fun `test getNumberOfPitchClassOccurrencesBetweenBounds A between 9 and 21 returns 2`() {
-        val lower = NoteFactory.makeNoteFromMidiNumber(9)
-        val upper = NoteFactory.makeNoteFromMidiNumber(21)
+        val lower = Note(9)
+        val upper = Note(21)
 
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
                 PitchClass.A,
