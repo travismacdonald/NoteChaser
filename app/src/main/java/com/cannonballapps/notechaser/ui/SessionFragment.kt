@@ -19,7 +19,7 @@ import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.models.MidiPlayer2
 import com.cannonballapps.notechaser.models.PlayablePlayer
 import com.cannonballapps.notechaser.models.SoundEffectPlayer
-import com.cannonballapps.notechaser.musicutilities.NoteFactory
+import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -204,7 +204,7 @@ class SessionFragment : Fragment() {
 
             viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
                 // TODO: refactor
-                val noteStr = if (midiNum == null) "..." else NoteFactory.makeNoteFromMidiNumber(midiNum).toString()
+                val noteStr = if (midiNum == null) "..." else Note(midiNum).toString()
                 text = noteStr
             }
         }

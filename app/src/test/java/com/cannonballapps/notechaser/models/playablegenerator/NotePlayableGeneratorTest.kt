@@ -23,8 +23,8 @@ class NotePlayableGeneratorTest : TestCase() {
     @Test
     fun `test makeNotePlayableGeneratorFromDiatonicDegrees generates notes between bounds`() {
         val scale = ParentScale2.MAJOR.getModeAtIx(0)
-        val lower = NoteFactory.makeNoteFromMidiNumber(36)
-        val upper = NoteFactory.makeNoteFromMidiNumber(48)
+        val lower = Note(36)
+        val upper = Note(48)
 
         val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
                 rootOnlyDiatonicDegree,
@@ -44,8 +44,8 @@ class NotePlayableGeneratorTest : TestCase() {
     @Test
     fun `test makeNotePlayableGeneratorFromDiatonicDegrees generates notes between bounds 2`() {
         val scale = ParentScale2.MAJOR.getModeAtIx(0)
-        val lower = NoteFactory.makeNoteFromMidiNumber(36)
-        val upper = NoteFactory.makeNoteFromMidiNumber(48)
+        val lower = Note(36)
+        val upper = Note(48)
 
         val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
                 rootOnlyDiatonicDegree,

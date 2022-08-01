@@ -150,7 +150,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     }.map { prefs ->
         prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM
     }.map { midiNumber ->
-        NoteFactory.makeNoteFromMidiNumber(midiNumber)
+        Note(midiNumber)
     }
 
     fun playableUpperBound() = dataStore.data.catch { exception ->
@@ -163,7 +163,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     }.map { prefs ->
         prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM
     }.map { midiNumber ->
-        NoteFactory.makeNoteFromMidiNumber(midiNumber)
+        Note(midiNumber)
     }
 
     fun questionKey() = dataStore.data.catch { exception ->
