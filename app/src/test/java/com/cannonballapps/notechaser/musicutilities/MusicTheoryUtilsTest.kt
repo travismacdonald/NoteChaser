@@ -4,6 +4,8 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 // TODO: clean up test names; make them more consistent
 class MusicTheoryUtilsTest {
@@ -230,157 +232,92 @@ class MusicTheoryUtilsTest {
     }
 
     @Test
-    fun `test pitchClassOccursBetweenNoteBounds pitchClass less than 0 throws Exception`() {
-        val pitchClass = -1
-        val lowerBound = 36
-        val upperBound = 48
-
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                    pitchClass,
-                    lowerBound = lowerBound,
-                    upperBound = upperBound
-            )
-        }
-    }
-
-    @Test
-    fun `test pitchClassOccursBetweenNoteBounds pitchClass greater than 11 throws Exception`() {
-        val pitchClass = 12
-        val lowerBound = 36
-        val upperBound = 48
-
-        assertFailsWith<IllegalArgumentException> {
-            MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                    pitchClass,
-                    lowerBound = lowerBound,
-                    upperBound = upperBound
-            )
-        }
-    }
-
-    @Test
     fun `test pitchClassOccursBetweenNoteBounds C occurs between notes 0 and 0`() {
-        val c = 0
-        val lowerBound = 0
-        val upperBound = 0
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = c,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.C,
+                lowerBound = Note(midiNumber = 0),
+                upperBound = Note(midiNumber = 0),
         )
         assertTrue(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds dFlat does not occur between notes 0 and 0`() {
-        val dFlat = 1
-        val lowerBound = 0
-        val upperBound = 0
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = dFlat,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.D_FLAT,
+                lowerBound = Note(midiNumber = 0),
+                upperBound = Note(midiNumber = 0),
         )
         assertFalse(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds C occurs between notes 12 and 12`() {
-        val c = 0
-        val lowerBound = 12
-        val upperBound = 12
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = c,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.C,
+                lowerBound = Note(midiNumber = 12),
+                upperBound = Note(midiNumber = 12),
         )
         assertTrue(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds C occurs between notes 13 and 24`() {
-        val c = 0
-        val lowerBound = 13
-        val upperBound = 24
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = c,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.C,
+                lowerBound = Note(midiNumber = 13),
+                upperBound = Note(midiNumber = 24),
         )
         assertTrue(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds C does not occur between notes 13 and 23`() {
-        val c = 0
-        val lowerBound = 13
-        val upperBound = 23
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = c,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.C,
+                lowerBound = Note(midiNumber = 13),
+                upperBound = Note(midiNumber = 23),
         )
         assertFalse(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds A occurs between notes 13 and 23`() {
-        val a = PitchClass.A.value
-        val lowerBound = 13
-        val upperBound = 23
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = a,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.A,
+                lowerBound = Note(midiNumber = 13),
+                upperBound = Note(midiNumber = 23),
         )
         assertTrue(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds A occurs between notes 9 and 9`() {
-        val a = PitchClass.A.value
-        val lowerBound = 9
-        val upperBound = 9
 
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = a,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+            pitchClass = PitchClass.A,
+            lowerBound = Note(midiNumber = 9),
+            upperBound = Note(midiNumber = 9),
         )
         assertTrue(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds A does not occur between notes 0 and 8`() {
-        val a = PitchClass.A.value
-        val lowerBound = 0
-        val upperBound = 8
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = a,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.A,
+                lowerBound = Note(midiNumber = 0),
+                upperBound = Note(midiNumber = 8),
         )
         assertFalse(occurs)
     }
 
     @Test
     fun `test pitchClassOccursBetweenNoteBounds A occurs between notes 10 and 12`() {
-        val a = PitchClass.A.value
-        val lowerBound = 0
-        val upperBound = 8
-
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
-                pitchClass = a,
-                lowerBound = lowerBound,
-                upperBound = upperBound
+                pitchClass = PitchClass.A,
+                lowerBound = Note(midiNumber = 0),
+                upperBound = Note(midiNumber = 8),
         )
         assertFalse(occurs)
     }
