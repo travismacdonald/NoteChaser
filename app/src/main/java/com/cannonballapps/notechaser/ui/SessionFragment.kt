@@ -2,12 +2,12 @@ package com.cannonballapps.notechaser.ui
 
 import android.os.Bundle
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
@@ -24,11 +24,9 @@ import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_session.view.*
-
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
 
 @ObsoleteCoroutinesApi
 @AndroidEntryPoint
@@ -38,11 +36,12 @@ class SessionFragment : Fragment() {
     lateinit var binding: FragmentSessionBinding
     private lateinit var args: SessionFragmentArgs
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
-
 
         val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             viewModel.pauseSession()
@@ -50,7 +49,10 @@ class SessionFragment : Fragment() {
         }
 
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_session, container, false
+            inflater,
+            R.layout.fragment_session,
+            container,
+            false
         )
         binding.lifecycleOwner = this
 
@@ -104,9 +106,9 @@ class SessionFragment : Fragment() {
             val questionText = when (viewModel.sessionType) {
                 SessionType.QUESTION_LIMIT -> {
                     getString(
-                            R.string.correctAnswerCounterWithLimit,
-                            num,
-                            viewModel.numQuestions
+                        R.string.correctAnswerCounterWithLimit,
+                        num,
+                        viewModel.numQuestions
                     )
                 }
                 SessionType.TIME_LIMIT -> {
@@ -160,8 +162,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForAnswerCorrect() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             text = getString(R.string.answerCorrect)
         }
@@ -170,8 +172,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForCountdown() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_huge)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_huge)
             )
 
             viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
@@ -180,16 +182,15 @@ class SessionFragment : Fragment() {
         }
     }
 
-
     private fun setupStatusMessageForFinishing() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             text = getString(R.string.sessionComplete)
         }
@@ -198,8 +199,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForListening() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_large)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_large)
             )
 
             viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
@@ -213,8 +214,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForPlayingQuestion() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             text = getString(R.string.playingQuestion)
         }
@@ -223,8 +224,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForQuestionSkipped() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             text = getString(R.string.questionSkipped)
         }
@@ -233,8 +234,8 @@ class SessionFragment : Fragment() {
     private fun setupStatusMessageForStartingPitch() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    resources.getDimension(R.dimen.sessionText_medium)
+                TypedValue.COMPLEX_UNIT_PX,
+                resources.getDimension(R.dimen.sessionText_medium)
             )
             val pitchClass = viewModel.referencePitch!!.pitchClass
             text = getString(R.string.referencePitch, pitchClass)
@@ -242,7 +243,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun questionButtonsShouldBeEnabled(state: SessionViewModel.State?) =
-            state == SessionViewModel.State.LISTENING
+        state == SessionViewModel.State.LISTENING
 
     private fun setupSessionTimer() {
         binding.sessionTimeTv.apply {
@@ -267,7 +268,7 @@ class SessionFragment : Fragment() {
     private fun injectPlayablePlayerIntoViewModel() {
         viewModel.viewModelScope.launch {
             val soundBank = SF2Soundbank(
-                    requireActivity().application.assets.open(getString(R.string.soundfont_filename))
+                requireActivity().application.assets.open(getString(R.string.soundfont_filename))
             )
             val synth = SoftSynthesizer()
             synth.open()
@@ -294,29 +295,27 @@ class SessionFragment : Fragment() {
     private fun secondsToFormattedTimeString(seconds: Int): String {
         val mins = seconds / 60
         val remainingSeconds = seconds % 60
-        return "${mins}:${"%02d".format(remainingSeconds)}"
+        return "$mins:${"%02d".format(remainingSeconds)}"
     }
 
     private fun showEndSessionDialog() {
         MaterialAlertDialogBuilder(requireContext())
-                .setTitle(resources.getString(R.string.endSessionDialog_title))
-                .setMessage(resources.getString(R.string.endSessionDialog_message))
-                .setNegativeButton(resources.getString(R.string.endSessionDialog_resume)) { _, _ ->
-                    Timber.d("session resumed!")
-                    viewModel.resumeSession()
-                }
-                .setPositiveButton(resources.getString(R.string.endSessionDialog_end)) { _, _ ->
-                    Timber.d("session ended!")
-                    viewModel.endSession()
-                    navigateToHomeFragment()
-                }
-                .show()
+            .setTitle(resources.getString(R.string.endSessionDialog_title))
+            .setMessage(resources.getString(R.string.endSessionDialog_message))
+            .setNegativeButton(resources.getString(R.string.endSessionDialog_resume)) { _, _ ->
+                Timber.d("session resumed!")
+                viewModel.resumeSession()
+            }
+            .setPositiveButton(resources.getString(R.string.endSessionDialog_end)) { _, _ ->
+                Timber.d("session ended!")
+                viewModel.endSession()
+                navigateToHomeFragment()
+            }
+            .show()
     }
-
 
     private fun removeStatusMessageObservers() {
         viewModel.secondsUntilSessionStart.removeObservers(viewLifecycleOwner)
         viewModel.curPitchDetectedAsMidiNumber.removeObservers(viewLifecycleOwner)
     }
-
 }

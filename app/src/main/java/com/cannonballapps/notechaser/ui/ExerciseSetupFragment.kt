@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.viewmodels.ExerciseSetupViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,15 +31,20 @@ class ExerciseSetupFragment : Fragment() {
     private lateinit var binding: FragmentExerciseSetupBinding
     private lateinit var args: ExerciseSetupFragmentArgs
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
         viewModel.prefetchPrefsStore()
 
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_exercise_setup, container, false
+            inflater,
+            R.layout.fragment_exercise_setup,
+            container,
+            false
         )
         binding.lifecycleOwner = this
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
@@ -85,13 +90,13 @@ class ExerciseSetupFragment : Fragment() {
 
             layout.setOnClickListener {
                 showMaterialDialogSingleList(
-                        title = getString(R.string.notePoolType_title),
-                        entries = notePoolTypeNames,
-                        initSelectedIx = viewModel.notePoolType.value!!.ordinal,
-                        onPositiveButtonClick = { selectedIx ->
-                            val selectedNotePool = NotePoolType.values()[selectedIx]
-                            viewModel.saveNotePoolType(selectedNotePool)
-                        }
+                    title = getString(R.string.notePoolType_title),
+                    entries = notePoolTypeNames,
+                    initSelectedIx = viewModel.notePoolType.value!!.ordinal,
+                    onPositiveButtonClick = { selectedIx ->
+                        val selectedNotePool = NotePoolType.values()[selectedIx]
+                        viewModel.saveNotePoolType(selectedNotePool)
+                    }
                 )
             }
 
@@ -107,12 +112,12 @@ class ExerciseSetupFragment : Fragment() {
 
             layout.setOnClickListener {
                 showMaterialDialogMultiList(
-                        title = getString(R.string.chromaticDegrees_title),
-                        entries = MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-                        initSelectedIxs = viewModel.chromaticDegrees.value!!,
-                        onPositiveButtonClick = { degrees ->
-                            viewModel.saveChromaticDegrees(degrees)
-                        }
+                    title = getString(R.string.chromaticDegrees_title),
+                    entries = MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
+                    initSelectedIxs = viewModel.chromaticDegrees.value!!,
+                    onPositiveButtonClick = { degrees ->
+                        viewModel.saveChromaticDegrees(degrees)
+                    }
                 )
             }
 
@@ -128,17 +133,17 @@ class ExerciseSetupFragment : Fragment() {
                     }
                 }
                 binding.chromaticDegreesMultiList.summary.text =
-                        when (activeDegrees.size) {
-                            0 -> {
-                                resources.getString(R.string.noneSelected)
-                            }
-                            degrees.size -> {
-                                resources.getString(R.string.allSelected)
-                            }
-                            else -> {
-                                activeDegrees.joinToString(separator = ", ")
-                            }
+                    when (activeDegrees.size) {
+                        0 -> {
+                            resources.getString(R.string.noneSelected)
                         }
+                        degrees.size -> {
+                            resources.getString(R.string.allSelected)
+                        }
+                        else -> {
+                            activeDegrees.joinToString(separator = ", ")
+                        }
+                    }
             }
         }
     }
@@ -149,12 +154,12 @@ class ExerciseSetupFragment : Fragment() {
 
             layout.setOnClickListener {
                 showMaterialDialogMultiList(
-                        title = getString(R.string.diatonicDegrees_title),
-                        entries = MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
-                        initSelectedIxs = viewModel.diatonicDegrees.value!!,
-                        onPositiveButtonClick = { degrees ->
-                            viewModel.saveDiatonicDegrees(degrees)
-                        }
+                    title = getString(R.string.diatonicDegrees_title),
+                    entries = MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
+                    initSelectedIxs = viewModel.diatonicDegrees.value!!,
+                    onPositiveButtonClick = { degrees ->
+                        viewModel.saveDiatonicDegrees(degrees)
+                    }
                 )
             }
 
@@ -170,17 +175,17 @@ class ExerciseSetupFragment : Fragment() {
                     }
                 }
                 binding.diatonicDegreesMultiList.summary.text =
-                        when (activeDegrees.size) {
-                            0 -> {
-                                getString(R.string.noneSelected)
-                            }
-                            degrees.size -> {
-                                getString(R.string.allSelected)
-                            }
-                            else -> {
-                                activeDegrees.joinToString(separator = ", ")
-                            }
+                    when (activeDegrees.size) {
+                        0 -> {
+                            getString(R.string.noneSelected)
                         }
+                        degrees.size -> {
+                            getString(R.string.allSelected)
+                        }
+                        else -> {
+                            activeDegrees.joinToString(separator = ", ")
+                        }
+                    }
             }
         }
     }
@@ -191,13 +196,13 @@ class ExerciseSetupFragment : Fragment() {
 
             layout.setOnClickListener {
                 showMaterialDialogSingleList(
-                        title = getString(R.string.questionKey_title),
-                        entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                        initSelectedIx = viewModel.questionKey.value!!.value,
-                        onPositiveButtonClick = { selectedIx ->
-                            val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
-                            viewModel.saveQuestionKey(selectedPitchClass)
-                        }
+                    title = getString(R.string.questionKey_title),
+                    entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
+                    initSelectedIx = viewModel.questionKey.value!!.value,
+                    onPositiveButtonClick = { selectedIx ->
+                        val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
+                        viewModel.saveQuestionKey(selectedPitchClass)
+                    }
                 )
             }
 
@@ -215,27 +220,26 @@ class ExerciseSetupFragment : Fragment() {
 
             // TODO: this could look better!
             layout.setOnClickListener {
-
                 showMaterialDialogSingleList(
-                        title = getString(R.string.parentScale_title),
-                        entries = parentScaleNames,
-                        initSelectedIx = viewModel.parentScale.value!!.ordinal,
+                    title = getString(R.string.parentScale_title),
+                    entries = parentScaleNames,
+                    initSelectedIx = viewModel.parentScale.value!!.ordinal,
 
-                        onPositiveButtonClick = { selectedParentScaleIx ->
+                    onPositiveButtonClick = { selectedParentScaleIx ->
 
-                            val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
+                        val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
 
-                            showMaterialDialogSingleList(
-                                    title = getString(R.string.mode_title),
-                                    entries = selectedParentScale.modeNames.toTypedArray(),
-                                    initSelectedIx = 0,
+                        showMaterialDialogSingleList(
+                            title = getString(R.string.mode_title),
+                            entries = selectedParentScale.modeNames.toTypedArray(),
+                            initSelectedIx = 0,
 
-                                    onPositiveButtonClick = { selectedModeIx ->
-                                        viewModel.saveParentScale(selectedParentScale)
-                                        viewModel.saveModeIx(selectedModeIx)
-                                    }
-                            )
-                        }
+                            onPositiveButtonClick = { selectedModeIx ->
+                                viewModel.saveParentScale(selectedParentScale)
+                                viewModel.saveModeIx(selectedModeIx)
+                            }
+                        )
+                    }
                 )
             }
 
@@ -268,8 +272,7 @@ class ExerciseSetupFragment : Fragment() {
                     if (slider.focusedThumbIndex == 0) {
                         val lower = Note(slider.values[0].toInt())
                         viewModel.savePlayableLowerBound(lower)
-                    }
-                    else {
+                    } else {
                         val upper = Note(slider.values[1].toInt())
                         viewModel.savePlayableUpperBound(upper)
                     }
@@ -301,13 +304,13 @@ class ExerciseSetupFragment : Fragment() {
 
             layout.setOnClickListener {
                 showMaterialDialogSingleList(
-                        title = getString(R.string.sessionType_title),
-                        entries = sessionTypeNames,
-                        initSelectedIx = viewModel.sessionType.value!!.ordinal,
-                        onPositiveButtonClick = { selectedIx ->
-                            val selectedSessionType = SessionType.values()[selectedIx]
-                            viewModel.saveSessionType(selectedSessionType)
-                        }
+                    title = getString(R.string.sessionType_title),
+                    entries = sessionTypeNames,
+                    initSelectedIx = viewModel.sessionType.value!!.ordinal,
+                    onPositiveButtonClick = { selectedIx ->
+                        val selectedSessionType = SessionType.values()[selectedIx]
+                        viewModel.saveSessionType(selectedSessionType)
+                    }
                 )
             }
 
@@ -417,7 +420,6 @@ class ExerciseSetupFragment : Fragment() {
             viewModel.isValidConfiguration.observe(viewLifecycleOwner) { isValid ->
                 startButton.isEnabled = isValid
             }
-
         }
 
         // TODO: validate settings
@@ -439,47 +441,46 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-
     private fun showMaterialDialogSingleList(
-            title: String,
-            entries: Array<String>,
-            initSelectedIx: Int,
-            onPositiveButtonClick: ((selectedIx: Int) -> Unit),
+        title: String,
+        entries: Array<String>,
+        initSelectedIx: Int,
+        onPositiveButtonClick: ((selectedIx: Int) -> Unit)
     ) {
         var curSelectedIx = initSelectedIx
         MaterialAlertDialogBuilder(requireContext())
-                .setTitle(title)
-                .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                    // Do nothing
-                }
-                .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                    onPositiveButtonClick(curSelectedIx)
-                }
-                .setSingleChoiceItems(entries, initSelectedIx) { _, ix ->
-                    curSelectedIx = ix
-                }
-                .show()
+            .setTitle(title)
+            .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                // Do nothing
+            }
+            .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                onPositiveButtonClick(curSelectedIx)
+            }
+            .setSingleChoiceItems(entries, initSelectedIx) { _, ix ->
+                curSelectedIx = ix
+            }
+            .show()
     }
 
     private fun showMaterialDialogMultiList(
-            title: String,
-            entries: Array<String>,
-            initSelectedIxs: BooleanArray,
-            onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit)
+        title: String,
+        entries: Array<String>,
+        initSelectedIxs: BooleanArray,
+        onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit)
     ) {
         val curSelectedIxs = initSelectedIxs.clone()
         MaterialAlertDialogBuilder(requireContext())
-                .setTitle(title)
-                .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
-                    // Do nothing
-                }
-                .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                    onPositiveButtonClick(curSelectedIxs)
-                }
-                .setMultiChoiceItems(entries, curSelectedIxs) { _, ix, isChecked ->
-                    curSelectedIxs[ix] = isChecked
-                }
-                .show()
+            .setTitle(title)
+            .setNegativeButton(getString(R.string.dismiss)) { _, _ ->
+                // Do nothing
+            }
+            .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                onPositiveButtonClick(curSelectedIxs)
+            }
+            .setMultiChoiceItems(entries, curSelectedIxs) { _, ix, isChecked ->
+                curSelectedIxs[ix] = isChecked
+            }
+            .show()
     }
 
     private fun navigateBackToExerciseTypeMenu(view: View) {
@@ -491,5 +492,4 @@ class ExerciseSetupFragment : Fragment() {
         val directions = ExerciseSetupFragmentDirections.actionExerciseSetupFragmentToSessionFragment(args.exerciseType)
         view.findNavController().navigate(directions)
     }
-
 }

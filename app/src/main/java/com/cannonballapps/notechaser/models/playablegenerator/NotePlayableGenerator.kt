@@ -7,11 +7,10 @@ import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
 import kotlin.random.Random
 
-
 class NotePlayableGenerator(
-        private val pitchClassPool: List<PitchClass>,
-        private val lowerBound: Note,
-        private val upperBound: Note
+    private val pitchClassPool: List<PitchClass>,
+    private val lowerBound: Note,
+    private val upperBound: Note
 ) : PlayableGenerator {
 
     override fun generatePlayable(): Playable {
@@ -31,19 +30,18 @@ class NotePlayableGenerator(
 
     private fun getRandomNoteWithinBounds(pitchClass: PitchClass): Note {
         val lowestOccurrence = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
-                pitchClass,
-                lowerBound,
-                upperBound
+            pitchClass,
+            lowerBound,
+            upperBound
         )
         val numOccurrences = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
-                pitchClass,
-                lowerBound,
-                upperBound
+            pitchClass,
+            lowerBound,
+            upperBound
         )
         val numOctavesOffset = Random.nextInt(numOccurrences)
         val midiNum = lowestOccurrence!!.midiNumber + (numOctavesOffset * MusicTheoryUtils.OCTAVE_SIZE)
 
         return Note(midiNum)
     }
-
 }

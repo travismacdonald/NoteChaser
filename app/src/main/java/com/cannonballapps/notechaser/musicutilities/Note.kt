@@ -1,9 +1,9 @@
 package com.cannonballapps.notechaser.musicutilities
 
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_MIDI_NUMBER
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_MIDI_NUMBER
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_OCTAVE
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_PITCH_CLASS
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_MIDI_NUMBER
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_OCTAVE
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_PITCH_CLASS
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.isValidMidiNumber
@@ -13,9 +13,9 @@ import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.pitchClassA
 
 @Suppress("DataClassPrivateConstructor")
 data class Note private constructor(
-        val midiNumber: Int,
-        val pitchClass: PitchClass,
-        val octave: Int,
+    val midiNumber: Int,
+    val pitchClass: PitchClass,
+    val octave: Int
 ) : Comparable<Note> {
 
     /**
@@ -24,7 +24,7 @@ data class Note private constructor(
     constructor(midiNumber: Int) : this(
         midiNumber,
         midiNumberToPitchClass(midiNumber),
-        midiNumberToOctave(midiNumber),
+        midiNumberToOctave(midiNumber)
     ) {
         assertValidMidiNumber(midiNumber)
     }
@@ -35,7 +35,7 @@ data class Note private constructor(
     constructor(pitchClass: PitchClass, octave: Int) : this(
         pitchClassAndOctaveToMidiNumber(pitchClass, octave),
         pitchClass,
-        octave,
+        octave
     ) {
         assertValidPitchClassAndOctave(pitchClass, octave)
     }
@@ -44,7 +44,7 @@ data class Note private constructor(
         return this.midiNumber.compareTo(other.midiNumber)
     }
 
-    override fun toString() = "${pitchClass}${octave}"
+    override fun toString() = "${pitchClass}$octave"
 }
 
 private fun assertValidMidiNumber(midiNumber: Int) {
@@ -60,7 +60,7 @@ private fun assertValidPitchClassAndOctave(pitchClass: PitchClass, octave: Int) 
 
     if (!isValidMidiNumber(midiNumber)) {
         throw IllegalArgumentException(
-            "Pitch class and octave must be between ${MIN_PITCH_CLASS}${MIN_OCTAVE} and ${MAX_PITCH_CLASS}${MAX_OCTAVE}."
+            "Pitch class and octave must be between ${MIN_PITCH_CLASS}$MIN_OCTAVE and ${MAX_PITCH_CLASS}$MAX_OCTAVE."
         )
     }
 }

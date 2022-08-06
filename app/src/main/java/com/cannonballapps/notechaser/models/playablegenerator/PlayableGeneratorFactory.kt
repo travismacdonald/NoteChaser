@@ -8,17 +8,16 @@ import com.cannonballapps.notechaser.musicutilities.Scale
 object PlayableGeneratorFactory {
 
     fun makeNotePlayableGeneratorFromDiatonicDegrees(
-            diatonicDegrees: BooleanArray,
-            scale: Scale,
-            key: PitchClass,
-            lowerBound: Note,
-            upperBound: Note,
+        diatonicDegrees: BooleanArray,
+        scale: Scale,
+        key: PitchClass,
+        lowerBound: Note,
+        upperBound: Note
     ): PlayableGenerator {
-
         val intervals: List<PitchClass> = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
-                diatonicDegrees,
-                scale.intervals,
-                key.value
+            diatonicDegrees,
+            scale.intervals,
+            key.value
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }
@@ -26,18 +25,17 @@ object PlayableGeneratorFactory {
     }
 
     fun makeNotePlayableGeneratorFromChromaticDegrees(
-            chromaticDegrees: BooleanArray,
-            key: PitchClass,
-            lowerBound: Note,
-            upperBound: Note
+        chromaticDegrees: BooleanArray,
+        key: PitchClass,
+        lowerBound: Note,
+        upperBound: Note
     ): PlayableGenerator {
         val intervals: List<PitchClass> = MusicTheoryUtils.transformChromaticDegreesToIntervals(
-                chromaticDegrees,
-                key.value
+            chromaticDegrees,
+            key.value
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }
         return NotePlayableGenerator(intervals, lowerBound, upperBound)
     }
-
 }

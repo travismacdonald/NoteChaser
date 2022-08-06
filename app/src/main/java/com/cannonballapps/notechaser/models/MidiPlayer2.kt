@@ -1,7 +1,9 @@
 package com.cannonballapps.notechaser.models
 
-import jp.kshoji.javax.sound.midi.*
-import kotlinx.coroutines.*
+import jp.kshoji.javax.sound.midi.ShortMessage
+import jp.kshoji.javax.sound.midi.Synthesizer
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 private const val NOTE_ON_VELOCITY = 70
 private const val NOTE_OFF_VELOCITY = 0
@@ -24,7 +26,6 @@ class MidiPlayer2(private val synth: Synthesizer) {
     fun close() {
         stop()
         synth.close()
-
     }
 
     fun stop() {
@@ -56,7 +57,6 @@ class MidiPlayer2(private val synth: Synthesizer) {
             delay(noteLenInMillis)
             noteOff(note)
         }
-
     }
 
     private fun noteOn(midiNumber: Int) {
@@ -68,5 +68,4 @@ class MidiPlayer2(private val synth: Synthesizer) {
         val msg = ShortMessage(ShortMessage.NOTE_OFF, midiNumber, NOTE_OFF_VELOCITY)
         receiver.send(msg, -1)
     }
-
 }

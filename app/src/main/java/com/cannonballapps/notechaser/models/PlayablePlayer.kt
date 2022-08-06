@@ -1,10 +1,10 @@
 package com.cannonballapps.notechaser.models
 
-
 import com.cannonballapps.notechaser.playablegenerator.Playable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 
 const val NUM_MILLIS_IN_MINUTE = 60000L
+
 // TODO: this is set at a pretty conservative value right now
 const val REVERB_LEN_MILLIS = 600L
 
@@ -26,5 +26,4 @@ class PlayablePlayer(val midiPlayer: MidiPlayer2) {
     fun stopCurPlayable() {
         midiPlayer.stop()
     }
-
 }

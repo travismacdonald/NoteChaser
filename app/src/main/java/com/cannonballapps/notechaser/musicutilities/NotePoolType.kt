@@ -9,5 +9,4 @@ enum class NotePoolType {
     CHROMATIC {
         override fun toString() = "Chromatic"
     },
-
 }

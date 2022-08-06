@@ -1,10 +1,10 @@
 package com.cannonballapps.notechaser.models
 
-//import com.cannonballapps.notechaser.playablegenerator.Playable
-//import timber.log.Timber
-//import java.util.*
+// import com.cannonballapps.notechaser.playablegenerator.Playable
+// import timber.log.Timber
+// import java.util.*
 //
-//class AnswerChecker {
+// class AnswerChecker {
 //
 //    var targetAnswer: Playable? = null
 //
@@ -37,4 +37,4 @@ package com.cannonballapps.notechaser.models
 //
 //
 //
-//}
+// }

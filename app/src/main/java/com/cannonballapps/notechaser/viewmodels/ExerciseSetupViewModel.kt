@@ -1,16 +1,25 @@
 package com.cannonballapps.notechaser.viewmodels
 
-
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
-import com.cannonballapps.notechaser.data.*
-import com.cannonballapps.notechaser.musicutilities.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.data.ExerciseType
+import com.cannonballapps.notechaser.data.SessionType
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.Scale
+import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ExerciseSetupViewModel @ViewModelInject constructor(
-        private val prefsStore: PrefsStore
+    private val prefsStore: PrefsStore
 ) : ViewModel() {
 
     lateinit var exerciseType: ExerciseType
@@ -182,7 +191,7 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
                 chromaticDegrees.value?.contains(true) ?: false
             }
             else -> throw IllegalStateException(
-                    "Illegal NotePoolType given: ${notePoolType.value}"
+                "Illegal NotePoolType given: ${notePoolType.value}"
             )
         }
     }
@@ -191,15 +200,14 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         lateinit var intervals: IntArray
         if (notePoolType.value == NotePoolType.DIATONIC) {
             intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
-                    diatonicDegrees.value!!,
-                    scale.value!!.intervals,
-                    questionKey.value!!.value
+                diatonicDegrees.value!!,
+                scale.value!!.intervals,
+                questionKey.value!!.value
             )
-        }
-        else if (notePoolType.value == NotePoolType.CHROMATIC) {
+        } else if (notePoolType.value == NotePoolType.CHROMATIC) {
             intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(
-                    chromaticDegrees.value!!,
-                    questionKey.value!!.value
+                chromaticDegrees.value!!,
+                questionKey.value!!.value
             )
         }
         for (interval in intervals) {
@@ -212,5 +220,4 @@ class ExerciseSetupViewModel @ViewModelInject constructor(
         }
         return true
     }
-
 }

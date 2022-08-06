@@ -1,23 +1,37 @@
 package com.cannonballapps.notechaser.models.playablegenerator
 
-import com.cannonballapps.notechaser.musicutilities.*
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import junit.framework.TestCase
 import org.junit.Test
-
 
 class NotePlayableGeneratorTest : TestCase() {
 
     val rootOnlyDiatonicDegree = booleanArrayOf(
-            true, false, false, false, false, false, false
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
     )
 
     val triadDiatonicDegrees = booleanArrayOf(
-            true, false, true, false, true, false, false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false
     )
 
     val majorChromaticDegrees = booleanArrayOf(
-            true, false, true, false, true, true,
-            false, true, false, true, false, true
+        true, false, true, false, true, true,
+        false, true, false, true, false, true
     )
 
     @Test
@@ -27,17 +41,19 @@ class NotePlayableGeneratorTest : TestCase() {
         val upper = Note(48)
 
         val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
-                rootOnlyDiatonicDegree,
-                scale,
-                PitchClass.C,
-                lower,
-                upper
+            rootOnlyDiatonicDegree,
+            scale,
+            PitchClass.C,
+            lower,
+            upper
         )
         for (i in 0 until 100) {
             val curPlayable = generator.generatePlayable()
             assertTrue(curPlayable.notes.size == 1)
-            assertTrue(curPlayable.notes[0].midiNumber >= lower.midiNumber &&
-                    curPlayable.notes[0].midiNumber <= upper.midiNumber)
+            assertTrue(
+                curPlayable.notes[0].midiNumber >= lower.midiNumber &&
+                    curPlayable.notes[0].midiNumber <= upper.midiNumber
+            )
         }
     }
 
@@ -48,19 +64,19 @@ class NotePlayableGeneratorTest : TestCase() {
         val upper = Note(48)
 
         val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
-                rootOnlyDiatonicDegree,
-                scale,
-                PitchClass.C,
-                lower,
-                upper
+            rootOnlyDiatonicDegree,
+            scale,
+            PitchClass.C,
+            lower,
+            upper
         )
         for (i in 0 until 100) {
             val curPlayable = generator.generatePlayable()
             assertTrue(curPlayable.notes.size == 1)
-            assertTrue(curPlayable.notes[0].midiNumber >= lower.midiNumber &&
-                    curPlayable.notes[0].midiNumber <= upper.midiNumber)
+            assertTrue(
+                curPlayable.notes[0].midiNumber >= lower.midiNumber &&
+                    curPlayable.notes[0].midiNumber <= upper.midiNumber
+            )
         }
     }
-
-
 }

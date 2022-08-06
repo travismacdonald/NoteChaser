@@ -1,7 +1,7 @@
 package com.cannonballapps.notechaser.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.databinding.ActivityHostBinding
@@ -14,5 +14,4 @@ class HostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivityHostBinding>(this, R.layout.activity_host)
     }
-
 }
