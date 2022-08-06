@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser.musicutilities
 
-
 // TODO maybe split this file into smaller util files
 object MusicTheoryUtils {
 
@@ -16,128 +15,128 @@ object MusicTheoryUtils {
     val HARMONIC_MAJOR_SCALE_INTERVALS = intArrayOf(0, 2, 4, 5, 7, 8, 11)
 
     val CHROMATIC_SCALE_SHARP = arrayOf(
-            "C",
-            "C$SHARP",
-            "D",
-            "D$SHARP",
-            "E",
-            "F",
-            "F$SHARP",
-            "G",
-            "G$SHARP",
-            "A",
-            "A$SHARP",
-            "B"
+        "C",
+        "C$SHARP",
+        "D",
+        "D$SHARP",
+        "E",
+        "F",
+        "F$SHARP",
+        "G",
+        "G$SHARP",
+        "A",
+        "A$SHARP",
+        "B"
     )
 
     val CHROMATIC_SCALE_FLAT = arrayOf(
-            "C",
-            "D$FLAT",
-            "D",
-            "E$FLAT",
-            "E",
-            "F",
-            "G$FLAT",
-            "G",
-            "A$FLAT",
-            "A",
-            "B$FLAT",
-            "B"
+        "C",
+        "D$FLAT",
+        "D",
+        "E$FLAT",
+        "E",
+        "F",
+        "G$FLAT",
+        "G",
+        "A$FLAT",
+        "A",
+        "B$FLAT",
+        "B"
     )
 
     val MAJOR_MODE_NAMES = arrayOf(
-            "Ionian",
-            "Dorian",
-            "Phrygian",
-            "Lydian",
-            "Mixolydian",
-            "Aeolian",
-            "Locrian"
+        "Ionian",
+        "Dorian",
+        "Phrygian",
+        "Lydian",
+        "Mixolydian",
+        "Aeolian",
+        "Locrian"
     )
 
     val MELODIC_MINOR_MODE_NAMES = arrayOf(
-            "Melodic Minor",
-            "Phrygian ${SHARP}6",
-            "Lydian Augmented",
-            "Lydian ${FLAT}7",
-            "Mixolydian ${FLAT}6",
-            "Locrian ${SHARP}2",
-            "Altered"
+        "Melodic Minor",
+        "Phrygian ${SHARP}6",
+        "Lydian Augmented",
+        "Lydian ${FLAT}7",
+        "Mixolydian ${FLAT}6",
+        "Locrian ${SHARP}2",
+        "Altered"
     )
 
     val HARMONIC_MINOR_MODE_NAMES = arrayOf(
-            "Harmonic Minor",
-            "Locrian ${NATURAL}6",
-            "Ionian ${SHARP}5",
-            "Dorian ${SHARP}4",
-            "Phrygian Dominant",
-            "Lydian ${SHARP}9",
-            "Altered Diminished"
+        "Harmonic Minor",
+        "Locrian ${NATURAL}6",
+        "Ionian ${SHARP}5",
+        "Dorian ${SHARP}4",
+        "Phrygian Dominant",
+        "Lydian ${SHARP}9",
+        "Altered Diminished"
     )
 
     val HARMONIC_MAJOR_MODE_NAMES = arrayOf(
-            "Harmonic Major",
-            "Dorian ${FLAT}5",
-            "Phrygian ${FLAT}4",
-            "Lydian ${FLAT}3",
-            "Mixolydian ${FLAT}2",
-            "Lydian Augmented ${SHARP}2",
-            "Lydian ${FLAT}${FLAT}7"
+        "Harmonic Major",
+        "Dorian ${FLAT}5",
+        "Phrygian ${FLAT}4",
+        "Lydian ${FLAT}3",
+        "Mixolydian ${FLAT}2",
+        "Lydian Augmented ${SHARP}2",
+        "Lydian ${FLAT}${FLAT}7"
     )
 
     val CHROMATIC_INTERVAL_NAMES_SINGLE = arrayOf(
-            "P1",
-            "m2",
-            "M2",
-            "m3",
-            "M3",
-            "P4",
-            "Tritone",
-            "P5",
-            "m6",
-            "M6",
-            "m7",
-            "M7"
+        "P1",
+        "m2",
+        "M2",
+        "m3",
+        "M3",
+        "P4",
+        "Tritone",
+        "P5",
+        "m6",
+        "M6",
+        "m7",
+        "M7"
     )
 
     val DIATONIC_INTERVAL_NAMES_SINGLE = arrayOf(
-            "1st",
-            "2nd",
-            "3rd",
-            "4th",
-            "5th",
-            "6th",
-            "7th"
+        "1st",
+        "2nd",
+        "3rd",
+        "4th",
+        "5th",
+        "6th",
+        "7th"
     )
 
     val CHROMATIC_PITCH_CLASSES_FLAT = arrayOf(
-            PitchClass.C,
-            PitchClass.D_FLAT,
-            PitchClass.D,
-            PitchClass.E_FLAT,
-            PitchClass.E,
-            PitchClass.F,
-            PitchClass.G_FLAT,
-            PitchClass.G,
-            PitchClass.A_FLAT,
-            PitchClass.A,
-            PitchClass.B_FLAT,
-            PitchClass.B
+        PitchClass.C,
+        PitchClass.D_FLAT,
+        PitchClass.D,
+        PitchClass.E_FLAT,
+        PitchClass.E,
+        PitchClass.F,
+        PitchClass.G_FLAT,
+        PitchClass.G,
+        PitchClass.A_FLAT,
+        PitchClass.A,
+        PitchClass.B_FLAT,
+        PitchClass.B
     )
 
     val CHROMATIC_PITCH_CLASSES_SHARP = arrayOf(
-            PitchClass.C,
-            PitchClass.C_SHARP,
-            PitchClass.D,
-            PitchClass.D_SHARP,
-            PitchClass.E,
-            PitchClass.F,
-            PitchClass.F_SHARP,
-            PitchClass.G,
-            PitchClass.G_SHARP,
-            PitchClass.A,
-            PitchClass.A_SHARP,
-            PitchClass.B
+        PitchClass.C,
+        PitchClass.C_SHARP,
+        PitchClass.D,
+        PitchClass.D_SHARP,
+        PitchClass.E,
+        PitchClass.F,
+        PitchClass.F_SHARP,
+        PitchClass.G,
+        PitchClass.G_SHARP,
+        PitchClass.A,
+        PitchClass.A_SHARP,
+        PitchClass.B
     )
 
     /**
@@ -161,10 +160,11 @@ object MusicTheoryUtils {
 
     fun midiNumberToPitchClass(midiNumber: Int, preferFlat: Boolean = true): PitchClass {
         val pitchClassIx = midiNumber % OCTAVE_SIZE
-        return if (preferFlat)
+        return if (preferFlat) {
             CHROMATIC_PITCH_CLASSES_FLAT[pitchClassIx]
-        else
+        } else {
             CHROMATIC_PITCH_CLASSES_SHARP[pitchClassIx]
+        }
     }
 
     fun pitchClassAndOctaveToMidiNumber(pitchClass: PitchClass, octave: Int): Int {
@@ -180,8 +180,9 @@ object MusicTheoryUtils {
     fun getIntervalsForModeAtIx(intervals: IntArray, modeIx: Int): IntArray {
         if (intervals[0] != 0) {
             throw IllegalArgumentException(
-                    "Cannot use scale when first interval is not zero.\n" +
-                            "Intervals = $intervals")
+                "Cannot use scale when first interval is not zero.\n" +
+                    "Intervals = $intervals"
+            )
         }
         // No need to change anything
         if (modeIx == 0) {
@@ -204,12 +205,12 @@ object MusicTheoryUtils {
     fun transformChromaticDegreesToIntervals(chromaticDegrees: BooleanArray, key: Int): IntArray {
         if (chromaticDegrees.size != OCTAVE_SIZE) {
             throw IllegalArgumentException(
-                    "chromaticDegrees must have size 12. actual size = ${chromaticDegrees.size}"
+                "chromaticDegrees must have size 12. actual size = ${chromaticDegrees.size}"
             )
         }
         if (key !in 0..11) {
             throw IllegalArgumentException(
-                    "key must be in range 0 (inclusive) to 11 (inclusive). actual key = $key"
+                "key must be in range 0 (inclusive) to 11 (inclusive). actual key = $key"
             )
         }
         val toReturn = IntArray(chromaticDegrees.count() { it })
@@ -226,15 +227,15 @@ object MusicTheoryUtils {
     fun transformDiatonicDegreesToIntervals(diatonicDegrees: BooleanArray, scale: IntArray, key: Int): IntArray {
         if (diatonicDegrees.size != scale.size) {
             throw IllegalArgumentException(
-                    "diatonicDegrees and scale must have same size.\n " +
-                            "diatonicDegrees size = ${diatonicDegrees.size}\n" +
-                            "scale size = ${scale.size}"
+                "diatonicDegrees and scale must have same size.\n " +
+                    "diatonicDegrees size = ${diatonicDegrees.size}\n" +
+                    "scale size = ${scale.size}"
             )
         }
         if (key !in 0..11) {
             throw IllegalArgumentException(
-                    "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
-                            "actual key = $key"
+                "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
+                    "actual key = $key"
             )
         }
         val toReturn = IntArray(diatonicDegrees.count() { it })
@@ -252,8 +253,8 @@ object MusicTheoryUtils {
     fun transposeIntervals(intervals: IntArray, key: Int): IntArray {
         if (key !in 0..11) {
             throw IllegalArgumentException(
-                    "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
-                            "actual key = $key"
+                "key must be in range 0 (inclusive) to 11 (inclusive).\n" +
+                    "actual key = $key"
             )
         }
         val toReturn = IntArray(intervals.size)
@@ -272,27 +273,27 @@ object MusicTheoryUtils {
 
     // TODO: update it to use new classes `PitchClass` and `Note`
     fun pitchClassOccursBetweenNoteBounds(
-            pitchClass: PitchClass,
-            lowerBound: Note,
-            upperBound: Note
+        pitchClass: PitchClass,
+        lowerBound: Note,
+        upperBound: Note
     ): Boolean {
-
         assertValidBounds(lowerBound, upperBound)
 
         val numOctavesDisplaced = lowerBound.midiNumber / OCTAVE_SIZE
         val transposedLower = lowerBound.midiNumber - (OCTAVE_SIZE * numOctavesDisplaced)
         val transposedUpper = upperBound.midiNumber - (OCTAVE_SIZE * numOctavesDisplaced)
         if (pitchClass.value in transposedLower..transposedUpper ||
-                pitchClass.value + OCTAVE_SIZE in transposedLower..transposedUpper) {
+            pitchClass.value + OCTAVE_SIZE in transposedLower..transposedUpper
+        ) {
             return true
         }
         return false
     }
 
     fun getNumberOfPitchClassOccurrencesBetweenBounds(
-            pitchClass: PitchClass,
-            lowerBound: Note,
-            upperBound: Note
+        pitchClass: PitchClass,
+        lowerBound: Note,
+        upperBound: Note
     ): Int {
         var numOccurrences = 0
         var curMidiNumber = pitchClass.value + (lowerBound.midiNumber / OCTAVE_SIZE) * OCTAVE_SIZE
@@ -306,9 +307,9 @@ object MusicTheoryUtils {
     }
 
     fun getLowestPitchClassOccurrenceBetweenBoundsOrNull(
-            pitchClass: PitchClass,
-            lowerBound: Note,
-            upperBound: Note
+        pitchClass: PitchClass,
+        lowerBound: Note,
+        upperBound: Note
     ): Note? {
         if (!pitchClassOccursBetweenNoteBounds(pitchClass, lowerBound, upperBound)) {
             return null
@@ -323,9 +324,8 @@ object MusicTheoryUtils {
     private fun assertValidBounds(lowerBound: Note, upperBound: Note) {
         if (lowerBound > upperBound) {
             throw IllegalArgumentException(
-                    "lowerBound must be less than or equal to upperBound"
+                "lowerBound must be less than or equal to upperBound"
             )
         }
     }
-
 }

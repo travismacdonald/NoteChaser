@@ -5,5 +5,4 @@ import com.cannonballapps.notechaser.playablegenerator.Playable
 interface PlayableGenerator {
 
     fun generatePlayable(): Playable
-
 }

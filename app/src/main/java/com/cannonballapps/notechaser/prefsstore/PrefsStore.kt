@@ -6,7 +6,11 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import com.cannonballapps.notechaser.data.SessionType
-import com.cannonballapps.notechaser.musicutilities.*
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.PitchClass
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -16,13 +20,18 @@ import javax.inject.Inject
 private const val STORE_NAME = "notechaser_data_store"
 
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
-        true, true, true, true, true, true,
-        true, true, true, true, true, true
+    true, true, true, true, true, true,
+    true, true, true, true, true, true
 ).joinToString(",")
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
-        true, false, true, false,
-        true, false, false
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false
 ).joinToString(",")
 
 private const val DEFAULT_NUM_QUESTIONS = 20
@@ -41,40 +50,37 @@ private const val DEFAULT_SESSION_TIME_LEN = 10
 class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
 
     private val dataStore = context.createDataStore(
-            name = STORE_NAME
+        name = STORE_NAME
     )
 
     fun chromaticDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
         val serializedChromaticDegrees: String = prefs[PrefKeys.CHROMATIC_DEGREES]
-                ?: DEFAULT_CHROMATIC_DEGREES
+            ?: DEFAULT_CHROMATIC_DEGREES
         deserializeBooleanArray(serializedChromaticDegrees)
     }
 
     fun diatonicDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
         val serializedDiatonicDegrees: String = prefs[PrefKeys.DIATONIC_DEGREES]
-                ?: DEFAULT_DIATONIC_DEGREES
+            ?: DEFAULT_DIATONIC_DEGREES
         deserializeBooleanArray(serializedDiatonicDegrees)
     }
 
     fun matchOctave() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -84,8 +90,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun modeIx() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -95,8 +100,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun notePoolType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -108,8 +112,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun numQuestions() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -119,8 +122,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun parentScale() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -132,8 +134,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun playStartingPitch() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -143,8 +144,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun playableLowerBound() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -156,8 +156,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun playableUpperBound() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -169,8 +168,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun questionKey() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -182,8 +180,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun sessionTimeLimit() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -193,8 +190,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     fun sessionType() = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
-        }
-        else {
+        } else {
             throw exception
         }
     }.map { prefs ->
@@ -220,7 +216,6 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
             prefs[PrefKeys.MATCH_OCTAVE] = matchOctave
         }
     }
-
 
     suspend fun saveModeIx(ix: Int) {
         dataStore.edit { prefs ->
@@ -307,5 +302,4 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         // "true,false,true" -> [true, false, true]
         return string.split(",").map { it.toBoolean() }.toBooleanArray()
     }
-
 }

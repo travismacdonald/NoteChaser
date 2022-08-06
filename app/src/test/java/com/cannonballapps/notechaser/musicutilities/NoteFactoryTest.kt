@@ -37,8 +37,8 @@ class NoteFactoryTest : TestCase() {
     @Test
     fun `test getNoteInstanceFromPitchClassAndOctave c4 makes 60`() {
         val note = Note(
-                PitchClass.C,
-                4
+            PitchClass.C,
+            4
         )
         kotlin.test.assertEquals(60, note.midiNumber)
     }
@@ -52,8 +52,8 @@ class NoteFactoryTest : TestCase() {
     @Test
     fun `test getNoteInstanceFromPitchClassAndOctave b3 makes 59`() {
         val note = Note(
-                PitchClass.B,
-                3
+            PitchClass.B,
+            3
         )
         kotlin.test.assertEquals(59, note.midiNumber)
     }
@@ -70,5 +70,4 @@ class NoteFactoryTest : TestCase() {
             Note(PitchClass.C, -2)
         }
     }
-
 }

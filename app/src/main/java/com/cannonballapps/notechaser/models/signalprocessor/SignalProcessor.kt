@@ -12,7 +12,7 @@ import timber.log.Timber
 
 const val AUDIO_BUFFER_SIZE = 1024
 const val BUFFER_OVERLAP = 0
-const val SAMPLE_RATE = 22050  // TODO: play around with different sample rates
+const val SAMPLE_RATE = 22050 // TODO: play around with different sample rates
 
 const val SILENCE_THRESHOLD = -75.0
 
@@ -33,29 +33,27 @@ class SignalProcessor {
 
                     if (isSilence(pitchInHz, event)) {
                         listener?.notifyPitchResult(null, result.probability, result.isPitched)
-                    }
-                    else {
+                    } else {
                         val midiNumber = PitchConverter.hertzToMidiKey(pitchInHz.toDouble())
                         listener?.notifyPitchResult(midiNumber, result.probability, result.isPitched)
                     }
                 }
             }
             val pitchProcessor: AudioProcessor = PitchProcessor(
-                    PitchProcessor.PitchEstimationAlgorithm.FFT_YIN,
-                    SAMPLE_RATE.toFloat(),
-                    AUDIO_BUFFER_SIZE,
-                    handler
+                PitchProcessor.PitchEstimationAlgorithm.FFT_YIN,
+                SAMPLE_RATE.toFloat(),
+                AUDIO_BUFFER_SIZE,
+                handler
             )
             dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(
-                    SAMPLE_RATE,
-                    AUDIO_BUFFER_SIZE,
-                    BUFFER_OVERLAP
+                SAMPLE_RATE,
+                AUDIO_BUFFER_SIZE,
+                BUFFER_OVERLAP
             )
             dispatcher.addAudioProcessor(pitchProcessor)
             isRunning = true
             dispatcher.run()
         }
-
     }
 
     fun stop() {
@@ -69,5 +67,4 @@ class SignalProcessor {
     private fun isSilence(pitchInHz: Float, event: AudioEvent?): Boolean {
         return pitchInHz == -1f || event?.isSilence(SILENCE_THRESHOLD) == true
     }
-
 }

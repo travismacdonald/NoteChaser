@@ -1,8 +1,11 @@
 package com.cannonballapps.notechaser.viewmodels
 
-
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.cannonballapps.notechaser.data.ExerciseType
 import com.cannonballapps.notechaser.data.QuestionLog
 import com.cannonballapps.notechaser.data.SessionType
@@ -14,23 +17,31 @@ import com.cannonballapps.notechaser.models.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.models.playablegenerator.PlayableGeneratorFactory
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.models.signalprocessor.SignalProcessorListener
-import com.cannonballapps.notechaser.musicutilities.*
+import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.NotePoolType
+import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import kotlin.properties.Delegates
-
 
 const val COUNTDOWN_SECONDS = 3
 
 // TODO: consistent variable names
 @ObsoleteCoroutinesApi
 class SessionViewModel @ViewModelInject constructor(
-        private val prefsStore: PrefsStore,
+    private val prefsStore: PrefsStore
 ) : ViewModel() {
 
     private val _curPitchDetectedAsMidiNumber = MutableLiveData<Int?>(null)
@@ -145,7 +156,6 @@ class SessionViewModel @ViewModelInject constructor(
         assertSessionNotStarted()
         sessionHasStarted = true
         countDownJob = viewModelScope.launch {
-
             _sessionState.value = State.COUNTDOWN
             _secondsUntilSessionStart.value = COUNTDOWN_SECONDS
             repeat(COUNTDOWN_SECONDS) {
@@ -198,8 +208,7 @@ class SessionViewModel @ViewModelInject constructor(
 
         if (_sessionState.value == State.PLAYING_QUESTION) {
             cancelPlayableJob()
-        }
-        else if (_sessionState.value == State.LISTENING) {
+        } else if (_sessionState.value == State.LISTENING) {
             cancelProcessorJob()
         }
         _sessionState.value = State.INACTIVE
@@ -214,8 +223,7 @@ class SessionViewModel @ViewModelInject constructor(
 
         if (isQuestionLimitSession() && questionLimitReached()) {
             onSessionCompleted()
-        }
-        else {
+        } else {
             startNextCycle(millisInBetweenQuestions)
         }
     }
@@ -259,7 +267,7 @@ class SessionViewModel @ViewModelInject constructor(
         return viewModelScope.launch {
             for (tick in ticker) {
                 _timeSpentAnsweringCurrentQuestionInMillis.value =
-                        _timeSpentAnsweringCurrentQuestionInMillis.value!!.plus(tickLenInMillis)
+                    _timeSpentAnsweringCurrentQuestionInMillis.value!!.plus(tickLenInMillis)
             }
         }
     }
@@ -317,23 +325,22 @@ class SessionViewModel @ViewModelInject constructor(
             if (notePoolType == NotePoolType.CHROMATIC) {
                 val degrees = prefsStore.chromaticDegrees().first()
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
-                        degrees,
-                        key,
-                        lowerBound,
-                        upperBound
+                    degrees,
+                    key,
+                    lowerBound,
+                    upperBound
                 )
-            }
-            else if (notePoolType == NotePoolType.DIATONIC) {
+            } else if (notePoolType == NotePoolType.DIATONIC) {
                 val degrees = prefsStore.diatonicDegrees().first()
                 val parentScale = prefsStore.parentScale().first()
                 val modeIx = prefsStore.modeIx().first()
                 val scale = parentScale.getModeAtIx(modeIx)
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
-                        degrees,
-                        scale,
-                        key,
-                        lowerBound,
-                        upperBound
+                    degrees,
+                    scale,
+                    key,
+                    lowerBound,
+                    upperBound
                 )
             }
         }
@@ -378,8 +385,7 @@ class SessionViewModel @ViewModelInject constructor(
         _numQuestionsCorrect.value = _numQuestionsCorrect.value!!.plus(1)
         if (isQuestionLimitSession() && questionLimitReached()) {
             onSessionCompleted()
-        }
-        else {
+        } else {
             startNextCycle(millisInBetweenQuestions)
         }
     }
@@ -389,16 +395,16 @@ class SessionViewModel @ViewModelInject constructor(
     }
 
     private fun isTimedSession() =
-            sessionType == SessionType.TIME_LIMIT
+        sessionType == SessionType.TIME_LIMIT
 
     private fun timeLimitReached() =
-            _elapsedSessionTimeInSeconds.value!! >= sessionTimeLenInMinutes * 60
+        _elapsedSessionTimeInSeconds.value!! >= sessionTimeLenInMinutes * 60
 
     private fun isQuestionLimitSession() =
-            sessionType == SessionType.QUESTION_LIMIT
+        sessionType == SessionType.QUESTION_LIMIT
 
     private fun questionLimitReached() =
-            _numQuestionsCorrect.value!! == numQuestions
+        _numQuestionsCorrect.value!! == numQuestions
 
     private fun onSilenceThresholdMet() {
         cancelProcessorJob()
@@ -415,10 +421,10 @@ class SessionViewModel @ViewModelInject constructor(
 
     private fun makeLogForCurrentQuestion(skipped: Boolean): QuestionLog {
         return QuestionLog(
-                _curPlayable.value!!,
-                _timeSpentAnsweringCurrentQuestionInMillis.value!!,
-                _numRepeatsForCurrentQuestion.value!!,
-                skipped
+            _curPlayable.value!!,
+            _timeSpentAnsweringCurrentQuestionInMillis.value!!,
+            _numRepeatsForCurrentQuestion.value!!,
+            skipped
         )
     }
 
@@ -451,8 +457,10 @@ class SessionViewModel @ViewModelInject constructor(
     private fun userAnswerIsCorrect(): Boolean {
         val actualAnswer = _curPlayable.value!!.notes
         val userAnswer = _userAnswer.value!!
-        return (answersShouldMatchOctave && isSamePatternSameOctave(actualAnswer, userAnswer) ||
-                !answersShouldMatchOctave && isSamePatternAnyOctave(actualAnswer, userAnswer))
+        return (
+            answersShouldMatchOctave && isSamePatternSameOctave(actualAnswer, userAnswer) ||
+                !answersShouldMatchOctave && isSamePatternAnyOctave(actualAnswer, userAnswer)
+            )
     }
 
     private fun getNextPlayable(): Playable {
@@ -512,8 +520,7 @@ class SessionViewModel @ViewModelInject constructor(
         sessionType = prefsStore.sessionType().first()
         if (sessionType == SessionType.TIME_LIMIT) {
             sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
-        }
-        else if (sessionType == SessionType.QUESTION_LIMIT) {
+        } else if (sessionType == SessionType.QUESTION_LIMIT) {
             numQuestions = prefsStore.numQuestions().first()
         }
 
@@ -540,5 +547,4 @@ class SessionViewModel @ViewModelInject constructor(
         FINISHING,
         FINISHED,
     }
-
 }

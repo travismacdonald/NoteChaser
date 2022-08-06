@@ -12,5 +12,4 @@ object PlayableFactory {
         val note = Note(midiNumber)
         return Playable(arrayListOf(note), PlaybackType.HARMONIC)
     }
-
 }

@@ -88,5 +88,4 @@ enum class PitchClass(val value: Int) {
     B_SHARP(value = 0) {
         override fun toString() = "B$SHARP"
     }
-
 }

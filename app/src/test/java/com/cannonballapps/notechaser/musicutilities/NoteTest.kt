@@ -28,5 +28,4 @@ class NoteTest : TestCase() {
         val note = Note(PitchClass.D_FLAT, 4)
         assertEquals("D♭4", note.toString())
     }
-
 }

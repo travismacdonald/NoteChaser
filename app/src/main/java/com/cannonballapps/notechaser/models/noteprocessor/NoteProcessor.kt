@@ -1,9 +1,8 @@
 package com.cannonballapps.notechaser.models.noteprocessor
 
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
-import java.util.*
+import java.util.LinkedList
 import kotlin.collections.HashMap
-
 
 class NoteProcessor {
 
@@ -37,8 +36,7 @@ class NoteProcessor {
 
         if (readyToFilter) {
             makeNotePrediction()
-        }
-        else {
+        } else {
             checkIfReadyToFilter()
         }
     }
@@ -66,8 +64,7 @@ class NoteProcessor {
                 listener?.notifyNoteUndetected(it)
                 lastPredictedNote = null
             }
-        }
-        else if (mostFrequentNote != lastPredictedNote) {
+        } else if (mostFrequentNote != lastPredictedNote) {
             listener?.notifyNoteDetected(mostFrequentNote)
             lastPredictedNote = mostFrequentNote
         }
@@ -86,8 +83,7 @@ class NoteProcessor {
         for (noteStamp in noteQueue) {
             if (currentMillis - noteStamp.timeStamp > noteExpirationLenInMillis) {
                 numRemove++
-            }
-            else break
+            } else break
         }
         for (i in 0 until numRemove) {
             popNoteQueue()
@@ -116,5 +112,4 @@ class NoteProcessor {
     }
 
     private data class NoteStamp(val note: Int?, val timeStamp: Long)
-
 }
