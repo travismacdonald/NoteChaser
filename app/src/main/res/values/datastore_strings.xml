@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="dataStore_name">note_chaser_settings</string>
 
     <string name="notePoolType_key">notePoolType</string>
-
 
 </resources>

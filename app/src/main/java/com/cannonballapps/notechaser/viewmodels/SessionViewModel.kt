@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import kotlin.properties.Delegates
 
 const val COUNTDOWN_SECONDS = 3
@@ -147,7 +146,6 @@ class SessionViewModel @ViewModelInject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        Timber.d("onCleared called")
         playablePlayer.midiPlayer.stop()
         endSession()
     }
@@ -190,9 +188,7 @@ class SessionViewModel @ViewModelInject constructor(
 
     // TODO: this function could use some cleaning up
     fun endSession() {
-        Timber.d("endSession called")
         if (_sessionState.value == State.COUNTDOWN) {
-            Timber.d("cancelling countdown job")
             countDownJob?.cancel()
             _sessionState.value = State.INACTIVE
             return
