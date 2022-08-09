@@ -3,10 +3,10 @@
 
     <!-- Note Order -->
 
-        <!-- NOTE: Two different lists for different playback modes
-               ~ One is for primarily melodic types (SCALE)
-               ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
-          -->
+    <!-- NOTE: Two different lists for different playback modes
+           ~ One is for primarily melodic types (SCALE)
+           ~ Other is for primarily harmonic types (HARMONIC, INTERVALLIC)
+      -->
 
     <string-array name="playbacktype_harm_entries">
         <item>Harmonic</item>

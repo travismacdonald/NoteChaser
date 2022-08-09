@@ -10,8 +10,5 @@ enum class SessionType {
         override fun toString() = "Time Limit"
     },
 
-    // TODO: implement this later
-//    UNLIMITED {
-//        override fun toString() = "Unlimited"
-//    },
+    // TODO: implement "Unlimited"
 }
