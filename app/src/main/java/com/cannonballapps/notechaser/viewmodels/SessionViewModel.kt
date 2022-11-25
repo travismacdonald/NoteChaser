@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser.viewmodels
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +23,7 @@ import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.playablegenerator.Playable
 import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -33,13 +33,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 const val COUNTDOWN_SECONDS = 3
 
 // TODO: consistent variable names
 @ObsoleteCoroutinesApi
-class SessionViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SessionViewModel @Inject constructor(
     private val prefsStore: PrefsStore
 ) : ViewModel() {
 
