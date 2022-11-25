@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser.viewmodels
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -15,10 +14,13 @@ import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.prefsstore.PrefsStore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ExerciseSetupViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ExerciseSetupViewModel @Inject constructor(
     private val prefsStore: PrefsStore
 ) : ViewModel() {
 
