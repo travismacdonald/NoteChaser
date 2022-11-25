@@ -1,10 +1,14 @@
 package com.cannonballapps.notechaser.prefsstore
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.preferencesKey
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.cannonballapps.notechaser.data.SessionType
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
@@ -47,11 +51,11 @@ private const val DEFAULT_SESSION_TIME_LEN = 10
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
 // TODO: make PrefsStore an interface for easier unit testing
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(STORE_NAME)
+
 class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
 
-    private val dataStore = context.createDataStore(
-        name = STORE_NAME
-    )
+    private val dataStore = context.dataStore
 
     fun chromaticDegrees() = dataStore.data.catch { exception ->
         if (exception is IOException) {
@@ -278,19 +282,19 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
     }
 
     private object PrefKeys {
-        val CHROMATIC_DEGREES = preferencesKey<String>("chromatic_degrees")
-        val DIATONIC_DEGREES = preferencesKey<String>("diatonic_degrees")
-        val MATCH_OCTAVE = preferencesKey<Boolean>("match_octave")
-        val MODE_IX = preferencesKey<Int>("mode_ix")
-        val NOTE_POOL_TYPE_ORDINAL = preferencesKey<Int>("note_pool_type_ordinal")
-        val NUM_QUESTIONS_KEY = preferencesKey<Int>("num_questions")
-        val PARENT_SCALE_ORDINAL = preferencesKey<Int>("parent_scale_ordinal")
-        val PLAY_STARTING_PITCH = preferencesKey<Boolean>("play_starting_pitch")
-        val PLAYABLE_LOWER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_lower_bound")
-        val PLAYABLE_UPPER_BOUND_MIDI_NUM = preferencesKey<Int>("playable_upper_bound")
-        val QUESTION_KEY_VAL = preferencesKey<Int>("question_key")
-        val SESSION_TIME_LIMIT = preferencesKey<Int>("session_time_limit")
-        val SESSION_TYPE_ORDINAL = preferencesKey<Int>("session_type_ordinal")
+        val CHROMATIC_DEGREES = stringPreferencesKey("chromatic_degrees")
+        val DIATONIC_DEGREES = stringPreferencesKey("diatonic_degrees")
+        val MATCH_OCTAVE = booleanPreferencesKey("match_octave")
+        val MODE_IX = intPreferencesKey("mode_ix")
+        val NOTE_POOL_TYPE_ORDINAL = intPreferencesKey("note_pool_type_ordinal")
+        val NUM_QUESTIONS_KEY = intPreferencesKey("num_questions")
+        val PARENT_SCALE_ORDINAL = intPreferencesKey("parent_scale_ordinal")
+        val PLAY_STARTING_PITCH = booleanPreferencesKey("play_starting_pitch")
+        val PLAYABLE_LOWER_BOUND_MIDI_NUM = intPreferencesKey("playable_lower_bound")
+        val PLAYABLE_UPPER_BOUND_MIDI_NUM = intPreferencesKey("playable_upper_bound")
+        val QUESTION_KEY_VAL = intPreferencesKey("question_key")
+        val SESSION_TIME_LIMIT = intPreferencesKey("session_time_limit")
+        val SESSION_TYPE_ORDINAL = intPreferencesKey("session_type_ordinal")
     }
 
     private fun serializeBooleanArray(array: BooleanArray): String {
