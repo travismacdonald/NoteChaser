@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.prefsstore
+package com.cannonballapps.notechaser.common.prefsstore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.cannonballapps.notechaser.data.SessionType
+import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType

@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models
+package com.cannonballapps.notechaser.common
 
 import android.content.Context
 import android.media.MediaPlayer

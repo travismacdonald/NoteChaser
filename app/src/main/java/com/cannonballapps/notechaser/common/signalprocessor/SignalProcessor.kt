@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models.signalprocessor
+package com.cannonballapps.notechaser.common.signalprocessor
 
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.AudioEvent

@@ -1,6 +1,6 @@
-package com.cannonballapps.notechaser.data
+package com.cannonballapps.notechaser.common
 
-import com.cannonballapps.notechaser.playablegenerator.Playable
+import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 
 data class QuestionLog(
     val question: Playable,

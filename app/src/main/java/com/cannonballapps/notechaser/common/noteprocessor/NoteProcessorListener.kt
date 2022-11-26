@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models.noteprocessor
+package com.cannonballapps.notechaser.common.noteprocessor
 
 interface NoteProcessorListener {
 

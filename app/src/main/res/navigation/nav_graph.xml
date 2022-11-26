@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/exerciseSelectionFragment"
-        android:name="com.cannonballapps.notechaser.ui.ExerciseSelectionFragment"
+        android:name="com.cannonballapps.notechaser.exerciseselection.ExerciseSelectionFragment"
         android:label="fragment_exercise_selection"
         tools:layout="@layout/fragment_exercise_selection">
 
@@ -18,13 +18,13 @@
 
     <fragment
         android:id="@+id/exerciseSetupFragment"
-        android:name="com.cannonballapps.notechaser.ui.ExerciseSetupFragment"
+        android:name="com.cannonballapps.notechaser.exercisesetup.ExerciseSetupFragment"
         android:label="fragment_exercise_setup"
         tools:layout="@layout/fragment_exercise_setup">
 
         <argument
             android:name="exerciseType"
-            app:argType="com.cannonballapps.notechaser.data.ExerciseType" />
+            app:argType="com.cannonballapps.notechaser.common.ExerciseType" />
 
         <action
             android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
@@ -37,26 +37,17 @@
 
     <fragment
         android:id="@+id/sessionFragment"
-        android:name="com.cannonballapps.notechaser.ui.SessionFragment"
+        android:name="com.cannonballapps.notechaser.exercisesession.SessionFragment"
         android:label="fragment_session"
         tools:layout="@layout/fragment_session">
 
         <argument
             android:name="exerciseType"
-            app:argType="com.cannonballapps.notechaser.data.ExerciseType" />
+            app:argType="com.cannonballapps.notechaser.common.ExerciseType" />
 
-        <action
-            android:id="@+id/action_sessionFragment_to_sessionStatisticsFragment"
-            app:destination="@id/sessionStatisticsFragment" />
         <action
             android:id="@+id/action_sessionToExerciseSelection"
             app:popUpTo="@id/exerciseSelectionFragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/sessionStatisticsFragment"
-        android:name="com.cannonballapps.notechaser.ui.SessionStatisticsFragment"
-        android:label="fragment_session_statistics"
-        tools:layout="@layout/fragment_session_statistics" />
 
 </navigation>

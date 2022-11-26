@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.ui
+package com.cannonballapps.notechaser.exercisesession
 
 import android.os.Bundle
 import android.util.TypedValue
@@ -14,13 +14,12 @@ import androidx.navigation.findNavController
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
-import com.cannonballapps.notechaser.data.SessionType
+import com.cannonballapps.notechaser.common.MidiPlayer2
+import com.cannonballapps.notechaser.common.PlayablePlayer
+import com.cannonballapps.notechaser.common.SessionType
+import com.cannonballapps.notechaser.common.SoundEffectPlayer
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
-import com.cannonballapps.notechaser.models.MidiPlayer2
-import com.cannonballapps.notechaser.models.PlayablePlayer
-import com.cannonballapps.notechaser.models.SoundEffectPlayer
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.viewmodels.SessionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_session.view.*

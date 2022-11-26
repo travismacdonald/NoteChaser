@@ -1,6 +1,6 @@
-package com.cannonballapps.notechaser.models
+package com.cannonballapps.notechaser.common
 
-import com.cannonballapps.notechaser.playablegenerator.Playable
+import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import kotlinx.coroutines.delay
 
 const val NUM_MILLIS_IN_MINUTE = 60000L

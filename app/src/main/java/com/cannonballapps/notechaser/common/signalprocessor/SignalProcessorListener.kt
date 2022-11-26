@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models.signalprocessor
+package com.cannonballapps.notechaser.common.signalprocessor
 
 interface SignalProcessorListener {
 
