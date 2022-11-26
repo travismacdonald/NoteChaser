@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.musicutilities
+package com.cannonballapps.musictheory.musicutilities
 
 enum class NotePoolType {
 

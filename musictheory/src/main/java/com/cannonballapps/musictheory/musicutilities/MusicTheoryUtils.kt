@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.musicutilities
+package com.cannonballapps.musictheory.musicutilities
 
 // TODO maybe split this file into smaller util files
 object MusicTheoryUtils {

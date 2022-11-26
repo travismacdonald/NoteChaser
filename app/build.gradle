@@ -42,7 +42,9 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(path: ':exerciseselection:api')
     implementation project(path: ':musictheory')
+    implementation project(path: ':shared')
 
     // Android
     implementation 'androidx.appcompat:appcompat:1.5.1'

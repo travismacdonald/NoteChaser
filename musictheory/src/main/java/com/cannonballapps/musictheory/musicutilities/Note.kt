@@ -1,15 +1,15 @@
-package com.cannonballapps.notechaser.musicutilities
+package com.cannonballapps.musictheory.musicutilities
 
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_MIDI_NUMBER
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_OCTAVE
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MAX_PITCH_CLASS
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_MIDI_NUMBER
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_OCTAVE
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.MIN_PITCH_CLASS
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.isValidMidiNumber
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.midiNumberToOctave
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.midiNumberToPitchClass
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.pitchClassAndOctaveToMidiNumber
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MAX_MIDI_NUMBER
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MAX_OCTAVE
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MAX_PITCH_CLASS
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MIN_MIDI_NUMBER
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MIN_OCTAVE
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.MIN_PITCH_CLASS
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.isValidMidiNumber
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.midiNumberToOctave
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.midiNumberToPitchClass
+import com.cannonballapps.musictheory.musicutilities.MusicTheoryUtils.pitchClassAndOctaveToMidiNumber
 
 @Suppress("DataClassPrivateConstructor")
 data class Note private constructor(
