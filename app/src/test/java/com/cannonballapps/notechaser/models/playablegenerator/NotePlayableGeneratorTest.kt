@@ -4,6 +4,7 @@ import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
+import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGeneratorFactory
 import junit.framework.TestCase
 import org.junit.Test
 

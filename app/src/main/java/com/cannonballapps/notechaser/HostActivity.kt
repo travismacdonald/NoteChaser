@@ -1,9 +1,8 @@
-package com.cannonballapps.notechaser.ui
+package com.cannonballapps.notechaser
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.databinding.ActivityHostBinding
 import dagger.hilt.android.AndroidEntryPoint
 

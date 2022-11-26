@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models
+package com.cannonballapps.notechaser.common
 
 import jp.kshoji.javax.sound.midi.ShortMessage
 import jp.kshoji.javax.sound.midi.Synthesizer

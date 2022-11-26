@@ -1,10 +1,8 @@
-package com.cannonballapps.notechaser.models.playablegenerator
+package com.cannonballapps.notechaser.musicutilities.playablegenerator
 
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.PitchClass
-import com.cannonballapps.notechaser.playablegenerator.Playable
-import com.cannonballapps.notechaser.playablegenerator.PlayableFactory
 import kotlin.random.Random
 
 class NotePlayableGenerator(

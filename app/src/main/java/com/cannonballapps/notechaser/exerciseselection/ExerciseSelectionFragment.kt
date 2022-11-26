@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.ui
+package com.cannonballapps.notechaser.exerciseselection
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,7 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
-import com.cannonballapps.notechaser.data.ExerciseType
+import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSelectionBinding
 import timber.log.Timber
 

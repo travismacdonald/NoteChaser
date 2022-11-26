@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.models.noteprocessor
+package com.cannonballapps.notechaser.common.noteprocessor
 
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import java.util.LinkedList

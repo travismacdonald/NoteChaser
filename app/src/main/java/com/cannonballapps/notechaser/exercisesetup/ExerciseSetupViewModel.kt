@@ -1,11 +1,12 @@
-package com.cannonballapps.notechaser.viewmodels
+package com.cannonballapps.notechaser.exercisesetup
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.cannonballapps.notechaser.data.ExerciseType
-import com.cannonballapps.notechaser.data.SessionType
+import com.cannonballapps.notechaser.common.ExerciseType
+import com.cannonballapps.notechaser.common.SessionType
+import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
@@ -13,7 +14,6 @@ import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 import com.cannonballapps.notechaser.musicutilities.getModeAtIx
-import com.cannonballapps.notechaser.prefsstore.PrefsStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

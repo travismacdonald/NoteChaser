@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.playablegenerator
+package com.cannonballapps.notechaser.musicutilities.playablegenerator
 
 import com.cannonballapps.notechaser.musicutilities.Note
 

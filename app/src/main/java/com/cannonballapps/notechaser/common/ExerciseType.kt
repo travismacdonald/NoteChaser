@@ -1,4 +1,4 @@
-package com.cannonballapps.notechaser.data
+package com.cannonballapps.notechaser.common
 
 enum class ExerciseType {
     SINGLE_NOTE,
