@@ -43,6 +43,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(path: ':exerciseselection:api')
+    implementation project(path: ':exerciseselection:impl')
     implementation project(path: ':musictheory')
     implementation project(path: ':shared')
 
