@@ -23,9 +23,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.item_settings_range_bar.rangeSlider
-import kotlinx.android.synthetic.main.item_settings_slider.slider
-import kotlinx.android.synthetic.main.item_settings_switch.switchWidget
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
@@ -40,7 +37,7 @@ class ExerciseSetupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
@@ -50,7 +47,7 @@ class ExerciseSetupFragment : Fragment() {
             inflater,
             R.layout.fragment_exercise_setup,
             container,
-            false
+            false,
         )
         binding.lifecycleOwner = this
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
@@ -96,7 +93,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun updateUi(uiState: ExerciseSetupUiState) {
-        Timber.tag("fubar").d("uiState: $uiState")
         if (uiState is ExerciseSetupUiState.Success) {
             /*
              * Note pool type
@@ -157,7 +153,6 @@ class ExerciseSetupFragment : Fragment() {
             /*
              * Match octave
              */
-            // TODO see if this check is necessary
             if (uiState.exerciseSettings.matchOctave != binding.matchOctaveSwitch.switchWidget.isChecked) {
                 binding.matchOctaveSwitch.switchWidget.isChecked = uiState.exerciseSettings.matchOctave
             }
@@ -247,7 +242,6 @@ class ExerciseSetupFragment : Fragment() {
             image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
 
             layout.setOnClickListener {
-
                 (viewModel.exerciseSettingsFlow.value as? ExerciseSetupUiState.Success)?.exerciseSettings?.notePoolType?.let { notePoolType ->
                     showMaterialDialogSingleList(
                         title = getString(R.string.notePoolType_title),
@@ -256,7 +250,7 @@ class ExerciseSetupFragment : Fragment() {
                         onPositiveButtonClick = { selectedIx ->
                             val selectedNotePool = NotePoolType.values()[selectedIx]
                             viewModel.saveNotePoolType(selectedNotePool)
-                        }
+                        },
                     )
                 }
             }
@@ -274,7 +268,7 @@ class ExerciseSetupFragment : Fragment() {
                     initSelectedIxs = booleanArrayOf(),
                     onPositiveButtonClick = { degrees ->
                         viewModel.saveChromaticDegrees(degrees)
-                    }
+                    },
                 )
             }
         }
@@ -291,7 +285,7 @@ class ExerciseSetupFragment : Fragment() {
                     initSelectedIxs = booleanArrayOf(),
                     onPositiveButtonClick = { degrees ->
                         viewModel.saveDiatonicDegrees(degrees)
-                    }
+                    },
                 )
             }
         }
@@ -309,7 +303,7 @@ class ExerciseSetupFragment : Fragment() {
                     onPositiveButtonClick = { selectedIx ->
                         val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
                         viewModel.saveQuestionKey(selectedPitchClass)
-                    }
+                    },
                 )
             }
         }
@@ -339,9 +333,9 @@ class ExerciseSetupFragment : Fragment() {
                             onPositiveButtonClick = { selectedModeIx ->
                                 viewModel.saveParentScale(selectedParentScale)
                                 viewModel.saveModeIx(selectedModeIx)
-                            }
+                            },
                         )
-                    }
+                    },
                 )
             }
         }
@@ -359,19 +353,21 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = range
             }
 
-            rangeSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: RangeSlider) {}
+            rangeSlider.addOnSliderTouchListener(
+                object : RangeSlider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: RangeSlider) {}
 
-                override fun onStopTrackingTouch(slider: RangeSlider) {
-                    if (slider.focusedThumbIndex == 0) {
-                        val lower = Note(slider.values[0].toInt())
-                        viewModel.savePlayableLowerBound(lower)
-                    } else {
-                        val upper = Note(slider.values[1].toInt())
-                        viewModel.savePlayableUpperBound(upper)
+                    override fun onStopTrackingTouch(slider: RangeSlider) {
+                        if (slider.focusedThumbIndex == 0) {
+                            val lower = Note(slider.values[0].toInt())
+                            viewModel.savePlayableLowerBound(lower)
+                        } else {
+                            val upper = Note(slider.values[1].toInt())
+                            viewModel.savePlayableUpperBound(upper)
+                        }
                     }
-                }
-            })
+                },
+            )
         }
     }
 
@@ -393,7 +389,7 @@ class ExerciseSetupFragment : Fragment() {
                     onPositiveButtonClick = { selectedIx ->
                         val selectedSessionType = SessionType.values()[selectedIx]
                         viewModel.saveSessionType(selectedSessionType)
-                    }
+                    },
                 )
             }
         }
@@ -408,13 +404,15 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = value.toInt().toString()
             }
 
-            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {}
+            slider.addOnSliderTouchListener(
+                object : Slider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: Slider) {}
 
-                override fun onStopTrackingTouch(slider: Slider) {
-                    viewModel.saveNumQuestions(slider.value.toInt())
-                }
-            })
+                    override fun onStopTrackingTouch(slider: Slider) {
+                        viewModel.saveNumQuestions(slider.value.toInt())
+                    }
+                },
+            )
         }
     }
 
@@ -426,13 +424,15 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = getString(R.string.sessionTimeLimit_summary, value.toInt())
             }
 
-            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {}
+            slider.addOnSliderTouchListener(
+                object : Slider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: Slider) {}
 
-                override fun onStopTrackingTouch(slider: Slider) {
-                    viewModel.saveSessionTimeLimit(slider.value.toInt())
-                }
-            })
+                    override fun onStopTrackingTouch(slider: Slider) {
+                        viewModel.saveSessionTimeLimit(slider.value.toInt())
+                    }
+                },
+            )
         }
     }
 
@@ -482,7 +482,7 @@ class ExerciseSetupFragment : Fragment() {
         title: String,
         entries: Array<String>,
         initSelectedIx: Int,
-        onPositiveButtonClick: ((selectedIx: Int) -> Unit)
+        onPositiveButtonClick: ((selectedIx: Int) -> Unit),
     ) {
         var curSelectedIx = initSelectedIx
         MaterialAlertDialogBuilder(requireContext())
@@ -503,7 +503,7 @@ class ExerciseSetupFragment : Fragment() {
         title: String,
         entries: Array<String>,
         initSelectedIxs: BooleanArray,
-        onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit)
+        onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit),
     ) {
         val curSelectedIxs = initSelectedIxs.clone()
         MaterialAlertDialogBuilder(requireContext())

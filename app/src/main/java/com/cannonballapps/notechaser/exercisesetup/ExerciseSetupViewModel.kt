@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseSetupViewModel @Inject constructor(
-    private val prefsStore: PrefsStore
+    private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
     lateinit var exerciseType: ExerciseType
@@ -143,6 +143,7 @@ class ExerciseSetupViewModel @Inject constructor(
     }
 
     private fun hasSufficientRangeForPlayableGeneration(): Boolean {
+        // TODO
 //        lateinit var intervals: IntArray
 //        if (notePoolType.value == NotePoolType.DIATONIC) {
 //            intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
