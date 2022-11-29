@@ -315,13 +315,13 @@ class SessionViewModel @Inject constructor(
     // TODO: could clean a bit
     private fun makeNotePlayableGenerator() {
         viewModelScope.launch {
-            val notePoolType = prefsStore.notePoolType().first()
-            val key = prefsStore.questionKey().first()
-            val lowerBound = prefsStore.playableLowerBound().first()
-            val upperBound = prefsStore.playableUpperBound().first()
+            val notePoolType = prefsStore.exerciseSettingsFlow().first().notePoolType
+            val key = prefsStore.exerciseSettingsFlow().first().questionKey
+            val lowerBound = prefsStore.exerciseSettingsFlow().first().playableLowerBound
+            val upperBound = prefsStore.exerciseSettingsFlow().first().playableUpperBound
 
             if (notePoolType == NotePoolType.CHROMATIC) {
-                val degrees = prefsStore.chromaticDegrees().first()
+                val degrees = prefsStore.exerciseSettingsFlow().first().chromaticDegrees
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
                     degrees,
                     key,
@@ -329,9 +329,9 @@ class SessionViewModel @Inject constructor(
                     upperBound
                 )
             } else if (notePoolType == NotePoolType.DIATONIC) {
-                val degrees = prefsStore.diatonicDegrees().first()
-                val parentScale = prefsStore.parentScale().first()
-                val modeIx = prefsStore.modeIx().first()
+                val degrees = prefsStore.exerciseSettingsFlow().first().diatonicDegrees
+                val parentScale = prefsStore.exerciseSettingsFlow().first().parentScale
+                val modeIx = prefsStore.exerciseSettingsFlow().first().modeIx
                 val scale = parentScale.getModeAtIx(modeIx)
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
                     degrees,
@@ -507,22 +507,22 @@ class SessionViewModel @Inject constructor(
     }
 
     private suspend fun makeStartingPitch(): Note {
-        val key = prefsStore.questionKey().first()
+        val key = prefsStore.exerciseSettingsFlow().first().questionKey
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
         return Note(keyTransposed)
     }
 
     private suspend fun fetchPrefStoreData() {
-        answersShouldMatchOctave = prefsStore.matchOctave().first()
+        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().matchOctave
 
-        sessionType = prefsStore.sessionType().first()
+        sessionType = prefsStore.exerciseSettingsFlow().first().sessionType
         if (sessionType == SessionType.TIME_LIMIT) {
-            sessionTimeLenInMinutes = prefsStore.sessionTimeLimit().first()
+            sessionTimeLenInMinutes = prefsStore.exerciseSettingsFlow().first().sessionTimeLimit
         } else if (sessionType == SessionType.QUESTION_LIMIT) {
-            numQuestions = prefsStore.numQuestions().first()
+            numQuestions = prefsStore.exerciseSettingsFlow().first().numQuestions
         }
 
-        shouldPlayReferencePitchOnStart = prefsStore.playStartingPitch().first()
+        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().playStartingPitch
         if (shouldPlayReferencePitchOnStart) {
             referencePitch = makeStartingPitch()
         }

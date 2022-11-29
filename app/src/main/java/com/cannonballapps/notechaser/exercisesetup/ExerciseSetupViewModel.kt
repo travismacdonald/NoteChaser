@@ -1,102 +1,52 @@
 package com.cannonballapps.notechaser.exercisesetup
 
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.exercisesetup.ExerciseSetupUiState.Loading
+import com.cannonballapps.notechaser.exercisesetup.ExerciseSetupUiState.Success
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
-import com.cannonballapps.notechaser.musicutilities.Scale
-import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseSetupViewModel @Inject constructor(
-    private val prefsStore: PrefsStore
+    private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
     lateinit var exerciseType: ExerciseType
 
-    val chromaticDegrees = prefsStore.chromaticDegrees().asLiveData()
-    val diatonicDegrees = prefsStore.diatonicDegrees().asLiveData()
-    val matchOctave = prefsStore.matchOctave().asLiveData()
-    val modeIx = prefsStore.modeIx().asLiveData()
-    val notePoolType = prefsStore.notePoolType().asLiveData()
-    val numQuestions = prefsStore.numQuestions().asLiveData()
-    val parentScale = prefsStore.parentScale().asLiveData()
-    val playStartingPitch = prefsStore.playStartingPitch().asLiveData()
-    val playableLowerBound = prefsStore.playableLowerBound().asLiveData()
-    val playableUpperBound = prefsStore.playableUpperBound().asLiveData()
-    val questionKey = prefsStore.questionKey().asLiveData()
-    val sessionTimeLimit = prefsStore.sessionTimeLimit().asLiveData()
-    val sessionType = prefsStore.sessionType().asLiveData()
+    val exerciseSettingsFlow: StateFlow<ExerciseSetupUiState> = prefsStore.exerciseSettingsFlow().map {
+        Success(it)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+        initialValue = Loading,
+    )
 
-    val scale = MediatorLiveData<Scale>().apply {
-        addSource(parentScale) { parentScale ->
-            modeIx.value?.let { modeIx ->
-                this.value = parentScale.getModeAtIx(modeIx)
-            }
-        }
-        addSource(modeIx) { modeIx ->
-            parentScale.value?.let { parentScale ->
-                this.value = parentScale.getModeAtIx(modeIx)
-            }
-        }
-    }
-
-    val playableBounds = MediatorLiveData<Pair<Note, Note>>().apply {
-        addSource(playableLowerBound) { lowerBound ->
-            playableUpperBound.value?.let { upperBound ->
-                updatePlayableBounds(lowerBound, upperBound)
-            }
-        }
-        addSource(playableUpperBound) { upperBound ->
-            playableLowerBound.value?.let { lowerBound ->
-                updatePlayableBounds(lowerBound, upperBound)
-            }
-        }
-    }
-
-    // TODO: clean up; separate hasNotePoolDegrees into func for diatonic and chromatic
-    val isValidConfiguration = MediatorLiveData<Boolean>().apply {
-        addSource(notePoolType) {
-            this.value = hasNotePoolDegreesSelected()
-        }
-        addSource(chromaticDegrees) {
-            this.value = hasNotePoolDegreesSelected()
-        }
-        addSource(diatonicDegrees) {
-            this.value = hasNotePoolDegreesSelected()
-        }
-
-        addSource(playableBounds) { bounds ->
-            this.value = hasSufficientRangeForPlayableGeneration()
-        }
-    }
+    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow.map {
+        hasNotePoolDegreesSelected() && hasSufficientRangeForPlayableGeneration()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+        initialValue = false,
+    )
 
     fun prefetchPrefsStore() {
         viewModelScope.launch {
-            prefsStore.chromaticDegrees().first()
-            prefsStore.diatonicDegrees().first()
-            prefsStore.matchOctave().first()
-            prefsStore.modeIx().first()
-            prefsStore.notePoolType().first()
-            prefsStore.parentScale().first()
-            prefsStore.playStartingPitch().first()
-            prefsStore.playableLowerBound().first()
-            prefsStore.playableUpperBound().first()
-            prefsStore.questionKey().first()
-            prefsStore.sessionTimeLimit().first()
-            prefsStore.sessionType().first()
+            prefsStore.exerciseSettingsFlow().first()
         }
     }
 
@@ -178,48 +128,48 @@ class ExerciseSetupViewModel @Inject constructor(
         }
     }
 
-    private fun updatePlayableBounds(lower: Note, upper: Note) {
-        if (lower != playableBounds.value?.first || upper != playableBounds.value?.second) {
-            playableBounds.value = Pair(lower, upper)
-        }
-    }
-
     private fun hasNotePoolDegreesSelected(): Boolean {
-        return when (notePoolType.value) {
-            NotePoolType.DIATONIC -> {
-                diatonicDegrees.value?.contains(true) ?: false
+        val uiState = exerciseSettingsFlow.value
+        return if (uiState is Success) {
+            when (uiState.exerciseSettings.notePoolType) {
+                NotePoolType.DIATONIC -> {
+                    uiState.exerciseSettings.diatonicDegrees.contains(true)
+                }
+                NotePoolType.CHROMATIC -> {
+                    uiState.exerciseSettings.chromaticDegrees.contains(true)
+                }
             }
-            NotePoolType.CHROMATIC -> {
-                chromaticDegrees.value?.contains(true) ?: false
-            }
-            else -> throw IllegalStateException(
-                "Illegal NotePoolType given: ${notePoolType.value}"
-            )
-        }
+        } else false
     }
 
     private fun hasSufficientRangeForPlayableGeneration(): Boolean {
-        lateinit var intervals: IntArray
-        if (notePoolType.value == NotePoolType.DIATONIC) {
-            intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
-                diatonicDegrees.value!!,
-                scale.value!!.intervals,
-                questionKey.value!!.value
-            )
-        } else if (notePoolType.value == NotePoolType.CHROMATIC) {
-            intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(
-                chromaticDegrees.value!!,
-                questionKey.value!!.value
-            )
-        }
-        for (interval in intervals) {
-            val lower = playableLowerBound.value!!
-            val upper = playableUpperBound.value!!
-            val pitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[interval]
-            if (!MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(pitchClass, lower, upper)) {
-                return false
-            }
-        }
-        return true
+        // TODO
+//        lateinit var intervals: IntArray
+//        if (notePoolType.value == NotePoolType.DIATONIC) {
+//            intervals = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
+//                diatonicDegrees.value!!,
+//                scale.value!!.intervals,
+//                questionKey.value!!.value
+//            )
+//        } else if (notePoolType.value == NotePoolType.CHROMATIC) {
+//            intervals = MusicTheoryUtils.transformChromaticDegreesToIntervals(
+//                chromaticDegrees.value!!,
+//                questionKey.value!!.value
+//            )
+//        }
+//        for (interval in intervals) {
+//            val lower = playableLowerBound.value!!
+//            val upper = playableUpperBound.value!!
+//            val pitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[interval]
+//            if (!MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(pitchClass, lower, upper)) {
+//                return false
+//            }
+//        }
+        return false
     }
+}
+
+sealed interface ExerciseSetupUiState {
+    object Loading : ExerciseSetupUiState
+    data class Success(val exerciseSettings: ExerciseSettings) : ExerciseSetupUiState
 }

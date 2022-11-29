@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.common.SessionType
@@ -17,10 +18,13 @@ import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -33,7 +37,7 @@ class ExerciseSetupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
@@ -43,7 +47,7 @@ class ExerciseSetupFragment : Fragment() {
             inflater,
             R.layout.fragment_exercise_setup,
             container,
-            false
+            false,
         )
         binding.lifecycleOwner = this
         args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
@@ -74,6 +78,156 @@ class ExerciseSetupFragment : Fragment() {
         bindMatchOctaveSwitch()
         bindPlayStartingPitchSwitch()
         bindNavigationButtons()
+
+        bindUi()
+    }
+
+    private fun bindUi() {
+        viewModel.exerciseSettingsFlow
+            .onEach(::updateUi)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.isValidConfiguration
+            .onEach(::updateNavButtons)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+    private fun updateUi(uiState: ExerciseSetupUiState) {
+        if (uiState is ExerciseSetupUiState.Success) {
+            /*
+             * Note pool type
+             */
+            binding.notePoolTypeSingleList.summary.text = uiState.exerciseSettings.notePoolType.toString()
+
+            /*
+             * Chromatic degrees
+             */
+            binding.chromaticDegreesMultiList.layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.CHROMATIC
+
+            val activeChromaticDegrees = arrayListOf<String>()
+            for (i in uiState.exerciseSettings.chromaticDegrees.indices) {
+                if (uiState.exerciseSettings.chromaticDegrees[i]) {
+                    activeChromaticDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
+                }
+            }
+            binding.chromaticDegreesMultiList.summary.text = when (activeChromaticDegrees.size) {
+                0 -> {
+                    resources.getString(R.string.noneSelected)
+                }
+                uiState.exerciseSettings.chromaticDegrees.size -> {
+                    resources.getString(R.string.allSelected)
+                }
+                else -> {
+                    activeChromaticDegrees.joinToString(separator = ", ")
+                }
+            }
+
+            /**
+             * Diatonic degrees
+             */
+            binding.diatonicDegreesMultiList.layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.DIATONIC
+
+            val activeDiatonicDegrees = arrayListOf<String>()
+            for (i in uiState.exerciseSettings.diatonicDegrees.indices) {
+                if (uiState.exerciseSettings.diatonicDegrees[i]) {
+                    activeDiatonicDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
+                }
+            }
+            binding.diatonicDegreesMultiList.summary.text = when (activeDiatonicDegrees.size) {
+                0 -> {
+                    resources.getString(R.string.noneSelected)
+                }
+                uiState.exerciseSettings.diatonicDegrees.size -> {
+                    resources.getString(R.string.allSelected)
+                }
+                else -> {
+                    activeDiatonicDegrees.joinToString(separator = ", ")
+                }
+            }
+
+            /*
+             * Question key
+             */
+            binding.questionKeySingleList.summary.text = uiState.exerciseSettings.questionKey.toString()
+
+            /*
+             * Match octave
+             */
+            if (uiState.exerciseSettings.matchOctave != binding.matchOctaveSwitch.switchWidget.isChecked) {
+                binding.matchOctaveSwitch.switchWidget.isChecked = uiState.exerciseSettings.matchOctave
+            }
+
+            /*
+             * Scale
+             */
+            val scale = uiState.exerciseSettings.parentScale.getModeAtIx(uiState.exerciseSettings.modeIx)
+            binding.scaleSingleList.apply {
+                summary.text = scale.name
+                layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.DIATONIC
+            }
+
+            /*
+             * Num questions
+             */
+            binding.numQuestionsSlider.apply {
+                if (uiState.exerciseSettings.numQuestions != slider.value.toInt()) {
+                    slider.value = uiState.exerciseSettings.numQuestions.toFloat()
+                    slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
+                    slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
+                    slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
+                }
+
+                layout.isVisible = uiState.exerciseSettings.sessionType == SessionType.QUESTION_LIMIT
+            }
+
+            /*
+             * Time limit
+             */
+            binding.sessionTimeLimitSlider.apply {
+                if (uiState.exerciseSettings.sessionTimeLimit != slider.value.toInt()) {
+                    slider.value = uiState.exerciseSettings.sessionTimeLimit.toFloat()
+                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
+                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
+                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
+                }
+
+                layout.isVisible = uiState.exerciseSettings.sessionType == SessionType.TIME_LIMIT
+            }
+
+            /*
+             * Session type
+             */
+            binding.sessionTypeSingleList.summary.text = uiState.exerciseSettings.sessionType.toString()
+
+            /*
+             * Play starting pitch
+             */
+            if (uiState.exerciseSettings.playStartingPitch != binding.startingPitchSwitch.switchWidget.isChecked) {
+                binding.startingPitchSwitch.switchWidget.isChecked = uiState.exerciseSettings.playStartingPitch
+            }
+
+            /*
+             * Playable bounds
+             */
+
+            val boundsAsFloats = listOf(
+                uiState.exerciseSettings.playableLowerBound.midiNumber,
+                uiState.exerciseSettings.playableUpperBound.midiNumber,
+            ).map { it.toFloat() }
+
+            binding.playableRangeBar.apply {
+                if (rangeSlider.values != boundsAsFloats) {
+                    rangeSlider.values = boundsAsFloats
+                    rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
+                    rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
+                    rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
+                }
+            }
+        }
+    }
+
+    private fun updateNavButtons(isValidConfiguration: Boolean) {
+        binding.navigationButtons.startButton.isEnabled = isValidConfiguration
     }
 
     private fun bindQuestionsHeader() {
@@ -88,19 +242,17 @@ class ExerciseSetupFragment : Fragment() {
             image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
 
             layout.setOnClickListener {
-                showMaterialDialogSingleList(
-                    title = getString(R.string.notePoolType_title),
-                    entries = notePoolTypeNames,
-                    initSelectedIx = viewModel.notePoolType.value!!.ordinal,
-                    onPositiveButtonClick = { selectedIx ->
-                        val selectedNotePool = NotePoolType.values()[selectedIx]
-                        viewModel.saveNotePoolType(selectedNotePool)
-                    }
-                )
-            }
-
-            viewModel.notePoolType.observe(viewLifecycleOwner) { notePoolType ->
-                summary.text = notePoolType.toString()
+                (viewModel.exerciseSettingsFlow.value as? ExerciseSetupUiState.Success)?.exerciseSettings?.notePoolType?.let { notePoolType ->
+                    showMaterialDialogSingleList(
+                        title = getString(R.string.notePoolType_title),
+                        entries = notePoolTypeNames,
+                        initSelectedIx = notePoolType.ordinal,
+                        onPositiveButtonClick = { selectedIx ->
+                            val selectedNotePool = NotePoolType.values()[selectedIx]
+                            viewModel.saveNotePoolType(selectedNotePool)
+                        },
+                    )
+                }
             }
         }
     }
@@ -113,36 +265,11 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogMultiList(
                     title = getString(R.string.chromaticDegrees_title),
                     entries = MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE,
-                    initSelectedIxs = viewModel.chromaticDegrees.value!!,
+                    initSelectedIxs = booleanArrayOf(),
                     onPositiveButtonClick = { degrees ->
                         viewModel.saveChromaticDegrees(degrees)
-                    }
+                    },
                 )
-            }
-
-            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == NotePoolType.CHROMATIC
-            }
-
-            viewModel.chromaticDegrees.observe(viewLifecycleOwner) { degrees ->
-                val activeDegrees = arrayListOf<String>()
-                for (i in degrees.indices) {
-                    if (degrees[i]) {
-                        activeDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
-                    }
-                }
-                binding.chromaticDegreesMultiList.summary.text =
-                    when (activeDegrees.size) {
-                        0 -> {
-                            resources.getString(R.string.noneSelected)
-                        }
-                        degrees.size -> {
-                            resources.getString(R.string.allSelected)
-                        }
-                        else -> {
-                            activeDegrees.joinToString(separator = ", ")
-                        }
-                    }
             }
         }
     }
@@ -155,36 +282,11 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogMultiList(
                     title = getString(R.string.diatonicDegrees_title),
                     entries = MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE,
-                    initSelectedIxs = viewModel.diatonicDegrees.value!!,
+                    initSelectedIxs = booleanArrayOf(),
                     onPositiveButtonClick = { degrees ->
                         viewModel.saveDiatonicDegrees(degrees)
-                    }
+                    },
                 )
-            }
-
-            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == NotePoolType.DIATONIC
-            }
-
-            viewModel.diatonicDegrees.observe(viewLifecycleOwner) { degrees ->
-                val activeDegrees = arrayListOf<String>()
-                for (i in degrees.indices) {
-                    if (degrees[i]) {
-                        activeDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
-                    }
-                }
-                binding.diatonicDegreesMultiList.summary.text =
-                    when (activeDegrees.size) {
-                        0 -> {
-                            getString(R.string.noneSelected)
-                        }
-                        degrees.size -> {
-                            getString(R.string.allSelected)
-                        }
-                        else -> {
-                            activeDegrees.joinToString(separator = ", ")
-                        }
-                    }
             }
         }
     }
@@ -197,16 +299,12 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogSingleList(
                     title = getString(R.string.questionKey_title),
                     entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                    initSelectedIx = viewModel.questionKey.value!!.value,
+                    initSelectedIx = 0,
                     onPositiveButtonClick = { selectedIx ->
                         val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
                         viewModel.saveQuestionKey(selectedPitchClass)
-                    }
+                    },
                 )
-            }
-
-            viewModel.questionKey.observe(viewLifecycleOwner) { key ->
-                summary.text = key.toString()
             }
         }
     }
@@ -222,10 +320,9 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogSingleList(
                     title = getString(R.string.parentScale_title),
                     entries = parentScaleNames,
-                    initSelectedIx = viewModel.parentScale.value!!.ordinal,
+                    initSelectedIx = 0,
 
                     onPositiveButtonClick = { selectedParentScaleIx ->
-
                         val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
 
                         showMaterialDialogSingleList(
@@ -236,18 +333,10 @@ class ExerciseSetupFragment : Fragment() {
                             onPositiveButtonClick = { selectedModeIx ->
                                 viewModel.saveParentScale(selectedParentScale)
                                 viewModel.saveModeIx(selectedModeIx)
-                            }
+                            },
                         )
-                    }
+                    },
                 )
-            }
-
-            viewModel.scale.observe(viewLifecycleOwner) { scale ->
-                summary.text = scale.name
-            }
-
-            viewModel.notePoolType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == NotePoolType.DIATONIC
             }
         }
     }
@@ -264,30 +353,21 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = range
             }
 
-            rangeSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: RangeSlider) {}
+            rangeSlider.addOnSliderTouchListener(
+                object : RangeSlider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: RangeSlider) {}
 
-                override fun onStopTrackingTouch(slider: RangeSlider) {
-                    if (slider.focusedThumbIndex == 0) {
-                        val lower = Note(slider.values[0].toInt())
-                        viewModel.savePlayableLowerBound(lower)
-                    } else {
-                        val upper = Note(slider.values[1].toInt())
-                        viewModel.savePlayableUpperBound(upper)
+                    override fun onStopTrackingTouch(slider: RangeSlider) {
+                        if (slider.focusedThumbIndex == 0) {
+                            val lower = Note(slider.values[0].toInt())
+                            viewModel.savePlayableLowerBound(lower)
+                        } else {
+                            val upper = Note(slider.values[1].toInt())
+                            viewModel.savePlayableUpperBound(upper)
+                        }
                     }
-                }
-            })
-
-            viewModel.playableBounds.observe(viewLifecycleOwner) { bounds ->
-                val boundsAsFloats = bounds.toList().map { it.midiNumber.toFloat() }
-
-                if (rangeSlider.values != boundsAsFloats) {
-                    rangeSlider.values = boundsAsFloats
-                    rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
-                    rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
-                    rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
-                }
-            }
+                },
+            )
         }
     }
 
@@ -305,16 +385,12 @@ class ExerciseSetupFragment : Fragment() {
                 showMaterialDialogSingleList(
                     title = getString(R.string.sessionType_title),
                     entries = sessionTypeNames,
-                    initSelectedIx = viewModel.sessionType.value!!.ordinal,
+                    initSelectedIx = 0,
                     onPositiveButtonClick = { selectedIx ->
                         val selectedSessionType = SessionType.values()[selectedIx]
                         viewModel.saveSessionType(selectedSessionType)
-                    }
+                    },
                 )
-            }
-
-            viewModel.sessionType.observe(viewLifecycleOwner) { sessionType ->
-                summary.text = sessionType.toString()
             }
         }
     }
@@ -328,27 +404,15 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = value.toInt().toString()
             }
 
-            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {}
+            slider.addOnSliderTouchListener(
+                object : Slider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: Slider) {}
 
-                override fun onStopTrackingTouch(slider: Slider) {
-                    viewModel.saveNumQuestions(slider.value.toInt())
-                }
-            })
-
-            viewModel.sessionType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == SessionType.QUESTION_LIMIT
-            }
-
-            // Only fires once: first observation
-            viewModel.numQuestions.observe(viewLifecycleOwner) { numQuestions ->
-                if (numQuestions != slider.value.toInt()) {
-                    slider.value = numQuestions.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
-                }
-            }
+                    override fun onStopTrackingTouch(slider: Slider) {
+                        viewModel.saveNumQuestions(slider.value.toInt())
+                    }
+                },
+            )
         }
     }
 
@@ -360,27 +424,15 @@ class ExerciseSetupFragment : Fragment() {
                 summary.text = getString(R.string.sessionTimeLimit_summary, value.toInt())
             }
 
-            slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {}
+            slider.addOnSliderTouchListener(
+                object : Slider.OnSliderTouchListener {
+                    override fun onStartTrackingTouch(slider: Slider) {}
 
-                override fun onStopTrackingTouch(slider: Slider) {
-                    viewModel.saveSessionTimeLimit(slider.value.toInt())
-                }
-            })
-
-            viewModel.sessionType.observe(viewLifecycleOwner) { type ->
-                layout.isVisible = type == SessionType.TIME_LIMIT
-            }
-
-            // Only fires once: first observation
-            viewModel.sessionTimeLimit.observe(viewLifecycleOwner) { value ->
-                if (value != slider.value.toInt()) {
-                    slider.value = value.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
-                }
-            }
+                    override fun onStopTrackingTouch(slider: Slider) {
+                        viewModel.saveSessionTimeLimit(slider.value.toInt())
+                    }
+                },
+            )
         }
     }
 
@@ -392,11 +444,6 @@ class ExerciseSetupFragment : Fragment() {
         binding.matchOctaveSwitch.apply {
             title.text = getString(R.string.matchOctave_title)
             summary.text = getString(R.string.matchOctave_summary)
-            viewModel.matchOctave.observe(viewLifecycleOwner) { matchOctave ->
-                if (matchOctave != switchWidget.isChecked) {
-                    switchWidget.isChecked = matchOctave
-                }
-            }
             switchWidget.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.saveMatchOctave(isChecked)
             }
@@ -415,10 +462,6 @@ class ExerciseSetupFragment : Fragment() {
             backButton.setOnClickListener { button ->
                 navigateBackToExerciseTypeMenu(button)
             }
-
-            viewModel.isValidConfiguration.observe(viewLifecycleOwner) { isValid ->
-                startButton.isEnabled = isValid
-            }
         }
 
         // TODO: validate settings
@@ -429,11 +472,6 @@ class ExerciseSetupFragment : Fragment() {
         binding.startingPitchSwitch.apply {
             title.text = getString(R.string.playStartingPitch_title)
             summary.text = getString(R.string.playStartingPitch_summary)
-            viewModel.playStartingPitch.observe(viewLifecycleOwner) { playPitch ->
-                if (playPitch != switchWidget.isChecked) {
-                    switchWidget.isChecked = playPitch
-                }
-            }
             switchWidget.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.savePlayStartingPitch(isChecked)
             }
@@ -444,7 +482,7 @@ class ExerciseSetupFragment : Fragment() {
         title: String,
         entries: Array<String>,
         initSelectedIx: Int,
-        onPositiveButtonClick: ((selectedIx: Int) -> Unit)
+        onPositiveButtonClick: ((selectedIx: Int) -> Unit),
     ) {
         var curSelectedIx = initSelectedIx
         MaterialAlertDialogBuilder(requireContext())
@@ -465,7 +503,7 @@ class ExerciseSetupFragment : Fragment() {
         title: String,
         entries: Array<String>,
         initSelectedIxs: BooleanArray,
-        onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit)
+        onPositiveButtonClick: ((selectedIxs: BooleanArray) -> Unit),
     ) {
         val curSelectedIxs = initSelectedIxs.clone()
         MaterialAlertDialogBuilder(requireContext())
@@ -477,7 +515,7 @@ class ExerciseSetupFragment : Fragment() {
                 onPositiveButtonClick(curSelectedIxs)
             }
             .setMultiChoiceItems(entries, curSelectedIxs) { _, ix, isChecked ->
-                curSelectedIxs[ix] = isChecked
+                /* No-op */
             }
             .show()
     }

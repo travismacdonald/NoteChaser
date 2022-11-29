@@ -5,10 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
@@ -16,9 +16,8 @@ import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 import javax.inject.Inject
 
 private const val STORE_NAME = "notechaser_data_store"
@@ -26,7 +25,7 @@ private const val STORE_NAME = "notechaser_data_store"
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
     true, true, true, true, true, true,
     true, true, true, true, true, true
-).joinToString(",")
+)
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
     true,
@@ -36,7 +35,7 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
     true,
     false,
     false
-).joinToString(",")
+)
 
 private const val DEFAULT_NUM_QUESTIONS = 20
 
@@ -57,161 +56,33 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
 
     private val dataStore = context.dataStore
 
-    fun chromaticDegrees() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        val serializedChromaticDegrees: String = prefs[PrefKeys.CHROMATIC_DEGREES]
-            ?: DEFAULT_CHROMATIC_DEGREES
-        deserializeBooleanArray(serializedChromaticDegrees)
-    }
-
-    fun diatonicDegrees() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        val serializedDiatonicDegrees: String = prefs[PrefKeys.DIATONIC_DEGREES]
-            ?: DEFAULT_DIATONIC_DEGREES
-        deserializeBooleanArray(serializedDiatonicDegrees)
-    }
-
-    fun matchOctave() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.MATCH_OCTAVE] ?: false
-    }
-
-    fun modeIx() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.MODE_IX] ?: 0
-    }
-
-    fun notePoolType() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] ?: NotePoolType.DIATONIC.ordinal
-    }.map { ordinal ->
-        NotePoolType.values()[ordinal]
-    }
-
-    fun numQuestions() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS
-    }
-
-    fun parentScale() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.PARENT_SCALE_ORDINAL] ?: 0
-    }.map { ordinal ->
-        ParentScale2.values()[ordinal]
-    }
-
-    fun playStartingPitch() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.PLAY_STARTING_PITCH] ?: true
-    }
-
-    fun playableLowerBound() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM
-    }.map { midiNumber ->
-        Note(midiNumber)
-    }
-
-    fun playableUpperBound() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM
-    }.map { midiNumber ->
-        Note(midiNumber)
-    }
-
-    fun questionKey() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.QUESTION_KEY_VAL] ?: DEFAULT_QUESTION_KEY_VAL
-    }.map { keyVal ->
-        MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[keyVal]
-    }
-
-    fun sessionTimeLimit() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.SESSION_TIME_LIMIT] ?: DEFAULT_SESSION_TIME_LEN
-    }
-
-    fun sessionType() = dataStore.data.catch { exception ->
-        if (exception is IOException) {
-            emit(emptyPreferences())
-        } else {
-            throw exception
-        }
-    }.map { prefs ->
-        prefs[PrefKeys.SESSION_TYPE_ORDINAL] ?: 0
-    }.map { ordinal ->
-        SessionType.values()[ordinal]
+    fun exerciseSettingsFlow(): Flow<ExerciseSettings> = dataStore.data.map { preferences ->
+        ExerciseSettings(
+            chromaticDegrees = preferences[PrefKeys.CHROMATIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_CHROMATIC_DEGREES,
+            diatonicDegrees = preferences[PrefKeys.DIATONIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_DIATONIC_DEGREES,
+            modeIx = preferences[PrefKeys.MODE_IX] ?: 0,
+            notePoolType = NotePoolType.values()[preferences[PrefKeys.NOTE_POOL_TYPE_ORDINAL] ?: NotePoolType.DIATONIC.ordinal],
+            numQuestions = preferences[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS,
+            parentScale = ParentScale2.values()[preferences[PrefKeys.PARENT_SCALE_ORDINAL] ?: 0],
+            matchOctave = preferences[PrefKeys.MATCH_OCTAVE] ?: false,
+            playStartingPitch = preferences[PrefKeys.PLAY_STARTING_PITCH] ?: true,
+            playableLowerBound = Note(preferences[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
+            playableUpperBound = Note(preferences[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
+            questionKey = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[preferences[PrefKeys.QUESTION_KEY_VAL] ?: DEFAULT_QUESTION_KEY_VAL],
+            sessionTimeLimit = preferences[PrefKeys.SESSION_TIME_LIMIT] ?: DEFAULT_SESSION_TIME_LEN,
+            sessionType = SessionType.values()[preferences[PrefKeys.SESSION_TYPE_ORDINAL] ?: 0],
+        )
     }
 
     suspend fun saveChromaticDegrees(degrees: BooleanArray) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.CHROMATIC_DEGREES] = serializeBooleanArray(degrees)
+            prefs[PrefKeys.CHROMATIC_DEGREES] = degrees.serialize()
         }
     }
 
     suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.DIATONIC_DEGREES] = serializeBooleanArray(degrees)
+            prefs[PrefKeys.DIATONIC_DEGREES] = degrees.serialize()
         }
     }
 
@@ -297,13 +168,7 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         val SESSION_TYPE_ORDINAL = intPreferencesKey("session_type_ordinal")
     }
 
-    private fun serializeBooleanArray(array: BooleanArray): String {
-        // [true, false, true] -> "true,false,true"
-        return array.joinToString(separator = ",")
-    }
+    private fun BooleanArray.serialize() = this.joinToString(separator = ",")
 
-    private fun deserializeBooleanArray(string: String): BooleanArray {
-        // "true,false,true" -> [true, false, true]
-        return string.split(",").map { it.toBoolean() }.toBooleanArray()
-    }
+    private fun String.deserializeToBooleanArray() = this.split(",").map { it.toBoolean() }.toBooleanArray()
 }
