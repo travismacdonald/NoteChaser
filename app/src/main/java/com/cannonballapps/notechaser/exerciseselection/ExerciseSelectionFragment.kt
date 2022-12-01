@@ -53,7 +53,8 @@ class ExerciseSelectionFragment : Fragment() {
     }
 
     private fun navToExerciseSelectionFragment(view: View, type: ExerciseType) {
-        val directions = ExerciseSelectionFragmentDirections.actionExerciseSelectionFragmentToExerciseSetupFragment(type)
+//        val directions = ExerciseSelectionFragmentDirections.actionExerciseSelectionFragmentToExerciseSetupFragment(type)
+        val directions = ExerciseSelectionFragmentDirections.actionExerciseSelectionFragmentToExerciseListFragment()
         view.findNavController().navigate(directions)
     }
 

@@ -14,6 +14,21 @@
         <action
             android:id="@+id/action_exerciseSelectionFragment_to_exerciseSetupFragment"
             app:destination="@id/exerciseSetupFragment" />
+
+        <action
+            android:id="@+id/action_exerciseSelectionFragment_to_exerciseListFragment"
+            app:destination="@id/exerciseListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseListFragment"
+        android:name="com.cannonballapps.notechaser.exerciselist.ExerciseListFragment"
+        android:label="fragment_exercise_list"
+        >
+
+        <action
+            android:id="@+id/action_exerciseListFragment_to_exerciseSetupFragment"
+            app:destination="@id/exerciseSetupFragment" />
     </fragment>
 
     <fragment
