@@ -13,7 +13,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
-import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSelectionBinding
 import timber.log.Timber
 
@@ -24,7 +23,7 @@ class ExerciseSelectionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
@@ -32,7 +31,7 @@ class ExerciseSelectionFragment : Fragment() {
             inflater,
             R.layout.fragment_exercise_selection,
             container,
-            false
+            false,
         )
 
         if (!hasMicrophoneRuntimePermission()) {
@@ -42,7 +41,7 @@ class ExerciseSelectionFragment : Fragment() {
         binding.apply {
             singleNoteButton.setOnClickListener { view ->
                 if (hasMicrophoneRuntimePermission()) {
-                    navToExerciseSelectionFragment(view, ExerciseType.SINGLE_NOTE)
+                    navToExerciseListFragment(view)
                 } else {
                     requestMicrophonePermission()
                 }
@@ -52,8 +51,8 @@ class ExerciseSelectionFragment : Fragment() {
         return binding.root
     }
 
-    private fun navToExerciseSelectionFragment(view: View, type: ExerciseType) {
-        val directions = ExerciseSelectionFragmentDirections.actionExerciseSelectionFragmentToExerciseSetupFragment(type)
+    private fun navToExerciseListFragment(view: View) {
+        val directions = ExerciseSelectionFragmentDirections.actionExerciseSelectionFragmentToExerciseListFragment()
         view.findNavController().navigate(directions)
     }
 
@@ -74,7 +73,7 @@ class ExerciseSelectionFragment : Fragment() {
                     ActivityCompat.requestPermissions(
                         requireActivity(),
                         arrayOf(Manifest.permission.RECORD_AUDIO),
-                        micPermissionCode
+                        micPermissionCode,
                     )
                 }
                 .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
@@ -85,7 +84,7 @@ class ExerciseSelectionFragment : Fragment() {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.RECORD_AUDIO),
-                micPermissionCode
+                micPermissionCode,
             )
         }
     }
