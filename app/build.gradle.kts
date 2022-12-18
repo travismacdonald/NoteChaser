@@ -48,13 +48,15 @@ dependencies {
     kapt(libs.hilt.ext.compiler)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-//    implementation(files("libs/TarsosDSP-Android-2.0.jar"))
-
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.dataStore.preferences)
     implementation(libs.androidx.legacy.support)
     implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.preferences)
     implementation(libs.hilt.android)
     implementation(libs.hilt.ext.lifecycle.viewmodel)
     implementation(libs.kotlin.stdlib)
@@ -64,7 +66,9 @@ dependencies {
     implementation(libs.mididriver)
     implementation(libs.timber)
 
+    testImplementation(libs.androidx.arch.core)
     testImplementation(libs.junit4)
+    testImplementation(libs.kotlin.junit)
 
 
 
@@ -72,23 +76,10 @@ dependencies {
 
 
     /**
-     * Refactor below
+     * TODO Refactor below
      */
 
-//    // MidiDriver
-//    implementation("com.github.rodydavis:MidiDriver-Android-SF2:v1.1")
-//
-    // Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-
-    // Prefs DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.0-alpha01")
-    implementation("androidx.preference:preference-ktx:1.2.0")
-
     // Testing
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.4.20")
     androidTestImplementation("androidx.test:runner:1.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
 

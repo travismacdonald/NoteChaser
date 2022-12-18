@@ -1,9 +1,13 @@
 [versions]
 androidxAppCompat = "1.5.1"
+androidxArchCore = "2.1.0"
 androidxConstraintLayout = "2.1.4"
 androidxCore = "1.9.0"
+androidxDataStore = "1.1.0-alpha01"
 androidxLegacySupport = "1.0.0"
 androidxLivedata = "2.5.1"
+androidxNavigation = "2.5.3"
+androidxPreferences = "1.2.0"
 hilt = "2.44.2"
 hiltExt = "1.0.0"
 hiltExtLifecycleViewModel = "1.0.0-alpha03"
@@ -12,24 +16,28 @@ kotlin = "1.7.20"
 kotlinxCoroutines = "1.6.4"
 materialDesign = "1.8.0-alpha03"
 midiDriver = "v1.1"
-tarsosDsp = "v2.3"
 timber = "5.0.1"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-arch-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidxArchCore" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 androidx-legacy-support = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "androidxLegacySupport" }
 androidx-lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLivedata" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigation" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidxNavigation" }
+androidx-preferences = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxPreferences" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-ext-lifecycle-viewmodel = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel", version.ref = "hiltExtLifecycleViewModel" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 materialdesign = { group = "com.google.android.material", name = "material", version.ref = "materialDesign" }
 mididriver = { group = "com.github.rodydavis", name = "MidiDriver-Android-SF2", version.ref = "midiDriver" }
-tarsosdsp = { group = "com.github.jorensix", name = "TarsosDSP", version.ref = "tarsosDsp" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

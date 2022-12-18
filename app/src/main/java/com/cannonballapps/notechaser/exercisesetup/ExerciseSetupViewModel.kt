@@ -165,7 +165,7 @@ class ExerciseSetupViewModel @Inject constructor(
 //                return false
 //            }
 //        }
-        return false
+        return true
     }
 }
 
