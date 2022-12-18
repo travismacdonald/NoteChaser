@@ -11,6 +11,8 @@ junit4 = "4.13.2"
 kotlin = "1.7.20"
 kotlinxCoroutines = "1.6.4"
 materialDesign = "1.8.0-alpha03"
+midiDriver = "v1.1"
+tarsosDsp = "v2.3"
 timber = "5.0.1"
 
 [libraries]
@@ -28,4 +30,6 @@ kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", v
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 materialdesign = { group = "com.google.android.material", name = "material", version.ref = "materialDesign" }
+mididriver = { group = "com.github.rodydavis", name = "MidiDriver-Android-SF2", version.ref = "midiDriver" }
+tarsosdsp = { group = "com.github.jorensix", name = "TarsosDSP", version.ref = "tarsosDsp" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

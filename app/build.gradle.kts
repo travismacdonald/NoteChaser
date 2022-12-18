@@ -48,7 +48,7 @@ dependencies {
     kapt(libs.hilt.ext.compiler)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(files("libs/TarsosDSP-Android-2.0.jar"))
+//    implementation(files("libs/TarsosDSP-Android-2.0.jar"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.materialdesign)
+    implementation(libs.mididriver)
     implementation(libs.timber)
 
     testImplementation(libs.junit4)
@@ -74,12 +75,9 @@ dependencies {
      * Refactor below
      */
 
-    // Material Design
-//    implementation("com.google.android.material:material:1.8.0-alpha03")
-
-    // MidiDriver
-    implementation("com.github.rodydavis:MidiDriver-Android-SF2:v1.1")
-
+//    // MidiDriver
+//    implementation("com.github.rodydavis:MidiDriver-Android-SF2:v1.1")
+//
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
