@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.androidx.arch.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     testImplementation(libs.junit4)
     testImplementation(libs.kotlin.junit)
 
@@ -78,19 +80,6 @@ dependencies {
     /**
      * TODO Refactor below
      */
-
-    // Testing
-    androidTestImplementation("androidx.test:runner:1.5.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
-
-
-
-
-
-
-
-
-
 
     // Compose
     val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
