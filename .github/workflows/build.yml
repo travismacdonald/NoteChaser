@@ -1,2 +1,6 @@
-- name: Build Android App
-  uses: sparkfabrik/android-build-action@v1.2.0
+name: Build Android App
+uses: sparkfabrik/android-build-action@v1.2.0
+
+on:
+  pull_request:
+    branches: [master]
