@@ -22,7 +22,7 @@ kotlin = "1.7.20"
 kotlinxCoroutines = "1.6.4"
 materialDesignComposeThemeAdapter = "1.2.0"
 materialDesignMaterial = "1.8.0-alpha03"
-midiDriver = "v1.1"
+midiDriver = "1.3"
 timber = "5.0.1"
 
 [libraries]
