@@ -1,0 +1,65 @@
+[versions]
+androidxActivity = "1.6.1"
+androidxAppCompat = "1.5.1"
+androidxArchCore = "2.1.0"
+androidxComposeBom = "2022.11.00"
+androidxComposeCompiler = "1.3.2"
+androidxConstraintLayout = "2.1.4"
+androidxCore = "1.9.0"
+androidxDataStore = "1.1.0-alpha01"
+androidxEspresso = "3.5.0"
+androidxLegacySupport = "1.0.0"
+androidxLifecycle = "2.5.1"
+androidxLivedata = "2.5.1"
+androidxNavigation = "2.5.3"
+androidxPreferences = "1.2.0"
+androidxTestRunner = "1.5.1"
+hilt = "2.44.2"
+hiltExt = "1.0.0"
+hiltExtLifecycleViewModel = "1.0.0-alpha03"
+junit4 = "4.13.2"
+kotlin = "1.7.20"
+kotlinxCoroutines = "1.6.4"
+materialDesignComposeThemeAdapter = "1.2.0"
+materialDesignMaterial = "1.8.0-alpha03"
+midiDriver = "v1.1"
+timber = "5.0.1"
+
+[libraries]
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-arch-core = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidxArchCore" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
+androidx-legacy-support = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "androidxLegacySupport" }
+androidx-lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLivedata" }
+androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigation" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidxNavigation" }
+androidx-preferences = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxPreferences" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
+hilt-ext-lifecycle-viewmodel = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel", version.ref = "hiltExtLifecycleViewModel" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+materialdesign-compose-themeadapter = { group = "com.google.android.material", name = "compose-theme-adapter", version.ref = "materialDesignComposeThemeAdapter" }
+materialdesign-material = { group = "com.google.android.material", name = "material", version.ref = "materialDesignMaterial" }
+midiDriver = { group = "com.github.rodydavis", name = "MidiDriver-Android-SF2", version.ref = "midiDriver" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
