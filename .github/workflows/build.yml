@@ -33,6 +33,19 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
 
-      # TODO add lint job
+      - name: Upload build outputs (APKs)
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-outputs
+          path: app/build/outputs
+
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-reports
+          path: app/build/reports
+
+      # TODO add ktlint job
 
       # TODO add instrument tests (when applicable)
