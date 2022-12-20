@@ -20,7 +20,7 @@ class NoteTest : TestCase() {
     @Test
     fun `test toString for cSharp4`() {
         val note = Note(PitchClass.C_SHARP, 4)
-        assertEquals("C♯4", note.toString())
+        assertEquals("C♯5", note.toString())
     }
 
     @Test
