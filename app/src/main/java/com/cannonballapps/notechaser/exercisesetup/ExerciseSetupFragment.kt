@@ -346,7 +346,7 @@ class ExerciseSetupFragment : Fragment() {
         binding.playableRangeBar.apply {
             title.text = getString(R.string.questionRange_title)
 
-            rangeSlider.addOnChangeListener { slider, value, _ ->
+            rangeSlider.addOnChangeListener { slider, _, _ ->
                 val range = slider.values.joinToString(separator = " - ") { ix ->
                     MusicTheoryUtils.midiNumberToNoteName(ix.toInt())
                 }
@@ -514,7 +514,7 @@ class ExerciseSetupFragment : Fragment() {
             .setPositiveButton(getString(R.string.confirm)) { _, _ ->
                 onPositiveButtonClick(curSelectedIxs)
             }
-            .setMultiChoiceItems(entries, curSelectedIxs) { _, ix, isChecked ->
+            .setMultiChoiceItems(entries, curSelectedIxs) { _, _, _ ->
                 /* No-op */
             }
             .show()

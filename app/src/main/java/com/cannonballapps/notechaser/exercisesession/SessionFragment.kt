@@ -22,7 +22,6 @@ import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_session.view.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,7 +41,7 @@ class SessionFragment : Fragment() {
     ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             viewModel.pauseSession()
             showEndSessionDialog()
         }
@@ -79,7 +78,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun setupSkipQuestionButton() {
-        binding.playableActionButtonsContainer.skipQuestion_button.apply {
+        binding.skipQuestionButton.apply {
             viewModel.sessionState.observe(viewLifecycleOwner) { state ->
                 isEnabled = questionButtonsShouldBeEnabled(state)
             }
@@ -90,7 +89,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun setupReplayQuestionButton() {
-        binding.playableActionButtonsContainer.replayQuestion_button.apply {
+        binding.replayQuestionButton.apply {
             viewModel.sessionState.observe(viewLifecycleOwner) { state ->
                 isEnabled = questionButtonsShouldBeEnabled(state)
             }
