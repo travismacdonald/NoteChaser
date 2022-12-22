@@ -45,6 +45,7 @@ android {
 dependencies {
     kapt(libs.hilt.compiler)
     kapt(libs.hilt.ext.compiler)
+    kapt(libs.room.compiler)
 
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -76,6 +77,8 @@ dependencies {
     implementation(libs.materialdesign.compose.themeadapter)
     implementation(libs.materialdesign.material)
     implementation(libs.midiDriver)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
     implementation(libs.timber)
 
     debugImplementation(libs.androidx.compose.ui.testManifest)
