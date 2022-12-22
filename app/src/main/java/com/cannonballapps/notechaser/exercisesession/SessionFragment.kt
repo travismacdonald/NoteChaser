@@ -37,7 +37,7 @@ class SessionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
 
@@ -50,7 +50,7 @@ class SessionFragment : Fragment() {
             inflater,
             R.layout.fragment_session,
             container,
-            false
+            false,
         )
         binding.lifecycleOwner = this
 
@@ -106,7 +106,7 @@ class SessionFragment : Fragment() {
                     getString(
                         R.string.correctAnswerCounterWithLimit,
                         num,
-                        viewModel.numQuestions
+                        viewModel.numQuestions,
                     )
                 }
                 SessionType.TIME_LIMIT -> {
@@ -161,7 +161,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             text = getString(R.string.answerCorrect)
         }
@@ -171,7 +171,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_huge)
+                resources.getDimension(R.dimen.sessionText_huge),
             )
 
             viewModel.secondsUntilSessionStart.observe(viewLifecycleOwner) { seconds ->
@@ -184,11 +184,11 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             text = getString(R.string.sessionComplete)
         }
@@ -198,7 +198,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_large)
+                resources.getDimension(R.dimen.sessionText_large),
             )
 
             viewModel.curPitchDetectedAsMidiNumber.observe(viewLifecycleOwner) { midiNum ->
@@ -213,7 +213,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             text = getString(R.string.playingQuestion)
         }
@@ -223,7 +223,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             text = getString(R.string.questionSkipped)
         }
@@ -233,7 +233,7 @@ class SessionFragment : Fragment() {
         binding.sessionStatusMessageTv.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimension(R.dimen.sessionText_medium)
+                resources.getDimension(R.dimen.sessionText_medium),
             )
             val pitchClass = viewModel.referencePitch!!.pitchClass
             text = getString(R.string.referencePitch, pitchClass)
@@ -266,7 +266,7 @@ class SessionFragment : Fragment() {
     private fun injectPlayablePlayerIntoViewModel() {
         viewModel.viewModelScope.launch {
             val soundBank = SF2Soundbank(
-                requireActivity().application.assets.open(getString(R.string.soundfont_filename))
+                requireActivity().application.assets.open(getString(R.string.soundfont_filename)),
             )
             val synth = SoftSynthesizer()
             synth.open()

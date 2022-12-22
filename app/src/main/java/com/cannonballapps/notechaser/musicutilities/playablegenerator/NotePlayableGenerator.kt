@@ -8,7 +8,7 @@ import kotlin.random.Random
 class NotePlayableGenerator(
     private val pitchClassPool: List<PitchClass>,
     private val lowerBound: Note,
-    private val upperBound: Note
+    private val upperBound: Note,
 ) : PlayableGenerator {
 
     override fun generatePlayable(): Playable {
@@ -30,12 +30,12 @@ class NotePlayableGenerator(
         val lowestOccurrence = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             pitchClass,
             lowerBound,
-            upperBound
+            upperBound,
         )
         val numOccurrences = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             pitchClass,
             lowerBound,
-            upperBound
+            upperBound,
         )
         val numOctavesOffset = Random.nextInt(numOccurrences)
         val midiNum = lowestOccurrence!!.midiNumber + (numOctavesOffset * MusicTheoryUtils.OCTAVE_SIZE)

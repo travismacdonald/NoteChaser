@@ -17,12 +17,12 @@ class MusicTheoryUtilsTest {
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         val expected = Note(
             PitchClass.C,
-            octave = -1
+            octave = -1,
         )
         assertEquals(expected, note)
     }
@@ -34,12 +34,12 @@ class MusicTheoryUtilsTest {
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         val expected = Note(
             PitchClass.C,
-            octave = 0
+            octave = 0,
         )
         assertEquals(expected, note)
     }
@@ -51,12 +51,12 @@ class MusicTheoryUtilsTest {
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         val expected = Note(
             pitchClass = PitchClass.A,
-            octave = -1
+            octave = -1,
         )
         assertEquals(expected, note)
     }
@@ -68,12 +68,12 @@ class MusicTheoryUtilsTest {
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         val expected = Note(
             PitchClass.A,
-            octave = 0
+            octave = 0,
         )
         assertEquals(expected, note)
     }
@@ -85,7 +85,7 @@ class MusicTheoryUtilsTest {
         val note = MusicTheoryUtils.getLowestPitchClassOccurrenceBetweenBoundsOrNull(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(null, note)
@@ -99,7 +99,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(1, actual)
@@ -113,7 +113,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(1, actual)
@@ -127,7 +127,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(2, actual)
@@ -141,7 +141,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(1, actual)
@@ -155,7 +155,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.C,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(0, actual)
@@ -169,7 +169,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(1, actual)
@@ -183,7 +183,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(0, actual)
@@ -197,7 +197,7 @@ class MusicTheoryUtilsTest {
         val actual = MusicTheoryUtils.getNumberOfPitchClassOccurrencesBetweenBounds(
             PitchClass.A,
             lower,
-            upper
+            upper,
         )
 
         assertEquals(2, actual)
@@ -236,7 +236,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.C,
             lowerBound = Note(midiNumber = 0),
-            upperBound = Note(midiNumber = 0)
+            upperBound = Note(midiNumber = 0),
         )
         assertTrue(occurs)
     }
@@ -246,7 +246,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.D_FLAT,
             lowerBound = Note(midiNumber = 0),
-            upperBound = Note(midiNumber = 0)
+            upperBound = Note(midiNumber = 0),
         )
         assertFalse(occurs)
     }
@@ -256,7 +256,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.C,
             lowerBound = Note(midiNumber = 12),
-            upperBound = Note(midiNumber = 12)
+            upperBound = Note(midiNumber = 12),
         )
         assertTrue(occurs)
     }
@@ -266,7 +266,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.C,
             lowerBound = Note(midiNumber = 13),
-            upperBound = Note(midiNumber = 24)
+            upperBound = Note(midiNumber = 24),
         )
         assertTrue(occurs)
     }
@@ -276,7 +276,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.C,
             lowerBound = Note(midiNumber = 13),
-            upperBound = Note(midiNumber = 23)
+            upperBound = Note(midiNumber = 23),
         )
         assertFalse(occurs)
     }
@@ -286,7 +286,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.A,
             lowerBound = Note(midiNumber = 13),
-            upperBound = Note(midiNumber = 23)
+            upperBound = Note(midiNumber = 23),
         )
         assertTrue(occurs)
     }
@@ -296,7 +296,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.A,
             lowerBound = Note(midiNumber = 9),
-            upperBound = Note(midiNumber = 9)
+            upperBound = Note(midiNumber = 9),
         )
         assertTrue(occurs)
     }
@@ -306,7 +306,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.A,
             lowerBound = Note(midiNumber = 0),
-            upperBound = Note(midiNumber = 8)
+            upperBound = Note(midiNumber = 8),
         )
         assertFalse(occurs)
     }
@@ -316,7 +316,7 @@ class MusicTheoryUtilsTest {
         val occurs = MusicTheoryUtils.pitchClassOccursBetweenNoteBounds(
             pitchClass = PitchClass.A,
             lowerBound = Note(midiNumber = 0),
-            upperBound = Note(midiNumber = 8)
+            upperBound = Note(midiNumber = 8),
         )
         assertFalse(occurs)
     }
@@ -325,12 +325,12 @@ class MusicTheoryUtilsTest {
     fun `test transformChromaticDegreesToIntervals with major scale sequence in key of C`() {
         val majorScaleChromaticDegrees = booleanArrayOf(
             true, false, true, false, true, true,
-            false, true, false, true, false, true
+            false, true, false, true, false, true,
         )
         val keyOfC = 0
         val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
             majorScaleChromaticDegrees,
-            keyOfC
+            keyOfC,
         )
 
         val expected = intArrayOf(0, 2, 4, 5, 7, 9, 11)
@@ -341,12 +341,12 @@ class MusicTheoryUtilsTest {
     fun `test transformChromaticDegreesToIntervals with major scale sequence in key of EFlat`() {
         val majorScaleChromaticDegrees = booleanArrayOf(
             true, false, true, false, true, true,
-            false, true, false, true, false, true
+            false, true, false, true, false, true,
         )
         val keyOfEFlat = 3
         val actual = MusicTheoryUtils.transformChromaticDegreesToIntervals(
             majorScaleChromaticDegrees,
-            keyOfEFlat
+            keyOfEFlat,
         )
 
         // Notice that all intervals are (0 <= i <= 11)
@@ -358,7 +358,7 @@ class MusicTheoryUtilsTest {
     fun `test transformChromaticDegreesToIntervals with key of 12 throws IllegalArgumentException`() {
         val majorScaleChromaticDegrees = booleanArrayOf(
             true, false, true, false, true, true,
-            false, true, false, true, false, true
+            false, true, false, true, false, true,
         )
         val erroneousKey = 12 // key must be (0 <= key <= 11)
         assertFailsWith<java.lang.IllegalArgumentException> {
@@ -371,7 +371,7 @@ class MusicTheoryUtilsTest {
         // keys.size must equal 12
         val degreesOfSizeEleven = booleanArrayOf(
             true, false, true, false, true, true,
-            false, true, false, true, false
+            false, true, false, true, false,
         )
         val keyOfEFlat = 3
         assertFailsWith<java.lang.IllegalArgumentException> {

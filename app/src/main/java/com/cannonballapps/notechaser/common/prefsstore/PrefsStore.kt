@@ -24,7 +24,7 @@ private const val STORE_NAME = "notechaser_data_store"
 
 private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
     true, true, true, true, true, true,
-    true, true, true, true, true, true
+    true, true, true, true, true, true,
 )
 
 private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
@@ -34,7 +34,7 @@ private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
     false,
     true,
     false,
-    false
+    false,
 )
 
 private const val DEFAULT_NUM_QUESTIONS = 20

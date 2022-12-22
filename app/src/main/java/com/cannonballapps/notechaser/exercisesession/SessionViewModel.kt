@@ -42,7 +42,7 @@ const val COUNTDOWN_SECONDS = 3
 @ObsoleteCoroutinesApi
 @HiltViewModel
 class SessionViewModel @Inject constructor(
-    private val prefsStore: PrefsStore
+    private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
     private val _curPitchDetectedAsMidiNumber = MutableLiveData<Int?>(null)
@@ -326,7 +326,7 @@ class SessionViewModel @Inject constructor(
                     degrees,
                     key,
                     lowerBound,
-                    upperBound
+                    upperBound,
                 )
             } else if (notePoolType == NotePoolType.DIATONIC) {
                 val degrees = prefsStore.exerciseSettingsFlow().first().diatonicDegrees
@@ -338,7 +338,7 @@ class SessionViewModel @Inject constructor(
                     scale,
                     key,
                     lowerBound,
-                    upperBound
+                    upperBound,
                 )
             }
         }
@@ -422,7 +422,7 @@ class SessionViewModel @Inject constructor(
             _curPlayable.value!!,
             _timeSpentAnsweringCurrentQuestionInMillis.value!!,
             _numRepeatsForCurrentQuestion.value!!,
-            skipped
+            skipped,
         )
     }
 

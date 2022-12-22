@@ -12,12 +12,12 @@ object PlayableGeneratorFactory {
         scale: Scale,
         key: PitchClass,
         lowerBound: Note,
-        upperBound: Note
+        upperBound: Note,
     ): PlayableGenerator {
         val intervals: List<PitchClass> = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
             diatonicDegrees,
             scale.intervals,
-            key.value
+            key.value,
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }
@@ -28,11 +28,11 @@ object PlayableGeneratorFactory {
         chromaticDegrees: BooleanArray,
         key: PitchClass,
         lowerBound: Note,
-        upperBound: Note
+        upperBound: Note,
     ): PlayableGenerator {
         val intervals: List<PitchClass> = MusicTheoryUtils.transformChromaticDegreesToIntervals(
             chromaticDegrees,
-            key.value
+            key.value,
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
         }

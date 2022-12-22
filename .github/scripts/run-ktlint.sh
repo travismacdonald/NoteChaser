@@ -6,4 +6,4 @@ curl -sSL https://api.github.com/repos/pinterest/ktlint/releases/latest \
     && chmod a+x ktlint \
     && mv ktlint /usr/local/bin/
 
-ktlint --reporter=checkstyle
+ktlint --relative --color

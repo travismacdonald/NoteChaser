@@ -15,7 +15,7 @@ import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils.pitchClassA
 data class Note private constructor(
     val midiNumber: Int,
     val pitchClass: PitchClass,
-    val octave: Int
+    val octave: Int,
 ) : Comparable<Note> {
 
     /**
@@ -24,7 +24,7 @@ data class Note private constructor(
     constructor(midiNumber: Int) : this(
         midiNumber,
         midiNumberToPitchClass(midiNumber),
-        midiNumberToOctave(midiNumber)
+        midiNumberToOctave(midiNumber),
     ) {
         assertValidMidiNumber(midiNumber)
     }
@@ -35,7 +35,7 @@ data class Note private constructor(
     constructor(pitchClass: PitchClass, octave: Int) : this(
         pitchClassAndOctaveToMidiNumber(pitchClass, octave),
         pitchClass,
-        octave
+        octave,
     ) {
         assertValidPitchClassAndOctave(pitchClass, octave)
     }
@@ -50,7 +50,7 @@ data class Note private constructor(
 private fun assertValidMidiNumber(midiNumber: Int) {
     if (!isValidMidiNumber(midiNumber)) {
         throw IllegalArgumentException(
-            "Midi number values must be between $MIN_MIDI_NUMBER and $MAX_MIDI_NUMBER."
+            "Midi number values must be between $MIN_MIDI_NUMBER and $MAX_MIDI_NUMBER.",
         )
     }
 }
@@ -60,7 +60,7 @@ private fun assertValidPitchClassAndOctave(pitchClass: PitchClass, octave: Int) 
 
     if (!isValidMidiNumber(midiNumber)) {
         throw IllegalArgumentException(
-            "Pitch class and octave must be between ${MIN_PITCH_CLASS}$MIN_OCTAVE and ${MAX_PITCH_CLASS}$MAX_OCTAVE."
+            "Pitch class and octave must be between ${MIN_PITCH_CLASS}$MIN_OCTAVE and ${MAX_PITCH_CLASS}$MAX_OCTAVE.",
         )
     }
 }
