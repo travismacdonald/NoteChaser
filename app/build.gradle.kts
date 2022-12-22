@@ -50,7 +50,7 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material.icons.core)
@@ -75,7 +75,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.materialdesign.compose.themeadapter)
     implementation(libs.materialdesign.material)
-    implementation(libs.midiDriver)
     implementation(libs.timber)
 
     debugImplementation(libs.androidx.compose.ui.testManifest)
