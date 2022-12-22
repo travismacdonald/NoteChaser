@@ -22,7 +22,6 @@ kotlin = "1.7.20"
 kotlinxCoroutines = "1.6.4"
 materialDesignComposeThemeAdapter = "1.2.1"
 materialDesignMaterial = "1.8.0-beta01"
-midiDriver = "1.1"
 timber = "5.0.1"
 
 [libraries]
@@ -61,5 +60,4 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 materialdesign-compose-themeadapter = { group = "com.google.android.material", name = "compose-theme-adapter", version.ref = "materialDesignComposeThemeAdapter" }
 materialdesign-material = { group = "com.google.android.material", name = "material", version.ref = "materialDesignMaterial" }
-midiDriver = { group = "com.github.rodydavis", name = "MidiDriver-Android-SF2", version.ref = "midiDriver" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
