@@ -23,6 +23,7 @@ kotlinxCoroutines = "1.6.4"
 materialDesignComposeThemeAdapter = "1.2.1"
 materialDesignMaterial = "1.8.0-beta01"
 midiDriver = "1.1"
+room = "2.5.0-beta02"
 timber = "5.0.1"
 
 [libraries]
@@ -62,4 +63,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 materialdesign-compose-themeadapter = { group = "com.google.android.material", name = "compose-theme-adapter", version.ref = "materialDesignComposeThemeAdapter" }
 materialdesign-material = { group = "com.google.android.material", name = "material", version.ref = "materialDesignMaterial" }
 midiDriver = { group = "com.github.rodydavis", name = "MidiDriver-Android-SF2", version.ref = "midiDriver" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
