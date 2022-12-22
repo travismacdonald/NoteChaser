@@ -4,7 +4,7 @@ import com.cannonballapps.notechaser.musicutilities.Note
 
 data class Playable(
     val notes: List<Note>,
-    val playbackType: PlaybackType
+    val playbackType: PlaybackType,
 )
 
 enum class PlaybackType {

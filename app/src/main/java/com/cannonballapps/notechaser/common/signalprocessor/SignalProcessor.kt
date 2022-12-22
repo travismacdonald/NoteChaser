@@ -43,12 +43,12 @@ class SignalProcessor {
                 PitchProcessor.PitchEstimationAlgorithm.FFT_YIN,
                 SAMPLE_RATE.toFloat(),
                 AUDIO_BUFFER_SIZE,
-                handler
+                handler,
             )
             dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(
                 SAMPLE_RATE,
                 AUDIO_BUFFER_SIZE,
-                BUFFER_OVERLAP
+                BUFFER_OVERLAP,
             )
             dispatcher.addAudioProcessor(pitchProcessor)
             isRunning = true

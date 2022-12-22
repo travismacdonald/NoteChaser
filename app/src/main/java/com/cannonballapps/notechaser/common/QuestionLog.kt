@@ -6,5 +6,5 @@ data class QuestionLog(
     val question: Playable,
     val timeSpentAnsweringInMillis: Long,
     val numberOfRepeats: Int,
-    val skipped: Boolean
+    val skipped: Boolean,
 )
