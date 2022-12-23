@@ -14,10 +14,10 @@ import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
-import com.cannonballapps.notechaser.musicutilities.PitchClass
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 private const val STORE_NAME = "notechaser_data_store"
@@ -74,81 +74,22 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         )
     }
 
-    suspend fun saveChromaticDegrees(degrees: BooleanArray) {
+    suspend fun saveExerciseSettings(exerciseSettings: ExerciseSettings) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.CHROMATIC_DEGREES] = degrees.serialize()
-        }
-    }
-
-    suspend fun saveDiatonicDegrees(degrees: BooleanArray) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.DIATONIC_DEGREES] = degrees.serialize()
-        }
-    }
-
-    suspend fun saveMatchOctave(matchOctave: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.MATCH_OCTAVE] = matchOctave
-        }
-    }
-
-    suspend fun saveModeIx(ix: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.MODE_IX] = ix
-        }
-    }
-
-    suspend fun saveNotePoolType(type: NotePoolType) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = type.ordinal
-        }
-    }
-
-    suspend fun saveNumQuestions(numQuestions: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.NUM_QUESTIONS_KEY] = numQuestions
-        }
-    }
-
-    suspend fun saveParentScale(scale: ParentScale2) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = scale.ordinal
-        }
-    }
-
-    suspend fun savePlayStartingPitch(playPitch: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAY_STARTING_PITCH] = playPitch
-        }
-    }
-
-    suspend fun savePlayableLowerBound(note: Note) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = note.midiNumber
-        }
-    }
-
-    suspend fun savePlayableUpperBound(upperBound: Note) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = upperBound.midiNumber
-        }
-    }
-
-    suspend fun saveQuestionKey(key: PitchClass) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.QUESTION_KEY_VAL] = key.value
-        }
-    }
-
-    suspend fun saveSessionTimeLimit(len: Int) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.SESSION_TIME_LIMIT] = len
-        }
-    }
-
-    suspend fun saveSessionType(type: SessionType) {
-        dataStore.edit { prefs ->
-            prefs[PrefKeys.SESSION_TYPE_ORDINAL] = type.ordinal
+            prefs[PrefKeys.CHROMATIC_DEGREES] = exerciseSettings.chromaticDegrees.serialize()
+            prefs[PrefKeys.DIATONIC_DEGREES] = exerciseSettings.diatonicDegrees.serialize()
+            prefs[PrefKeys.MATCH_OCTAVE] = exerciseSettings.matchOctave
+            prefs[PrefKeys.MODE_IX] = exerciseSettings.modeIx
+            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = exerciseSettings.notePoolType.ordinal
+            prefs[PrefKeys.NUM_QUESTIONS_KEY] = exerciseSettings.numQuestions
+            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = exerciseSettings.parentScale.ordinal
+            prefs[PrefKeys.PLAY_STARTING_PITCH] = exerciseSettings.playStartingPitch
+            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = exerciseSettings.playableLowerBound.midiNumber
+            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = exerciseSettings.playableUpperBound.midiNumber
+            prefs[PrefKeys.QUESTION_KEY_VAL] = exerciseSettings.questionKey.ordinal
+            prefs[PrefKeys.SESSION_TIME_LIMIT] = exerciseSettings.sessionTimeLimit
+            prefs[PrefKeys.SESSION_TYPE_ORDINAL] = exerciseSettings.sessionType.ordinal
+            Timber.tag("fubar").d("saved!")
         }
     }
 
