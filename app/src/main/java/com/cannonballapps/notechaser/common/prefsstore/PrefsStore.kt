@@ -93,7 +93,6 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-
     private object PrefKeys {
         val CHROMATIC_DEGREES = stringPreferencesKey("chromatic_degrees")
         val DIATONIC_DEGREES = stringPreferencesKey("diatonic_degrees")

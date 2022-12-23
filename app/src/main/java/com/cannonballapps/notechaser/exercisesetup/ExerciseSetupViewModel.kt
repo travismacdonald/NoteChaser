@@ -54,7 +54,7 @@ class ExerciseSetupViewModel @Inject constructor(
             questionKey = PitchClass.C,
             sessionTimeLimit = 10,
             sessionType = SessionType.QUESTION_LIMIT,
-        )
+        ),
     )
     val exerciseSettingsFlow2: StateFlow<ExerciseSettings> = _exerciseSettingsFlow2.asStateFlow()
 
