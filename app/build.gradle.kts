@@ -69,7 +69,6 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.preferences)
     implementation(libs.hilt.android)
-    implementation(libs.hilt.ext.lifecycle.viewmodel)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
