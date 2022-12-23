@@ -6,16 +6,15 @@ import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
-import com.cannonballapps.notechaser.exercisesetup.ExerciseSetupUiState.Loading
-import com.cannonballapps.notechaser.exercisesetup.ExerciseSetupUiState.Success
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,15 +27,38 @@ class ExerciseSetupViewModel @Inject constructor(
 
     lateinit var exerciseType: ExerciseType
 
-    val exerciseSettingsFlow: StateFlow<ExerciseSetupUiState> = prefsStore.exerciseSettingsFlow().map {
-        Success(it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-        initialValue = Loading,
+    private val _exerciseSettingsFlow2: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
+        // TODO move default values to a better location
+        ExerciseSettings(
+            chromaticDegrees = booleanArrayOf(
+                true, true, true, true, true, true,
+                true, true, true, true, true, true,
+            ),
+            diatonicDegrees = booleanArrayOf(
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                false,
+            ),
+            modeIx = 0,
+            notePoolType = NotePoolType.DIATONIC,
+            numQuestions = 20,
+            parentScale = ParentScale2.MAJOR,
+            matchOctave = false,
+            playStartingPitch = true,
+            playableLowerBound = Note(48),
+            playableUpperBound = Note(72),
+            questionKey = PitchClass.C,
+            sessionTimeLimit = 10,
+            sessionType = SessionType.QUESTION_LIMIT,
+        )
     )
+    val exerciseSettingsFlow2: StateFlow<ExerciseSettings> = _exerciseSettingsFlow2.asStateFlow()
 
-    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow.map {
+    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow2.map {
         hasNotePoolDegreesSelected() && hasSufficientRangeForPlayableGeneration()
     }.stateIn(
         scope = viewModelScope,
@@ -44,102 +66,75 @@ class ExerciseSetupViewModel @Inject constructor(
         initialValue = false,
     )
 
-    fun prefetchPrefsStore() {
+    fun saveExerciseSettings() {
+        // todo look into an applicationScope implementation
         viewModelScope.launch {
-            prefsStore.exerciseSettingsFlow().first()
+            // todo save object in room, once refactored
+            prefsStore.saveExerciseSettings(exerciseSettingsFlow2.value)
         }
     }
 
     fun saveChromaticDegrees(degrees: BooleanArray) {
-        viewModelScope.launch {
-            prefsStore.saveChromaticDegrees(degrees)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(chromaticDegrees = degrees)
     }
 
     fun saveDiatonicDegrees(degrees: BooleanArray) {
-        viewModelScope.launch {
-            prefsStore.saveDiatonicDegrees(degrees)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(diatonicDegrees = degrees)
     }
 
     fun saveMatchOctave(matchOctave: Boolean) {
-        viewModelScope.launch {
-            prefsStore.saveMatchOctave(matchOctave)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(matchOctave = matchOctave)
     }
 
     fun saveModeIx(ix: Int) {
-        viewModelScope.launch {
-            prefsStore.saveModeIx(ix)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(modeIx = ix)
     }
 
     fun saveNotePoolType(type: NotePoolType) {
-        viewModelScope.launch {
-            prefsStore.saveNotePoolType(type)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(notePoolType = type)
     }
 
     fun saveNumQuestions(numQuestions: Int) {
-        viewModelScope.launch {
-            prefsStore.saveNumQuestions(numQuestions)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(numQuestions = numQuestions)
     }
 
     fun saveParentScale(scale: ParentScale2) {
-        viewModelScope.launch {
-            prefsStore.saveParentScale(scale)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(parentScale = scale)
     }
 
     fun savePlayStartingPitch(playPitch: Boolean) {
-        viewModelScope.launch {
-            prefsStore.savePlayStartingPitch(playPitch)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playStartingPitch = playPitch)
     }
 
     fun savePlayableLowerBound(lower: Note) {
-        viewModelScope.launch {
-            prefsStore.savePlayableLowerBound(lower)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playableLowerBound = lower)
     }
 
     fun savePlayableUpperBound(upper: Note) {
-        viewModelScope.launch {
-            prefsStore.savePlayableUpperBound(upper)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playableUpperBound = upper)
     }
 
     fun saveQuestionKey(key: PitchClass) {
-        viewModelScope.launch {
-            prefsStore.saveQuestionKey(key)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(questionKey = key)
     }
 
     fun saveSessionTimeLimit(len: Int) {
-        viewModelScope.launch {
-            prefsStore.saveSessionTimeLimit(len)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(sessionTimeLimit = len)
     }
 
     fun saveSessionType(sessionType: SessionType) {
-        viewModelScope.launch {
-            prefsStore.saveSessionType(sessionType)
-        }
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(sessionType = sessionType)
     }
 
     private fun hasNotePoolDegreesSelected(): Boolean {
-        val uiState = exerciseSettingsFlow.value
-        return if (uiState is Success) {
-            when (uiState.exerciseSettings.notePoolType) {
-                NotePoolType.DIATONIC -> {
-                    uiState.exerciseSettings.diatonicDegrees.contains(true)
-                }
-                NotePoolType.CHROMATIC -> {
-                    uiState.exerciseSettings.chromaticDegrees.contains(true)
-                }
+        return when (exerciseSettingsFlow2.value.notePoolType) {
+            NotePoolType.DIATONIC -> {
+                exerciseSettingsFlow2.value.diatonicDegrees.contains(true)
             }
-        } else false
+            NotePoolType.CHROMATIC -> {
+                exerciseSettingsFlow2.value.chromaticDegrees.contains(true)
+            }
+        }
     }
 
     private fun hasSufficientRangeForPlayableGeneration(): Boolean {
@@ -167,9 +162,4 @@ class ExerciseSetupViewModel @Inject constructor(
 //        }
         return true
     }
-}
-
-sealed interface ExerciseSetupUiState {
-    object Loading : ExerciseSetupUiState
-    data class Success(val exerciseSettings: ExerciseSettings) : ExerciseSetupUiState
 }

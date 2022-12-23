@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.cannonballapps.notechaser.R
+import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
@@ -25,7 +26,6 @@ import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ExerciseSetupFragment : Fragment() {
@@ -39,10 +39,6 @@ class ExerciseSetupFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
-
-        viewModel.prefetchPrefsStore()
-
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_exercise_setup,
@@ -83,7 +79,7 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindUi() {
-        viewModel.exerciseSettingsFlow
+        viewModel.exerciseSettingsFlow2
             .onEach(::updateUi)
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -92,136 +88,134 @@ class ExerciseSetupFragment : Fragment() {
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun updateUi(uiState: ExerciseSetupUiState) {
-        if (uiState is ExerciseSetupUiState.Success) {
-            /*
-             * Note pool type
-             */
-            binding.notePoolTypeSingleList.summary.text = uiState.exerciseSettings.notePoolType.toString()
+    private fun updateUi(exerciseSettings: ExerciseSettings) {
+        /*
+         * Note pool type
+         */
+        binding.notePoolTypeSingleList.summary.text = exerciseSettings.notePoolType.toString()
 
-            /*
-             * Chromatic degrees
-             */
-            binding.chromaticDegreesMultiList.layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.CHROMATIC
+        /*
+         * Chromatic degrees
+         */
+        binding.chromaticDegreesMultiList.layout.isVisible = exerciseSettings.notePoolType == NotePoolType.CHROMATIC
 
-            val activeChromaticDegrees = arrayListOf<String>()
-            for (i in uiState.exerciseSettings.chromaticDegrees.indices) {
-                if (uiState.exerciseSettings.chromaticDegrees[i]) {
-                    activeChromaticDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
-                }
+        val activeChromaticDegrees = arrayListOf<String>()
+        for (i in exerciseSettings.chromaticDegrees.indices) {
+            if (exerciseSettings.chromaticDegrees[i]) {
+                activeChromaticDegrees.add(MusicTheoryUtils.CHROMATIC_INTERVAL_NAMES_SINGLE[i])
             }
-            binding.chromaticDegreesMultiList.summary.text = when (activeChromaticDegrees.size) {
-                0 -> {
-                    resources.getString(R.string.noneSelected)
-                }
-                uiState.exerciseSettings.chromaticDegrees.size -> {
-                    resources.getString(R.string.allSelected)
-                }
-                else -> {
-                    activeChromaticDegrees.joinToString(separator = ", ")
-                }
+        }
+        binding.chromaticDegreesMultiList.summary.text = when (activeChromaticDegrees.size) {
+            0 -> {
+                resources.getString(R.string.noneSelected)
             }
-
-            /**
-             * Diatonic degrees
-             */
-            binding.diatonicDegreesMultiList.layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.DIATONIC
-
-            val activeDiatonicDegrees = arrayListOf<String>()
-            for (i in uiState.exerciseSettings.diatonicDegrees.indices) {
-                if (uiState.exerciseSettings.diatonicDegrees[i]) {
-                    activeDiatonicDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
-                }
+            exerciseSettings.chromaticDegrees.size -> {
+                resources.getString(R.string.allSelected)
             }
-            binding.diatonicDegreesMultiList.summary.text = when (activeDiatonicDegrees.size) {
-                0 -> {
-                    resources.getString(R.string.noneSelected)
-                }
-                uiState.exerciseSettings.diatonicDegrees.size -> {
-                    resources.getString(R.string.allSelected)
-                }
-                else -> {
-                    activeDiatonicDegrees.joinToString(separator = ", ")
-                }
+            else -> {
+                activeChromaticDegrees.joinToString(separator = ", ")
             }
+        }
 
-            /*
-             * Question key
-             */
-            binding.questionKeySingleList.summary.text = uiState.exerciseSettings.questionKey.toString()
+        /**
+         * Diatonic degrees
+         */
+        binding.diatonicDegreesMultiList.layout.isVisible = exerciseSettings.notePoolType == NotePoolType.DIATONIC
 
-            /*
-             * Match octave
-             */
-            if (uiState.exerciseSettings.matchOctave != binding.matchOctaveSwitch.switchWidget.isChecked) {
-                binding.matchOctaveSwitch.switchWidget.isChecked = uiState.exerciseSettings.matchOctave
+        val activeDiatonicDegrees = arrayListOf<String>()
+        for (i in exerciseSettings.diatonicDegrees.indices) {
+            if (exerciseSettings.diatonicDegrees[i]) {
+                activeDiatonicDegrees.add(MusicTheoryUtils.DIATONIC_INTERVAL_NAMES_SINGLE[i])
             }
-
-            /*
-             * Scale
-             */
-            val scale = uiState.exerciseSettings.parentScale.getModeAtIx(uiState.exerciseSettings.modeIx)
-            binding.scaleSingleList.apply {
-                summary.text = scale.name
-                layout.isVisible = uiState.exerciseSettings.notePoolType == NotePoolType.DIATONIC
+        }
+        binding.diatonicDegreesMultiList.summary.text = when (activeDiatonicDegrees.size) {
+            0 -> {
+                resources.getString(R.string.noneSelected)
             }
+            exerciseSettings.diatonicDegrees.size -> {
+                resources.getString(R.string.allSelected)
+            }
+            else -> {
+                activeDiatonicDegrees.joinToString(separator = ", ")
+            }
+        }
 
-            /*
-             * Num questions
-             */
-            binding.numQuestionsSlider.apply {
-                if (uiState.exerciseSettings.numQuestions != slider.value.toInt()) {
-                    slider.value = uiState.exerciseSettings.numQuestions.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
-                }
+        /*
+         * Question key
+         */
+        binding.questionKeySingleList.summary.text = exerciseSettings.questionKey.toString()
 
-                layout.isVisible = uiState.exerciseSettings.sessionType == SessionType.QUESTION_LIMIT
+        /*
+         * Match octave
+         */
+        if (exerciseSettings.matchOctave != binding.matchOctaveSwitch.switchWidget.isChecked) {
+            binding.matchOctaveSwitch.switchWidget.isChecked = exerciseSettings.matchOctave
+        }
+
+        /*
+         * Scale
+         */
+        val scale = exerciseSettings.parentScale.getModeAtIx(exerciseSettings.modeIx)
+        binding.scaleSingleList.apply {
+            summary.text = scale.name
+            layout.isVisible = exerciseSettings.notePoolType == NotePoolType.DIATONIC
+        }
+
+        /*
+         * Num questions
+         */
+        binding.numQuestionsSlider.apply {
+            if (exerciseSettings.numQuestions != slider.value.toInt()) {
+                slider.value = exerciseSettings.numQuestions.toFloat()
+                slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
+                slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
+                slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
             }
 
-            /*
-             * Time limit
-             */
-            binding.sessionTimeLimitSlider.apply {
-                if (uiState.exerciseSettings.sessionTimeLimit != slider.value.toInt()) {
-                    slider.value = uiState.exerciseSettings.sessionTimeLimit.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
-                }
+            layout.isVisible = exerciseSettings.sessionType == SessionType.QUESTION_LIMIT
+        }
 
-                layout.isVisible = uiState.exerciseSettings.sessionType == SessionType.TIME_LIMIT
+        /*
+         * Time limit
+         */
+        binding.sessionTimeLimitSlider.apply {
+            if (exerciseSettings.sessionTimeLimit != slider.value.toInt()) {
+                slider.value = exerciseSettings.sessionTimeLimit.toFloat()
+                slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
+                slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
+                slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
             }
 
-            /*
-             * Session type
-             */
-            binding.sessionTypeSingleList.summary.text = uiState.exerciseSettings.sessionType.toString()
+            layout.isVisible = exerciseSettings.sessionType == SessionType.TIME_LIMIT
+        }
 
-            /*
-             * Play starting pitch
-             */
-            if (uiState.exerciseSettings.playStartingPitch != binding.startingPitchSwitch.switchWidget.isChecked) {
-                binding.startingPitchSwitch.switchWidget.isChecked = uiState.exerciseSettings.playStartingPitch
-            }
+        /*
+         * Session type
+         */
+        binding.sessionTypeSingleList.summary.text = exerciseSettings.sessionType.toString()
 
-            /*
-             * Playable bounds
-             */
+        /*
+         * Play starting pitch
+         */
+        if (exerciseSettings.playStartingPitch != binding.startingPitchSwitch.switchWidget.isChecked) {
+            binding.startingPitchSwitch.switchWidget.isChecked = exerciseSettings.playStartingPitch
+        }
 
-            val boundsAsFloats = listOf(
-                uiState.exerciseSettings.playableLowerBound.midiNumber,
-                uiState.exerciseSettings.playableUpperBound.midiNumber,
-            ).map { it.toFloat() }
+        /*
+         * Playable bounds
+         */
 
-            binding.playableRangeBar.apply {
-                if (rangeSlider.values != boundsAsFloats) {
-                    rangeSlider.values = boundsAsFloats
-                    rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
-                    rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
-                    rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
-                }
+        val boundsAsFloats = listOf(
+            exerciseSettings.playableLowerBound.midiNumber,
+            exerciseSettings.playableUpperBound.midiNumber,
+        ).map { it.toFloat() }
+
+        binding.playableRangeBar.apply {
+            if (rangeSlider.values != boundsAsFloats) {
+                rangeSlider.values = boundsAsFloats
+                rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
+                rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
+                rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
             }
         }
     }
@@ -242,7 +236,7 @@ class ExerciseSetupFragment : Fragment() {
             image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
 
             layout.setOnClickListener {
-                (viewModel.exerciseSettingsFlow.value as? ExerciseSetupUiState.Success)?.exerciseSettings?.notePoolType?.let { notePoolType ->
+                viewModel.exerciseSettingsFlow2.value.notePoolType.let { notePoolType ->
                     showMaterialDialogSingleList(
                         title = getString(R.string.notePoolType_title),
                         entries = notePoolTypeNames,
@@ -456,6 +450,8 @@ class ExerciseSetupFragment : Fragment() {
             backButton.text = getString(R.string.back_button)
 
             startButton.setOnClickListener { button ->
+                // TODO this should save the settings
+                viewModel.saveExerciseSettings()
                 navigateToExerciseSession(button)
             }
 
@@ -467,7 +463,6 @@ class ExerciseSetupFragment : Fragment() {
         // TODO: validate settings
     }
 
-    // Thanks, u/justjoshingofficial.
     private fun bindPlayStartingPitchSwitch() {
         binding.startingPitchSwitch.apply {
             title.text = getString(R.string.playStartingPitch_title)
