@@ -304,8 +304,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindScaleSingleList() {
-//        val parentScaleNames = ParentScale.values().map { it.toString() }.toTypedArray()
-
         val parentScaleNames = listOf(
             ParentScale.Major,
             ParentScale.MelodicMinor,
