@@ -18,7 +18,6 @@ import com.cannonballapps.notechaser.common.signalprocessor.SignalProcessorListe
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.getModeAtIx
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableFactory
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -330,9 +329,7 @@ class SessionViewModel @Inject constructor(
                 )
             } else if (notePoolType == NotePoolType.DIATONIC) {
                 val degrees = prefsStore.exerciseSettingsFlow().first().diatonicDegrees
-                val parentScale = prefsStore.exerciseSettingsFlow().first().parentScale
-                val modeIx = prefsStore.exerciseSettingsFlow().first().modeIx
-                val scale = parentScale.getModeAtIx(modeIx)
+                val scale = prefsStore.exerciseSettingsFlow().first().scale
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
                     degrees,
                     scale,

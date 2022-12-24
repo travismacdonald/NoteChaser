@@ -18,8 +18,7 @@ import com.cannonballapps.notechaser.databinding.FragmentExerciseSetupBinding
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
-import com.cannonballapps.notechaser.musicutilities.getModeAtIx
+import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
@@ -155,9 +154,10 @@ class ExerciseSetupFragment : Fragment() {
         /*
          * Scale
          */
-        val scale = exerciseSettings.parentScale.getModeAtIx(exerciseSettings.modeIx)
+        val scale = exerciseSettings.scale
         binding.scaleSingleList.apply {
-            summary.text = scale.name
+            // todo
+            summary.text = scale.toString()
             layout.isVisible = exerciseSettings.notePoolType == NotePoolType.DIATONIC
         }
 
@@ -304,7 +304,14 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun bindScaleSingleList() {
-        val parentScaleNames = ParentScale2.values().map { it.toString() }.toTypedArray()
+        val parentScaleNames = listOf(
+            ParentScale.Major,
+            ParentScale.MelodicMinor,
+            ParentScale.HarmonicMajor,
+            ParentScale.HarmonicMinor,
+        ).map {
+            it.toString()
+        }.toTypedArray()
 
         binding.scaleSingleList.apply {
             title.text = resources.getString(R.string.scale_title)
@@ -317,16 +324,17 @@ class ExerciseSetupFragment : Fragment() {
                     initSelectedIx = 0,
 
                     onPositiveButtonClick = { selectedParentScaleIx ->
-                        val selectedParentScale = ParentScale2.values()[selectedParentScaleIx]
+                        // todo
+//                        val selectedParentScale = ParentScale.values()[selectedParentScaleIx]
+                        val selectedParentScale = ParentScale.Major
 
                         showMaterialDialogSingleList(
                             title = getString(R.string.mode_title),
-                            entries = selectedParentScale.modeNames.toTypedArray(),
+                            entries = selectedParentScale.scales.map { it.toString() }.toTypedArray(),
                             initSelectedIx = 0,
 
                             onPositiveButtonClick = { selectedModeIx ->
-                                viewModel.saveParentScale(selectedParentScale)
-                                viewModel.saveModeIx(selectedModeIx)
+                                viewModel.saveScale(selectedParentScale.scaleAtIndex(selectedModeIx))
                             },
                         )
                     },

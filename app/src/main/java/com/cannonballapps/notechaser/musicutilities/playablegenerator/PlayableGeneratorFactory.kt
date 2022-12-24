@@ -16,7 +16,8 @@ object PlayableGeneratorFactory {
     ): PlayableGenerator {
         val intervals: List<PitchClass> = MusicTheoryUtils.transformDiatonicDegreesToIntervals(
             diatonicDegrees,
-            scale.intervals,
+            // todo convert everything to List<Int>
+            scale.intervals.toIntArray(),
             key.value,
         ).toList().map {
             MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[it]
