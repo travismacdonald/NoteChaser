@@ -50,6 +50,4 @@ jobs:
           name: build-reports
           path: app/build/reports
 
-      # TODO add ktlint job
-
       # TODO add instrument tests (when applicable)
