@@ -27,13 +27,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      # Workaround:
-      # Retry this script on failure because it's flaky
       - name: Lint
-        run: |
-          (./.github/scripts/run-ktlint.sh) || \
-          (sleep 5 && ./.github/scripts/run-ktlint.sh) || \
-          (sleep 5 && ./.github/scripts/run-ktlint.sh)
+        run: ./.github/scripts/run-ktlint.sh
         shell: bash
 
       - name: Build all build type and flavor permutations
@@ -54,5 +49,7 @@ jobs:
         with:
           name: build-reports
           path: app/build/reports
+
+      # TODO add ktlint job
 
       # TODO add instrument tests (when applicable)
