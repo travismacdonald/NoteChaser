@@ -3,7 +3,6 @@ package com.cannonballapps.notechaser.models.playablegenerator
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
-import com.cannonballapps.notechaser.musicutilities.scaleAtIndex
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGeneratorFactory
 import junit.framework.TestCase
 import org.junit.Test
