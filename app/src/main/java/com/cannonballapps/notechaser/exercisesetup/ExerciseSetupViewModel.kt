@@ -8,8 +8,9 @@ import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.Scale
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,10 +44,9 @@ class ExerciseSetupViewModel @Inject constructor(
                 false,
                 false,
             ),
-            modeIx = 0,
+            scale = ParentScale.Major.scaleAtIndex(0),
             notePoolType = NotePoolType.DIATONIC,
             numQuestions = 20,
-            parentScale = ParentScale2.MAJOR,
             matchOctave = false,
             playStartingPitch = true,
             playableLowerBound = Note(48),
@@ -86,8 +86,8 @@ class ExerciseSetupViewModel @Inject constructor(
         _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(matchOctave = matchOctave)
     }
 
-    fun saveModeIx(ix: Int) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(modeIx = ix)
+    fun saveScale(scale: Scale) {
+        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(scale = scale)
     }
 
     fun saveNotePoolType(type: NotePoolType) {
@@ -96,10 +96,6 @@ class ExerciseSetupViewModel @Inject constructor(
 
     fun saveNumQuestions(numQuestions: Int) {
         _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(numQuestions = numQuestions)
-    }
-
-    fun saveParentScale(scale: ParentScale2) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(parentScale = scale)
     }
 
     fun savePlayStartingPitch(playPitch: Boolean) {

@@ -13,11 +13,11 @@ import com.cannonballapps.notechaser.common.SessionType
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.ParentScale
+import com.cannonballapps.notechaser.musicutilities.Scale
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 private const val STORE_NAME = "notechaser_data_store"
@@ -60,10 +60,9 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         ExerciseSettings(
             chromaticDegrees = preferences[PrefKeys.CHROMATIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_CHROMATIC_DEGREES,
             diatonicDegrees = preferences[PrefKeys.DIATONIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_DIATONIC_DEGREES,
-            modeIx = preferences[PrefKeys.MODE_IX] ?: 0,
+            scale = preferences[PrefKeys.SCALE_KEY]?.deserializeToScale() ?: ParentScale.Major.scaleAtIndex(0),
             notePoolType = NotePoolType.values()[preferences[PrefKeys.NOTE_POOL_TYPE_ORDINAL] ?: NotePoolType.DIATONIC.ordinal],
             numQuestions = preferences[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS,
-            parentScale = ParentScale2.values()[preferences[PrefKeys.PARENT_SCALE_ORDINAL] ?: 0],
             matchOctave = preferences[PrefKeys.MATCH_OCTAVE] ?: false,
             playStartingPitch = preferences[PrefKeys.PLAY_STARTING_PITCH] ?: true,
             playableLowerBound = Note(preferences[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
@@ -79,17 +78,15 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
             prefs[PrefKeys.CHROMATIC_DEGREES] = exerciseSettings.chromaticDegrees.serialize()
             prefs[PrefKeys.DIATONIC_DEGREES] = exerciseSettings.diatonicDegrees.serialize()
             prefs[PrefKeys.MATCH_OCTAVE] = exerciseSettings.matchOctave
-            prefs[PrefKeys.MODE_IX] = exerciseSettings.modeIx
+            prefs[PrefKeys.SCALE_KEY] = exerciseSettings.scale.serialize()
             prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = exerciseSettings.notePoolType.ordinal
             prefs[PrefKeys.NUM_QUESTIONS_KEY] = exerciseSettings.numQuestions
-            prefs[PrefKeys.PARENT_SCALE_ORDINAL] = exerciseSettings.parentScale.ordinal
             prefs[PrefKeys.PLAY_STARTING_PITCH] = exerciseSettings.playStartingPitch
             prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = exerciseSettings.playableLowerBound.midiNumber
             prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = exerciseSettings.playableUpperBound.midiNumber
             prefs[PrefKeys.QUESTION_KEY_VAL] = exerciseSettings.questionKey.ordinal
             prefs[PrefKeys.SESSION_TIME_LIMIT] = exerciseSettings.sessionTimeLimit
             prefs[PrefKeys.SESSION_TYPE_ORDINAL] = exerciseSettings.sessionType.ordinal
-            Timber.tag("fubar").d("saved!")
         }
     }
 
@@ -97,10 +94,9 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
         val CHROMATIC_DEGREES = stringPreferencesKey("chromatic_degrees")
         val DIATONIC_DEGREES = stringPreferencesKey("diatonic_degrees")
         val MATCH_OCTAVE = booleanPreferencesKey("match_octave")
-        val MODE_IX = intPreferencesKey("mode_ix")
+        val SCALE_KEY = stringPreferencesKey("scale_key")
         val NOTE_POOL_TYPE_ORDINAL = intPreferencesKey("note_pool_type_ordinal")
         val NUM_QUESTIONS_KEY = intPreferencesKey("num_questions")
-        val PARENT_SCALE_ORDINAL = intPreferencesKey("parent_scale_ordinal")
         val PLAY_STARTING_PITCH = booleanPreferencesKey("play_starting_pitch")
         val PLAYABLE_LOWER_BOUND_MIDI_NUM = intPreferencesKey("playable_lower_bound")
         val PLAYABLE_UPPER_BOUND_MIDI_NUM = intPreferencesKey("playable_upper_bound")
@@ -111,5 +107,10 @@ class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
 
     private fun BooleanArray.serialize() = this.joinToString(separator = ",")
 
+    private fun Scale.serialize() = this.toString()
+
     private fun String.deserializeToBooleanArray() = this.split(",").map { it.toBoolean() }.toBooleanArray()
+
+    // todo doesn't work until room refactor
+    private fun String.deserializeToScale() = ParentScale.Major.scaleAtIndex(0)
 }

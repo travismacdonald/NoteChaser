@@ -2,16 +2,15 @@ package com.cannonballapps.notechaser.common
 
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
 import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.Scale
 
 data class ExerciseSettings(
     val chromaticDegrees: BooleanArray,
     val diatonicDegrees: BooleanArray,
-    val modeIx: Int,
+    val scale: Scale,
     val notePoolType: NotePoolType,
     val numQuestions: Int,
-    val parentScale: ParentScale2,
     val matchOctave: Boolean,
     val playStartingPitch: Boolean,
     val playableLowerBound: Note,

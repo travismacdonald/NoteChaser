@@ -1,9 +1,9 @@
 package com.cannonballapps.notechaser.models.playablegenerator
 
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.ParentScale2
+import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
-import com.cannonballapps.notechaser.musicutilities.getModeAtIx
+import com.cannonballapps.notechaser.musicutilities.scaleAtIndex
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGeneratorFactory
 import junit.framework.TestCase
 import org.junit.Test
@@ -37,7 +37,7 @@ class NotePlayableGeneratorTest : TestCase() {
 
     @Test
     fun `test makeNotePlayableGeneratorFromDiatonicDegrees generates notes between bounds`() {
-        val scale = ParentScale2.MAJOR.getModeAtIx(0)
+        val scale = ParentScale.Major.scaleAtIndex(0)
         val lower = Note(36)
         val upper = Note(48)
 
@@ -60,7 +60,7 @@ class NotePlayableGeneratorTest : TestCase() {
 
     @Test
     fun `test makeNotePlayableGeneratorFromDiatonicDegrees generates notes between bounds 2`() {
-        val scale = ParentScale2.MAJOR.getModeAtIx(0)
+        val scale = ParentScale.Major.scaleAtIndex(0)
         val lower = Note(36)
         val upper = Note(48)
 
