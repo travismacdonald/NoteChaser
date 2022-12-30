@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser.uikit
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -14,7 +13,12 @@ import androidx.compose.ui.unit.dp
 import com.cannonballapps.notechaser.R
 
 @Composable
-fun SettingsItem() {
+fun SettingsItem(
+    headerText: String,
+    descriptionText: String,
+    // todo img resource
+    // todo modifier
+) {
     /*
      * todo:
      *  - row height
@@ -34,11 +38,11 @@ fun SettingsItem() {
         Column {
             Text(
                 // todo style
-                text = "Title",
+                text = headerText,
             )
             Text(
                 // todo style
-                text = "Description. Maybe a bit longer",
+                text = descriptionText,
             )
         }
     }
@@ -52,6 +56,18 @@ fun SettingsItem() {
  */
 @Preview
 @Composable
-private fun SettingsItemPreview() {
-    SettingsItem()
+private fun SettingsItemPreviewShort() {
+    SettingsItem(
+        headerText = "Header",
+        descriptionText = "Short description",
+    )
+}
+
+@Preview
+@Composable
+private fun SettingsItemPreviewLong() {
+    SettingsItem(
+        headerText = "Header",
+        descriptionText = "Longer description. Because I want to see if the text will properly wrap when it is this long.",
+    )
 }
