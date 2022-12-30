@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -19,6 +19,7 @@ import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale
+import com.cannonballapps.notechaser.ui.theme.NoteChaserTheme
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
@@ -91,7 +92,8 @@ class ExerciseSetupFragment : Fragment() {
         /*
          * Note pool type
          */
-        binding.notePoolTypeSingleList.summary.text = exerciseSettings.notePoolType.toString()
+//        binding.noteTypePoolSingleList.summary.text = exerciseSettings.notePoolType.toString()
+//        binding.noteTypePoolSingleList
 
         /*
          * Chromatic degrees
@@ -232,22 +234,29 @@ class ExerciseSetupFragment : Fragment() {
         val notePoolTypeNames = NotePoolType.values().map { it.toString() }.toTypedArray()
 
         binding.notePoolTypeSingleList.apply {
-            title.text = getString(R.string.notePoolType_title)
-            image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_music_note_black_40dp, requireContext().theme))
-
-            layout.setOnClickListener {
-                viewModel.exerciseSettingsFlow2.value.notePoolType.let { notePoolType ->
-                    showMaterialDialogSingleList(
-                        title = getString(R.string.notePoolType_title),
-                        entries = notePoolTypeNames,
-                        initSelectedIx = notePoolType.ordinal,
-                        onPositiveButtonClick = { selectedIx ->
-                            val selectedNotePool = NotePoolType.values()[selectedIx]
-                            viewModel.saveNotePoolType(selectedNotePool)
-                        },
+            setViewCompositionStrategy(ViewCompositionStrategy.Default)
+            setContent {
+                NoteChaserTheme {
+                    ExerciseSetupCard(
+                        headerText = "Note Pool Type",
+                        descriptionText = "Diatonic",
+                        onCardClick = { /* todo */ }
                     )
                 }
             }
+//            layout.setOnClickListener {
+//                viewModel.exerciseSettingsFlow2.value.notePoolType.let { notePoolType ->
+//                    showMaterialDialogSingleList(
+//                        title = getString(R.string.notePoolType_title),
+//                        entries = notePoolTypeNames,
+//                        initSelectedIx = notePoolType.ordinal,
+//                        onPositiveButtonClick = { selectedIx ->
+//                            val selectedNotePool = NotePoolType.values()[selectedIx]
+//                            viewModel.saveNotePoolType(selectedNotePool)
+//                        },
+//                    )
+//                }
+//            }
         }
     }
 
