@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.cannonballapps.notechaser.R
@@ -31,14 +32,7 @@ fun ExerciseSetupCard(
     // todo img resource
     // todo modifier
 ) {
-    /*
-     * todo:
-     *  - row height
-     *  - sensible dimensions
-     *    - dimensions
-     *  - background color
-     */
-    Surface() {
+    Surface(color = Color.White) {
         Row(
             modifier = Modifier
                 .height(IntrinsicSize.Max)

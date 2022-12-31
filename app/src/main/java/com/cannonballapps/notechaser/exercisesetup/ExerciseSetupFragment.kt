@@ -238,8 +238,8 @@ class ExerciseSetupFragment : Fragment() {
             setContent {
                 NoteChaserTheme {
                     ExerciseSetupCard(
-                        headerText = "Note Pool Type",
-                        descriptionText = "Diatonic",
+                        headerText = "Note Pool Type", // todo string resource
+                        descriptionText = "Diatonic", // todo
                         onCardClick = { /* todo */ },
                     )
                 }
