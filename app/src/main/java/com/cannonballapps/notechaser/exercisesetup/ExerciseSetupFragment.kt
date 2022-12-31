@@ -240,7 +240,7 @@ class ExerciseSetupFragment : Fragment() {
                     ExerciseSetupCard(
                         headerText = "Note Pool Type",
                         descriptionText = "Diatonic",
-                        onCardClick = { /* todo */ }
+                        onCardClick = { /* todo */ },
                     )
                 }
             }

@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.cannonballapps.notechaser.ui.theme
 
 import androidx.compose.material.MaterialTheme

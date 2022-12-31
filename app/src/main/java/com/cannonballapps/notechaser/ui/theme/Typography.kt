@@ -17,42 +17,42 @@ private val Rubik = FontFamily(
 val NoteChaserTypography = Typography(
     h4 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 3.sp
+        fontSize = 3.sp,
     ),
     h5 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 24.sp
+        fontSize = 24.sp,
     ),
     h6 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 20.sp
+        fontSize = 20.sp,
     ),
     subtitle1 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 16.sp
+        fontSize = 16.sp,
     ),
     subtitle2 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     body1 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 16.sp
+        fontSize = 16.sp,
     ),
     body2 = TextStyle(
         fontFamily = Rubik,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     button = TextStyle(
         fontFamily = Rubik,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
     caption = TextStyle(
         fontFamily = Rubik,
-        fontSize = 12.sp
+        fontSize = 12.sp,
     ),
     overline = TextStyle(
         fontFamily = Rubik,
-        fontSize = 12.sp
-    )
+        fontSize = 12.sp,
+    ),
 )

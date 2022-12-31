@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.cannonballapps.notechaser.exercisesetup
 
 import androidx.compose.foundation.clickable
