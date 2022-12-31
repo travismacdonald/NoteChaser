@@ -18,9 +18,11 @@
                 android:id="@+id/questions_header"
                 layout="@layout/item_settings_header" />
 
-            <include
+            <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/notePoolType_singleList"
-                layout="@layout/item_settings_single_list" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
             <include
                 android:id="@+id/chromaticDegrees_multiList"
