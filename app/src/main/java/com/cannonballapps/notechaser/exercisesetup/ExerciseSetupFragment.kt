@@ -244,6 +244,7 @@ class ExerciseSetupFragment : Fragment() {
                     )
                 }
             }
+            /* todo */
 //            layout.setOnClickListener {
 //                viewModel.exerciseSettingsFlow2.value.notePoolType.let { notePoolType ->
 //                    showMaterialDialogSingleList(
