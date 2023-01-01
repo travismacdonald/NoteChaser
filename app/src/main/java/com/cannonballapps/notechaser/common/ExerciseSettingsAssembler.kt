@@ -8,12 +8,11 @@ import com.cannonballapps.notechaser.musicutilities.Scale
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 
-// todo support injection :) ?
-class ExerciseSettingsAssembler(
+class ExerciseSettingsAssembler @Inject constructor() {
 
-) {
     /**
      * NotePoolType settings
      */

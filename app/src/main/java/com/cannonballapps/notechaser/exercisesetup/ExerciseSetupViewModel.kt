@@ -21,13 +21,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ExerciseSetupViewModel @Inject constructor(
     private val prefsStore: PrefsStore,
+    private val exerciseSettingsAssembler: ExerciseSettingsAssembler,
 ) : ViewModel() {
 
     // todo refactor
     lateinit var exerciseType: ExerciseType
 
-    // todo inject assembler
-    private val exerciseSettingsAssembler = ExerciseSettingsAssembler()
     val exerciseSettingsFlow = exerciseSettingsAssembler.exerciseSettingsFlow
 
     val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow.map {
