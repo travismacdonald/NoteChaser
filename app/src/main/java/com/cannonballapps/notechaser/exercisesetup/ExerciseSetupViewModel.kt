@@ -2,20 +2,17 @@ package com.cannonballapps.notechaser.exercisesetup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonballapps.notechaser.common.ExerciseSettings
+import com.cannonballapps.notechaser.common.ExerciseSettingsAssembler
 import com.cannonballapps.notechaser.common.ExerciseType
-import com.cannonballapps.notechaser.common.SessionType
+import com.cannonballapps.notechaser.common.NotePoolType
+import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
-import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -26,39 +23,14 @@ class ExerciseSetupViewModel @Inject constructor(
     private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
+    // todo refactor
     lateinit var exerciseType: ExerciseType
 
-    private val _exerciseSettingsFlow2: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
-        // TODO move default values to a better location
-        ExerciseSettings(
-            chromaticDegrees = booleanArrayOf(
-                true, true, true, true, true, true,
-                true, true, true, true, true, true,
-            ),
-            diatonicDegrees = booleanArrayOf(
-                true,
-                false,
-                true,
-                false,
-                true,
-                false,
-                false,
-            ),
-            scale = ParentScale.Major.scaleAtIndex(0),
-            notePoolType = NotePoolType.DIATONIC,
-            numQuestions = 20,
-            matchOctave = false,
-            playStartingPitch = true,
-            playableLowerBound = Note(48),
-            playableUpperBound = Note(72),
-            questionKey = PitchClass.C,
-            sessionTimeLimit = 10,
-            sessionType = SessionType.QUESTION_LIMIT,
-        ),
-    )
-    val exerciseSettingsFlow2: StateFlow<ExerciseSettings> = _exerciseSettingsFlow2.asStateFlow()
+    // todo inject assembler
+    private val exerciseSettingsAssembler = ExerciseSettingsAssembler()
+    val exerciseSettingsFlow = exerciseSettingsAssembler.exerciseSettingsFlow
 
-    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow2.map {
+    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow.map {
         hasNotePoolDegreesSelected() && hasSufficientRangeForPlayableGeneration()
     }.stateIn(
         scope = viewModelScope,
@@ -66,69 +38,82 @@ class ExerciseSetupViewModel @Inject constructor(
         initialValue = false,
     )
 
+    val notePoolTypes: List<NotePoolType>
+        get() = listOf(
+            exerciseSettingsAssembler.chromaticPoolType,
+            exerciseSettingsAssembler.diatonicPoolType,
+        )
+
+    val sessionLengthTypes: List<SessionLengthSettings>
+        get() = listOf(
+            exerciseSettingsAssembler.sessionLengthQuestionLimit,
+            exerciseSettingsAssembler.sessionLengthTimeLimit,
+            exerciseSettingsAssembler.sessionLengthNoLimit,
+        )
+
     fun saveExerciseSettings() {
         // todo look into an applicationScope implementation
         viewModelScope.launch {
             // todo save object in room, once refactored
-            prefsStore.saveExerciseSettings(exerciseSettingsFlow2.value)
+            prefsStore.saveExerciseSettings(exerciseSettingsFlow.value)
         }
     }
 
-    fun saveChromaticDegrees(degrees: BooleanArray) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(chromaticDegrees = degrees)
+    fun setChromaticDegrees(degrees: BooleanArray) {
+        exerciseSettingsAssembler.setChromaticDegrees(degrees)
     }
 
-    fun saveDiatonicDegrees(degrees: BooleanArray) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(diatonicDegrees = degrees)
+    fun setDiatonicDegrees(degrees: BooleanArray) {
+        exerciseSettingsAssembler.setDiatonicDegrees(degrees)
     }
 
-    fun saveMatchOctave(matchOctave: Boolean) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(matchOctave = matchOctave)
+    fun setMatchOctave(shouldMatchOctave: Boolean) {
+        exerciseSettingsAssembler.setShouldMatchOctave(shouldMatchOctave)
     }
 
-    fun saveScale(scale: Scale) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(scale = scale)
+    fun setScale(scale: Scale) {
+        exerciseSettingsAssembler.setScale(scale)
     }
 
-    fun saveNotePoolType(type: NotePoolType) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(notePoolType = type)
+    fun setNotePoolType(notePoolType: NotePoolType) {
+        exerciseSettingsAssembler.notePoolType = notePoolType
     }
 
-    fun saveNumQuestions(numQuestions: Int) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(numQuestions = numQuestions)
+    fun setNumQuestions(numQuestions: Int) {
+        exerciseSettingsAssembler.setNumQuestions(numQuestions)
     }
 
-    fun savePlayStartingPitch(playPitch: Boolean) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playStartingPitch = playPitch)
+    fun setShouldPlayStartingPitch(shouldPlayStartingPitch: Boolean) {
+        exerciseSettingsAssembler.setShouldPlayStartingPitch(shouldPlayStartingPitch)
     }
 
-    fun savePlayableLowerBound(lower: Note) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playableLowerBound = lower)
+    fun setPlayableLowerBound(lowerBound: Note) {
+        exerciseSettingsAssembler.setPlayableLowerBound(lowerBound)
     }
 
-    fun savePlayableUpperBound(upper: Note) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(playableUpperBound = upper)
+    fun setPlayableUpperBound(upperBound: Note) {
+        exerciseSettingsAssembler.setPlayableUpperBound(upperBound)
     }
 
-    fun saveQuestionKey(key: PitchClass) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(questionKey = key)
+    fun setQuestionKey(key: PitchClass) {
+        exerciseSettingsAssembler.setQuestionKey(key)
     }
 
-    fun saveSessionTimeLimit(len: Int) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(sessionTimeLimit = len)
+    fun setTimeLimitMinutes(timeLimitMinutes: Int) {
+        exerciseSettingsAssembler.setTimeLimitMinutes(timeLimitMinutes)
     }
 
-    fun saveSessionType(sessionType: SessionType) {
-        _exerciseSettingsFlow2.value = exerciseSettingsFlow2.value.copy(sessionType = sessionType)
+    fun setSessionLengthType(sessionLengthSettings: SessionLengthSettings) {
+        exerciseSettingsAssembler.sessionLengthSettings = sessionLengthSettings
     }
 
     private fun hasNotePoolDegreesSelected(): Boolean {
-        return when (exerciseSettingsFlow2.value.notePoolType) {
-            NotePoolType.DIATONIC -> {
-                exerciseSettingsFlow2.value.diatonicDegrees.contains(true)
+        return when (val notePoolType = exerciseSettingsAssembler.notePoolType) {
+            is NotePoolType.Diatonic -> {
+                notePoolType.degrees.contains(true)
             }
-            NotePoolType.CHROMATIC -> {
-                exerciseSettingsFlow2.value.chromaticDegrees.contains(true)
+            is NotePoolType.Chromatic -> {
+                notePoolType.degrees.contains(true)
             }
         }
     }
