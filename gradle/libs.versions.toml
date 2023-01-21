@@ -20,7 +20,7 @@ junit4 = "4.13.2"
 kotlin = "1.7.20"
 kotlinxCoroutines = "1.6.4"
 materialDesignComposeThemeAdapter = "1.2.1"
-materialDesignMaterial = "1.8.0-beta01"
+materialDesignMaterial = "1.8.0-rc01"
 timber = "5.0.1"
 
 [libraries]
