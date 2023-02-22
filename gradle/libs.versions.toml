@@ -1,7 +1,7 @@
 [versions]
 androidxActivity = "1.6.1"
 androidxAppCompat = "1.6.1"
-androidxArchCore = "2.1.0"
+androidxArchCore = "2.2.0"
 androidxComposeBom = "2023.01.00"
 androidxComposeCompiler = "1.3.2"
 androidxConstraintLayout = "2.1.4"
