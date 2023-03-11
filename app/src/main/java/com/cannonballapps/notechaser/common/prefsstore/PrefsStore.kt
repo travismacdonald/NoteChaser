@@ -56,7 +56,7 @@ class PrefsStore @Inject constructor(
                 playableUpperBound = Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
             ),
             sessionLengthSettings = SessionLengthSettings.QuestionLimit(
-                questionLimit = 20,
+                numQuestions = 20,
             ),
         )
     }

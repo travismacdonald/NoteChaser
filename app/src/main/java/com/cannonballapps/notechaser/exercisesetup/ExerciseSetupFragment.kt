@@ -173,8 +173,8 @@ class ExerciseSetupFragment : Fragment() {
         binding.numQuestionsSlider.layout.isVisible = exerciseSettings.sessionLengthSettings is SessionLengthSettings.QuestionLimit
         if (exerciseSettings.sessionLengthSettings is SessionLengthSettings.QuestionLimit) {
             binding.numQuestionsSlider.apply {
-                if (exerciseSettings.sessionLengthSettings.questionLimit != slider.value.toInt()) {
-                    slider.value = exerciseSettings.sessionLengthSettings.questionLimit.toFloat()
+                if (exerciseSettings.sessionLengthSettings.numQuestions != slider.value.toInt()) {
+                    slider.value = exerciseSettings.sessionLengthSettings.numQuestions.toFloat()
                     slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
                     slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
                     slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()

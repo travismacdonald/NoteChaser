@@ -16,7 +16,7 @@ sealed interface SessionLengthSettings {
     ) : SessionLengthSettings
 
     data class QuestionLimit(
-        val questionLimit: Int,
+        val numQuestions: Int,
     ) : SessionLengthSettings
 
     object NoLimit : SessionLengthSettings
@@ -24,11 +24,11 @@ sealed interface SessionLengthSettings {
 
 sealed interface NotePoolType {
     data class Chromatic(
-        val degrees: BooleanArray,
+        val degrees: BooleanArray, // todo inspection
     ) : NotePoolType
 
     data class Diatonic(
-        val degrees: BooleanArray,
+        val degrees: BooleanArray, // todo inspection
         val scale: Scale,
     ) : NotePoolType
 }

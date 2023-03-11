@@ -11,7 +11,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 
+// todo unit tests
 class ExerciseSettingsAssembler @Inject constructor() {
+
+    /**
+     * ExerciseSettings flows
+     */
+
+    private val _exerciseSettingsFlow: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
+        assembleExerciseSettings(),
+    )
+    val exerciseSettingsFlow: StateFlow<ExerciseSettings> = _exerciseSettingsFlow.asStateFlow()
 
     /**
      * NotePoolType settings
@@ -55,7 +65,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
      */
 
     var sessionLengthQuestionLimit = SessionLengthSettings.QuestionLimit(
-        questionLimit = 20,
+        numQuestions = 20,
     )
 
     var sessionLengthTimeLimit = SessionLengthSettings.TimeLimit(
@@ -70,15 +80,6 @@ class ExerciseSettingsAssembler @Inject constructor() {
             field = value
             updateExerciseSettings()
         }
-
-    /**
-     * ExerciseSettings flows
-     */
-
-    private val _exerciseSettingsFlow: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
-        assembleExerciseSettings(),
-    )
-    val exerciseSettingsFlow: StateFlow<ExerciseSettings> = _exerciseSettingsFlow.asStateFlow()
 
 
     /**
@@ -115,7 +116,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
 
     fun setNumQuestions(numQuestions: Int) {
         sessionLengthQuestionLimit = sessionLengthQuestionLimit.copy(
-            questionLimit = numQuestions,
+            numQuestions = numQuestions,
         )
         sessionLengthSettings = sessionLengthQuestionLimit
         updateExerciseSettings()

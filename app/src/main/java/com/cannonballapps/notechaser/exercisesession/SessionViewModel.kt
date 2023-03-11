@@ -515,7 +515,7 @@ class SessionViewModel @Inject constructor(
             sessionTimeLenInMinutes = it.timeLimitMinutes
         }
         (sessionLengthSettings as? SessionLengthSettings.QuestionLimit)?.let {
-            numQuestions = it.questionLimit
+            numQuestions = it.numQuestions
         }
 
         shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().sessionSettings.shouldPlayStartingPitch
