@@ -404,9 +404,11 @@ class ExerciseSetupFragment : Fragment() {
                     entries = sessionTypeNames,
                     initSelectedIx = 0,
                     onPositiveButtonClick = { selectedIx ->
-                        viewModel.setSessionLengthType(
-                            viewModel.sessionLengthTypes[selectedIx]
-                        )
+                        when (viewModel.sessionLengthTypes[selectedIx]) {
+                            is SessionLengthSettings.QuestionLimit -> { viewModel.setSessionLengthTypeQuestionLimit() }
+                            is SessionLengthSettings.TimeLimit -> { viewModel.setSessionLengthTypeTimeLimit() }
+                            SessionLengthSettings.NoLimit -> { viewModel.setSessionLengthTypeNoLimit() }
+                        }
                     },
                 )
             }

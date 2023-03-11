@@ -33,7 +33,7 @@ class ExerciseSetupViewModel @Inject constructor(
         hasNotePoolDegreesSelected() && hasSufficientRangeForPlayableGeneration()
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+        started = SharingStarted.Eagerly,
         initialValue = false,
     )
 
@@ -102,8 +102,16 @@ class ExerciseSetupViewModel @Inject constructor(
         exerciseSettingsAssembler.setTimeLimitMinutes(timeLimitMinutes)
     }
 
-    fun setSessionLengthType(sessionLengthSettings: SessionLengthSettings) {
-        exerciseSettingsAssembler.sessionLengthSettings = sessionLengthSettings
+    fun setSessionLengthTypeQuestionLimit() {
+        exerciseSettingsAssembler.setSessionLengthTypeQuestionLimit()
+    }
+
+    fun setSessionLengthTypeTimeLimit() {
+        exerciseSettingsAssembler.setSessionLengthTypeTimeLimit()
+    }
+
+    fun setSessionLengthTypeNoLimit() {
+        exerciseSettingsAssembler.setSessionLengthTypeNoLimit()
     }
 
     private fun hasNotePoolDegreesSelected(): Boolean {

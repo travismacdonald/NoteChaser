@@ -14,14 +14,6 @@ import javax.inject.Inject
 // todo unit tests
 class ExerciseSettingsAssembler @Inject constructor() {
 
-    /**
-     * ExerciseSettings flows
-     */
-
-    private val _exerciseSettingsFlow: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
-        assembleExerciseSettings(),
-    )
-    val exerciseSettingsFlow: StateFlow<ExerciseSettings> = _exerciseSettingsFlow.asStateFlow()
 
     /**
      * NotePoolType settings
@@ -41,12 +33,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
         scale = ParentScale.Major.Ionian,
     )
 
-    // todo consider also making an explicit function
     var notePoolType: NotePoolType = chromaticPoolType
-        set(value) {
-            field = value
-            updateExerciseSettings()
-        }
 
     /**
      * SessionSettings
@@ -74,13 +61,16 @@ class ExerciseSettingsAssembler @Inject constructor() {
 
     var sessionLengthNoLimit = SessionLengthSettings.NoLimit
 
-    // todo consider also making an explicit function
     var sessionLengthSettings: SessionLengthSettings = sessionLengthQuestionLimit
-        set(value) {
-            field = value
-            updateExerciseSettings()
-        }
 
+    /**
+     * ExerciseSettings flows
+     */
+
+    private val _exerciseSettingsFlow: MutableStateFlow<ExerciseSettings> = MutableStateFlow(
+        assembleExerciseSettings(),
+    )
+    val exerciseSettingsFlow: StateFlow<ExerciseSettings> = _exerciseSettingsFlow.asStateFlow()
 
     /**
      * Assemble functions
@@ -90,6 +80,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
         chromaticPoolType = chromaticPoolType.copy(
             degrees = chromaticDegrees,
         )
+        notePoolType = chromaticPoolType
         updateExerciseSettings()
     }
 
@@ -97,6 +88,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
         diatonicPoolType = diatonicPoolType.copy(
             degrees = diatonicDegrees,
         )
+        notePoolType = diatonicPoolType
         updateExerciseSettings()
     }
 
@@ -111,14 +103,39 @@ class ExerciseSettingsAssembler @Inject constructor() {
         diatonicPoolType = diatonicPoolType.copy(
             scale = scale,
         )
+        notePoolType = diatonicPoolType
         updateExerciseSettings()
     }
+
+    fun setSessionLengthTypeQuestionLimit() {
+        sessionLengthSettings = sessionLengthQuestionLimit
+        updateExerciseSettings()
+    }
+
+    fun setSessionLengthTypeTimeLimit() {
+        sessionLengthSettings = sessionLengthTimeLimit
+        updateExerciseSettings()
+    }
+
+    fun setSessionLengthTypeNoLimit() {
+        sessionLengthSettings = sessionLengthNoLimit
+        updateExerciseSettings()
+    }
+
 
     fun setNumQuestions(numQuestions: Int) {
         sessionLengthQuestionLimit = sessionLengthQuestionLimit.copy(
             numQuestions = numQuestions,
         )
         sessionLengthSettings = sessionLengthQuestionLimit
+        updateExerciseSettings()
+    }
+
+    fun setTimeLimitMinutes(timeLimitMinutes: Int) {
+        sessionLengthTimeLimit = sessionLengthTimeLimit.copy(
+            timeLimitMinutes = timeLimitMinutes,
+        )
+        sessionLengthSettings = sessionLengthTimeLimit
         updateExerciseSettings()
     }
 
@@ -146,13 +163,6 @@ class ExerciseSettingsAssembler @Inject constructor() {
     fun setQuestionKey(key: PitchClass) {
         sessionSettings = sessionSettings.copy(
             questionKey = key,
-        )
-        updateExerciseSettings()
-    }
-
-    fun setTimeLimitMinutes(timeLimitMinutes: Int) {
-        sessionLengthTimeLimit = sessionLengthTimeLimit.copy(
-            timeLimitMinutes = timeLimitMinutes,
         )
         updateExerciseSettings()
     }
