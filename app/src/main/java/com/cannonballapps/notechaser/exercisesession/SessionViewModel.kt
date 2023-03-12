@@ -6,9 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonballapps.notechaser.common.ExerciseType
+import com.cannonballapps.notechaser.common.NotePoolType
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.QuestionLog
-import com.cannonballapps.notechaser.common.SessionType
+import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SoundEffectPlayer
 import com.cannonballapps.notechaser.common.noteprocessor.NoteProcessor
 import com.cannonballapps.notechaser.common.noteprocessor.NoteProcessorListener
@@ -17,7 +18,6 @@ import com.cannonballapps.notechaser.common.signalprocessor.SignalProcessor
 import com.cannonballapps.notechaser.common.signalprocessor.SignalProcessorListener
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableFactory
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -109,7 +109,7 @@ class SessionViewModel @Inject constructor(
     private var answersShouldMatchOctave by Delegates.notNull<Boolean>()
     var numQuestions by Delegates.notNull<Int>()
     var sessionTimeLenInMinutes by Delegates.notNull<Int>()
-    lateinit var sessionType: SessionType
+    lateinit var sessionLengthSettings: SessionLengthSettings
     var sessionHasStarted = false
         private set
 
@@ -315,24 +315,21 @@ class SessionViewModel @Inject constructor(
     private fun makeNotePlayableGenerator() {
         viewModelScope.launch {
             val notePoolType = prefsStore.exerciseSettingsFlow().first().notePoolType
-            val key = prefsStore.exerciseSettingsFlow().first().questionKey
-            val lowerBound = prefsStore.exerciseSettingsFlow().first().playableLowerBound
-            val upperBound = prefsStore.exerciseSettingsFlow().first().playableUpperBound
+            val key = prefsStore.exerciseSettingsFlow().first().sessionSettings.questionKey
+            val lowerBound = prefsStore.exerciseSettingsFlow().first().sessionSettings.playableLowerBound
+            val upperBound = prefsStore.exerciseSettingsFlow().first().sessionSettings.playableUpperBound
 
-            if (notePoolType == NotePoolType.CHROMATIC) {
-                val degrees = prefsStore.exerciseSettingsFlow().first().chromaticDegrees
+            if (notePoolType is NotePoolType.Chromatic) {
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
-                    degrees,
+                    notePoolType.degrees,
                     key,
                     lowerBound,
                     upperBound,
                 )
-            } else if (notePoolType == NotePoolType.DIATONIC) {
-                val degrees = prefsStore.exerciseSettingsFlow().first().diatonicDegrees
-                val scale = prefsStore.exerciseSettingsFlow().first().scale
+            } else if (notePoolType is NotePoolType.Diatonic) {
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
-                    degrees,
-                    scale,
+                    notePoolType.degrees,
+                    notePoolType.scale,
                     key,
                     lowerBound,
                     upperBound,
@@ -390,13 +387,13 @@ class SessionViewModel @Inject constructor(
     }
 
     private fun isTimedSession() =
-        sessionType == SessionType.TIME_LIMIT
+        sessionLengthSettings is SessionLengthSettings.TimeLimit
 
     private fun timeLimitReached() =
         _elapsedSessionTimeInSeconds.value!! >= sessionTimeLenInMinutes * 60
 
     private fun isQuestionLimitSession() =
-        sessionType == SessionType.QUESTION_LIMIT
+        sessionLengthSettings is SessionLengthSettings.QuestionLimit
 
     private fun questionLimitReached() =
         _numQuestionsCorrect.value!! == numQuestions
@@ -504,22 +501,24 @@ class SessionViewModel @Inject constructor(
     }
 
     private suspend fun makeStartingPitch(): Note {
-        val key = prefsStore.exerciseSettingsFlow().first().questionKey
+        val key = prefsStore.exerciseSettingsFlow().first().sessionSettings.questionKey
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
         return Note(keyTransposed)
     }
 
     private suspend fun fetchPrefStoreData() {
-        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().matchOctave
+        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().sessionSettings.shouldMatchOctave
 
-        sessionType = prefsStore.exerciseSettingsFlow().first().sessionType
-        if (sessionType == SessionType.TIME_LIMIT) {
-            sessionTimeLenInMinutes = prefsStore.exerciseSettingsFlow().first().sessionTimeLimit
-        } else if (sessionType == SessionType.QUESTION_LIMIT) {
-            numQuestions = prefsStore.exerciseSettingsFlow().first().numQuestions
+        // todo refactor
+        sessionLengthSettings = prefsStore.exerciseSettingsFlow().first().sessionLengthSettings
+        (sessionLengthSettings as? SessionLengthSettings.TimeLimit)?.let {
+            sessionTimeLenInMinutes = it.timeLimitMinutes
+        }
+        (sessionLengthSettings as? SessionLengthSettings.QuestionLimit)?.let {
+            numQuestions = it.numQuestions
         }
 
-        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().playStartingPitch
+        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().sessionSettings.shouldPlayStartingPitch
         if (shouldPlayReferencePitchOnStart) {
             referencePitch = makeStartingPitch()
         }

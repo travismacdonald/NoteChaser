@@ -16,7 +16,7 @@ import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.common.MidiPlayer2
 import com.cannonballapps.notechaser.common.PlayablePlayer
-import com.cannonballapps.notechaser.common.SessionType
+import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SoundEffectPlayer
 import com.cannonballapps.notechaser.databinding.FragmentSessionBinding
 import com.cannonballapps.notechaser.musicutilities.Note
@@ -24,7 +24,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @ObsoleteCoroutinesApi
 @AndroidEntryPoint
@@ -39,8 +38,6 @@ class SessionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        Timber.d("backStack count: ${requireActivity().supportFragmentManager.backStackEntryCount}")
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             viewModel.pauseSession()
             showEndSessionDialog()
@@ -101,16 +98,19 @@ class SessionFragment : Fragment() {
 
     private fun setupSessionQuestionCounter() {
         viewModel.numQuestionsCorrect.observe(viewLifecycleOwner) { num ->
-            val questionText = when (viewModel.sessionType) {
-                SessionType.QUESTION_LIMIT -> {
+            val questionText = when (viewModel.sessionLengthSettings) {
+                is SessionLengthSettings.QuestionLimit -> {
                     getString(
                         R.string.correctAnswerCounterWithLimit,
                         num,
                         viewModel.numQuestions,
                     )
                 }
-                SessionType.TIME_LIMIT -> {
+                is SessionLengthSettings.TimeLimit -> {
                     getString(R.string.correctAnswerCounter, num)
+                }
+                is SessionLengthSettings.NoLimit -> {
+                    TODO()
                 }
             }
             binding.questionCounterTv.text = questionText
@@ -246,15 +246,18 @@ class SessionFragment : Fragment() {
     private fun setupSessionTimer() {
         binding.sessionTimeTv.apply {
             viewModel.elapsedSessionTimeInSeconds.observe(viewLifecycleOwner) { totalSeconds ->
-                text = when (viewModel.sessionType) {
-                    SessionType.TIME_LIMIT -> {
+                text = when (viewModel.sessionLengthSettings) {
+                    is SessionLengthSettings.TimeLimit -> {
                         val sessionTimeInSeconds = viewModel.sessionTimeLenInMinutes * 60
                         val timeStr = secondsToFormattedTimeString(sessionTimeInSeconds - totalSeconds)
                         timeStr
                     }
-                    SessionType.QUESTION_LIMIT -> {
+                    is SessionLengthSettings.QuestionLimit -> {
                         val timeStr = secondsToFormattedTimeString(totalSeconds)
                         timeStr
+                    }
+                    is SessionLengthSettings.NoLimit -> {
+                        TODO()
                     }
                 }
             }
@@ -301,11 +304,9 @@ class SessionFragment : Fragment() {
             .setTitle(resources.getString(R.string.endSessionDialog_title))
             .setMessage(resources.getString(R.string.endSessionDialog_message))
             .setNegativeButton(resources.getString(R.string.endSessionDialog_resume)) { _, _ ->
-                Timber.d("session resumed!")
                 viewModel.resumeSession()
             }
             .setPositiveButton(resources.getString(R.string.endSessionDialog_end)) { _, _ ->
-                Timber.d("session ended!")
                 viewModel.endSession()
                 navigateToHomeFragment()
             }

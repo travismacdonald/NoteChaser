@@ -9,11 +9,12 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.cannonballapps.notechaser.common.ExerciseSettings
-import com.cannonballapps.notechaser.common.SessionType
-import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
+import com.cannonballapps.notechaser.common.NotePoolType
+import com.cannonballapps.notechaser.common.SessionLengthSettings
+import com.cannonballapps.notechaser.common.SessionSettings
 import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.NotePoolType
 import com.cannonballapps.notechaser.musicutilities.ParentScale
+import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -27,66 +28,42 @@ private val DEFAULT_CHROMATIC_DEGREES = booleanArrayOf(
     true, true, true, true, true, true,
 )
 
-private val DEFAULT_DIATONIC_DEGREES = booleanArrayOf(
-    true,
-    false,
-    true,
-    false,
-    true,
-    false,
-    false,
-)
-
-private const val DEFAULT_NUM_QUESTIONS = 20
-
 private const val DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM = 48
 
 private const val DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM = 72
-
-private const val DEFAULT_QUESTION_KEY_VAL = 0
-
-private const val DEFAULT_SESSION_TIME_LEN = 10
 
 // TODO: implement error handling for erronous values (ex: -1 for mode ix)
 // TODO: make PrefsStore an interface for easier unit testing
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(STORE_NAME)
 
-class PrefsStore @Inject constructor(@ApplicationContext context: Context) {
+class PrefsStore @Inject constructor(
+    @ApplicationContext context: Context,
+) {
 
     private val dataStore = context.dataStore
 
-    fun exerciseSettingsFlow(): Flow<ExerciseSettings> = dataStore.data.map { preferences ->
+    fun exerciseSettingsFlow(): Flow<ExerciseSettings> = dataStore.data.map { _ ->
         ExerciseSettings(
-            chromaticDegrees = preferences[PrefKeys.CHROMATIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_CHROMATIC_DEGREES,
-            diatonicDegrees = preferences[PrefKeys.DIATONIC_DEGREES]?.deserializeToBooleanArray() ?: DEFAULT_DIATONIC_DEGREES,
-            scale = preferences[PrefKeys.SCALE_KEY]?.deserializeToScale() ?: ParentScale.Major.scaleAtIndex(0),
-            notePoolType = NotePoolType.values()[preferences[PrefKeys.NOTE_POOL_TYPE_ORDINAL] ?: NotePoolType.DIATONIC.ordinal],
-            numQuestions = preferences[PrefKeys.NUM_QUESTIONS_KEY] ?: DEFAULT_NUM_QUESTIONS,
-            matchOctave = preferences[PrefKeys.MATCH_OCTAVE] ?: false,
-            playStartingPitch = preferences[PrefKeys.PLAY_STARTING_PITCH] ?: true,
-            playableLowerBound = Note(preferences[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
-            playableUpperBound = Note(preferences[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] ?: DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
-            questionKey = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[preferences[PrefKeys.QUESTION_KEY_VAL] ?: DEFAULT_QUESTION_KEY_VAL],
-            sessionTimeLimit = preferences[PrefKeys.SESSION_TIME_LIMIT] ?: DEFAULT_SESSION_TIME_LEN,
-            sessionType = SessionType.values()[preferences[PrefKeys.SESSION_TYPE_ORDINAL] ?: 0],
+            notePoolType = NotePoolType.Chromatic(
+                degrees = DEFAULT_CHROMATIC_DEGREES,
+            ),
+            sessionSettings = SessionSettings(
+                questionKey = PitchClass.C,
+                shouldMatchOctave = false,
+                shouldPlayStartingPitch = true,
+                playableLowerBound = Note(midiNumber = DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
+                playableUpperBound = Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
+            ),
+            sessionLengthSettings = SessionLengthSettings.QuestionLimit(
+                numQuestions = 20,
+            ),
         )
     }
 
     suspend fun saveExerciseSettings(exerciseSettings: ExerciseSettings) {
         dataStore.edit { prefs ->
-            prefs[PrefKeys.CHROMATIC_DEGREES] = exerciseSettings.chromaticDegrees.serialize()
-            prefs[PrefKeys.DIATONIC_DEGREES] = exerciseSettings.diatonicDegrees.serialize()
-            prefs[PrefKeys.MATCH_OCTAVE] = exerciseSettings.matchOctave
-            prefs[PrefKeys.SCALE_KEY] = exerciseSettings.scale.serialize()
-            prefs[PrefKeys.NOTE_POOL_TYPE_ORDINAL] = exerciseSettings.notePoolType.ordinal
-            prefs[PrefKeys.NUM_QUESTIONS_KEY] = exerciseSettings.numQuestions
-            prefs[PrefKeys.PLAY_STARTING_PITCH] = exerciseSettings.playStartingPitch
-            prefs[PrefKeys.PLAYABLE_LOWER_BOUND_MIDI_NUM] = exerciseSettings.playableLowerBound.midiNumber
-            prefs[PrefKeys.PLAYABLE_UPPER_BOUND_MIDI_NUM] = exerciseSettings.playableUpperBound.midiNumber
-            prefs[PrefKeys.QUESTION_KEY_VAL] = exerciseSettings.questionKey.ordinal
-            prefs[PrefKeys.SESSION_TIME_LIMIT] = exerciseSettings.sessionTimeLimit
-            prefs[PrefKeys.SESSION_TYPE_ORDINAL] = exerciseSettings.sessionType.ordinal
+            // todo fix during room refactor
         }
     }
 
