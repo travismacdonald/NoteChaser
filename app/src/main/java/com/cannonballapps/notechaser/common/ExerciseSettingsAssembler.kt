@@ -14,7 +14,6 @@ import javax.inject.Inject
 // todo unit tests
 class ExerciseSettingsAssembler @Inject constructor() {
 
-
     /**
      * NotePoolType settings
      */

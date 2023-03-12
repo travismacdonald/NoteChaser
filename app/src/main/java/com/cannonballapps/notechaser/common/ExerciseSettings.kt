@@ -33,7 +33,6 @@ sealed interface NotePoolType {
     ) : NotePoolType
 }
 
-// todo better name?
 data class SessionSettings(
     val questionKey: PitchClass,
     val shouldMatchOctave: Boolean,
