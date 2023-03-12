@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-
 // todo unit tests
 class ExerciseSettingsAssembler @Inject constructor() {
 
@@ -27,7 +26,13 @@ class ExerciseSettingsAssembler @Inject constructor() {
 
     var diatonicPoolType = NotePoolType.Diatonic(
         degrees = booleanArrayOf(
-            true, true, true, true, true, true, true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
         ),
         scale = ParentScale.Major.Ionian,
     )
@@ -120,7 +125,6 @@ class ExerciseSettingsAssembler @Inject constructor() {
         sessionLengthSettings = sessionLengthNoLimit
         updateExerciseSettings()
     }
-
 
     fun setNumQuestions(numQuestions: Int) {
         sessionLengthQuestionLimit = sessionLengthQuestionLimit.copy(

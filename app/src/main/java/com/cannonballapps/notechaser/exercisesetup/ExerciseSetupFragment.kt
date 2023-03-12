@@ -186,13 +186,14 @@ class ExerciseSetupFragment : Fragment() {
          * Time limit
          */
         binding.sessionTimeLimitSlider.layout.isVisible = exerciseSettings.sessionLengthSettings is SessionLengthSettings.TimeLimit
-        if (exerciseSettings.sessionLengthSettings is SessionLengthSettings.TimeLimit)
-        binding.sessionTimeLimitSlider.apply {
-            if (exerciseSettings.sessionLengthSettings.timeLimitMinutes != slider.value.toInt()) {
-                slider.value = exerciseSettings.sessionLengthSettings.timeLimitMinutes.toFloat()
-                slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
-                slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
-                slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
+        if (exerciseSettings.sessionLengthSettings is SessionLengthSettings.TimeLimit) {
+            binding.sessionTimeLimitSlider.apply {
+                if (exerciseSettings.sessionLengthSettings.timeLimitMinutes != slider.value.toInt()) {
+                    slider.value = exerciseSettings.sessionLengthSettings.timeLimitMinutes.toFloat()
+                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
+                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
+                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
+                }
             }
         }
 

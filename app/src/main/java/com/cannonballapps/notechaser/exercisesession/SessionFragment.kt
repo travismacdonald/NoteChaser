@@ -110,7 +110,7 @@ class SessionFragment : Fragment() {
                     getString(R.string.correctAnswerCounter, num)
                 }
                 is SessionLengthSettings.NoLimit -> {
-                   TODO()
+                    TODO()
                 }
             }
             binding.questionCounterTv.text = questionText
