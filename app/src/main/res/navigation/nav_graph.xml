@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_exerciseListFragment_to_exerciseSetupFragment"
             app:destination="@id/exerciseSetupFragment" />
+        <action
+            android:id="@+id/action_exerciseListFragment_to_exerciseGeneratorFragment"
+            app:destination="@id/exerciseGeneratorFragment" />
     </fragment>
 
     <fragment
@@ -45,6 +48,20 @@
             android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
             app:destination="@id/sessionFragment"
             app:popUpTo="@id/exerciseSelectionFragment" />
+        <action
+            android:id="@+id/action_exerciseSetupFragment_to_exerciseSelectionFragment"
+            app:popUpTo="@id/exerciseSelectionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseGeneratorFragment"
+        android:name="com.cannonballapps.notechaser.exercisegenerator.ExerciseGeneratorFragment"
+        android:label="fragment_exercise_generator" >
+
+        <argument
+            android:name="generatorType"
+            app:argType="com.cannonballapps.notechaser.exercisegenerator.GeneratorType" />
+
         <action
             android:id="@+id/action_exerciseSetupFragment_to_exerciseSelectionFragment"
             app:popUpTo="@id/exerciseSelectionFragment" />
