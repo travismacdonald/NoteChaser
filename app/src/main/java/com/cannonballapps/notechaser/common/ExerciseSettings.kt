@@ -1,12 +1,13 @@
 package com.cannonballapps.notechaser.common
 
+import android.util.Range
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 
 data class ExerciseSettings(
     val notePoolType: NotePoolType,
-    val sessionSettings: SessionSettings,
+    val sessionQuestionSettings: SessionQuestionSettings,
     val sessionLengthSettings: SessionLengthSettings,
 )
 
@@ -24,19 +25,18 @@ sealed interface SessionLengthSettings {
 
 sealed interface NotePoolType {
     data class Chromatic(
-        val degrees: BooleanArray, // todo inspection
+        val degrees: BooleanArray, // todo inspection, enforce size
     ) : NotePoolType
 
     data class Diatonic(
-        val degrees: BooleanArray, // todo inspection
+        val degrees: BooleanArray, // todo inspection, enforce size
         val scale: Scale,
     ) : NotePoolType
 }
 
-data class SessionSettings(
+data class SessionQuestionSettings(
     val questionKey: PitchClass,
     val shouldMatchOctave: Boolean,
     val shouldPlayStartingPitch: Boolean,
-    val playableLowerBound: Note,
-    val playableUpperBound: Note,
+    val playableBounds: Range<Note>,
 )

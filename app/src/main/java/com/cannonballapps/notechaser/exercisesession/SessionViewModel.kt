@@ -315,9 +315,9 @@ class SessionViewModel @Inject constructor(
     private fun makeNotePlayableGenerator() {
         viewModelScope.launch {
             val notePoolType = prefsStore.exerciseSettingsFlow().first().notePoolType
-            val key = prefsStore.exerciseSettingsFlow().first().sessionSettings.questionKey
-            val lowerBound = prefsStore.exerciseSettingsFlow().first().sessionSettings.playableLowerBound
-            val upperBound = prefsStore.exerciseSettingsFlow().first().sessionSettings.playableUpperBound
+            val key = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.questionKey
+            val lowerBound = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.playableBounds.lower
+            val upperBound = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.playableBounds.upper
 
             if (notePoolType is NotePoolType.Chromatic) {
                 generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
@@ -501,13 +501,13 @@ class SessionViewModel @Inject constructor(
     }
 
     private suspend fun makeStartingPitch(): Note {
-        val key = prefsStore.exerciseSettingsFlow().first().sessionSettings.questionKey
+        val key = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.questionKey
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
         return Note(keyTransposed)
     }
 
     private suspend fun fetchPrefStoreData() {
-        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().sessionSettings.shouldMatchOctave
+        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.shouldMatchOctave
 
         // todo refactor
         sessionLengthSettings = prefsStore.exerciseSettingsFlow().first().sessionLengthSettings
@@ -518,7 +518,7 @@ class SessionViewModel @Inject constructor(
             numQuestions = it.numQuestions
         }
 
-        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().sessionSettings.shouldPlayStartingPitch
+        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.shouldPlayStartingPitch
         if (shouldPlayReferencePitchOnStart) {
             referencePitch = makeStartingPitch()
         }

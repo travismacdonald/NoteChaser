@@ -12,6 +12,7 @@
 
     <!-- Exercise Setup Strings -->
 
+    <!-- todo rename string ids -->
     <string name="answerSettings_header">Answer Settings</string>
     <string name="chromaticDegrees_title">Chromatic Degrees</string>
     <string name="diatonicDegrees_title">Diatonic Degrees</string>

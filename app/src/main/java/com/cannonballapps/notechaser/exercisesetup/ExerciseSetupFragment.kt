@@ -1,12 +1,13 @@
 package com.cannonballapps.notechaser.exercisesetup
 
 import android.os.Bundle
+import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+/*
+ * TODO
+ *  - convert entire fragment to use compose
+ */
 @AndroidEntryPoint
 class ExerciseSetupFragment : Fragment() {
 
@@ -39,47 +44,29 @@ class ExerciseSetupFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_exercise_setup,
-            container,
-            false,
-        )
-        binding.lifecycleOwner = this
-        args = ExerciseSetupFragmentArgs.fromBundle(requireArguments())
-
-        // TODO: use when statement, different functions for creating list
-        viewModel.exerciseType = args.exerciseType
-
-        bindExerciseSetupItemsList()
-
-        return binding.root
+       return ComposeView(requireContext()).apply {
+           setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+           setContent {
+               NoteChaserTheme {
+                   ExerciseSetupScreen()
+               }
+           }
+       }
     }
 
     private fun bindExerciseSetupItemsList() {
-        bindQuestionsHeader()
         bindNotePoolTypeChoiceSingleList()
         bindDiatonicDegreesMultiList()
         bindChromaticDegreeMultiList()
-        bindQuestionKeySingleList()
         bindScaleSingleList()
-        bindPlayableRangeBar()
 
-        bindSessionHeader()
-        bindSessionTypeSingleList()
-        bindNumQuestionsSlider()
-        bindTimerLengthSlider()
-
-        bindAnswerSettingsHeader()
-        bindMatchOctaveSwitch()
-        bindPlayStartingPitchSwitch()
         bindNavigationButtons()
 
         bindUi()
     }
 
     private fun bindUi() {
-        viewModel.exerciseSettingsFlow
+        viewModel.exerciseSettingsStream
             .onEach(::updateUi)
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -89,12 +76,6 @@ class ExerciseSetupFragment : Fragment() {
     }
 
     private fun updateUi(exerciseSettings: ExerciseSettings) {
-        /*
-         * Note pool type
-         */
-//        binding.noteTypePoolSingleList.summary.text = exerciseSettings.notePoolType.toString()
-//        binding.noteTypePoolSingleList
-
         /*
          * Chromatic degrees
          */
@@ -146,18 +127,6 @@ class ExerciseSetupFragment : Fragment() {
         }
 
         /*
-         * Question key
-         */
-        binding.questionKeySingleList.summary.text = exerciseSettings.sessionSettings.questionKey.toString()
-
-        /*
-         * Match octave
-         */
-        if (exerciseSettings.sessionSettings.shouldMatchOctave != binding.matchOctaveSwitch.switchWidget.isChecked) {
-            binding.matchOctaveSwitch.switchWidget.isChecked = exerciseSettings.sessionSettings.shouldMatchOctave
-        }
-
-        /*
          * Scale
          */
         binding.scaleSingleList.layout.isVisible = exerciseSettings.notePoolType is NotePoolType.Diatonic
@@ -168,87 +137,21 @@ class ExerciseSetupFragment : Fragment() {
         }
 
         /*
-         * Num questions
-         */
-        binding.numQuestionsSlider.layout.isVisible = exerciseSettings.sessionLengthSettings is SessionLengthSettings.QuestionLimit
-        if (exerciseSettings.sessionLengthSettings is SessionLengthSettings.QuestionLimit) {
-            binding.numQuestionsSlider.apply {
-                if (exerciseSettings.sessionLengthSettings.numQuestions != slider.value.toInt()) {
-                    slider.value = exerciseSettings.sessionLengthSettings.numQuestions.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.numQuestions_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.numQuestions_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.numQuestions_stepSize).toFloat()
-                }
-            }
-        }
-
-        /*
-         * Time limit
-         */
-        binding.sessionTimeLimitSlider.layout.isVisible = exerciseSettings.sessionLengthSettings is SessionLengthSettings.TimeLimit
-        if (exerciseSettings.sessionLengthSettings is SessionLengthSettings.TimeLimit) {
-            binding.sessionTimeLimitSlider.apply {
-                if (exerciseSettings.sessionLengthSettings.timeLimitMinutes != slider.value.toInt()) {
-                    slider.value = exerciseSettings.sessionLengthSettings.timeLimitMinutes.toFloat()
-                    slider.valueFrom = resources.getInteger(R.integer.sessionTimeLimit_min).toFloat()
-                    slider.valueTo = resources.getInteger(R.integer.sessionTimeLimit_max).toFloat()
-                    slider.stepSize = resources.getInteger(R.integer.sessionTimeLimit_stepSize).toFloat()
-                }
-            }
-        }
-
-        /*
          * Session type
          */
         binding.sessionTypeSingleList.summary.text = exerciseSettings.sessionLengthSettings.toString()
 
-        /*
-         * Play starting pitch
-         */
-        if (exerciseSettings.sessionSettings.shouldPlayStartingPitch != binding.startingPitchSwitch.switchWidget.isChecked) {
-            binding.startingPitchSwitch.switchWidget.isChecked = exerciseSettings.sessionSettings.shouldPlayStartingPitch
-        }
-
-        /*
-         * Playable bounds
-         */
-
-        val boundsAsFloats = listOf(
-            exerciseSettings.sessionSettings.playableLowerBound.midiNumber,
-            exerciseSettings.sessionSettings.playableUpperBound.midiNumber,
-        ).map { it.toFloat() }
-
-        binding.playableRangeBar.apply {
-            if (rangeSlider.values != boundsAsFloats) {
-                rangeSlider.values = boundsAsFloats
-                rangeSlider.valueFrom = resources.getInteger(R.integer.playableBound_min).toFloat()
-                rangeSlider.valueTo = resources.getInteger(R.integer.playableBound_max).toFloat()
-                rangeSlider.stepSize = resources.getInteger(R.integer.playableBound_stepSize).toFloat()
-            }
-        }
     }
 
     private fun updateNavButtons(isValidConfiguration: Boolean) {
         binding.navigationButtons.startButton.isEnabled = isValidConfiguration
     }
 
-    private fun bindQuestionsHeader() {
-        binding.questionsHeader.title.text = getString(R.string.questionSettings_header)
-    }
-
     private fun bindNotePoolTypeChoiceSingleList() {
-        val notePoolTypeNames = viewModel.notePoolTypes.map { it.toString() }.toTypedArray()
 
         binding.notePoolTypeSingleList.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.Default)
             setContent {
-                NoteChaserTheme {
-                    ExerciseSetupCard(
-                        headerText = "Note Pool Type", // todo string resource
-                        descriptionText = "Diatonic", // todo
-                        onCardClick = { /* todo */ },
-                    )
-                }
             }
             /* todo */
 //            layout.setOnClickListener {
@@ -301,24 +204,6 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun bindQuestionKeySingleList() {
-        binding.questionKeySingleList.apply {
-            title.text = getString(R.string.questionKey_title)
-
-            layout.setOnClickListener {
-                showMaterialDialogSingleList(
-                    title = getString(R.string.questionKey_title),
-                    entries = MusicTheoryUtils.CHROMATIC_SCALE_FLAT,
-                    initSelectedIx = 0,
-                    onPositiveButtonClick = { selectedIx ->
-                        val selectedPitchClass = MusicTheoryUtils.CHROMATIC_PITCH_CLASSES_FLAT[selectedIx]
-                        viewModel.setQuestionKey(selectedPitchClass)
-                    },
-                )
-            }
-        }
-    }
-
     private fun bindScaleSingleList() {
         val parentScaleNames = listOf(
             ParentScale.Major,
@@ -359,118 +244,6 @@ class ExerciseSetupFragment : Fragment() {
         }
     }
 
-    private fun bindPlayableRangeBar() {
-        // TODO: make the only selectable values notes that are actually in the scale
-        binding.playableRangeBar.apply {
-            title.text = getString(R.string.questionRange_title)
-
-            rangeSlider.addOnChangeListener { slider, _, _ ->
-                val range = slider.values.joinToString(separator = " - ") { ix ->
-                    MusicTheoryUtils.midiNumberToNoteName(ix.toInt())
-                }
-                summary.text = range
-            }
-
-            rangeSlider.addOnSliderTouchListener(
-                object : RangeSlider.OnSliderTouchListener {
-                    override fun onStartTrackingTouch(slider: RangeSlider) {}
-
-                    override fun onStopTrackingTouch(slider: RangeSlider) {
-                        if (slider.focusedThumbIndex == 0) {
-                            val lower = Note(slider.values[0].toInt())
-                            viewModel.setPlayableLowerBound(lower)
-                        } else {
-                            val upper = Note(slider.values[1].toInt())
-                            viewModel.setPlayableUpperBound(upper)
-                        }
-                    }
-                },
-            )
-        }
-    }
-
-    private fun bindSessionHeader() {
-        binding.sessionHeader.title.text = getString(R.string.sessionSettings_header)
-    }
-
-    private fun bindSessionTypeSingleList() {
-        val sessionTypeNames = viewModel.sessionLengthTypes.map { it.toString() }.toTypedArray()
-
-        binding.sessionTypeSingleList.apply {
-            title.text = getString(R.string.sessionType_title)
-
-            layout.setOnClickListener {
-                showMaterialDialogSingleList(
-                    title = getString(R.string.sessionType_title),
-                    entries = sessionTypeNames,
-                    initSelectedIx = 0,
-                    onPositiveButtonClick = { selectedIx ->
-                        when (viewModel.sessionLengthTypes[selectedIx]) {
-                            is SessionLengthSettings.QuestionLimit -> { viewModel.setSessionLengthTypeQuestionLimit() }
-                            is SessionLengthSettings.TimeLimit -> { viewModel.setSessionLengthTypeTimeLimit() }
-                            SessionLengthSettings.NoLimit -> { viewModel.setSessionLengthTypeNoLimit() }
-                        }
-                    },
-                )
-            }
-        }
-    }
-
-    // TODO: make items XML code consistent (eg tools:text, )
-    private fun bindNumQuestionsSlider() {
-        binding.numQuestionsSlider.apply {
-            title.text = getString(R.string.numQuestions_title)
-
-            slider.addOnChangeListener { _, value, _ ->
-                summary.text = value.toInt().toString()
-            }
-
-            slider.addOnSliderTouchListener(
-                object : Slider.OnSliderTouchListener {
-                    override fun onStartTrackingTouch(slider: Slider) {}
-
-                    override fun onStopTrackingTouch(slider: Slider) {
-                        viewModel.setNumQuestions(slider.value.toInt())
-                    }
-                },
-            )
-        }
-    }
-
-    private fun bindTimerLengthSlider() {
-        binding.sessionTimeLimitSlider.apply {
-            title.text = getString(R.string.sessionTimeLimit_title)
-
-            slider.addOnChangeListener { _, value, _ ->
-                summary.text = getString(R.string.sessionTimeLimit_summary, value.toInt())
-            }
-
-            slider.addOnSliderTouchListener(
-                object : Slider.OnSliderTouchListener {
-                    override fun onStartTrackingTouch(slider: Slider) {}
-
-                    override fun onStopTrackingTouch(slider: Slider) {
-                        viewModel.setTimeLimitMinutes(slider.value.toInt())
-                    }
-                },
-            )
-        }
-    }
-
-    private fun bindAnswerSettingsHeader() {
-        binding.answerSettingsHeader.title.text = getString(R.string.answerSettings_header)
-    }
-
-    private fun bindMatchOctaveSwitch() {
-        binding.matchOctaveSwitch.apply {
-            title.text = getString(R.string.matchOctave_title)
-            summary.text = getString(R.string.matchOctave_summary)
-            switchWidget.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setMatchOctave(isChecked)
-            }
-        }
-    }
-
     private fun bindNavigationButtons() {
         binding.navigationButtons.apply {
             startButton.text = getString(R.string.startSession_button)
@@ -488,16 +261,6 @@ class ExerciseSetupFragment : Fragment() {
         }
 
         // TODO: validate settings
-    }
-
-    private fun bindPlayStartingPitchSwitch() {
-        binding.startingPitchSwitch.apply {
-            title.text = getString(R.string.playStartingPitch_title)
-            summary.text = getString(R.string.playStartingPitch_summary)
-            switchWidget.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setShouldPlayStartingPitch(isChecked)
-            }
-        }
     }
 
     private fun showMaterialDialogSingleList(

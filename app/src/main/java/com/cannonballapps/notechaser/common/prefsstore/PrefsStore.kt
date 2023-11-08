@@ -1,6 +1,7 @@
 package com.cannonballapps.notechaser.common.prefsstore
 
 import android.content.Context
+import android.util.Range
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -11,7 +12,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.NotePoolType
 import com.cannonballapps.notechaser.common.SessionLengthSettings
-import com.cannonballapps.notechaser.common.SessionSettings
+import com.cannonballapps.notechaser.common.SessionQuestionSettings
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
@@ -48,12 +49,14 @@ class PrefsStore @Inject constructor(
             notePoolType = NotePoolType.Chromatic(
                 degrees = DEFAULT_CHROMATIC_DEGREES,
             ),
-            sessionSettings = SessionSettings(
+            sessionQuestionSettings = SessionQuestionSettings(
                 questionKey = PitchClass.C,
                 shouldMatchOctave = false,
                 shouldPlayStartingPitch = true,
-                playableLowerBound = Note(midiNumber = DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
-                playableUpperBound = Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
+                playableBounds = Range(
+                    Note(midiNumber = DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
+                    Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
+                ),
             ),
             sessionLengthSettings = SessionLengthSettings.QuestionLimit(
                 numQuestions = 20,
