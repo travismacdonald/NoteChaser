@@ -64,16 +64,7 @@ fun ExerciseSetupScreen(
     val exerciseSettingsState: State<ExerciseSettings> =
         viewModel.exerciseSettingsStream.collectAsState()
 
-    // TODO figure out how to pass data to dialog
-    // TODO figure out how to receive data from dialog
     var dialogData: DialogData? by remember { mutableStateOf(null) }
-
-    // TODO: remove mapper, do mapping in compose function instead
-//    val exerciseSetupItems = mapToExerciseSetupViewData(
-//        viewModel = viewModel,
-//        exerciseSettings = exerciseSettingsState.value,
-//        onShowDialog = { showDialog = true },
-//    ).exerciseSetupUiItems
 
     ExerciseSetupList(
         exerciseSettings = exerciseSettingsState.value,
