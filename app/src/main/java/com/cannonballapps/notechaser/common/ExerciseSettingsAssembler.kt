@@ -1,5 +1,6 @@
 package com.cannonballapps.notechaser.common
 
+import android.util.Range
 import com.cannonballapps.notechaser.musicutilities.Ionian
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale
@@ -40,15 +41,17 @@ class ExerciseSettingsAssembler @Inject constructor() {
     var notePoolType: NotePoolType = chromaticPoolType
 
     /**
-     * SessionSettings
+     * SessionQuestionSettings
      */
 
-    private var sessionSettings = SessionSettings(
+    private var sessionQuestionSettings = SessionQuestionSettings(
         questionKey = PitchClass.C,
         shouldMatchOctave = false,
         shouldPlayStartingPitch = true,
-        playableLowerBound = Note(midiNumber = 48),
-        playableUpperBound = Note(midiNumber = 72),
+        playableBounds = Range(
+            Note(midiNumber = 48),
+            Note(midiNumber = 72),
+        ),
     )
 
     /**
@@ -97,7 +100,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
     }
 
     fun setShouldMatchOctave(shouldMatchOctave: Boolean) {
-        sessionSettings = sessionSettings.copy(
+        sessionQuestionSettings = sessionQuestionSettings.copy(
             shouldMatchOctave = shouldMatchOctave,
         )
         updateExerciseSettings()
@@ -143,28 +146,21 @@ class ExerciseSettingsAssembler @Inject constructor() {
     }
 
     fun setShouldPlayStartingPitch(shouldPlayStartingPitch: Boolean) {
-        sessionSettings = sessionSettings.copy(
+        sessionQuestionSettings = sessionQuestionSettings.copy(
             shouldPlayStartingPitch = shouldPlayStartingPitch,
         )
         updateExerciseSettings()
     }
 
-    fun setPlayableLowerBound(lowerBound: Note) {
-        sessionSettings = sessionSettings.copy(
-            playableLowerBound = lowerBound,
-        )
-        updateExerciseSettings()
-    }
-
-    fun setPlayableUpperBound(upperBound: Note) {
-        sessionSettings = sessionSettings.copy(
-            playableUpperBound = upperBound,
+    fun setPlayableBounds(bounds: Range<Note>) {
+        sessionQuestionSettings = sessionQuestionSettings.copy(
+            playableBounds = bounds,
         )
         updateExerciseSettings()
     }
 
     fun setQuestionKey(key: PitchClass) {
-        sessionSettings = sessionSettings.copy(
+        sessionQuestionSettings = sessionQuestionSettings.copy(
             questionKey = key,
         )
         updateExerciseSettings()
@@ -176,7 +172,7 @@ class ExerciseSettingsAssembler @Inject constructor() {
 
     private fun assembleExerciseSettings(): ExerciseSettings = ExerciseSettings(
         notePoolType = notePoolType,
-        sessionSettings = sessionSettings,
+        sessionQuestionSettings = sessionQuestionSettings,
         sessionLengthSettings = sessionLengthSettings,
     )
 }

@@ -61,10 +61,6 @@
                 layout="@layout/item_settings_slider" />
 
             <include
-                android:id="@+id/answerSettings_header"
-                layout="@layout/item_settings_header" />
-
-            <include
                 android:id="@+id/matchOctave_switch"
                 layout="@layout/item_settings_switch" />
 

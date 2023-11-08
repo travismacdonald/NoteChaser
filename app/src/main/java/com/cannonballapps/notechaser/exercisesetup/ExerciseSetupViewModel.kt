@@ -1,7 +1,9 @@
 package com.cannonballapps.notechaser.exercisesetup
 
+import android.util.Range
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.ExerciseSettingsAssembler
 import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.common.NotePoolType
@@ -27,9 +29,9 @@ class ExerciseSetupViewModel @Inject constructor(
     // todo refactor
     lateinit var exerciseType: ExerciseType
 
-    val exerciseSettingsFlow = exerciseSettingsAssembler.exerciseSettingsFlow
+    val exerciseSettingsStream: StateFlow<ExerciseSettings> = exerciseSettingsAssembler.exerciseSettingsFlow
 
-    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsFlow.map {
+    val isValidConfiguration: StateFlow<Boolean> = exerciseSettingsStream.map {
         hasNotePoolDegreesSelected() && hasSufficientRangeForPlayableGeneration()
     }.stateIn(
         scope = viewModelScope,
@@ -54,7 +56,7 @@ class ExerciseSetupViewModel @Inject constructor(
         // todo look into an applicationScope implementation
         viewModelScope.launch {
             // todo save object in room, once refactored
-            prefsStore.saveExerciseSettings(exerciseSettingsFlow.value)
+            prefsStore.saveExerciseSettings(exerciseSettingsStream.value)
         }
     }
 
@@ -66,7 +68,7 @@ class ExerciseSetupViewModel @Inject constructor(
         exerciseSettingsAssembler.setDiatonicDegrees(degrees)
     }
 
-    fun setMatchOctave(shouldMatchOctave: Boolean) {
+    fun onMatchOctaveCheckChanged(shouldMatchOctave: Boolean) {
         exerciseSettingsAssembler.setShouldMatchOctave(shouldMatchOctave)
     }
 
@@ -78,27 +80,23 @@ class ExerciseSetupViewModel @Inject constructor(
         exerciseSettingsAssembler.notePoolType = notePoolType
     }
 
-    fun setNumQuestions(numQuestions: Int) {
+    fun onNumQuestionsChange(numQuestions: Int) {
         exerciseSettingsAssembler.setNumQuestions(numQuestions)
     }
 
-    fun setShouldPlayStartingPitch(shouldPlayStartingPitch: Boolean) {
+    fun onPlayStartingPitchCheckChanged(shouldPlayStartingPitch: Boolean) {
         exerciseSettingsAssembler.setShouldPlayStartingPitch(shouldPlayStartingPitch)
     }
 
-    fun setPlayableLowerBound(lowerBound: Note) {
-        exerciseSettingsAssembler.setPlayableLowerBound(lowerBound)
-    }
-
-    fun setPlayableUpperBound(upperBound: Note) {
-        exerciseSettingsAssembler.setPlayableUpperBound(upperBound)
+    fun onPlayableBoundsChanged(range: Range<Note>) {
+        exerciseSettingsAssembler.setPlayableBounds(range)
     }
 
     fun setQuestionKey(key: PitchClass) {
         exerciseSettingsAssembler.setQuestionKey(key)
     }
 
-    fun setTimeLimitMinutes(timeLimitMinutes: Int) {
+    fun onTimeLimitMinutesChange(timeLimitMinutes: Int) {
         exerciseSettingsAssembler.setTimeLimitMinutes(timeLimitMinutes)
     }
 
