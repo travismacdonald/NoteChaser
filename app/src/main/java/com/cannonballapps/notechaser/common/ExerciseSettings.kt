@@ -36,6 +36,7 @@ sealed interface NotePoolType {
 
 data class SessionQuestionSettings(
     val questionKey: PitchClass,
+    val questionKeyValues: List<PitchClass>,
     val shouldMatchOctave: Boolean,
     val shouldPlayStartingPitch: Boolean,
     val playableBounds: Range<Note>,

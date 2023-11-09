@@ -17,6 +17,7 @@ import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
+import com.cannonballapps.notechaser.musicutilities.pitchClassFlat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -51,6 +52,7 @@ class PrefsStore @Inject constructor(
             ),
             sessionQuestionSettings = SessionQuestionSettings(
                 questionKey = PitchClass.C,
+                questionKeyValues = pitchClassFlat,
                 shouldMatchOctave = false,
                 shouldPlayStartingPitch = true,
                 playableBounds = Range(

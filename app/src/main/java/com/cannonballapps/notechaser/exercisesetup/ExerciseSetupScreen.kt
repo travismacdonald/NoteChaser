@@ -47,6 +47,7 @@ import com.cannonballapps.notechaser.common.ui.DiscreteSlider
 import com.cannonballapps.notechaser.musicutilities.MusicTheoryUtils
 import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.toStrings
 import com.cannonballapps.notechaser.ui.core.DevicePreviews
 import com.cannonballapps.notechaser.ui.core.NCDialog
 import com.cannonballapps.notechaser.ui.theme.NoteChaserTheme
@@ -91,19 +92,12 @@ fun ExerciseSetupList(
     val questionSettingsHeader = ExerciseSetupUiItem.Header(
         text = stringResource(R.string.answerSettings_header),
     )
-    val questionKeyItem = ExerciseSetupUiItem.ListPicker(
-        headerText = stringResource(R.string.questionKey_title),
-        bodyText = exerciseSettings.sessionQuestionSettings.questionKey.toString(),
-        values = PitchClass.values().toList().map { it.toString() }, // TODO hoist
-        onClick = {
-            setDialogContent(
-                DialogData(
-                    values = PitchClass.values().toList().map { it.toString() },
-                    initialSelectedValue = exerciseSettings.sessionQuestionSettings.questionKey.ordinal,
-                    onValueSelected = { selectedIx -> viewModel.setQuestionKey(PitchClass.values()[selectedIx]) },
-                ),
-            )
-        },
+    val questionKeyItem = getQuestionKeyItem(
+        headerText = stringResource(id = R.string.questionKey_title),
+        currentSelectedKey = exerciseSettings.sessionQuestionSettings.questionKey,
+        values = exerciseSettings.sessionQuestionSettings.questionKeyValues,
+        setDialogContent = setDialogContent,
+        onQuestionKeySelected = { selectedKey -> viewModel.setQuestionKey(selectedKey) },
     )
     val playStartingPitchItem = ExerciseSetupUiItem.Switch(
         headerText = stringResource(R.string.playStartingPitch_title),
@@ -201,6 +195,30 @@ fun ExerciseSetupList(
     )
 
 }
+
+@Composable
+private fun getQuestionKeyItem(
+    headerText: String,
+    currentSelectedKey: PitchClass,
+    values: List<PitchClass>,
+    setDialogContent: (DialogData) -> Unit,
+    onQuestionKeySelected: (PitchClass) -> Unit,
+) =
+    ExerciseSetupUiItem.ListPicker(
+        headerText = headerText,
+        bodyText = currentSelectedKey.toString(),
+        onClick = {
+            setDialogContent(
+                DialogData(
+                    values = values.toStrings(),
+                    initialSelectedValue = values.indexOf(currentSelectedKey),
+                    onValueSelected = { selectedIx ->
+                        onQuestionKeySelected(values[selectedIx])
+                    },
+                ),
+            )
+        },
+    )
 
 @Composable
 fun ExerciseSetupList(

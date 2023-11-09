@@ -89,3 +89,36 @@ enum class PitchClass(val value: Int) {
         override fun toString() = "B$SHARP"
     }
 }
+
+val pitchClassFlat = listOf(
+    PitchClass.C,
+    PitchClass.D_FLAT,
+    PitchClass.D,
+    PitchClass.E_FLAT,
+    PitchClass.E,
+    PitchClass.F,
+    PitchClass.G_FLAT,
+    PitchClass.G,
+    PitchClass.A_FLAT,
+    PitchClass.A,
+    PitchClass.B_FLAT,
+    PitchClass.B,
+)
+
+val pitchClassSharp = listOf(
+    PitchClass.C,
+    PitchClass.C_SHARP,
+    PitchClass.D,
+    PitchClass.D_SHARP,
+    PitchClass.E,
+    PitchClass.F,
+    PitchClass.F_SHARP,
+    PitchClass.G,
+    PitchClass.G_SHARP,
+    PitchClass.A,
+    PitchClass.A_SHARP,
+    PitchClass.B,
+)
+
+fun List<PitchClass>.toStrings() =
+    map { it.toString() }

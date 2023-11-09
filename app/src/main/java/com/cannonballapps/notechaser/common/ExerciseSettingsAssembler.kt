@@ -6,6 +6,7 @@ import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
+import com.cannonballapps.notechaser.musicutilities.pitchClassFlat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,6 +47,8 @@ class ExerciseSettingsAssembler @Inject constructor() {
 
     private var sessionQuestionSettings = SessionQuestionSettings(
         questionKey = PitchClass.C,
+        // TODO instead of assuming flat, there could be a user preference for flat vs sharp
+        questionKeyValues = pitchClassFlat,
         shouldMatchOctave = false,
         shouldPlayStartingPitch = true,
         playableBounds = Range(
