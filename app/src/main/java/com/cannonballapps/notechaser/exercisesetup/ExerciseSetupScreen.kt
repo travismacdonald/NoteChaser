@@ -167,7 +167,6 @@ fun ExerciseSetupList(
             notePoolTypeListItem,
         )
     )
-
 }
 
 @Composable
@@ -193,7 +192,6 @@ private fun getQuestionKeyItem(
             )
         },
     )
-
 
 private fun Range<Int>.toNoteRange(): Range<Note> = Range(
     Note(this.lower),
@@ -230,27 +228,43 @@ fun ExerciseSetupList(
 private fun ExerciseSetupListPreview() {
     NoteChaserTheme {
         ExerciseSetupList(
-            exerciseSetupUiItems = listOf()
+            exerciseSetupUiItems = listOf(
+                ExerciseSetupUiItem.Header(text = "Header text"),
+                ExerciseSetupUiItem.Switch(
+                    headerText = "Switch title text",
+                    bodyText = "Switch body text",
+                    isEnabled = true,
+                    onSwitchChange = { /* No-op */ },
+                    imageResourceId = R.drawable.ic_music_note_black_40dp,
+                ),
+                ExerciseSetupUiItem.ListPicker(
+                    headerText = "List title text",
+                    bodyText = "List body text",
+                    imageResourceId = R.drawable.ic_music_note_black_40dp,
+                    onShowDialog = { /* No-op */ },
+                    onClick = { /* No-op */ },
+                    values = listOf(),
+                ),
+                ExerciseSetupUiItem.RangeBar(
+                    headerText = "RangeBar title text",
+                    bodyText = "RangeBar body text",
+                    bounds = Range<Int>(0, 10),
+                    stepSize = 1,
+                    currentValue = Range<Int>(4, 6),
+                    onValueChange = { /* No-op */ },
+                    imageResourceId = R.drawable.ic_music_note_black_40dp,
+                ),
+                ExerciseSetupUiItem.Slider(
+                    headerText = "Slider title text",
+                    bodyText = "Slider body text",
+                    bounds = Range<Int>(0, 10),
+                    stepSize = 1,
+                    currentValue = 7,
+                    onValueChange = { /* No-op */ },
+                    imageResourceId = R.drawable.ic_music_note_black_40dp,
+                )
+            ),
+
         )
-        // TODO: fix preview when mapping is finalized
-//        ExerciseSetupList(
-//            exerciseSettings = ExerciseSettings(
-//                notePoolType = NotePoolType.Diatonic(
-//                    degrees = booleanArrayOf(true, true, false),
-//                    scale = ParentScale.Major.Ionian,
-//                ),
-//                sessionSettings = SessionSettings(
-//                    questionKey = PitchClass.C,
-//                    shouldMatchOctave = false,
-//                    shouldPlayStartingPitch = false,
-//                    playableLowerBound = Note(midiNumber = 36),
-//                    playableUpperBound = Note(midiNumber = 60),
-//                ),
-//                sessionLengthSettings = SessionLengthSettings.QuestionLimit(
-//                    numQuestions = 10,
-//                ),
-//            ),
-//
-//        )
     }
 }
