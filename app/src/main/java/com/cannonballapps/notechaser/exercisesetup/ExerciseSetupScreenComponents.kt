@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.cannonballapps.notechaser.R
 import com.cannonballapps.notechaser.common.toIntRange
 import com.cannonballapps.notechaser.common.toRangeInt
-import com.cannonballapps.notechaser.common.ui.DiscreteRangeBar
-import com.cannonballapps.notechaser.common.ui.DiscreteSlider
+import com.cannonballapps.notechaser.ui.core.DiscreteRangeBar
+import com.cannonballapps.notechaser.ui.core.DiscreteSlider
 import com.cannonballapps.notechaser.ui.core.DevicePreviews
 import com.cannonballapps.notechaser.ui.theme.NoteChaserTheme
 
@@ -69,7 +69,7 @@ fun ExerciseSetupListPickerCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
 
-            ) {
+        ) {
             ExerciseSetupCardIcon(item.imageResourceId)
 
             Column(

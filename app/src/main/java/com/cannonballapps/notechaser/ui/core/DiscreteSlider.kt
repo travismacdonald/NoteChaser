@@ -1,17 +1,17 @@
-package com.cannonballapps.notechaser.common.ui
+package com.cannonballapps.notechaser.ui.core
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cannonballapps.notechaser.common.size
 import com.cannonballapps.notechaser.common.toFloatRange
 import com.cannonballapps.notechaser.common.toIntRange
-import com.cannonballapps.notechaser.ui.core.DevicePreviews
 import kotlin.math.roundToInt
 
-// TODO figure out how to not show steps on slider UI
 @Composable
 fun DiscreteSlider(
     value: Int,
@@ -27,6 +27,10 @@ fun DiscreteSlider(
         valueRange = valueRange.toFloatRange(),
         modifier = modifier,
         steps = (valueRange.size / stepSize) - 1,
+        colors = SliderDefaults.colors(
+            activeTickColor = MaterialTheme.colorScheme.primary,
+            inactiveTickColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
     )
 }
 
@@ -46,6 +50,10 @@ fun DiscreteRangeBar(
         valueRange = valueRange.toFloatRange(),
         modifier = modifier,
         steps = (valueRange.size / stepSize) - 1,
+        colors = SliderDefaults.colors(
+            activeTickColor = MaterialTheme.colorScheme.primary,
+            inactiveTickColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
     )
 }
 
@@ -55,7 +63,7 @@ private fun DiscreteSliderPreview() {
     DiscreteSlider(
         value = 2,
         valueRange = 0..10,
-        onValueChange = {},
+        onValueChange = { /* No-op */ },
     )
 }
 
@@ -65,6 +73,6 @@ private fun DiscreteRangeBarPreview() {
     DiscreteRangeBar(
         values = 2..5,
         valueRange = 0..10,
-        onValueChange = {},
+        onValueChange = { /* No-op */ },
     )
 }
