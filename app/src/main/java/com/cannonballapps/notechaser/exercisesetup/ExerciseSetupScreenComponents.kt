@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Switch
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,28 +35,10 @@ import com.cannonballapps.notechaser.ui.core.DevicePreviews
 import com.cannonballapps.notechaser.ui.theme.NoteChaserTheme
 
 @Composable
-fun ExerciseSetupList(
-    exerciseSetupUiItems: List<ExerciseSetupUiItem>,
-) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(exerciseSetupUiItems) { item ->
-            when (item) {
-                is ExerciseSetupUiItem.ListPicker -> ExerciseSetupListPickerCard(item)
-                is ExerciseSetupUiItem.Header -> ExerciseSetupHeaderCard(item)
-                is ExerciseSetupUiItem.Switch -> ExerciseSetupSwitchCard(item)
-                is ExerciseSetupUiItem.RangeBar -> ExerciseSetupRangeBarCard(item)
-                is ExerciseSetupUiItem.Slider -> ExerciseSetupSliderCard(item)
-            }
-        }
-    }
-}
-
-@Composable
 fun ExerciseSetupHeaderCard(
     item: ExerciseSetupUiItem.Header,
 ) {
-    // TODO: extract hardcoded color
-    Surface(color = Color(0xFFDDDDDD)) {
+    Surface(color = MaterialTheme.colorScheme.surfaceVariant) {
         Row(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
@@ -67,7 +47,8 @@ fun ExerciseSetupHeaderCard(
         ) {
             Text(
                 text = item.text,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .padding(all = 16.dp),
             )
@@ -83,7 +64,7 @@ fun ExerciseSetupListPickerCard(
     // TODO: add on click listener
     // TODO: add on list item selected click listener
     Surface(
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         modifier = Modifier.clickable { item.onClick?.invoke() }
     ) {
         Row(
@@ -101,7 +82,8 @@ fun ExerciseSetupListPickerCard(
             ) {
                 Text(
                     text = item.headerText,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(
                         top = 16.dp,
                         end = 16.dp,
@@ -110,7 +92,8 @@ fun ExerciseSetupListPickerCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = item.bodyText,
-                    style = MaterialTheme.typography.subtitle2,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(
                         bottom = 16.dp,
                         end = 16.dp,
@@ -125,7 +108,7 @@ fun ExerciseSetupListPickerCard(
 fun ExerciseSetupSwitchCard(
     item: ExerciseSetupUiItem.Switch,
 ) {
-    Surface(color = Color.White) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
         Row(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
@@ -137,14 +120,16 @@ fun ExerciseSetupSwitchCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = item.headerText,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .padding(top = 16.dp),
                 )
                 Spacer(modifier = Modifier.height(height = 4.dp))
                 Text(
                     text = item.bodyText,
-                    style = MaterialTheme.typography.subtitle2,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .padding(bottom = 16.dp),
                 )
@@ -163,7 +148,7 @@ fun ExerciseSetupSwitchCard(
 fun ExerciseSetupSliderCard(
     item: ExerciseSetupUiItem.Slider,
 ) {
-    Surface(color = Color.White) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
         Row(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
@@ -181,13 +166,15 @@ fun ExerciseSetupSliderCard(
                 ) {
                     Text(
                         text = item.headerText,
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(start = 8.dp),
                     )
                     Text(
                         text = item.bodyText,
-                        style = MaterialTheme.typography.subtitle2,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(end = 24.dp),
                     )
@@ -208,7 +195,7 @@ fun ExerciseSetupSliderCard(
 fun ExerciseSetupRangeBarCard(
     item: ExerciseSetupUiItem.RangeBar,
 ) {
-    Surface(color = Color.White) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
         Row(
             modifier = Modifier
                 .wrapContentHeight()
@@ -226,13 +213,15 @@ fun ExerciseSetupRangeBarCard(
                 ) {
                     Text(
                         text = item.headerText,
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(start = 8.dp),
                     )
                     Text(
                         text = item.bodyText,
-                        style = MaterialTheme.typography.subtitle2,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(end = 24.dp),
                     )
@@ -262,7 +251,7 @@ private fun ExerciseSetupCardIcon(
         imageResourceId?.let { id ->
             Icon(
                 painter = painterResource(id = id),
-                tint = Color.Black,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxSize(),
                 contentDescription = null,

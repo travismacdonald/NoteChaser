@@ -1,6 +1,9 @@
 package com.cannonballapps.notechaser.exercisesetup
 
 import android.util.Range
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -8,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -202,6 +206,23 @@ private fun SessionLengthSettings.toFormattedString(): String = when (this) {
     is SessionLengthSettings.QuestionLimit -> "Question Limit"
     is SessionLengthSettings.TimeLimit -> "Time Limit"
     SessionLengthSettings.NoLimit -> "Unlimited"
+}
+
+@Composable
+fun ExerciseSetupList(
+    exerciseSetupUiItems: List<ExerciseSetupUiItem>,
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(exerciseSetupUiItems) { item ->
+            when (item) {
+                is ExerciseSetupUiItem.ListPicker -> ExerciseSetupListPickerCard(item)
+                is ExerciseSetupUiItem.Header -> ExerciseSetupHeaderCard(item)
+                is ExerciseSetupUiItem.Switch -> ExerciseSetupSwitchCard(item)
+                is ExerciseSetupUiItem.RangeBar -> ExerciseSetupRangeBarCard(item)
+                is ExerciseSetupUiItem.Slider -> ExerciseSetupSliderCard(item)
+            }
+        }
+    }
 }
 
 @DevicePreviews
