@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.cannonballapps.notechaser.common.ExerciseType
 
 class ExerciseListFragment : Fragment() {
 
@@ -31,9 +30,9 @@ class ExerciseListFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ExerciseListScreen(
-                    onNavigateToExerciseSetupFragment = { exerciseType ->
+                    onNavigateToExerciseSetupFragment = {
                         findNavController().navigate(
-                            ExerciseListFragmentDirections.actionExerciseListFragmentToExerciseSetupFragment(exerciseType),
+                            ExerciseListFragmentDirections.actionExerciseListFragmentToExerciseSetupFragment(),
                         )
                     },
                 )
@@ -44,7 +43,7 @@ class ExerciseListFragment : Fragment() {
 
 @Composable
 fun ExerciseListScreen(
-    onNavigateToExerciseSetupFragment: (ExerciseType) -> Unit,
+    onNavigateToExerciseSetupFragment: () -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.wrapContentSize()) {
@@ -57,7 +56,7 @@ fun ExerciseListScreen(
                      * TODO: refactor exercise type
                      *       should probably just be an option in the setup fragment itself
                      */
-                    onNavigateToExerciseSetupFragment(ExerciseType.SINGLE_NOTE)
+                    onNavigateToExerciseSetupFragment()
                 },
             ) {
                 /*

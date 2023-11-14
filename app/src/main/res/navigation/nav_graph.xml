@@ -34,12 +34,7 @@
     <fragment
         android:id="@+id/exerciseSetupFragment"
         android:name="com.cannonballapps.notechaser.exercisesetup.ExerciseSetupFragment"
-        android:label="fragment_exercise_setup"
-        tools:layout="@layout/fragment_exercise_setup">
-
-        <argument
-            android:name="exerciseType"
-            app:argType="com.cannonballapps.notechaser.common.ExerciseType" />
+        android:label="fragment_exercise_setup" >
 
         <action
             android:id="@+id/action_exerciseSetupFragment_to_sessionFragment"
@@ -55,10 +50,6 @@
         android:name="com.cannonballapps.notechaser.exercisesession.SessionFragment"
         android:label="fragment_session"
         tools:layout="@layout/fragment_session">
-
-        <argument
-            android:name="exerciseType"
-            app:argType="com.cannonballapps.notechaser.common.ExerciseType" />
 
         <action
             android:id="@+id/action_sessionToExerciseSelection"

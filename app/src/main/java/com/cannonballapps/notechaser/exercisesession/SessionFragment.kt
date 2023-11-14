@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
 import com.cannonballapps.notechaser.R
+import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.common.MidiPlayer2
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.SessionLengthSettings
@@ -31,7 +32,6 @@ class SessionFragment : Fragment() {
 
     private val viewModel: SessionViewModel by viewModels()
     lateinit var binding: FragmentSessionBinding
-    private lateinit var args: SessionFragmentArgs
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,8 +55,7 @@ class SessionFragment : Fragment() {
 
         // TODO: feels kind of hacky to have all these calls here
         if (!viewModel.sessionHasStarted) {
-            args = SessionFragmentArgs.fromBundle(requireArguments())
-            viewModel.initGenerator(args.exerciseType)
+            viewModel.initGenerator(ExerciseType.SINGLE_NOTE)
             injectPlayablePlayerIntoViewModel()
             injectSoundEffectPlayer()
 
@@ -265,7 +264,6 @@ class SessionFragment : Fragment() {
     }
 
     // TODO: this lives here for now; should refactor to use Hilt
-    @Suppress("BlockingMethodInNonBlockingContext")
     private fun injectPlayablePlayerIntoViewModel() {
         viewModel.viewModelScope.launch {
             val soundBank = SF2Soundbank(
