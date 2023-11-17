@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 class PermissionsManager @Inject constructor() {
 
+    companion object {
+        private const val MICROPHONE_PERMISSION_CODE = 1
+    }
+
     fun isRecordAudioPermissionGranted(context: Context) =
         ContextCompat.checkSelfPermission(
             context,
@@ -19,7 +23,6 @@ class PermissionsManager @Inject constructor() {
         ).isGranted()
 
     fun requestRecordAudioPermission(activity: Activity, context: Context) {
-        val micPermissionCode = 1
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECORD_AUDIO)) {
             AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.microphonePermission_title))
@@ -28,7 +31,7 @@ class PermissionsManager @Inject constructor() {
                     ActivityCompat.requestPermissions(
                         activity,
                         arrayOf(Manifest.permission.RECORD_AUDIO),
-                        micPermissionCode,
+                        MICROPHONE_PERMISSION_CODE,
                     )
                 }
                 .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
@@ -39,7 +42,7 @@ class PermissionsManager @Inject constructor() {
             ActivityCompat.requestPermissions(
                 activity,
                 arrayOf(Manifest.permission.RECORD_AUDIO),
-                micPermissionCode,
+                MICROPHONE_PERMISSION_CODE,
             )
         }
     }
