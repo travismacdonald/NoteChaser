@@ -320,14 +320,14 @@ class SessionViewModel @Inject constructor(
             val upperBound = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.playableBounds.upper
 
             if (notePoolType is NotePoolType.Chromatic) {
-                generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromChromaticDegrees(
+                generator = PlayableGeneratorFactory().makeNotePlayableGeneratorFromChromaticDegrees(
                     notePoolType.degrees,
                     key,
                     lowerBound,
                     upperBound,
                 )
             } else if (notePoolType is NotePoolType.Diatonic) {
-                generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
+                generator = PlayableGeneratorFactory().makeNotePlayableGeneratorFromDiatonicDegrees(
                     notePoolType.degrees,
                     notePoolType.scale,
                     key,

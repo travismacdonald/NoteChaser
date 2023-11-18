@@ -40,7 +40,7 @@ class NotePlayableGeneratorTest : TestCase() {
         val lower = Note(36)
         val upper = Note(48)
 
-        val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
+        val generator = PlayableGeneratorFactory().makeNotePlayableGeneratorFromDiatonicDegrees(
             rootOnlyDiatonicDegree,
             scale,
             PitchClass.C,
@@ -63,7 +63,7 @@ class NotePlayableGeneratorTest : TestCase() {
         val lower = Note(36)
         val upper = Note(48)
 
-        val generator = PlayableGeneratorFactory.makeNotePlayableGeneratorFromDiatonicDegrees(
+        val generator = PlayableGeneratorFactory().makeNotePlayableGeneratorFromDiatonicDegrees(
             rootOnlyDiatonicDegree,
             scale,
             PitchClass.C,

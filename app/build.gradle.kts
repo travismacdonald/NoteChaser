@@ -87,6 +87,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     testImplementation(libs.junit4)
     testImplementation(libs.kotlin.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 repositories {
