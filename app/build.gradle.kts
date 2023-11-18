@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlin.mockito)
     implementation(libs.materialdesign.compose.themeadapter)
     implementation(libs.materialdesign.material)
     implementation(libs.timber)
