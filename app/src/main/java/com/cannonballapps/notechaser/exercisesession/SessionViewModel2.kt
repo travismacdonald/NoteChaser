@@ -50,16 +50,18 @@ class SessionViewModel2(
 
     private suspend fun onStateChanged(it: SessionState) {
         when (it) {
-            is SessionState.PreStart -> {
-                delay(it.millisUntilStart)
-                enterPlayingQuestionState()
-            }
+            is SessionState.PreStart -> onStateChangedToPreStart(it)
 
             is SessionState.Error,
             is SessionState.Loading,
             is SessionState.PlayingQuestion,
             -> { /* No-op */ }
         }
+    }
+
+    private suspend fun onStateChangedToPreStart(state: SessionState.PreStart) {
+        delay(state.millisUntilStart)
+        enterPlayingQuestionState()
     }
 
     private fun onPlayableGeneratorLoadSuccess(generator: PlayableGenerator) {
