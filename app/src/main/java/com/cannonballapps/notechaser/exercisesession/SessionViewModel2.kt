@@ -31,7 +31,7 @@ class SessionViewModel2(
 
     private fun startStateChangeListener() {
         sessionState
-            .onEach(::handleStateChanged)
+            .onEach(::onStateChanged)
             .launchIn(viewModelScope)
     }
 
@@ -39,16 +39,16 @@ class SessionViewModel2(
         viewModelScope.launch {
             when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
                 is ResultOf.Success -> {
-                    handlePlayableGeneratorLoadSuccess(generatorResult.value)
+                    onPlayableGeneratorLoadSuccess(generatorResult.value)
                 }
                 is ResultOf.Failure -> {
-                    handlePlayableGeneratorLoadFailure()
+                    onPlayableGeneratorLoadFailure()
                 }
             }
         }
     }
 
-    private suspend fun handleStateChanged(it: SessionState) {
+    private suspend fun onStateChanged(it: SessionState) {
         when (it) {
             is SessionState.PreStart -> {
                 delay(it.millisUntilStart)
@@ -62,12 +62,12 @@ class SessionViewModel2(
         }
     }
 
-    private fun handlePlayableGeneratorLoadSuccess(generator: PlayableGenerator) {
+    private fun onPlayableGeneratorLoadSuccess(generator: PlayableGenerator) {
         this.playableGenerator = generator
         _sessionState.value = SessionState.PreStart
     }
 
-    private fun handlePlayableGeneratorLoadFailure() {
+    private fun onPlayableGeneratorLoadFailure() {
         _sessionState.value = SessionState.Error
     }
 
