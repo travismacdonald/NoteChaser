@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class SessionViewModel2(
-    prefsStore: PrefsStore,
+    private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
@@ -23,21 +25,54 @@ class SessionViewModel2(
     private lateinit var playableGenerator: PlayableGenerator
 
     init {
-        viewModelScope.launch {
-             when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
-                is ResultOf.Success -> {
-                    playableGenerator = generatorResult.value
-                    _sessionState.value = SessionState.PreStart.also {
-                        delay(it.millisUntilStart)
-                    }
+        startStateChangeListener()
+        loadPlayableGenerator()
+    }
 
-                    _sessionState.value = SessionState.PlayingQuestion(playableGenerator.generatePlayable())
+    private fun startStateChangeListener() {
+        sessionState
+            .onEach(::handleStateChanged)
+            .launchIn(viewModelScope)
+    }
+
+    private fun loadPlayableGenerator() {
+        viewModelScope.launch {
+            when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
+                is ResultOf.Success -> {
+                    handlePlayableGeneratorLoadSuccess(generatorResult.value)
                 }
                 is ResultOf.Failure -> {
-                    _sessionState.value = SessionState.Error
+                    handlePlayableGeneratorLoadFailure()
                 }
             }
         }
+    }
+
+    private suspend fun handleStateChanged(it: SessionState) {
+        when (it) {
+            is SessionState.PreStart -> {
+                delay(it.millisUntilStart)
+                enterPlayingQuestionState()
+            }
+
+            is SessionState.Error,
+            is SessionState.Loading,
+            is SessionState.PlayingQuestion,
+            -> { /* No-op */ }
+        }
+    }
+
+    private fun handlePlayableGeneratorLoadSuccess(generator: PlayableGenerator) {
+        this.playableGenerator = generator
+        _sessionState.value = SessionState.PreStart
+    }
+
+    private fun handlePlayableGeneratorLoadFailure() {
+        _sessionState.value = SessionState.Error
+    }
+
+    private fun enterPlayingQuestionState() {
+        _sessionState.value = SessionState.PlayingQuestion(playableGenerator.generatePlayable())
     }
 }
 
