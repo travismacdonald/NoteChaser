@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.NotePoolType
+import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SessionQuestionSettings
 import com.cannonballapps.notechaser.musicutilities.Note
@@ -18,8 +19,10 @@ import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.Scale
 import com.cannonballapps.notechaser.musicutilities.pitchClassFlat
+import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -65,6 +68,8 @@ class PrefsStore @Inject constructor(
             ),
         )
     }
+
+    fun playableGeneratorFlow(): Flow<ResultOf<PlayableGenerator>> = flow { /* TODO */ }
 
     suspend fun saveExerciseSettings(exerciseSettings: ExerciseSettings) {
         dataStore.edit { prefs ->
