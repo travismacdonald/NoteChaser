@@ -88,6 +88,7 @@ dependencies {
     testImplementation(libs.junit4)
     testImplementation(libs.kotlin.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }
 
 repositories {

@@ -24,6 +24,7 @@ kotlinMockito = "5.1.0"
 materialDesignComposeThemeAdapter = "1.2.1"
 materialDesignMaterial = "1.8.0"
 timber = "5.0.1"
+turbine = "1.0.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
@@ -65,3 +66,4 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 materialdesign-compose-themeadapter = { group = "com.google.android.material", name = "compose-theme-adapter", version.ref = "materialDesignComposeThemeAdapter" }
 materialdesign-material = { group = "com.google.android.material", name = "material", version.ref = "materialDesignMaterial" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
