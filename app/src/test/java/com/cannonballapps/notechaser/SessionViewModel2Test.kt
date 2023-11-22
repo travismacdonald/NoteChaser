@@ -15,6 +15,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import runStandardCoroutineTest
+import runUnconfinedCoroutineTest
 import java.lang.Exception
 import kotlin.test.assertEquals
 
@@ -26,17 +27,32 @@ class SessionViewModel2Test {
     private lateinit var viewModel: SessionViewModel2
 
     @Test
-    fun `when session view model is created - session state is Loading`() =
-        runStandardCoroutineTest {
+    fun `when session view model is created - questions answered is 0`() =
+        runUnconfinedCoroutineTest {
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(MutableStateFlow(ResultOf.Failure(Exception())))
 
             initViewModel()
 
-            viewModel.sessionState.test {
+            assertEquals(
+                expected = 0,
+                actual = viewModel.screenUiData.value.questionsAnswered,
+            )
+        }
+
+    @Test
+    fun `when session view model is created - session state is Loading`() =
+        runStandardCoroutineTest {
+
+            whenever(prefsStore.playableGeneratorFlow())
+                .doReturn(MutableStateFlow(ResultOf.Failure(Exception())))
+
+            initViewModel()
+
+            viewModel.screenUiData.test {
                 assertEquals(
                     expected = SessionState.Loading,
-                    actual = awaitItem(),
+                    actual = awaitItem().state,
                 )
             }
         }
@@ -48,17 +64,17 @@ class SessionViewModel2Test {
 
         initViewModel()
 
-        viewModel.sessionState.drop(1).test {
+        viewModel.screenUiData.drop(1).test {
             assertEquals(
                 expected = SessionState.Error,
-                actual = awaitItem(),
+                actual = awaitItem().state,
             )
         }
     }
 
     @Test
-    fun `when playable generator loads successfully - session state is PreStart then PlayingQuestion`()
-        = runStandardCoroutineTest {
+    fun `when playable generator loads successfully - session state is PreStart then PlayingQuestion`() =
+        runStandardCoroutineTest {
             val playable = playable()
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
@@ -67,15 +83,15 @@ class SessionViewModel2Test {
 
             initViewModel()
 
-            viewModel.sessionState.drop(1).test {
+            viewModel.screenUiData.drop(1).test {
                 assertEquals(
                     expected = SessionState.PreStart,
-                    actual = awaitItem(),
+                    actual = awaitItem().state,
                 )
 
                 assertEquals(
                     expected = SessionState.PlayingQuestion(playable),
-                    actual = awaitItem(),
+                    actual = awaitItem().state,
                 )
             }
         }

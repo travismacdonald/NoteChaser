@@ -8,26 +8,47 @@ import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SessionViewModel2(
     private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
-    private val _sessionState = MutableStateFlow<SessionState>(SessionState.None)
-    val sessionState: StateFlow<SessionState> = _sessionState.asStateFlow()
-
-    private lateinit var playableGenerator: PlayableGenerator
-
-    interface SessionStateHandler<T> {
+    private interface SessionStateHandler<T> {
         fun createState(): T
         fun enterState(state: T) { /* Default no-op */ }
     }
+
+    private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
+    private val _questionsAnswered: MutableStateFlow<Int> = MutableStateFlow(0)
+
+    private lateinit var playableGenerator: PlayableGenerator
+
+    val screenUiData: StateFlow<SessionScreenUiData> = combine(
+        _sessionState,
+        _questionsAnswered,
+    ) {
+        sessionState,
+        questionsAnswered ->
+        SessionScreenUiData(
+            state = sessionState,
+            questionsAnswered = questionsAnswered,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = SessionScreenUiData(
+            state = _sessionState.value,
+            questionsAnswered = _questionsAnswered.value,
+        )
+    )
 
     private val loadingStateHandler = object : SessionStateHandler<SessionState.Loading> {
         override fun createState() = SessionState.Loading
@@ -77,7 +98,7 @@ class SessionViewModel2(
     }
 
     private fun startStateChangeListener() {
-        sessionState
+        _sessionState
             .onEach(::onStateChanged)
             .launchIn(viewModelScope)
     }
@@ -88,14 +109,16 @@ class SessionViewModel2(
             is SessionState.Error -> errorStateHandler.enterState(state)
             is SessionState.PreStart -> preStartStateHandler.enterState(state)
             is SessionState.PlayingQuestion -> playingQuestionHandler.enterState(state)
-            is SessionState.None -> { /* No-op */ }
         }
     }
 }
 
-sealed interface SessionState {
+data class SessionScreenUiData(
+    val state: SessionState,
+    val questionsAnswered: Int,
+)
 
-    object None : SessionState
+sealed interface SessionState {
 
     object Loading : SessionState
 
