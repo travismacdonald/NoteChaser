@@ -1,15 +1,25 @@
 package com.cannonballapps.notechaser
 
+import android.util.Range
 import app.cash.turbine.test
+import com.cannonballapps.notechaser.common.ExerciseSettings
+import com.cannonballapps.notechaser.common.NotePoolType
 import com.cannonballapps.notechaser.common.ResultOf
+import com.cannonballapps.notechaser.common.SessionLengthSettings
+import com.cannonballapps.notechaser.common.SessionQuestionSettings
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.exercisesession.SessionState
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2
+import com.cannonballapps.notechaser.musicutilities.Ionian
+import com.cannonballapps.notechaser.musicutilities.Note
+import com.cannonballapps.notechaser.musicutilities.ParentScale
+import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlaybackType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.doReturn
@@ -73,13 +83,20 @@ class SessionViewModel2Test {
     }
 
     @Test
-    fun `when playable generator loads successfully - session state is PreStart then PlayingQuestion`() =
+    fun `when playable generator loads successfully and should not play reference pitch - session state is PreStart then PlayingQuestion`() =
         runStandardCoroutineTest {
             val playable = playable()
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
             whenever(prefsStore.playableGeneratorFlow())
-                .doReturn(MutableStateFlow(ResultOf.Success(playableGenerator)))
+                .doReturn(flowOf(ResultOf.Success(playableGenerator)))
+
+            val exerciseSettings = exerciseSettings(
+                questionKey = PitchClass.C,
+                shouldPlayReferencePitch = false,
+            )
+            whenever(prefsStore.exerciseSettingsFlow())
+                .doReturn(flowOf(exerciseSettings))
 
             initViewModel()
 
@@ -88,13 +105,65 @@ class SessionViewModel2Test {
                     expected = SessionState.PreStart,
                     actual = awaitItem().state,
                 )
-
                 assertEquals(
                     expected = SessionState.PlayingQuestion(playable),
                     actual = awaitItem().state,
                 )
             }
         }
+
+    @Test
+    fun `when session config loads successfully and should play starting pitch - session state is PlayingStartingPitch`() =
+        runStandardCoroutineTest {
+            val playable = playable()
+            whenever(playableGenerator.generatePlayable())
+                .doReturn(playable)
+            whenever(prefsStore.playableGeneratorFlow())
+                .doReturn(flowOf(ResultOf.Success(playableGenerator)))
+
+            val exerciseSettings = exerciseSettings(
+                questionKey = PitchClass.C,
+                shouldPlayReferencePitch = true,
+            )
+            whenever(prefsStore.exerciseSettingsFlow())
+                .doReturn(flowOf(exerciseSettings))
+
+            initViewModel()
+
+            viewModel.screenUiData.drop(1).test {
+                assertEquals(
+                    expected = SessionState.PreStart,
+                    actual = awaitItem().state,
+                )
+                assertEquals(
+                    expected = SessionState.PlayingReferencePitch(PitchClass.C),
+                    actual = awaitItem().state,
+                )
+                assertEquals(
+                    expected = SessionState.PlayingQuestion(playable),
+                    actual = awaitItem().state,
+                )
+            }
+        }
+
+    // TODO make a tighter data type for Session Settings
+    private fun exerciseSettings(
+        questionKey: PitchClass,
+        shouldPlayReferencePitch: Boolean,
+    ) = ExerciseSettings(
+        notePoolType = NotePoolType.Diatonic(
+            degrees = booleanArrayOf(true),
+            scale = ParentScale.Major.Ionian,
+        ),
+        sessionQuestionSettings = SessionQuestionSettings(
+            questionKey = questionKey,
+            questionKeyValues = listOf(),
+            shouldMatchOctave = false,
+            shouldPlayStartingPitch = shouldPlayReferencePitch,
+            playableBounds = Range(Note(0), Note(10)),
+        ),
+        sessionLengthSettings = SessionLengthSettings.NoLimit,
+    )
 
     private fun initViewModel() {
         viewModel = SessionViewModel2(

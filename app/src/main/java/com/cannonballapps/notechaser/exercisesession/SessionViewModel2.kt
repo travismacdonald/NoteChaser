@@ -2,8 +2,10 @@ package com.cannonballapps.notechaser.exercisesession
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
+import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.delay
@@ -27,6 +29,7 @@ class SessionViewModel2(
     private val _questionsAnswered: MutableStateFlow<Int> = MutableStateFlow(0)
 
     private lateinit var playableGenerator: PlayableGenerator
+    private lateinit var exerciseSettings: ExerciseSettings
 
     val screenUiData: StateFlow<SessionScreenUiData> = combine(
         _sessionState,
@@ -55,6 +58,8 @@ class SessionViewModel2(
                 when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
                     is ResultOf.Success -> {
                         playableGenerator = generatorResult.value
+                        // todo test error state
+                        exerciseSettings = prefsStore.exerciseSettingsFlow().first()
                         preStartStateHandler.enterState()
                     }
                     is ResultOf.Failure -> {
@@ -77,6 +82,23 @@ class SessionViewModel2(
 
             viewModelScope.launch {
                 delay(SessionState.PreStart.millisUntilStart)
+                if (exerciseSettings.sessionQuestionSettings.shouldPlayStartingPitch) {
+                    playingReferencePitchHandler.enterState()
+                } else {
+                    playingQuestionHandler.enterState()
+                }
+            }
+        }
+    }
+
+    private val playingReferencePitchHandler = object : SessionStateHandler {
+        override fun enterState() {
+            val referencePitch = exerciseSettings.sessionQuestionSettings.questionKey
+            val state = SessionState.PlayingReferencePitch(referencePitch)
+            _sessionState.value = state
+
+            viewModelScope.launch {
+                delay(state.referencePitchDurationMillis)
                 playingQuestionHandler.enterState()
             }
         }
@@ -86,7 +108,6 @@ class SessionViewModel2(
         override fun enterState() {
             _sessionState.value = SessionState.PlayingQuestion(playableGenerator.generatePlayable())
         }
-
     }
 
     init {
@@ -107,6 +128,12 @@ sealed interface SessionState {
 
     object PreStart : SessionState {
         const val millisUntilStart = 3_000L
+    }
+
+    data class PlayingReferencePitch(
+        val referencePitch: PitchClass,
+    ) : SessionState {
+        val referencePitchDurationMillis = 2_000L
     }
 
     data class PlayingQuestion(val playable: Playable) : SessionState
