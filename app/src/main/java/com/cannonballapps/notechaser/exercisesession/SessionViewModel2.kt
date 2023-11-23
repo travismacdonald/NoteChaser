@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -21,9 +19,8 @@ class SessionViewModel2(
     private val prefsStore: PrefsStore,
 ) : ViewModel() {
 
-    private interface SessionStateHandler<T> {
-        fun createState(): T
-        fun enterState(state: T) { /* Default no-op */ }
+    private interface SessionStateHandler {
+        fun enterState()
     }
 
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
@@ -50,66 +47,50 @@ class SessionViewModel2(
         )
     )
 
-    private val loadingStateHandler = object : SessionStateHandler<SessionState.Loading> {
-        override fun createState() = SessionState.Loading
+    private val loadingStateHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.Loading
 
-        override fun enterState(state: SessionState.Loading) {
             viewModelScope.launch {
                 when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
                     is ResultOf.Success -> {
                         playableGenerator = generatorResult.value
-                        changeStateTo(preStartStateHandler.createState())
+                        preStartStateHandler.enterState()
                     }
                     is ResultOf.Failure -> {
-                        changeStateTo(errorStateHandler.createState())
+                        errorStateHandler.enterState()
                     }
                 }
             }
         }
     }
 
-    private val errorStateHandler = object : SessionStateHandler<SessionState.Error> {
-        override fun createState() = SessionState.Error
+    private val errorStateHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.Error
+        }
     }
 
-    private val preStartStateHandler = object : SessionStateHandler<SessionState.PreStart> {
-        override fun createState() = SessionState.PreStart
+    private val preStartStateHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.PreStart
 
-        override fun enterState(state: SessionState.PreStart) {
             viewModelScope.launch {
-                delay(state.millisUntilStart)
-                changeStateTo(playingQuestionHandler.createState())
+                delay(SessionState.PreStart.millisUntilStart)
+                playingQuestionHandler.enterState()
             }
         }
     }
 
-    private val playingQuestionHandler = object : SessionStateHandler<SessionState.PlayingQuestion> {
-        override fun createState() =
-            SessionState.PlayingQuestion(playableGenerator.generatePlayable())
+    private val playingQuestionHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.PlayingQuestion(playableGenerator.generatePlayable())
+        }
+
     }
 
     init {
-        startStateChangeListener()
-        changeStateTo(loadingStateHandler.createState())
-    }
-
-    private fun changeStateTo(sessionState: SessionState) {
-        _sessionState.value = sessionState
-    }
-
-    private fun startStateChangeListener() {
-        _sessionState
-            .onEach(::onStateChanged)
-            .launchIn(viewModelScope)
-    }
-
-    private fun onStateChanged(state: SessionState) {
-        when (state) {
-            is SessionState.Loading -> loadingStateHandler.enterState(state)
-            is SessionState.Error -> errorStateHandler.enterState(state)
-            is SessionState.PreStart -> preStartStateHandler.enterState(state)
-            is SessionState.PlayingQuestion -> playingQuestionHandler.enterState(state)
-        }
+        loadingStateHandler.enterState()
     }
 }
 
