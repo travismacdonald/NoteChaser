@@ -3,10 +3,10 @@ package com.cannonballapps.notechaser.exercisesession
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonballapps.notechaser.common.ExerciseSettings
+import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.musicutilities.PitchClass
-import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class SessionViewModel2(
     private val prefsStore: PrefsStore,
+    private val playablePlayer: PlayablePlayer,
 ) : ViewModel() {
 
     private interface SessionStateHandler {
@@ -106,7 +107,11 @@ class SessionViewModel2(
 
     private val playingQuestionHandler = object : SessionStateHandler {
         override fun enterState() {
-            _sessionState.value = SessionState.PlayingQuestion(playableGenerator.generatePlayable())
+            _sessionState.value = SessionState.PlayingQuestion
+
+            viewModelScope.launch {
+                playablePlayer.playPlayable(playableGenerator.generatePlayable())
+            }
         }
     }
 
@@ -136,5 +141,5 @@ sealed interface SessionState {
         val referencePitchDurationMillis = 2_000L
     }
 
-    data class PlayingQuestion(val playable: Playable) : SessionState
+    object PlayingQuestion : SessionState
 }

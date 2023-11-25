@@ -4,6 +4,7 @@ import android.util.Range
 import app.cash.turbine.test
 import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.NotePoolType
+import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SessionQuestionSettings
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import runStandardCoroutineTest
 import runUnconfinedCoroutineTest
@@ -33,6 +35,7 @@ class SessionViewModel2Test {
 
     private val prefsStore: PrefsStore = mock()
     private val playableGenerator: PlayableGenerator = mock()
+    private val playablePlayer: PlayablePlayer = mock()
 
     private lateinit var viewModel: SessionViewModel2
 
@@ -106,14 +109,16 @@ class SessionViewModel2Test {
                     actual = awaitItem().state,
                 )
                 assertEquals(
-                    expected = SessionState.PlayingQuestion(playable),
+                    expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
                 )
             }
+
+            verify(playablePlayer).playPlayable(playable)
         }
 
     @Test
-    fun `when session config loads successfully and should play starting pitch - session state is PlayingStartingPitch`() =
+    fun `when session config loads successfully and should play starting pitch - session state is PlayingReferencePitch`() =
         runStandardCoroutineTest {
             val playable = playable()
             whenever(playableGenerator.generatePlayable())
@@ -140,7 +145,7 @@ class SessionViewModel2Test {
                     actual = awaitItem().state,
                 )
                 assertEquals(
-                    expected = SessionState.PlayingQuestion(playable),
+                    expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
                 )
             }
@@ -168,6 +173,7 @@ class SessionViewModel2Test {
     private fun initViewModel() {
         viewModel = SessionViewModel2(
             prefsStore = prefsStore,
+            playablePlayer = playablePlayer,
         )
     }
 
