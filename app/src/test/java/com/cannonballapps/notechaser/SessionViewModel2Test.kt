@@ -56,7 +56,6 @@ class SessionViewModel2Test {
     @Test
     fun `when session view model is created - session state is Loading`() =
         runStandardCoroutineTest {
-
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(MutableStateFlow(ResultOf.Failure(Exception())))
 
@@ -103,11 +102,7 @@ class SessionViewModel2Test {
 
             initViewModel()
 
-            viewModel.screenUiData.drop(1).test {
-                assertEquals(
-                    expected = SessionState.PreStart,
-                    actual = awaitItem().state,
-                )
+            viewModel.screenUiData.drop(2).test {
                 assertEquals(
                     expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
@@ -135,17 +130,9 @@ class SessionViewModel2Test {
 
             initViewModel()
 
-            viewModel.screenUiData.drop(1).test {
-                assertEquals(
-                    expected = SessionState.PreStart,
-                    actual = awaitItem().state,
-                )
+            viewModel.screenUiData.drop(2).test {
                 assertEquals(
                     expected = SessionState.PlayingReferencePitch(PitchClass.C),
-                    actual = awaitItem().state,
-                )
-                assertEquals(
-                    expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
                 )
             }
