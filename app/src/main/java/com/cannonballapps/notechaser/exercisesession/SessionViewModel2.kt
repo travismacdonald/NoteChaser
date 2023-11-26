@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -60,7 +61,7 @@ class SessionViewModel2(
             _sessionState.value = SessionState.Loading
 
             viewModelScope.launch {
-                when (val requiredDataResult = dataLoader.load()) {
+                when (val requiredDataResult = dataLoader.requiredData().first()) {
                     is ResultOf.Success -> {
                         playableGenerator = requiredDataResult.value.playableGenerator
                         exerciseSettings = requiredDataResult.value.sessionSettings

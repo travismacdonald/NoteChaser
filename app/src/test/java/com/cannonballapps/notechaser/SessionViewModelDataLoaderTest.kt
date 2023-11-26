@@ -4,6 +4,8 @@ import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.exercisesession.SessionViewModelDataLoader
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import org.mockito.kotlin.doReturn
@@ -26,7 +28,7 @@ class SessionViewModelDataLoaderTest {
                 .doReturn(flowOf(mock()))
 
             assertIs<ResultOf.Failure>(
-                value = createDataLoader().load(),
+                value = createDataLoader().requiredData().first(),
             )
         }
 
@@ -36,11 +38,12 @@ class SessionViewModelDataLoaderTest {
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(flowOf(ResultOf.Success(mock())))
 
+            // TODO fix this test
             whenever(prefsStore.exerciseSettingsFlow())
-                .doReturn(flowOf())
+                .doReturn(flow {  })
 
             assertIs<ResultOf.Failure>(
-                value = createDataLoader().load(),
+                value = createDataLoader().requiredData().first(),
             )
         }
 
@@ -54,7 +57,7 @@ class SessionViewModelDataLoaderTest {
                 .doReturn(flowOf(mock()))
 
             assertIs<ResultOf.Success<PlayableGenerator>>(
-                value = createDataLoader().load(),
+                value = createDataLoader().requiredData().first(),
             )
         }
 

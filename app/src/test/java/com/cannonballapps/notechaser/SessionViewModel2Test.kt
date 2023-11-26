@@ -20,10 +20,12 @@ import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlaybackType
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.receiveAsFlow
 import org.junit.Test
-import org.mockito.Mockito.mock
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import runStandardCoroutineTest
@@ -35,17 +37,17 @@ class SessionViewModel2Test {
 
     private val playableGenerator: PlayableGenerator = mock()
     private val playablePlayer: PlayablePlayer = mock()
-    private val dataLoader: SessionViewModelDataLoader = mock()
+
+    private val dataLoaderFlow = Channel<ResultOf<RequiredData>>()
+    private val dataLoader: SessionViewModelDataLoader = mock {
+        on(it.requiredData()).doReturn(dataLoaderFlow.receiveAsFlow())
+    }
 
     private lateinit var viewModel: SessionViewModel2
 
     @Test
     fun `when session view model is created - questions answered is 0`() =
         runUnconfinedCoroutineTest {
-            // TODO use external flow for better control flow
-            whenever(dataLoader.load())
-                .doReturn(ResultOf.Failure(Exception()))
-
             initViewModel()
 
             assertEquals(
@@ -57,9 +59,6 @@ class SessionViewModel2Test {
     @Test
     fun `when session view model is created - session state is Loading`() =
         runStandardCoroutineTest {
-            whenever(dataLoader.load())
-                .doReturn(ResultOf.Failure(Exception()))
-
             initViewModel()
 
             viewModel.screenUiData.test {
@@ -72,10 +71,8 @@ class SessionViewModel2Test {
 
     @Test
     fun `when playable generator fails to load - session state is Error`() = runStandardCoroutineTest {
-        whenever(dataLoader.load())
-            .doReturn(ResultOf.Failure(Exception()))
-
         initViewModel()
+        dataLoaderFlow.send(ResultOf.Failure(Exception()))
 
         viewModel.screenUiData.drop(1).test {
             assertEquals(
@@ -95,17 +92,16 @@ class SessionViewModel2Test {
             )
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
-            whenever(dataLoader.load())
-                .doReturn(
-                    ResultOf.Success(
-                        RequiredData(
-                            playableGenerator = playableGenerator,
-                            sessionSettings = exerciseSettings,
-                        )
-                    )
-                )
 
             initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = exerciseSettings,
+                    )
+                )
+            )
 
             viewModel.screenUiData.drop(2).test {
                 assertEquals(
@@ -128,17 +124,15 @@ class SessionViewModel2Test {
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
 
-            whenever(dataLoader.load())
-                .doReturn(
-                    ResultOf.Success(
-                        RequiredData(
-                            playableGenerator = playableGenerator,
-                            sessionSettings = exerciseSettings,
-                        )
+            initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = exerciseSettings,
                     )
                 )
-
-            initViewModel()
+            )
 
             viewModel.screenUiData.drop(2).test {
                 assertEquals(
