@@ -6,6 +6,7 @@ import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
+import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.delay
@@ -99,6 +100,7 @@ class SessionViewModel2(
             _sessionState.value = state
 
             viewModelScope.launch {
+                playablePlayer.playPlayable(referencePitch.toPlayable())
                 delay(state.referencePitchDurationMillis)
                 playingQuestionHandler.enterState()
             }

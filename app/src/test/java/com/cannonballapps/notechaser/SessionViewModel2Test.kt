@@ -9,6 +9,7 @@ import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SessionQuestionSettings
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
+import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.exercisesession.SessionState
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2
 import com.cannonballapps.notechaser.musicutilities.Ionian
@@ -136,6 +137,8 @@ class SessionViewModel2Test {
                     actual = awaitItem().state,
                 )
             }
+
+            verify(playablePlayer).playPlayable(PitchClass.C.toPlayable())
         }
 
     // TODO make a tighter data type for Session Settings
