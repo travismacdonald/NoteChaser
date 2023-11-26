@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
-import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -14,14 +13,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SessionViewModel2(
-    private val prefsStore: PrefsStore,
     private val playablePlayer: PlayablePlayer,
+    private val dataLoader: SessionViewModelDataLoader,
 ) : ViewModel() {
+
+    data class RequiredData(
+        val playableGenerator: PlayableGenerator,
+        val sessionSettings: ExerciseSettings,
+    )
 
     private interface SessionStateHandler {
         fun enterState()
@@ -57,11 +60,10 @@ class SessionViewModel2(
             _sessionState.value = SessionState.Loading
 
             viewModelScope.launch {
-                when (val generatorResult = prefsStore.playableGeneratorFlow().first()) {
+                when (val requiredDataResult = dataLoader.load()) {
                     is ResultOf.Success -> {
-                        playableGenerator = generatorResult.value
-                        // todo test error state
-                        exerciseSettings = prefsStore.exerciseSettingsFlow().first()
+                        playableGenerator = requiredDataResult.value.playableGenerator
+                        exerciseSettings = requiredDataResult.value.sessionSettings
                         preStartStateHandler.enterState()
                     }
                     is ResultOf.Failure -> {

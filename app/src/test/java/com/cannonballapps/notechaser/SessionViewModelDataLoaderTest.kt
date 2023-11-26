@@ -22,16 +22,36 @@ class SessionViewModelDataLoaderTest {
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(flowOf(ResultOf.Failure(Exception())))
 
+            whenever(prefsStore.exerciseSettingsFlow())
+                .doReturn(flowOf(mock()))
+
             assertIs<ResultOf.Failure>(
                 value = createDataLoader().load(),
             )
         }
 
     @Test
-    fun `when playableGenerator loads successfully - result is Success`() =
+    fun `when session settings fails to load - result is Failure`() =
         runUnconfinedCoroutineTest {
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(flowOf(ResultOf.Success(mock())))
+
+            whenever(prefsStore.exerciseSettingsFlow())
+                .doReturn(flowOf())
+
+            assertIs<ResultOf.Failure>(
+                value = createDataLoader().load(),
+            )
+        }
+
+    @Test
+    fun `when all required data loads successfully - result is Success`() =
+        runUnconfinedCoroutineTest {
+            whenever(prefsStore.playableGeneratorFlow())
+                .doReturn(flowOf(ResultOf.Success(mock())))
+
+            whenever(prefsStore.exerciseSettingsFlow())
+                .doReturn(flowOf(mock()))
 
             assertIs<ResultOf.Success<PlayableGenerator>>(
                 value = createDataLoader().load(),
