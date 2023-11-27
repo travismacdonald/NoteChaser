@@ -9,6 +9,7 @@ import com.cannonballapps.notechaser.common.ExerciseType
 import com.cannonballapps.notechaser.common.NotePoolType
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.QuestionLog
+import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.SoundEffectPlayer
 import com.cannonballapps.notechaser.common.noteprocessor.NoteProcessor
@@ -314,10 +315,10 @@ class SessionViewModel @Inject constructor(
     // TODO: could clean a bit
     private fun makeNotePlayableGenerator() {
         viewModelScope.launch {
-            val notePoolType = prefsStore.exerciseSettingsFlow().first().notePoolType
-            val key = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.questionKey
-            val lowerBound = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.playableBounds.lower
-            val upperBound = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.playableBounds.upper
+            val notePoolType = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.notePoolType
+            val key = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.questionKey
+            val lowerBound = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.playableBounds.lower
+            val upperBound = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.playableBounds.upper
 
             if (notePoolType is NotePoolType.Chromatic) {
                 generator = PlayableGeneratorFactory().makeNotePlayableGeneratorFromChromaticDegrees(
@@ -501,16 +502,16 @@ class SessionViewModel @Inject constructor(
     }
 
     private suspend fun makeStartingPitch(): Note {
-        val key = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.questionKey
+        val key = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.questionKey
         val keyTransposed = key.value + (MusicTheoryUtils.OCTAVE_SIZE * 5)
         return Note(keyTransposed)
     }
 
     private suspend fun fetchPrefStoreData() {
-        answersShouldMatchOctave = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.shouldMatchOctave
+        answersShouldMatchOctave = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.shouldMatchOctave
 
         // todo refactor
-        sessionLengthSettings = prefsStore.exerciseSettingsFlow().first().sessionLengthSettings
+        sessionLengthSettings = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionLengthSettings
         (sessionLengthSettings as? SessionLengthSettings.TimeLimit)?.let {
             sessionTimeLenInMinutes = it.timeLimitMinutes
         }
@@ -518,7 +519,7 @@ class SessionViewModel @Inject constructor(
             numQuestions = it.numQuestions
         }
 
-        shouldPlayReferencePitchOnStart = prefsStore.exerciseSettingsFlow().first().sessionQuestionSettings.shouldPlayStartingPitch
+        shouldPlayReferencePitchOnStart = (prefsStore.exerciseSettingsFlow().first() as ResultOf.Success).value.sessionQuestionSettings.shouldPlayStartingPitch
         if (shouldPlayReferencePitchOnStart) {
             referencePitch = makeStartingPitch()
         }

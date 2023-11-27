@@ -22,6 +22,7 @@ import com.cannonballapps.notechaser.musicutilities.pitchClassFlat
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -48,26 +49,31 @@ class PrefsStore @Inject constructor(
 
     private val dataStore = context.dataStore
 
-    fun exerciseSettingsFlow(): Flow<ExerciseSettings> = dataStore.data.map { _ ->
-        ExerciseSettings(
-            notePoolType = NotePoolType.Chromatic(
-                degrees = DEFAULT_CHROMATIC_DEGREES,
-            ),
-            sessionQuestionSettings = SessionQuestionSettings(
-                questionKey = PitchClass.C,
-                questionKeyValues = pitchClassFlat,
-                shouldMatchOctave = false,
-                shouldPlayStartingPitch = true,
-                playableBounds = Range(
-                    Note(midiNumber = DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
-                    Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
-                ),
-            ),
-            sessionLengthSettings = SessionLengthSettings.QuestionLimit(
-                numQuestions = 20,
-            ),
-        )
-    }
+    fun exerciseSettingsFlow(): Flow<ResultOf<ExerciseSettings>> = dataStore.data
+        .map { _ ->
+            ResultOf.Success(
+                ExerciseSettings(
+                    notePoolType = NotePoolType.Chromatic(
+                        degrees = DEFAULT_CHROMATIC_DEGREES,
+                    ),
+                    sessionQuestionSettings = SessionQuestionSettings(
+                        questionKey = PitchClass.C,
+                        questionKeyValues = pitchClassFlat,
+                        shouldMatchOctave = false,
+                        shouldPlayStartingPitch = true,
+                        playableBounds = Range(
+                            Note(midiNumber = DEFAULT_PLAYABLE_LOWER_BOUND_MIDI_NUM),
+                            Note(midiNumber = DEFAULT_PLAYABLE_UPPER_BOUND_MIDI_NUM),
+                        ),
+                    ),
+                    sessionLengthSettings = SessionLengthSettings.QuestionLimit(
+                        numQuestions = 20,
+                    ),
+                )
+            )
+        }.catch {
+            ResultOf.Failure(it)
+        }
 
     fun playableGeneratorFlow(): Flow<ResultOf<PlayableGenerator>> = flow { /* TODO */ }
 

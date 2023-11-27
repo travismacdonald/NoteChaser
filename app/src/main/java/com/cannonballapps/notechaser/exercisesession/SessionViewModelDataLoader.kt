@@ -16,7 +16,7 @@ class SessionViewModelDataLoader(
         runCatchingToResultOfSuspending {
             SessionViewModel2.RequiredData(
                 playableGenerator = (playableGenerator as ResultOf.Success).value,
-                sessionSettings = (exerciseSettings),
+                sessionSettings = (exerciseSettings as ResultOf.Success).value,
             )
         }
     }

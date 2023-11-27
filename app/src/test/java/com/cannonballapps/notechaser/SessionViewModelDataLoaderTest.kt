@@ -5,7 +5,6 @@ import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.exercisesession.SessionViewModelDataLoader
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import org.mockito.kotlin.doReturn
@@ -25,7 +24,7 @@ class SessionViewModelDataLoaderTest {
                 .doReturn(flowOf(ResultOf.Failure(Exception())))
 
             whenever(prefsStore.exerciseSettingsFlow())
-                .doReturn(flowOf(mock()))
+                .doReturn(flowOf(ResultOf.Success(mock())))
 
             assertIs<ResultOf.Failure>(
                 value = createDataLoader().requiredData().first(),
@@ -38,9 +37,8 @@ class SessionViewModelDataLoaderTest {
             whenever(prefsStore.playableGeneratorFlow())
                 .doReturn(flowOf(ResultOf.Success(mock())))
 
-            // TODO fix this test
             whenever(prefsStore.exerciseSettingsFlow())
-                .doReturn(flow {  })
+                .doReturn(flowOf(ResultOf.Failure(Exception())))
 
             assertIs<ResultOf.Failure>(
                 value = createDataLoader().requiredData().first(),
@@ -54,7 +52,7 @@ class SessionViewModelDataLoaderTest {
                 .doReturn(flowOf(ResultOf.Success(mock())))
 
             whenever(prefsStore.exerciseSettingsFlow())
-                .doReturn(flowOf(mock()))
+                .doReturn(flowOf(ResultOf.Success(mock())))
 
             assertIs<ResultOf.Success<PlayableGenerator>>(
                 value = createDataLoader().requiredData().first(),
