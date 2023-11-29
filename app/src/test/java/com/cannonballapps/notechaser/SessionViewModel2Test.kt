@@ -1,21 +1,14 @@
 package com.cannonballapps.notechaser
 
-import android.util.Range
 import app.cash.turbine.test
-import com.cannonballapps.notechaser.common.ExerciseSettings
-import com.cannonballapps.notechaser.common.NotePoolType
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
-import com.cannonballapps.notechaser.common.SessionLengthSettings
-import com.cannonballapps.notechaser.common.SessionQuestionSettings
 import com.cannonballapps.notechaser.common.toPlayable
+import com.cannonballapps.notechaser.exercisesession.SessionSettings
 import com.cannonballapps.notechaser.exercisesession.SessionState
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2.RequiredData
 import com.cannonballapps.notechaser.exercisesession.SessionViewModelDataLoader
-import com.cannonballapps.notechaser.musicutilities.Ionian
-import com.cannonballapps.notechaser.musicutilities.Note
-import com.cannonballapps.notechaser.musicutilities.ParentScale
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -86,8 +79,8 @@ class SessionViewModel2Test {
     fun `when playable generator loads successfully and should not play reference pitch - session state is PreStart then PlayingQuestion`() =
         runStandardCoroutineTest {
             val playable = playable()
-            val exerciseSettings = exerciseSettings(
-                questionKey = PitchClass.C,
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
                 shouldPlayReferencePitch = false,
             )
             whenever(playableGenerator.generatePlayable())
@@ -98,7 +91,7 @@ class SessionViewModel2Test {
                 ResultOf.Success(
                     RequiredData(
                         playableGenerator = playableGenerator,
-                        sessionSettings = exerciseSettings,
+                        sessionSettings = settings,
                     )
                 )
             )
@@ -117,8 +110,8 @@ class SessionViewModel2Test {
     fun `when session config loads successfully and should play starting pitch - session state is PlayingReferencePitch`() =
         runStandardCoroutineTest {
             val playable = playable()
-            val exerciseSettings = exerciseSettings(
-                questionKey = PitchClass.C,
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
                 shouldPlayReferencePitch = true,
             )
             whenever(playableGenerator.generatePlayable())
@@ -129,7 +122,7 @@ class SessionViewModel2Test {
                 ResultOf.Success(
                     RequiredData(
                         playableGenerator = playableGenerator,
-                        sessionSettings = exerciseSettings,
+                        sessionSettings = settings,
                     )
                 )
             )
@@ -144,23 +137,12 @@ class SessionViewModel2Test {
             verify(playablePlayer).playPlayable(PitchClass.C.toPlayable())
         }
 
-    // TODO make a tighter data type for Session Settings
-    private fun exerciseSettings(
-        questionKey: PitchClass,
+    private fun sessionSettings(
+        sessionKey: PitchClass,
         shouldPlayReferencePitch: Boolean,
-    ) = ExerciseSettings(
-        notePoolType = NotePoolType.Diatonic(
-            degrees = booleanArrayOf(true),
-            scale = ParentScale.Major.Ionian,
-        ),
-        sessionQuestionSettings = SessionQuestionSettings(
-            questionKey = questionKey,
-            questionKeyValues = listOf(),
-            shouldMatchOctave = false,
-            shouldPlayStartingPitch = shouldPlayReferencePitch,
-            playableBounds = Range(Note(0), Note(10)),
-        ),
-        sessionLengthSettings = SessionLengthSettings.NoLimit,
+    ) = SessionSettings(
+        sessionKey = sessionKey,
+        shouldPlayReferencePitch = shouldPlayReferencePitch,
     )
 
     private fun initViewModel() {

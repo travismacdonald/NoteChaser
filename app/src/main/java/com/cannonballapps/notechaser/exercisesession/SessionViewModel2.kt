@@ -2,7 +2,6 @@ package com.cannonballapps.notechaser.exercisesession
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.toPlayable
@@ -24,7 +23,7 @@ class SessionViewModel2(
 
     data class RequiredData(
         val playableGenerator: PlayableGenerator,
-        val sessionSettings: ExerciseSettings,
+        val sessionSettings: SessionSettings,
     )
 
     private interface SessionStateHandler {
@@ -34,8 +33,14 @@ class SessionViewModel2(
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
     private val _questionsAnswered: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    private lateinit var playableGenerator: PlayableGenerator
-    private lateinit var exerciseSettings: ExerciseSettings
+    private lateinit var requiredData: RequiredData
+
+    private val playableGenerator: PlayableGenerator
+        get() = requiredData.playableGenerator
+    private val sessionKey: PitchClass
+        get() = requiredData.sessionSettings.sessionKey
+    private val shouldPlayReferencePitch: Boolean
+        get() = requiredData.sessionSettings.shouldPlayReferencePitch
 
     val screenUiData: StateFlow<SessionScreenUiData> = combine(
         _sessionState,
@@ -63,8 +68,7 @@ class SessionViewModel2(
             viewModelScope.launch {
                 when (val requiredDataResult = dataLoader.requiredData().first()) {
                     is ResultOf.Success -> {
-                        playableGenerator = requiredDataResult.value.playableGenerator
-                        exerciseSettings = requiredDataResult.value.sessionSettings
+                        requiredData = requiredDataResult.value
                         preStartStateHandler.enterState()
                     }
                     is ResultOf.Failure -> {
@@ -87,7 +91,7 @@ class SessionViewModel2(
 
             viewModelScope.launch {
                 delay(SessionState.PreStart.millisUntilStart)
-                if (exerciseSettings.sessionQuestionSettings.shouldPlayStartingPitch) {
+                if (shouldPlayReferencePitch) {
                     playingReferencePitchHandler.enterState()
                 } else {
                     playingQuestionHandler.enterState()
@@ -98,12 +102,11 @@ class SessionViewModel2(
 
     private val playingReferencePitchHandler = object : SessionStateHandler {
         override fun enterState() {
-            val referencePitch = exerciseSettings.sessionQuestionSettings.questionKey
-            val state = SessionState.PlayingReferencePitch(referencePitch)
+            val state = SessionState.PlayingReferencePitch(sessionKey)
             _sessionState.value = state
 
             viewModelScope.launch {
-                playablePlayer.playPlayable(referencePitch.toPlayable())
+                playablePlayer.playPlayable(sessionKey.toPlayable())
                 delay(state.referencePitchDurationMillis)
                 playingQuestionHandler.enterState()
             }
@@ -148,3 +151,8 @@ sealed interface SessionState {
 
     object PlayingQuestion : SessionState
 }
+
+data class SessionSettings(
+    val shouldPlayReferencePitch: Boolean,
+    val sessionKey: PitchClass,
+)
