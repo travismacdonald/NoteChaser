@@ -23,6 +23,13 @@ class PlayablePlayer(val midiPlayer: MidiPlayer2) {
         delay(REVERB_LEN_MILLIS)
     }
 
+    fun playPlayable2(
+        playable: Playable,
+        onPlaybackFinished: (() -> Unit)? = null,
+    ) {
+        // TODO
+    }
+
     fun stopCurPlayable() {
         midiPlayer.stop()
     }

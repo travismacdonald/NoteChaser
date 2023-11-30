@@ -106,7 +106,7 @@ class SessionViewModel2(
             _sessionState.value = state
 
             viewModelScope.launch {
-                playablePlayer.playPlayable(sessionKey.toPlayable())
+                playablePlayer.playPlayable2(sessionKey.toPlayable())
                 delay(state.referencePitchDurationMillis)
                 playingQuestionHandler.enterState()
             }
@@ -117,9 +117,18 @@ class SessionViewModel2(
         override fun enterState() {
             _sessionState.value = SessionState.PlayingQuestion
 
-            viewModelScope.launch {
-                playablePlayer.playPlayable(playableGenerator.generatePlayable())
-            }
+            playablePlayer.playPlayable2(
+                playable = playableGenerator.generatePlayable(),
+                onPlaybackFinished = {
+                    listeningHandler.enterState()
+                },
+            )
+        }
+    }
+
+    private val listeningHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.Listening
         }
     }
 
@@ -150,6 +159,8 @@ sealed interface SessionState {
     }
 
     object PlayingQuestion : SessionState
+
+    object Listening : SessionState
 }
 
 data class SessionSettings(

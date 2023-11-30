@@ -15,10 +15,15 @@ import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGe
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlaybackType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -119,8 +124,9 @@ class SessionViewModel2Test {
             )
         }
 
+    @Suppress("UNCHECKED_CAST")
     @Test
-    fun `when playable generator loads successfully and should not play reference pitch - session state is PlayingQuestion after PreStart`() =
+    fun `PlayingQuestion state should play playable and advance to Listening state`() =
         runStandardCoroutineTest {
             val playable = playable()
             val settings = sessionSettings(
@@ -129,6 +135,13 @@ class SessionViewModel2Test {
             )
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
+
+            whenever(playablePlayer.playPlayable2(any(), any())).then {
+                launch {
+                    delay(1)
+                    (it.arguments[1] as () -> Unit).invoke()
+                }
+            }
 
             initViewModel()
             dataLoaderFlow.send(
@@ -140,16 +153,20 @@ class SessionViewModel2Test {
                 )
             )
 
-            viewModel.screenUiData.test {
-                skipItems(1)
-                assertIs<SessionState.PreStart>(awaitItem().state)
+            viewModel.screenUiData.dropWhile { uiData ->
+                uiData.state !is SessionState.PlayingQuestion
+            }.test {
                 assertEquals(
                     expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
                 )
+                assertEquals(
+                    expected = SessionState.Listening,
+                    actual = awaitItem().state,
+                )
             }
 
-            verify(playablePlayer).playPlayable(playable)
+            verify(playablePlayer).playPlayable2(eq(playable), any())
         }
 
     @Test
@@ -183,7 +200,7 @@ class SessionViewModel2Test {
                 assertIs<SessionState.PlayingQuestion>(awaitItem().state)
             }
 
-            verify(playablePlayer).playPlayable(PitchClass.C.toPlayable())
+            verify(playablePlayer).playPlayable2(PitchClass.C.toPlayable())
         }
 
     private fun sessionSettings(
