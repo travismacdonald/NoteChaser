@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.toPlayable
+import com.cannonballapps.notechaser.exercisesession.SessionScreenUiData
 import com.cannonballapps.notechaser.exercisesession.SessionSettings
 import com.cannonballapps.notechaser.exercisesession.SessionState
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2
@@ -16,6 +17,7 @@ import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlaybackTy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -72,18 +74,24 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `when playable generator fails to load - session state is Error`() = runStandardCoroutineTest {
-        initViewModel()
-        dataLoaderFlow.send(ResultOf.Failure(Exception()))
+    fun `Loading state should load required data and move to Error state on failure`() =
+        runStandardCoroutineTest {
+            initViewModel()
+            dataLoaderFlow.send(ResultOf.Failure(Exception()))
 
-        viewModel.screenUiData.test {
-            skipItems(1)
-            assertEquals(
-                expected = SessionState.Error,
-                actual = awaitItem().state,
-            )
+            viewModel.screenUiData.startObservingOnState<SessionState.Loading>().test {
+                assertEquals(
+                    expected = SessionState.Loading,
+                    actual = awaitItem().state,
+                )
+                verify(dataLoader).requiredData()
+
+                assertEquals(
+                    expected = SessionState.Error,
+                    actual = awaitItem().state,
+                )
+            }
         }
-    }
 
     @Test
     fun `when playable generator loads successfully - session state is PreStart for 3 seconds`() =
@@ -153,20 +161,18 @@ class SessionViewModel2Test {
                 )
             )
 
-            viewModel.screenUiData.dropWhile { uiData ->
-                uiData.state !is SessionState.PlayingQuestion
-            }.test {
+            viewModel.screenUiData.startObservingOnState<SessionState.PlayingQuestion>().test {
                 assertEquals(
                     expected = SessionState.PlayingQuestion,
                     actual = awaitItem().state,
                 )
+                verify(playablePlayer).playPlayable2(eq(playable), any())
+
                 assertEquals(
                     expected = SessionState.Listening,
                     actual = awaitItem().state,
                 )
             }
-
-            verify(playablePlayer).playPlayable2(eq(playable), any())
         }
 
     @Test
@@ -223,4 +229,7 @@ class SessionViewModel2Test {
             notes = listOf(),
             playbackType = PlaybackType.HARMONIC,
         )
+
+    private inline fun <reified T : SessionState> Flow<SessionScreenUiData>.startObservingOnState() =
+        this.dropWhile { it.state !is T }
 }
