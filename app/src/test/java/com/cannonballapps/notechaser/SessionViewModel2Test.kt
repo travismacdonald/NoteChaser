@@ -148,7 +148,6 @@ class SessionViewModel2Test {
                     actual = viewModel.screenUiData.value.state,
                 )
 
-                advanceTimeBy(1)
                 assertIs<SessionState.PlayingReferencePitch>(awaitItem().state)
             }
         }
@@ -183,7 +182,45 @@ class SessionViewModel2Test {
                     actual = viewModel.screenUiData.value.state,
                 )
 
-                advanceTimeBy(1)
+                assertIs<SessionState.PlayingQuestion>(awaitItem().state)
+            }
+        }
+
+    @Test
+    fun `PlayingReferencePitch state should play reference pitch and move to PlayingQuestion`() =
+        runStandardCoroutineTest {
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
+                shouldPlayReferencePitch = true,
+            )
+
+            initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = settings,
+                    )
+                )
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.PlayingReferencePitch>().test {
+                assertEquals(
+                    expected = SessionState.PlayingReferencePitch(
+                        referencePitch = PitchClass.C,
+                    ),
+                    actual = awaitItem().state,
+                )
+                verify(playablePlayer).playPlayable2(PitchClass.C.toPlayable())
+
+                advanceTimeBy(2_000L)
+                assertEquals(
+                    expected = SessionState.PlayingReferencePitch(
+                        referencePitch = PitchClass.C,
+                    ),
+                    actual = viewModel.screenUiData.value.state,
+                )
+
                 assertIs<SessionState.PlayingQuestion>(awaitItem().state)
             }
         }
@@ -224,45 +261,8 @@ class SessionViewModel2Test {
                 )
                 verify(playablePlayer).playPlayable2(eq(playable), any())
 
-                assertEquals(
-                    expected = SessionState.Listening,
-                    actual = awaitItem().state,
-                )
+                assertIs<SessionState.Listening>(awaitItem().state)
             }
-        }
-
-    @Test
-    fun `when session config loads successfully and should play starting pitch - session state is PlayingReferencePitch after PreStart`() =
-        runStandardCoroutineTest {
-            val playable = playable()
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = true,
-            )
-            whenever(playableGenerator.generatePlayable())
-                .doReturn(playable)
-
-            initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
-
-            viewModel.screenUiData.test {
-                skipItems(1)
-                assertIs<SessionState.PreStart>(awaitItem().state)
-                assertEquals(
-                    expected = SessionState.PlayingReferencePitch(PitchClass.C),
-                    actual = awaitItem().state,
-                )
-                assertIs<SessionState.PlayingQuestion>(awaitItem().state)
-            }
-
-            verify(playablePlayer).playPlayable2(PitchClass.C.toPlayable())
         }
 
     private fun sessionSettings(
