@@ -94,6 +94,38 @@ class SessionViewModel2Test {
         }
 
     @Test
+    fun `Loading state should move to PreStart state on success`() =
+        runStandardCoroutineTest {
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
+                shouldPlayReferencePitch = true,
+            )
+
+            initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = settings,
+                    )
+                )
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.Loading>().test {
+                assertEquals(
+                    expected = SessionState.Loading,
+                    actual = awaitItem().state,
+                )
+                verify(dataLoader).requiredData()
+
+                assertEquals(
+                    expected = SessionState.PreStart,
+                    actual = awaitItem().state,
+                )
+            }
+        }
+
+    @Test
     fun `when playable generator loads successfully - session state is PreStart for 3 seconds`() =
         runStandardCoroutineTest {
             val settings = sessionSettings(
