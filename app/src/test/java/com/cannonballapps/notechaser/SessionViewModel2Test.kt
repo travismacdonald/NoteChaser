@@ -34,7 +34,6 @@ import runUnconfinedCoroutineTest
 import java.lang.Exception
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import kotlin.test.assertNotEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionViewModel2Test {
@@ -74,7 +73,7 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `Loading state should load required data and move to Error state on failure`() =
+    fun `Loading state should move to Error state on failure`() =
         runStandardCoroutineTest {
             initViewModel()
             dataLoaderFlow.send(ResultOf.Failure(Exception()))
@@ -86,10 +85,7 @@ class SessionViewModel2Test {
                 )
                 verify(dataLoader).requiredData()
 
-                assertEquals(
-                    expected = SessionState.Error,
-                    actual = awaitItem().state,
-                )
+                assertIs<SessionState.Error>(awaitItem().state)
             }
         }
 
@@ -118,15 +114,12 @@ class SessionViewModel2Test {
                 )
                 verify(dataLoader).requiredData()
 
-                assertEquals(
-                    expected = SessionState.PreStart,
-                    actual = awaitItem().state,
-                )
+                assertIs<SessionState.PreStart>(awaitItem().state)
             }
         }
 
     @Test
-    fun `when playable generator loads successfully - session state is PreStart for 3 seconds`() =
+    fun `PreStart state should move to PlayingReferencePitch after delay when reference pitch is not required`() =
         runStandardCoroutineTest {
             val settings = sessionSettings(
                 sessionKey = PitchClass.C,
@@ -143,25 +136,56 @@ class SessionViewModel2Test {
                 )
             )
 
-            viewModel.screenUiData.test {
-                skipItems(1)
+            viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
                 assertEquals(
                     expected = SessionState.PreStart,
                     actual = awaitItem().state,
                 )
+
+                advanceTimeBy(3_000)
+                assertEquals(
+                    expected = SessionState.PreStart,
+                    actual = viewModel.screenUiData.value.state,
+                )
+
+                advanceTimeBy(1)
+                assertIs<SessionState.PlayingReferencePitch>(awaitItem().state)
             }
+        }
 
-            advanceTimeBy(3_000)
-            assertEquals(
-                expected = SessionState.PreStart,
-                actual = viewModel.screenUiData.value.state,
+    @Test
+    fun `PreStart state should move to PlayingQuestion after delay when reference pitch is required`() =
+        runStandardCoroutineTest {
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
+                shouldPlayReferencePitch = false,
             )
 
-            advanceTimeBy(1)
-            assertNotEquals(
-                actual = viewModel.screenUiData.value.state,
-                illegal = SessionState.PreStart,
+            initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = settings,
+                    )
+                )
             )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
+                assertEquals(
+                    expected = SessionState.PreStart,
+                    actual = awaitItem().state,
+                )
+
+                advanceTimeBy(3_000)
+                assertEquals(
+                    expected = SessionState.PreStart,
+                    actual = viewModel.screenUiData.value.state,
+                )
+
+                advanceTimeBy(1)
+                assertIs<SessionState.PlayingQuestion>(awaitItem().state)
+            }
         }
 
     @Suppress("UNCHECKED_CAST")
