@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
+import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
+import com.cannonballapps.notechaser.common.noteprocessor.NoteDetector
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class SessionViewModel2(
     private val playablePlayer: PlayablePlayer,
     private val dataLoader: SessionViewModelDataLoader,
+    private val noteDetector: NoteDetector,
 ) : ViewModel() {
 
     data class RequiredData(
@@ -128,7 +131,9 @@ class SessionViewModel2(
 
     private val listeningHandler = object : SessionStateHandler {
         override fun enterState() {
-            _sessionState.value = SessionState.Listening
+            _sessionState.value = SessionState.Listening(NoteDetectionResult.None)
+
+            // TODO observe note detector flow
         }
     }
 
@@ -160,7 +165,7 @@ sealed interface SessionState {
 
     object PlayingQuestion : SessionState
 
-    object Listening : SessionState
+    data class Listening(val result: NoteDetectionResult) : SessionState
 }
 
 data class SessionSettings(

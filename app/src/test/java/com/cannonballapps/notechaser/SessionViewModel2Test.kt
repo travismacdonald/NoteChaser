@@ -1,8 +1,11 @@
 package com.cannonballapps.notechaser
 
+import android.util.Log
 import app.cash.turbine.test
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
+import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
+import com.cannonballapps.notechaser.common.noteprocessor.NoteDetector
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.exercisesession.SessionScreenUiData
 import com.cannonballapps.notechaser.exercisesession.SessionSettings
@@ -10,6 +13,7 @@ import com.cannonballapps.notechaser.exercisesession.SessionState
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2
 import com.cannonballapps.notechaser.exercisesession.SessionViewModel2.RequiredData
 import com.cannonballapps.notechaser.exercisesession.SessionViewModelDataLoader
+import com.cannonballapps.notechaser.musicutilities.Note
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -18,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -40,6 +45,11 @@ class SessionViewModel2Test {
 
     private val playableGenerator: PlayableGenerator = mock()
     private val playablePlayer: PlayablePlayer = mock()
+
+    private val noteDetectionFlow = Channel<NoteDetectionResult>()
+    private val noteDetector: NoteDetector = mock {
+        on(it.noteDetectionFlow).doReturn(noteDetectionFlow.receiveAsFlow())
+    }
 
     private val dataLoaderFlow = Channel<ResultOf<RequiredData>>()
     private val dataLoader: SessionViewModelDataLoader = mock {
@@ -265,6 +275,57 @@ class SessionViewModel2Test {
             }
         }
 
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `Listening state should listen for input`() =
+        runStandardCoroutineTest {
+            val playable = playable()
+            val settings = sessionSettings(
+                sessionKey = PitchClass.C,
+                shouldPlayReferencePitch = false,
+            )
+            whenever(playableGenerator.generatePlayable())
+                .doReturn(playable)
+            whenever(playablePlayer.playPlayable2(any(), any())).then {
+                launch {
+                    delay(1)
+                    (it.arguments[1] as () -> Unit).invoke()
+                }
+            }
+
+            initViewModel()
+            dataLoaderFlow.send(
+                ResultOf.Success(
+                    RequiredData(
+                        playableGenerator = playableGenerator,
+                        sessionSettings = settings,
+                    )
+                )
+            )
+            noteDetectionFlow.trySend(
+                NoteDetectionResult.None,
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.Listening>().test {
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = awaitItem().state,
+                )
+
+                val detectionResult = NoteDetectionResult.Value(
+                    note = Note(60),
+                    probability = 0.5f,
+                )
+                // TODO verify noteDetector listen
+                noteDetectionFlow.trySend(detectionResult)
+
+                assertEquals(
+                    expected = SessionState.Listening(detectionResult),
+                    awaitItem().state,
+                )
+            }
+        }
+
     private fun sessionSettings(
         sessionKey: PitchClass,
         shouldPlayReferencePitch: Boolean,
@@ -277,6 +338,7 @@ class SessionViewModel2Test {
         viewModel = SessionViewModel2(
             playablePlayer = playablePlayer,
             dataLoader = dataLoader,
+            noteDetector = noteDetector,
         )
     }
 
