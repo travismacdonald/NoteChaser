@@ -1,6 +1,5 @@
 package com.cannonballapps.notechaser
 
-import android.util.Log
 import app.cash.turbine.test
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
@@ -22,7 +21,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -316,11 +314,19 @@ class SessionViewModel2Test {
                     note = Note(60),
                     probability = 0.5f,
                 )
-                // TODO verify noteDetector listen
                 noteDetectionFlow.trySend(detectionResult)
-
                 assertEquals(
                     expected = SessionState.Listening(detectionResult),
+                    awaitItem().state,
+                )
+
+                val detectionResult2 = NoteDetectionResult.Value(
+                    note = Note(64),
+                    probability = 0.3f,
+                )
+                noteDetectionFlow.trySend(detectionResult2)
+                assertEquals(
+                    expected = SessionState.Listening(detectionResult2),
                     awaitItem().state,
                 )
             }

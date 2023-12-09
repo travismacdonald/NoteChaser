@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -133,7 +135,11 @@ class SessionViewModel2(
         override fun enterState() {
             _sessionState.value = SessionState.Listening(NoteDetectionResult.None)
 
-            // TODO observe note detector flow
+            noteDetector.noteDetectionFlow
+                .onEach {
+                    _sessionState.value = SessionState.Listening(it)
+                }
+                .launchIn(viewModelScope)
         }
     }
 
