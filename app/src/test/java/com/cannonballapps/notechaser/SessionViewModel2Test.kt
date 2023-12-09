@@ -195,8 +195,7 @@ class SessionViewModel2Test {
     fun `PlayingQuestion state should play playable and advance to Listening state`() =
         runStandardCoroutineTest {
             val playable = playable()
-            whenever(playableGenerator.generatePlayable())
-                .doReturn(playable)
+            setupPlayableGenerator(playable)
 
             setupPlayablePlayer()
 
@@ -217,9 +216,7 @@ class SessionViewModel2Test {
     @Test
     fun `Listening state should listen for input`() =
         runStandardCoroutineTest {
-            val playable = playable()
-            whenever(playableGenerator.generatePlayable())
-                .doReturn(playable)
+            setupPlayableGenerator()
             setupPlayablePlayer()
 
             initViewModel()
@@ -256,6 +253,13 @@ class SessionViewModel2Test {
             }
         }
 
+    private fun setupPlayableGenerator(
+        playable: Playable = playable(),
+    ) {
+        whenever(playableGenerator.generatePlayable())
+            .doReturn(playable)
+    }
+
     private suspend fun setupInitialDataFailure() {
         dataLoaderFlow.send(ResultOf.Failure(Exception()))
     }
@@ -288,7 +292,6 @@ class SessionViewModel2Test {
             }
         }
     }
-
 
     private fun initViewModel() {
         viewModel = SessionViewModel2(
