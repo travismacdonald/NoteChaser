@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -190,7 +191,6 @@ class SessionViewModel2Test {
             }
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `PlayingQuestion state should play playable and advance to Listening state`() =
         runStandardCoroutineTest {
@@ -198,12 +198,7 @@ class SessionViewModel2Test {
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
 
-            whenever(playablePlayer.playPlayable2(any(), any())).then {
-                launch {
-                    delay(1)
-                    (it.arguments[1] as () -> Unit).invoke()
-                }
-            }
+            setupPlayablePlayer()
 
             initViewModel()
             setupInitialDataSuccess()
@@ -219,19 +214,13 @@ class SessionViewModel2Test {
             }
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `Listening state should listen for input`() =
         runStandardCoroutineTest {
             val playable = playable()
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
-            whenever(playablePlayer.playPlayable2(any(), any())).then {
-                launch {
-                    delay(1)
-                    (it.arguments[1] as () -> Unit).invoke()
-                }
-            }
+            setupPlayablePlayer()
 
             initViewModel()
             setupInitialDataSuccess()
@@ -289,6 +278,17 @@ class SessionViewModel2Test {
             )
         )
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun TestScope.setupPlayablePlayer() {
+        whenever(playablePlayer.playPlayable2(any(), any())).then {
+            launch {
+                delay(1)
+                (it.arguments[1] as () -> Unit).invoke()
+            }
+        }
+    }
+
 
     private fun initViewModel() {
         viewModel = SessionViewModel2(
