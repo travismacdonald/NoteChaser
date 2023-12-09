@@ -84,7 +84,7 @@ class SessionViewModel2Test {
     fun `Loading state should move to Error state on failure`() =
         runStandardCoroutineTest {
             initViewModel()
-            dataLoaderFlow.send(ResultOf.Failure(Exception()))
+            setupInitialDataFailure()
 
             viewModel.screenUiData.startObservingOnState<SessionState.Loading>().test {
                 assertEquals(
@@ -100,20 +100,8 @@ class SessionViewModel2Test {
     @Test
     fun `Loading state should move to PreStart state on success`() =
         runStandardCoroutineTest {
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = true,
-            )
-
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
+            setupInitialDataSuccess()
 
             viewModel.screenUiData.startObservingOnState<SessionState.Loading>().test {
                 assertEquals(
@@ -127,22 +115,10 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `PreStart state should move to PlayingReferencePitch after delay when reference pitch is not required`() =
+    fun `PreStart state should move to PlayingReferencePitch after delay when reference pitch is required`() =
         runStandardCoroutineTest {
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = true,
-            )
-
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
+            setupInitialDataSuccess(shouldPlayReferencePitch = true)
 
             viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
                 assertEquals(
@@ -161,22 +137,10 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `PreStart state should move to PlayingQuestion after delay when reference pitch is required`() =
+    fun `PreStart state should move to PlayingQuestion after delay when reference pitch is not required`() =
         runStandardCoroutineTest {
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = false,
-            )
-
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
+            setupInitialDataSuccess(shouldPlayReferencePitch = false)
 
             viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
                 assertEquals(
@@ -197,34 +161,27 @@ class SessionViewModel2Test {
     @Test
     fun `PlayingReferencePitch state should play reference pitch and move to PlayingQuestion`() =
         runStandardCoroutineTest {
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = true,
-            )
+            val referencePitch = PitchClass.C
 
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
+            setupInitialDataSuccess(
+                sessionKey = referencePitch,
+                shouldPlayReferencePitch = true,
             )
 
             viewModel.screenUiData.startObservingOnState<SessionState.PlayingReferencePitch>().test {
                 assertEquals(
                     expected = SessionState.PlayingReferencePitch(
-                        referencePitch = PitchClass.C,
+                        referencePitch = referencePitch,
                     ),
                     actual = awaitItem().state,
                 )
-                verify(playablePlayer).playPlayable2(PitchClass.C.toPlayable())
+                verify(playablePlayer).playPlayable2(referencePitch.toPlayable())
 
                 advanceTimeBy(2_000L)
                 assertEquals(
                     expected = SessionState.PlayingReferencePitch(
-                        referencePitch = PitchClass.C,
+                        referencePitch = referencePitch,
                     ),
                     actual = viewModel.screenUiData.value.state,
                 )
@@ -238,10 +195,6 @@ class SessionViewModel2Test {
     fun `PlayingQuestion state should play playable and advance to Listening state`() =
         runStandardCoroutineTest {
             val playable = playable()
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = false,
-            )
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
 
@@ -253,14 +206,7 @@ class SessionViewModel2Test {
             }
 
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
+            setupInitialDataSuccess()
 
             viewModel.screenUiData.startObservingOnState<SessionState.PlayingQuestion>().test {
                 assertEquals(
@@ -278,10 +224,6 @@ class SessionViewModel2Test {
     fun `Listening state should listen for input`() =
         runStandardCoroutineTest {
             val playable = playable()
-            val settings = sessionSettings(
-                sessionKey = PitchClass.C,
-                shouldPlayReferencePitch = false,
-            )
             whenever(playableGenerator.generatePlayable())
                 .doReturn(playable)
             whenever(playablePlayer.playPlayable2(any(), any())).then {
@@ -292,14 +234,7 @@ class SessionViewModel2Test {
             }
 
             initViewModel()
-            dataLoaderFlow.send(
-                ResultOf.Success(
-                    RequiredData(
-                        playableGenerator = playableGenerator,
-                        sessionSettings = settings,
-                    )
-                )
-            )
+            setupInitialDataSuccess()
             noteDetectionFlow.trySend(
                 NoteDetectionResult.None,
             )
@@ -332,13 +267,28 @@ class SessionViewModel2Test {
             }
         }
 
-    private fun sessionSettings(
-        sessionKey: PitchClass,
-        shouldPlayReferencePitch: Boolean,
-    ) = SessionSettings(
-        sessionKey = sessionKey,
-        shouldPlayReferencePitch = shouldPlayReferencePitch,
-    )
+    private suspend fun setupInitialDataFailure() {
+        dataLoaderFlow.send(ResultOf.Failure(Exception()))
+    }
+
+    private suspend fun setupInitialDataSuccess(
+        sessionKey: PitchClass = PitchClass.C,
+        shouldPlayReferencePitch: Boolean = false,
+    ) {
+        val settings = SessionSettings(
+            sessionKey = sessionKey,
+            shouldPlayReferencePitch = shouldPlayReferencePitch,
+        )
+
+        dataLoaderFlow.send(
+            ResultOf.Success(
+                RequiredData(
+                    playableGenerator = playableGenerator,
+                    sessionSettings = settings,
+                )
+            )
+        )
+    }
 
     private fun initViewModel() {
         viewModel = SessionViewModel2(
