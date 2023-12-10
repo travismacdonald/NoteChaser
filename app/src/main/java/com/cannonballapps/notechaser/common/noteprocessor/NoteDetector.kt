@@ -1,11 +1,13 @@
 package com.cannonballapps.notechaser.common.noteprocessor
 
 import com.cannonballapps.notechaser.musicutilities.Note
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 class NoteDetector {
-    val noteDetectionFlow: Flow<NoteDetectionResult> = flow { /* TODO */ }
+    val noteDetectionFlow: SharedFlow<NoteDetectionResult> = MutableSharedFlow()
 }
 
 sealed interface NoteDetectionResult {
@@ -15,4 +17,13 @@ sealed interface NoteDetectionResult {
     ) : NoteDetectionResult
 
     object None : NoteDetectionResult
+}
+
+@OptIn(ExperimentalContracts::class)
+fun NoteDetectionResult.isNoneResult(): Boolean {
+    contract {
+        returns(true) implies (this@isNoneResult is NoteDetectionResult.None)
+    }
+
+    return this is NoteDetectionResult.None
 }

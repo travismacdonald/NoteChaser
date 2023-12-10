@@ -21,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -45,9 +46,9 @@ class SessionViewModel2Test {
     private val playableGenerator: PlayableGenerator = mock()
     private val playablePlayer: PlayablePlayer = mock()
 
-    private val noteDetectionFlow = Channel<NoteDetectionResult>()
+    private val noteDetectionFlow = MutableSharedFlow<NoteDetectionResult>(replay = 1)
     private val noteDetector: NoteDetector = mock {
-        on(it.noteDetectionFlow).doReturn(noteDetectionFlow.receiveAsFlow())
+        on(it.noteDetectionFlow).doReturn(noteDetectionFlow)
     }
 
     private val dataLoaderFlow = Channel<ResultOf<RequiredData>>()
@@ -209,6 +210,7 @@ class SessionViewModel2Test {
                 )
                 verify(playablePlayer).playPlayable2(eq(playable), any())
 
+                noteDetectionFlow.tryEmit(NoteDetectionResult.None)
                 assertIs<SessionState.Listening>(awaitItem().state)
             }
         }
@@ -221,7 +223,7 @@ class SessionViewModel2Test {
 
             initViewModel()
             setupInitialDataSuccess()
-            noteDetectionFlow.trySend(
+            noteDetectionFlow.tryEmit(
                 NoteDetectionResult.None,
             )
 
@@ -235,7 +237,7 @@ class SessionViewModel2Test {
                     note = Note(60),
                     probability = 0.5f,
                 )
-                noteDetectionFlow.trySend(detectionResult)
+                noteDetectionFlow.tryEmit(detectionResult)
                 assertEquals(
                     expected = SessionState.Listening(detectionResult),
                     awaitItem().state,
@@ -245,11 +247,87 @@ class SessionViewModel2Test {
                     note = Note(64),
                     probability = 0.3f,
                 )
-                noteDetectionFlow.trySend(detectionResult2)
+                noteDetectionFlow.tryEmit(detectionResult2)
                 assertEquals(
                     expected = SessionState.Listening(detectionResult2),
                     awaitItem().state,
                 )
+            }
+        }
+
+    @Test
+    fun `Listening state should advance to ReplayQuestion state after 3 seconds of no input detection`() =
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+
+            initViewModel()
+            setupInitialDataSuccess()
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.None,
+            )
+            viewModel.screenUiData.startObservingOnState<SessionState.Listening>().test {
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = awaitItem().state,
+                )
+
+                advanceTimeBy(3_000L)
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = viewModel.screenUiData.value.state,
+                )
+
+                advanceTimeBy(1L)
+                assertIs<SessionState.ReplayQuestion>(viewModel.screenUiData.value.state)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `Listening state should advance to ReplayQuestion state after 3 seconds of no input detection 2`() =
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+
+            initViewModel()
+            setupInitialDataSuccess()
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.None,
+            )
+            viewModel.screenUiData.startObservingOnState<SessionState.Listening>().test {
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = awaitItem().state,
+                )
+
+                advanceTimeBy(500L)
+                // Detected note should reset no input timer
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        note = Note(64),
+                        probability = 0.5f,
+                    )
+                )
+                advanceTimeBy(500L)
+                // Timer should start again after None result
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.None,
+                )
+
+                advanceTimeBy(3_000L)
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = viewModel.screenUiData.value.state,
+                )
+
+                advanceTimeBy(1L)
+                assertIs<SessionState.ReplayQuestion>(viewModel.screenUiData.value.state)
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

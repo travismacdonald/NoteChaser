@@ -6,14 +6,17 @@ import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetector
+import com.cannonballapps.notechaser.common.noteprocessor.isNoneResult
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,8 +26,12 @@ import kotlinx.coroutines.launch
 class SessionViewModel2(
     private val playablePlayer: PlayablePlayer,
     private val dataLoader: SessionViewModelDataLoader,
-    private val noteDetector: NoteDetector,
+    noteDetector: NoteDetector,
 ) : ViewModel() {
+
+    companion object {
+        private const val NO_INPUT_THRESHOLD_MILLIS = 3_000L
+    }
 
     data class RequiredData(
         val playableGenerator: PlayableGenerator,
@@ -37,6 +44,7 @@ class SessionViewModel2(
 
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
     private val _questionsAnswered: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val noteDetectionFlow = noteDetector.noteDetectionFlow.distinctUntilChanged()
 
     private lateinit var requiredData: RequiredData
 
@@ -132,14 +140,41 @@ class SessionViewModel2(
     }
 
     private val listeningHandler = object : SessionStateHandler {
-        override fun enterState() {
-            _sessionState.value = SessionState.Listening(NoteDetectionResult.None)
+        private var replayQuestionJob: Job? = null
 
-            noteDetector.noteDetectionFlow
-                .onEach {
-                    _sessionState.value = SessionState.Listening(it)
-                }
+        override fun enterState() {
+            noteDetectionFlow
+                .onEach(::onNoteDetectionResult)
                 .launchIn(viewModelScope)
+        }
+
+        private fun onNoteDetectionResult(result: NoteDetectionResult) {
+            updateState(result)
+
+            clearActiveReplayQuestionJob()
+            if (result.isNoneResult()) startReplayQuestionJob()
+        }
+
+        private fun updateState(result: NoteDetectionResult) {
+            _sessionState.value = SessionState.Listening(result)
+        }
+
+        private fun clearActiveReplayQuestionJob() {
+            replayQuestionJob?.cancel()
+            replayQuestionJob = null
+        }
+
+        private fun startReplayQuestionJob() {
+            replayQuestionJob = viewModelScope.launch {
+                delay(NO_INPUT_THRESHOLD_MILLIS)
+                replayQuestionHandler.enterState()
+            }
+        }
+    }
+
+    private val replayQuestionHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.ReplayQuestion
         }
     }
 
@@ -172,6 +207,8 @@ sealed interface SessionState {
     object PlayingQuestion : SessionState
 
     data class Listening(val result: NoteDetectionResult) : SessionState
+
+    object ReplayQuestion : SessionState
 }
 
 data class SessionSettings(
