@@ -2,11 +2,11 @@ package com.cannonballapps.notechaser.exercisesession
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cannonballapps.notechaser.common.AnswerTracker
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetector
-import com.cannonballapps.notechaser.common.noteprocessor.isNoneResult
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
@@ -27,10 +27,12 @@ class SessionViewModel2(
     private val playablePlayer: PlayablePlayer,
     private val dataLoader: SessionViewModelDataLoader,
     noteDetector: NoteDetector,
+    answerTracker: AnswerTracker,
 ) : ViewModel() {
 
     companion object {
         private const val NO_INPUT_THRESHOLD_MILLIS = 3_000L
+        private const val DETECTED_NOTE_PROBABILITY_THRESHOLD = 0.8f
     }
 
     data class RequiredData(
@@ -150,26 +152,45 @@ class SessionViewModel2(
 
         private fun onNoteDetectionResult(result: NoteDetectionResult) {
             updateState(result)
+            clearScheduledReplayQuestionJobIfAny()
 
-            clearActiveReplayQuestionJob()
-            if (result.isNoneResult()) startReplayQuestionJob()
+            when (result) {
+                is NoteDetectionResult.Value -> onValueResult(result)
+                NoteDetectionResult.None -> onNoneResult()
+            }
+        }
+
+        private fun onValueResult(result: NoteDetectionResult.Value) {
+            if (result.meetsThreshold() && result.isDifferentFromLastTrackedNote()) {
+                answerTracker.trackNote(result.note)
+            }
+        }
+
+        private fun onNoneResult() {
+            scheduleReplayQuestionJob()
         }
 
         private fun updateState(result: NoteDetectionResult) {
             _sessionState.value = SessionState.Listening(result)
         }
 
-        private fun clearActiveReplayQuestionJob() {
+        private fun clearScheduledReplayQuestionJobIfAny() {
             replayQuestionJob?.cancel()
             replayQuestionJob = null
         }
 
-        private fun startReplayQuestionJob() {
+        private fun scheduleReplayQuestionJob() {
             replayQuestionJob = viewModelScope.launch {
                 delay(NO_INPUT_THRESHOLD_MILLIS)
                 replayQuestionHandler.enterState()
             }
         }
+
+        private fun NoteDetectionResult.Value.isDifferentFromLastTrackedNote() =
+            answerTracker.lastTrackedNote != this.note
+
+        private fun NoteDetectionResult.Value.meetsThreshold() =
+            this.probability >= DETECTED_NOTE_PROBABILITY_THRESHOLD
     }
 
     private val replayQuestionHandler = object : SessionStateHandler {

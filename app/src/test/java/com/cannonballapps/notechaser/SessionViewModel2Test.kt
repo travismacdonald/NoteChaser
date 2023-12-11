@@ -1,6 +1,7 @@
 package com.cannonballapps.notechaser
 
 import app.cash.turbine.test
+import com.cannonballapps.notechaser.common.AnswerTracker
 import com.cannonballapps.notechaser.common.PlayablePlayer
 import com.cannonballapps.notechaser.common.ResultOf
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
@@ -27,11 +28,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import runStandardCoroutineTest
@@ -50,6 +54,8 @@ class SessionViewModel2Test {
     private val noteDetector: NoteDetector = mock {
         on(it.noteDetectionFlow).doReturn(noteDetectionFlow)
     }
+
+    private val answerTracker: AnswerTracker = mock()
 
     private val dataLoaderFlow = Channel<ResultOf<RequiredData>>()
     private val dataLoader: SessionViewModelDataLoader = mock {
@@ -331,6 +337,81 @@ class SessionViewModel2Test {
             }
         }
 
+    @Test
+    fun `Listening state should use AnswerTracker for note detection results`() =
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+            setupAnswerTracker()
+
+            initViewModel()
+            setupInitialDataSuccess()
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.None,
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.Listening>().test {
+                // Shouldn't track note since detection result is None
+                verify(answerTracker, times(0)).trackNote(any())
+
+                // Shouldn't track result since detection probability doesn't meet threshold
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        Note(60),
+                        probability = 0.79f,
+                    )
+                )
+                advanceUntilIdle()
+                verify(answerTracker, times(0)).trackNote(Note(60))
+
+                // Should track result since probability meets threshold
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        Note(60),
+                        probability = 0.80f,
+                    )
+                )
+                advanceUntilIdle()
+                verify(answerTracker, times(1)).trackNote(Note(60))
+
+                // Shouldn't track result since it's the same note as the previous one
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        Note(60),
+                        probability = 0.85f,
+                    )
+                )
+                advanceUntilIdle()
+                verify(answerTracker, times(1)).trackNote(Note(60))
+
+                // Should track result since it's a new note and probability meets threshold
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        Note(65),
+                        probability = 0.85f,
+                    )
+                )
+                advanceUntilIdle()
+                verify(answerTracker).trackNote(Note(65))
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    private fun setupAnswerTracker() {
+        var lastTrackedNote: Note? = null
+
+        whenever(answerTracker.trackNote(any()))
+            .then {
+                lastTrackedNote = it.arguments[0] as Note
+                it
+            }
+
+        whenever(answerTracker.lastTrackedNote)
+            .doAnswer { lastTrackedNote }
+    }
+
     private fun setupPlayableGenerator(
         playable: Playable = playable(),
     ) {
@@ -376,6 +457,7 @@ class SessionViewModel2Test {
             playablePlayer = playablePlayer,
             dataLoader = dataLoader,
             noteDetector = noteDetector,
+            answerTracker = answerTracker,
         )
     }
 
