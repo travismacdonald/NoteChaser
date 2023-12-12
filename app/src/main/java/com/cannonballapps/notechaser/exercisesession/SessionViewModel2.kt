@@ -162,7 +162,9 @@ class SessionViewModel2(
 
         private fun onValueResult(result: NoteDetectionResult.Value) {
             if (result.meetsThreshold() && result.isDifferentFromLastTrackedNote()) {
-                answerTracker.trackNote(result.note)
+                if (answerTracker.trackNote(result.note)) {
+                    answerCorrectHandler.enterState()
+                }
             }
         }
 
@@ -199,6 +201,12 @@ class SessionViewModel2(
         }
     }
 
+    private val answerCorrectHandler = object : SessionStateHandler {
+        override fun enterState() {
+            _sessionState.value = SessionState.AnswerCorrect
+        }
+    }
+
     init {
         loadingStateHandler.enterState()
     }
@@ -230,6 +238,8 @@ sealed interface SessionState {
     data class Listening(val result: NoteDetectionResult) : SessionState
 
     object ReplayQuestion : SessionState
+
+    object AnswerCorrect : SessionState
 }
 
 data class SessionSettings(

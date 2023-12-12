@@ -9,5 +9,8 @@ class AnswerTracker {
     val lastTrackedNote: Note?
         get() = trackedAnswer.lastOrNull()
 
-    fun trackNote(note: Note) { /* TODO */ }
+    /**
+     * @return true if the tracked answer matches the expected answer.
+     */
+    fun trackNote(note: Note): Boolean = false
 }

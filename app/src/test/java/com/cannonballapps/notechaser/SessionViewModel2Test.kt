@@ -44,6 +44,9 @@ import java.lang.Exception
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
+/*
+ * TODO write test that verifies we set the expected answer on each question
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionViewModel2Test {
 
@@ -399,13 +402,45 @@ class SessionViewModel2Test {
             }
         }
 
+    @Test
+    fun `Listening state should advance to AnswerCorrect after a correct answer`() =
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+            setupAnswerTracker()
+
+            initViewModel()
+            setupInitialDataSuccess()
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.None,
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.Listening>().test {
+                assertEquals(
+                    expected = SessionState.Listening(NoteDetectionResult.None),
+                    actual = awaitItem().state,
+                )
+
+                whenever(answerTracker.trackNote(any()))
+                    .doReturn(true)
+                noteDetectionFlow.tryEmit(
+                    NoteDetectionResult.Value(
+                        note = Note(60),
+                        probability = 0.8f,
+                    ),
+                )
+                assertIs<SessionState.AnswerCorrect>(awaitItem().state)
+            }
+        }
+
     private fun setupAnswerTracker() {
         var lastTrackedNote: Note? = null
 
         whenever(answerTracker.trackNote(any()))
             .then {
                 lastTrackedNote = it.arguments[0] as Note
-                it
+                false
             }
 
         whenever(answerTracker.lastTrackedNote)
