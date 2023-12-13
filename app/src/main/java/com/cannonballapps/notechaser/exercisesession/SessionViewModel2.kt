@@ -9,6 +9,7 @@ import com.cannonballapps.notechaser.common.noteprocessor.NoteDetectionResult
 import com.cannonballapps.notechaser.common.noteprocessor.NoteDetector
 import com.cannonballapps.notechaser.common.toPlayable
 import com.cannonballapps.notechaser.musicutilities.PitchClass
+import com.cannonballapps.notechaser.musicutilities.playablegenerator.Playable
 import com.cannonballapps.notechaser.musicutilities.playablegenerator.PlayableGenerator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -45,7 +46,7 @@ class SessionViewModel2(
     }
 
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
-    private val _questionsAnswered: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _numberOfCorrectAnswers: MutableStateFlow<Int> = MutableStateFlow(0)
     private val noteDetectionFlow = noteDetector.noteDetectionFlow.distinctUntilChanged()
 
     private lateinit var requiredData: RequiredData
@@ -57,22 +58,24 @@ class SessionViewModel2(
     private val shouldPlayReferencePitch: Boolean
         get() = requiredData.sessionSettings.shouldPlayReferencePitch
 
+    private lateinit var currentPlayable: Playable
+
     val screenUiData: StateFlow<SessionScreenUiData> = combine(
         _sessionState,
-        _questionsAnswered,
+        _numberOfCorrectAnswers,
     ) {
         sessionState,
         questionsAnswered ->
         SessionScreenUiData(
             state = sessionState,
-            questionsAnswered = questionsAnswered,
+            numberOfCorrectAnswers = questionsAnswered,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SessionScreenUiData(
             state = _sessionState.value,
-            questionsAnswered = _questionsAnswered.value,
+            numberOfCorrectAnswers = _numberOfCorrectAnswers.value,
         )
     )
 
@@ -103,6 +106,7 @@ class SessionViewModel2(
     private val preStartStateHandler = object : SessionStateHandler {
         override fun enterState() {
             _sessionState.value = SessionState.PreStart
+            updateCurrentPlayable()
 
             viewModelScope.launch {
                 delay(SessionState.PreStart.millisUntilStart)
@@ -133,7 +137,7 @@ class SessionViewModel2(
             _sessionState.value = SessionState.PlayingQuestion
 
             playablePlayer.playPlayable2(
-                playable = playableGenerator.generatePlayable(),
+                playable = currentPlayable,
                 onPlaybackFinished = {
                     listeningHandler.enterState()
                 },
@@ -201,20 +205,31 @@ class SessionViewModel2(
         }
     }
 
-    private val answerCorrectHandler = object : SessionStateHandler {
+    private val answerCorrectHandler: SessionStateHandler = object : SessionStateHandler {
         override fun enterState() {
             _sessionState.value = SessionState.AnswerCorrect
+            this@SessionViewModel2._numberOfCorrectAnswers.value++
+
+            viewModelScope.launch {
+                delay(2_000L)
+                updateCurrentPlayable()
+                playingQuestionHandler.enterState()
+            }
         }
     }
 
     init {
         loadingStateHandler.enterState()
     }
+
+    private fun updateCurrentPlayable() {
+        currentPlayable = playableGenerator.generatePlayable()
+    }
 }
 
 data class SessionScreenUiData(
     val state: SessionState,
-    val questionsAnswered: Int,
+    val numberOfCorrectAnswers: Int,
 )
 
 sealed interface SessionState {

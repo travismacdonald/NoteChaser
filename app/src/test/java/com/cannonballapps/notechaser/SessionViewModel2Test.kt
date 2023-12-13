@@ -74,7 +74,7 @@ class SessionViewModel2Test {
 
             assertEquals(
                 expected = 0,
-                actual = viewModel.screenUiData.value.questionsAnswered,
+                actual = viewModel.screenUiData.value.numberOfCorrectAnswers,
             )
         }
 
@@ -111,6 +111,7 @@ class SessionViewModel2Test {
     @Test
     fun `Loading state should move to PreStart state on success`() =
         runStandardCoroutineTest {
+            setupPlayableGenerator()
             initViewModel()
             setupInitialDataSuccess()
 
@@ -128,6 +129,7 @@ class SessionViewModel2Test {
     @Test
     fun `PreStart state should move to PlayingReferencePitch after delay when reference pitch is required`() =
         runStandardCoroutineTest {
+            setupPlayableGenerator()
             initViewModel()
             setupInitialDataSuccess(shouldPlayReferencePitch = true)
 
@@ -150,6 +152,7 @@ class SessionViewModel2Test {
     @Test
     fun `PreStart state should move to PlayingQuestion after delay when reference pitch is not required`() =
         runStandardCoroutineTest {
+            setupPlayableGenerator()
             initViewModel()
             setupInitialDataSuccess(shouldPlayReferencePitch = false)
 
@@ -173,6 +176,7 @@ class SessionViewModel2Test {
     fun `PlayingReferencePitch state should play reference pitch and move to PlayingQuestion`() =
         runStandardCoroutineTest {
             val referencePitch = PitchClass.C
+            setupPlayableGenerator()
 
             initViewModel()
             setupInitialDataSuccess(
@@ -407,7 +411,7 @@ class SessionViewModel2Test {
         runStandardCoroutineTest {
             setupPlayableGenerator()
             setupPlayablePlayer()
-            setupAnswerTracker()
+            setupAnswerTracker(isAnswerCorrect = true)
 
             initViewModel()
             setupInitialDataSuccess()
@@ -422,8 +426,6 @@ class SessionViewModel2Test {
                     actual = awaitItem().state,
                 )
 
-                whenever(answerTracker.trackNote(any()))
-                    .doReturn(true)
                 noteDetectionFlow.tryEmit(
                     NoteDetectionResult.Value(
                         note = Note(60),
@@ -434,13 +436,52 @@ class SessionViewModel2Test {
             }
         }
 
-    private fun setupAnswerTracker() {
+    @Test
+    fun `AnswerCorrect state should increase correct answers by 1, generate new playable, and move to Playing state`() {
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+            setupAnswerTracker(isAnswerCorrect = true)
+
+            initViewModel()
+            setupInitialDataSuccess()
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.Value(
+                    note = Note(60),
+                    probability = 0.8f,
+                ),
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.AnswerCorrect>().test {
+                with(awaitItem()) {
+                    assertEquals(
+                        expected = SessionState.AnswerCorrect,
+                        actual = state,
+                    )
+                    assertEquals(
+                        expected = 1,
+                        actual = numberOfCorrectAnswers,
+                    )
+                }
+
+                advanceTimeBy(2_001)
+                verify(playableGenerator, times(2)).generatePlayable()
+
+                assertIs<SessionState.PlayingQuestion>(awaitItem().state)
+            }
+        }
+    }
+
+    private fun setupAnswerTracker(
+        isAnswerCorrect: Boolean = false,
+    ) {
         var lastTrackedNote: Note? = null
 
         whenever(answerTracker.trackNote(any()))
             .then {
                 lastTrackedNote = it.arguments[0] as Note
-                false
+                isAnswerCorrect
             }
 
         whenever(answerTracker.lastTrackedNote)
