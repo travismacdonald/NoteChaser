@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 class SessionViewModel2(
     private val playablePlayer: PlayablePlayer,
     private val dataLoader: SessionViewModelDataLoader,
+    private val answerTracker: AnswerTracker,
     noteDetector: NoteDetector,
-    answerTracker: AnswerTracker,
 ) : ViewModel() {
 
     companion object {
@@ -87,7 +87,7 @@ class SessionViewModel2(
                 when (val requiredDataResult = dataLoader.requiredData().first()) {
                     is ResultOf.Success -> {
                         requiredData = requiredDataResult.value
-                        preStartStateHandler.enterState()
+                        sessionInitializationHandler.enterState()
                     }
                     is ResultOf.Failure -> {
                         errorStateHandler.enterState()
@@ -103,13 +103,13 @@ class SessionViewModel2(
         }
     }
 
-    private val preStartStateHandler = object : SessionStateHandler {
+    private val sessionInitializationHandler = object : SessionStateHandler {
         override fun enterState() {
-            _sessionState.value = SessionState.PreStart
+            _sessionState.value = SessionState.SessionInitialization
             updateCurrentPlayable()
 
             viewModelScope.launch {
-                delay(SessionState.PreStart.millisUntilStart)
+                delay(SessionState.SessionInitialization.millisUntilStart)
                 if (shouldPlayReferencePitch) {
                     playingReferencePitchHandler.enterState()
                 } else {
@@ -132,7 +132,7 @@ class SessionViewModel2(
         }
     }
 
-    private val playingQuestionHandler = object : SessionStateHandler {
+    private val playingQuestionHandler: SessionStateHandler = object : SessionStateHandler {
         override fun enterState() {
             _sessionState.value = SessionState.PlayingQuestion
 
@@ -188,7 +188,7 @@ class SessionViewModel2(
         private fun scheduleReplayQuestionJob() {
             replayQuestionJob = viewModelScope.launch {
                 delay(NO_INPUT_THRESHOLD_MILLIS)
-                replayQuestionHandler.enterState()
+                playingQuestionHandler.enterState()
             }
         }
 
@@ -197,12 +197,6 @@ class SessionViewModel2(
 
         private fun NoteDetectionResult.Value.meetsThreshold() =
             this.probability >= DETECTED_NOTE_PROBABILITY_THRESHOLD
-    }
-
-    private val replayQuestionHandler = object : SessionStateHandler {
-        override fun enterState() {
-            _sessionState.value = SessionState.ReplayQuestion
-        }
     }
 
     private val answerCorrectHandler: SessionStateHandler = object : SessionStateHandler {
@@ -223,7 +217,9 @@ class SessionViewModel2(
     }
 
     private fun updateCurrentPlayable() {
-        currentPlayable = playableGenerator.generatePlayable()
+        currentPlayable = playableGenerator.generatePlayable().also { playable ->
+            answerTracker.setExpectedAnswer(playable)
+        }
     }
 }
 
@@ -238,7 +234,7 @@ sealed interface SessionState {
 
     object Error : SessionState
 
-    object PreStart : SessionState {
+    object SessionInitialization : SessionState {
         const val millisUntilStart = 3_000L
     }
 
@@ -251,8 +247,6 @@ sealed interface SessionState {
     object PlayingQuestion : SessionState
 
     data class Listening(val result: NoteDetectionResult) : SessionState
-
-    object ReplayQuestion : SessionState
 
     object AnswerCorrect : SessionState
 }

@@ -122,26 +122,41 @@ class SessionViewModel2Test {
                 )
                 verify(dataLoader).requiredData()
 
-                assertIs<SessionState.PreStart>(awaitItem().state)
+                assertIs<SessionState.SessionInitialization>(awaitItem().state)
             }
         }
 
     @Test
-    fun `PreStart state should move to PlayingReferencePitch after delay when reference pitch is required`() =
+    fun `SessionInitialization state should create new playable and update expected answer`() =
+        runStandardCoroutineTest {
+            val playable = mock<Playable>()
+            setupPlayableGenerator(playable)
+
+            initViewModel()
+            setupInitialDataSuccess(shouldPlayReferencePitch = true)
+
+            viewModel.screenUiData.startObservingOnState<SessionState.SessionInitialization>().test {
+                verify(playableGenerator).generatePlayable()
+                verify(answerTracker).setExpectedAnswer(playable)
+            }
+        }
+
+    @Test
+    fun `SessionInitialization state should move to PlayingReferencePitch after delay when reference pitch is required`() =
         runStandardCoroutineTest {
             setupPlayableGenerator()
             initViewModel()
             setupInitialDataSuccess(shouldPlayReferencePitch = true)
 
-            viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
+            viewModel.screenUiData.startObservingOnState<SessionState.SessionInitialization>().test {
                 assertEquals(
-                    expected = SessionState.PreStart,
+                    expected = SessionState.SessionInitialization,
                     actual = awaitItem().state,
                 )
 
                 advanceTimeBy(3_000)
                 assertEquals(
-                    expected = SessionState.PreStart,
+                    expected = SessionState.SessionInitialization,
                     actual = viewModel.screenUiData.value.state,
                 )
 
@@ -150,21 +165,21 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `PreStart state should move to PlayingQuestion after delay when reference pitch is not required`() =
+    fun `SessionInitialization state should move to PlayingQuestion after delay when reference pitch is not required`() =
         runStandardCoroutineTest {
             setupPlayableGenerator()
             initViewModel()
             setupInitialDataSuccess(shouldPlayReferencePitch = false)
 
-            viewModel.screenUiData.startObservingOnState<SessionState.PreStart>().test {
+            viewModel.screenUiData.startObservingOnState<SessionState.SessionInitialization>().test {
                 assertEquals(
-                    expected = SessionState.PreStart,
+                    expected = SessionState.SessionInitialization,
                     actual = awaitItem().state,
                 )
 
                 advanceTimeBy(3_000)
                 assertEquals(
-                    expected = SessionState.PreStart,
+                    expected = SessionState.SessionInitialization,
                     actual = viewModel.screenUiData.value.state,
                 )
 
@@ -269,7 +284,7 @@ class SessionViewModel2Test {
         }
 
     @Test
-    fun `Listening state should advance to ReplayQuestion state after 3 seconds of no input detection`() =
+    fun `Listening state should advance to PlayingQuestion state after 3 seconds of no input detection`() =
         runStandardCoroutineTest {
             setupPlayableGenerator()
             setupPlayablePlayer()
@@ -293,14 +308,14 @@ class SessionViewModel2Test {
                 )
 
                 advanceTimeBy(1L)
-                assertIs<SessionState.ReplayQuestion>(viewModel.screenUiData.value.state)
+                assertIs<SessionState.PlayingQuestion>(viewModel.screenUiData.value.state)
 
                 cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
-    fun `Listening state should advance to ReplayQuestion state after 3 seconds of no input detection 2`() =
+    fun `Listening state should advance to PlayingQuestion state after 3 seconds of no input detection 2`() =
         runStandardCoroutineTest {
             setupPlayableGenerator()
             setupPlayablePlayer()
@@ -338,7 +353,7 @@ class SessionViewModel2Test {
                 )
 
                 advanceTimeBy(1L)
-                assertIs<SessionState.ReplayQuestion>(viewModel.screenUiData.value.state)
+                assertIs<SessionState.PlayingQuestion>(viewModel.screenUiData.value.state)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -489,10 +504,10 @@ class SessionViewModel2Test {
     }
 
     private fun setupPlayableGenerator(
-        playable: Playable = playable(),
+        playableToReturn: Playable = playable(),
     ) {
         whenever(playableGenerator.generatePlayable())
-            .doReturn(playable)
+            .doReturn(playableToReturn)
     }
 
     private suspend fun setupInitialDataFailure() {
