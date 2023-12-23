@@ -2,6 +2,7 @@ package com.cannonballapps.notechaser.exercisesession
 
 import com.cannonballapps.notechaser.common.ExerciseSettings
 import com.cannonballapps.notechaser.common.ResultOf
+import com.cannonballapps.notechaser.common.SessionLengthSettings
 import com.cannonballapps.notechaser.common.prefsstore.PrefsStore
 import com.cannonballapps.notechaser.common.runCatchingToResultOfSuspending
 import kotlinx.coroutines.flow.Flow
@@ -26,5 +27,6 @@ class SessionViewModelDataLoader(
         SessionSettings(
             shouldPlayReferencePitch = sessionQuestionSettings.shouldPlayStartingPitch,
             sessionKey = sessionQuestionSettings.questionKey,
+            totalQuestions = (sessionLengthSettings as? SessionLengthSettings.QuestionLimit)?.numQuestions ?: 20,
         )
 }

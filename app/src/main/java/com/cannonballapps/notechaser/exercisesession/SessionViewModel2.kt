@@ -57,6 +57,8 @@ class SessionViewModel2(
         get() = requiredData.sessionSettings.sessionKey
     private val shouldPlayReferencePitch: Boolean
         get() = requiredData.sessionSettings.shouldPlayReferencePitch
+    private val numberOfQuestions: Int
+        get() = requiredData.sessionSettings.totalQuestions
 
     private lateinit var currentPlayable: Playable
 
@@ -147,9 +149,10 @@ class SessionViewModel2(
 
     private val listeningHandler = object : SessionStateHandler {
         private var replayQuestionJob: Job? = null
+        private var noteDetectionJob: Job? = null
 
         override fun enterState() {
-            noteDetectionFlow
+            noteDetectionJob = noteDetectionFlow
                 .onEach(::onNoteDetectionResult)
                 .launchIn(viewModelScope)
         }
@@ -167,6 +170,7 @@ class SessionViewModel2(
         private fun onValueResult(result: NoteDetectionResult.Value) {
             if (result.meetsThreshold() && result.isDifferentFromLastTrackedNote()) {
                 if (answerTracker.trackNote(result.note)) {
+                    stopNoteDetection()
                     answerCorrectHandler.enterState()
                 }
             }
@@ -188,8 +192,14 @@ class SessionViewModel2(
         private fun scheduleReplayQuestionJob() {
             replayQuestionJob = viewModelScope.launch {
                 delay(NO_INPUT_THRESHOLD_MILLIS)
+                stopNoteDetection()
                 playingQuestionHandler.enterState()
             }
+        }
+
+        private fun stopNoteDetection() {
+            noteDetectionJob?.cancel()
+            noteDetectionJob = null
         }
 
         private fun NoteDetectionResult.Value.isDifferentFromLastTrackedNote() =
@@ -206,8 +216,12 @@ class SessionViewModel2(
 
             viewModelScope.launch {
                 delay(2_000L)
-                updateCurrentPlayable()
-                playingQuestionHandler.enterState()
+                if (this@SessionViewModel2._numberOfCorrectAnswers.value == numberOfQuestions) {
+                    _sessionState.value = SessionState.SessionComplete
+                } else {
+                    updateCurrentPlayable()
+                    playingQuestionHandler.enterState()
+                }
             }
         }
     }
@@ -249,9 +263,12 @@ sealed interface SessionState {
     data class Listening(val result: NoteDetectionResult) : SessionState
 
     object AnswerCorrect : SessionState
+
+    object SessionComplete : SessionState
 }
 
 data class SessionSettings(
     val shouldPlayReferencePitch: Boolean,
     val sessionKey: PitchClass,
+    val totalQuestions: Int,
 )

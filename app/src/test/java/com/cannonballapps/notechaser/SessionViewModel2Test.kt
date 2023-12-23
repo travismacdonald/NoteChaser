@@ -488,6 +488,40 @@ class SessionViewModel2Test {
         }
     }
 
+    @Test
+    fun `AnswerCorrect state should move to SessionComplete when all questions are complete`() {
+        runStandardCoroutineTest {
+            setupPlayableGenerator()
+            setupPlayablePlayer()
+            setupAnswerTracker(isAnswerCorrect = true)
+
+            initViewModel()
+            setupInitialDataSuccess(totalQuestions = 1)
+
+            noteDetectionFlow.tryEmit(
+                NoteDetectionResult.Value(
+                    note = Note(60),
+                    probability = 0.8f,
+                ),
+            )
+
+            viewModel.screenUiData.startObservingOnState<SessionState.AnswerCorrect>().test {
+                with(awaitItem()) {
+                    assertEquals(
+                        expected = SessionState.AnswerCorrect,
+                        actual = state,
+                    )
+                    assertEquals(
+                        expected = 1,
+                        actual = numberOfCorrectAnswers,
+                    )
+                }
+
+                assertIs<SessionState.SessionComplete>(awaitItem().state)
+            }
+        }
+    }
+
     private fun setupAnswerTracker(
         isAnswerCorrect: Boolean = false,
     ) {
@@ -517,10 +551,12 @@ class SessionViewModel2Test {
     private suspend fun setupInitialDataSuccess(
         sessionKey: PitchClass = PitchClass.C,
         shouldPlayReferencePitch: Boolean = false,
+        totalQuestions: Int = 20,
     ) {
         val settings = SessionSettings(
             sessionKey = sessionKey,
             shouldPlayReferencePitch = shouldPlayReferencePitch,
+            totalQuestions = totalQuestions,
         )
 
         dataLoaderFlow.send(
