@@ -3,7 +3,7 @@ plugins {
     id("kotlin-android")
     id("androidx.navigation.safeargs")
 
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
 }
